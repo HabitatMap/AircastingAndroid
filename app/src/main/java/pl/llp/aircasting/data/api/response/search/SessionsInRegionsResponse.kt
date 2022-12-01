@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class SessionsInRegionsRes(
+data class SessionsInRegionsResponse(
     @SerializedName("fetchableSessionsCount")
     val fetchableSessionsCount: Int,
     @SerializedName("sessions")

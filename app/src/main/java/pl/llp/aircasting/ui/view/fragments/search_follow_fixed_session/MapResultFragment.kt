@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -222,7 +222,7 @@ class MapResultFragment @Inject constructor(
         binding.searchLoader.stopAnimation()
     }
 
-    private fun updateUI(it: Resource<SessionsInRegionsRes>) {
+    private fun updateUI(it: Resource<SessionsInRegionsResponse>) {
         binding.apply {
             stopLoader()
             txtShowingSessionsNumber.visible()

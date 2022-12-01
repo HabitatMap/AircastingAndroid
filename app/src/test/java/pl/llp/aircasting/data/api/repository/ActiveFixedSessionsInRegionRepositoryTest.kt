@@ -6,7 +6,7 @@ import org.junit.Ignore
 import org.junit.Test
 import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
-import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
@@ -377,7 +377,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             assertNotNull(result.data)
         }
 
-    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsRes): ApiService =
+    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsResponse): ApiService =
         runBlocking {
             return@runBlocking mock<ApiService> {
                 onBlocking {

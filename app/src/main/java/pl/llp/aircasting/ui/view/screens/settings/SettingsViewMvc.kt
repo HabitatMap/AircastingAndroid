@@ -20,6 +20,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
         fun onToggle24hourFormatEnabled()
         fun onToggleCelsiusScaleEnabled()
         fun onToggleCrowdMapEnabled()
+        fun onToggleDormantStreamAlert(enabled: Boolean)
         fun onToggleMapsEnabled()
         fun onToggleSatelliteViewEnabled()
         fun onClearSDCardClicked()

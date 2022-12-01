@@ -14,7 +14,7 @@ class SettingsViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     mSettings: Settings
-) : BaseObservableViewMvc<SettingsViewMvc.Listener>(), SettingsViewMvc  {
+) : BaseObservableViewMvc<SettingsViewMvc.Listener>(), SettingsViewMvc {
 
     init {
         this.rootView = inflater.inflate(R.layout.fragment_settings, parent, false)
@@ -23,7 +23,8 @@ class SettingsViewMvcImpl(
         myAccountButton?.setOnClickListener {
             onMyAccountClicked()
         }
-        val microphoneSettingsButton = rootView?.findViewById<Button>(R.id.microphone_settings_button)
+        val microphoneSettingsButton =
+            rootView?.findViewById<Button>(R.id.microphone_settings_button)
         microphoneSettingsButton?.setOnClickListener {
             onMicrophoneSettingsClicked()
         }
@@ -51,6 +52,11 @@ class SettingsViewMvcImpl(
         contributeToCrowdMapSwitch?.isChecked = mSettings.isCrowdMapEnabled()
         contributeToCrowdMapSwitch?.setOnCheckedChangeListener { _, _ ->
             onToggleCrowdMapEnabled()
+        }
+        val dormantStreamAlertSwitch = rootView?.dormant_stream_alert_settings_switch
+        dormantStreamAlertSwitch?.isChecked = mSettings.isDormantStreamAlertEnabled()
+        dormantStreamAlertSwitch?.setOnCheckedChangeListener { _, isChecked ->
+            onToggleDormantStreamAlert(isChecked)
         }
         val mapEnabledSwitch = rootView?.map_settings_switch
         mapEnabledSwitch?.isChecked = mSettings.areMapsDisabled()
@@ -114,43 +120,49 @@ class SettingsViewMvcImpl(
     }
 
     private fun onBackendSettingsClicked() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.onBackendSettingsClicked()
         }
     }
 
     private fun onToggleCrowdMapEnabled() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.onToggleCrowdMapEnabled()
         }
     }
 
-    private fun onToggleMapsEnabled(){
-        for(listener in listeners){
+    private fun onToggleDormantStreamAlert(enabled: Boolean) {
+        for (listener in listeners) {
+            listener.onToggleDormantStreamAlert(enabled)
+        }
+    }
+
+    private fun onToggleMapsEnabled() {
+        for (listener in listeners) {
             listener.onToggleMapsEnabled()
         }
     }
 
-    private fun onToggleSatelliteView(){
-        for(listener in listeners){
+    private fun onToggleSatelliteView() {
+        for (listener in listeners) {
             listener.onToggleSatelliteViewEnabled()
         }
     }
 
     private fun onClearSDCardClicked() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.onClearSDCardClicked()
         }
     }
 
     private fun onMyAccountClicked() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.onMyAccountClicked()
         }
     }
 
     private fun yourPrivacyClicked() {
-        for(listener in listeners){
+        for (listener in listeners) {
             listener.yourPrivacyClicked()
         }
     }

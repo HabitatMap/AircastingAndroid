@@ -20,4 +20,5 @@ object ApiConstants {
     const val urlUpdateSession = "/api/user/sessions/update_session.json"
     const val urlResetPassword = "/users/password.json"
     const val urlUploadFixedMeasurements = "/api/realtime/measurements"
+    const val urlUpdateUserSettings = "/api/user/settings"
 }

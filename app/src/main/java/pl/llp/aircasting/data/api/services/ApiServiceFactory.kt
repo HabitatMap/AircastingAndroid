@@ -17,7 +17,7 @@ open class ApiServiceFactory @Inject constructor() {
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
-    fun get(interceptors: List<Interceptor>): ApiService {
+    fun get(interceptors: List<Interceptor>? = null): ApiService {
         val logging = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
             logging.level = HttpLoggingInterceptor.Level.BODY
@@ -27,12 +27,12 @@ open class ApiServiceFactory @Inject constructor() {
 
         val httpClientBuilder = OkHttpClient.Builder()
         httpClientBuilder.addInterceptor(logging)
-        interceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
+        interceptors?.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
+
         val httpClient = httpClientBuilder
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .connectTimeout(CONNECT_TIMEOUT_SECONDS, TimeUnit.SECONDS)
             .build()
-
 
         val retrofit = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -82,5 +82,4 @@ open class ApiServiceFactory @Inject constructor() {
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         return "Basic $encodedCredentials"
     }
-
 }

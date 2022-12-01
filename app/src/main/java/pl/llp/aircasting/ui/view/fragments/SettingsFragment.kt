@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.settings.SettingsController
@@ -20,6 +21,9 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
     @Inject
     lateinit var logoutService: LogoutService
 
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,7 +33,15 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
             .appComponent.inject(this)
 
         view = SettingsViewMvcImpl(inflater, container, settings)
-        controller = SettingsController(activity, requireContext(), view, settings, childFragmentManager, logoutService)
+        controller = SettingsController(
+            activity,
+            requireContext(),
+            view,
+            settings,
+            childFragmentManager,
+            logoutService,
+            apiServiceFactory.get(settings.getAuthToken() ?: "")
+        )
 
         return view?.rootView
     }

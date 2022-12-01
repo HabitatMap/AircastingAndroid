@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.create_account
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -42,7 +41,7 @@ class CreateAccountActivity : BaseActivity() {
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
         controller =
-            CreateAccountController(this, view, settings, apiServiceFactory, fromOnboarding)
+            CreateAccountController(this, view, settings, apiServiceFactory.get(), fromOnboarding)
 
         setContentView(view.rootView)
     }

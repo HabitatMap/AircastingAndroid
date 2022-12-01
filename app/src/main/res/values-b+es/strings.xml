@@ -417,5 +417,7 @@
     <string name="edit_note_des_hide">La nota fue creada el:</string>
     <string name="edit_note_save_changes_btn">Guardar cambios</string>
     <string name="edit_note_delete_btn">Borrar nota</string>
+    <string name="dormant_stream_alert_setting_name">Alerta de flujo inactivo</string>
+    <string name="dormant_stream_alert_setting_description"><![CDATA[Enviar correo electrónico cuando las sesiones fijas activas quedan inactivas durante >30 minutos]]></string>
 
 </resources>

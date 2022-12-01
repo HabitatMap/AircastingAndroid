@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.login
 
 import pl.llp.aircasting.data.api.response.UserResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.util.ResponseHandler
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.InternalAPIError
@@ -31,10 +30,12 @@ class LoginService(
                         response.isSuccessful -> {
                             val body = response.body()
                             body?.let {
+                                // TODO: Unit test after converting to coroutines
                                 mSettings.login(
                                     body.username,
                                     body.email,
-                                    body.authentication_token
+                                    body.authenticationToken,
+                                    body.sessionStoppedAlert
                                 )
                             }
                             successCallback()

@@ -1,10 +1,23 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.response.*
-import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
+import pl.llp.aircasting.data.api.util.ApiConstants
+import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateAccount
+import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateFixedSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateMobileSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlExportSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlLogin
+import pl.llp.aircasting.data.api.util.ApiConstants.urlResetPassword
+import pl.llp.aircasting.data.api.util.ApiConstants.urlSessionInGivenLocation
+import pl.llp.aircasting.data.api.util.ApiConstants.urlSessionWithStreamsAndMeasurements
+import pl.llp.aircasting.data.api.util.ApiConstants.urlStreamOfGivenSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlSync
+import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
+import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -25,50 +38,53 @@ interface ApiService {
         @Query("last_measurement_sync") lastMeasurementSync: String
     ): Call<SessionWithMeasurementsResponse>
 
-    @GET(ApiConstants.urlLogin)
+    @GET(urlLogin)
     fun login(): Call<UserResponse>
 
-    @GET(ApiConstants.urlExportSession)
+    @GET(urlExportSession)
     fun exportSession(
         @Query("email") email: String,
         @Query("uuid") uuid: String
     ): Call<ExportSessionResponse>
 
-    @GET(ApiConstants.urlSessionInGivenLocation)
-    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsRes
+    @GET(urlSessionInGivenLocation)
+    suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsResponse
 
-    @GET(ApiConstants.urlStreamOfGivenSession)
+    @GET(urlStreamOfGivenSession)
     suspend fun getStreamOfGivenSession(
         @Path("sessionID") sessionID: Long,
         @Query("sensor_name") sensorName: String,
         @Query("measurements_limit") measurementsLimit: Int
-        ): StreamOfGivenSessionResponse
+    ): StreamOfGivenSessionResponse
 
-    @GET(ApiConstants.urlSessionWithStreamsAndMeasurements)
+    @GET(urlSessionWithStreamsAndMeasurements)
     suspend fun getSessionWithStreamsAndMeasurements(
         @Path("sessionID") sessionID: Long,
         @Query("measurements_limit") measurementsLimit: Int
     ): SessionWithStreamsAndMeasurementsResponse
 
     /* POST Requests */
-    @POST(ApiConstants.urlCreateMobileSession)
+    @POST(urlCreateMobileSession)
     fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
-    @POST(ApiConstants.urlCreateFixedSession)
+    @POST(urlCreateFixedSession)
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
-    @POST(ApiConstants.urlSync)
+    @POST(urlSync)
     fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
 
-    @POST(ApiConstants.urlCreateAccount)
+    @POST(urlCreateAccount)
     fun createAccount(@Body body: CreateAccountBody): Call<UserResponse>
 
-    @POST(ApiConstants.urlUpdateSession)
+    @POST(urlUpdateSession)
     fun updateSession(@Body body: UpdateSessionBody): Call<UpdateSessionResponse>
 
-    @POST(ApiConstants.urlResetPassword)
+    @POST(urlResetPassword)
     fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 
-    @POST(ApiConstants.urlUploadFixedMeasurements)
+    @POST(urlUploadFixedMeasurements)
     fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Call<Unit>
+
+    @POST(urlUpdateUserSettings)
+    suspend fun updateUserSettings(@Body body: UserSettingsBody): Response<UserSettingsResponse>
 }

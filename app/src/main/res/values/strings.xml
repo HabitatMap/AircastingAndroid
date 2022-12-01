@@ -536,5 +536,7 @@
     <string name="use_celsius_scale">Use Celsius scale</string>
     <string name="from">from</string>
     <string name="to">to</string>
+    <string name="dormant_stream_alert_setting_name">Dormant stream alert</string>
+    <string name="dormant_stream_alert_setting_description"><![CDATA[Send email when active fixed sessions go dormant for >30 minutes]]></string>
 
 </resources>

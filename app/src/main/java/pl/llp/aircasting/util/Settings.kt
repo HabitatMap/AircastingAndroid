@@ -3,6 +3,7 @@ package pl.llp.aircasting.util
 import android.content.SharedPreferences
 import android.util.Log
 import pl.llp.aircasting.data.api.util.ApiConstants
+import pl.llp.aircasting.data.api.util.LogKeys
 
 open class Settings(private val sharedPreferences: SharedPreferences) {
     companion object {
@@ -10,6 +11,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val PROFILE_NAME_KEY = "profile_name"
         private const val EMAIL_KEY = "email"
         private const val AUTH_TOKEN_KEY = "auth_token"
+        private const val DORMANT_STREAM_ALERT_KEY = "session_stopped_alert"
         private const val USE_24_HOUR_FORMAT_KEY = "use_24_hour_format"
         private const val USE_CELSIUS_SCALE_KEY = "use_celsius_scale"
         private const val CROWD_MAP_ENABLED_KEY = "crowd_map"
@@ -36,6 +38,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_CALIBRATION_VALUE = 100
         private const val DEFAULT_USE_24_HOUR_FORMAT = true
         private const val DEFAULT_USE_CELSIUS_SCALE = false
+        private const val DEFAULT_DORMANT_STREAM_ALERT = true
         private const val DEFAULT_CROWD_MAP_ENABLED = true
         private const val DEFAULT_MAPS_DISABLED = false
 
@@ -82,6 +85,10 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         return getBooleanFromSettings(CROWD_MAP_ENABLED_KEY, DEFAULT_CROWD_MAP_ENABLED)
     }
 
+    fun isDormantStreamAlertEnabled(): Boolean {
+        return getBooleanFromSettings(DORMANT_STREAM_ALERT_KEY, DEFAULT_DORMANT_STREAM_ALERT)
+    }
+
     fun areMapsDisabled(): Boolean {
         return getBooleanFromSettings(MAPS_DISABLED_KEY, DEFAULT_MAPS_DISABLED)
     }
@@ -118,35 +125,45 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     }
 
     fun followedSessionsCount(): Int {
-        val followedSessionsCount = getIntFromSettings(FOLLOWED_SESSIONS_COUNT_KEY, DEFAULT_FOLLOWED_SESSIONS_COUNT)
-        Log.v("FollowedSessionsCount", "Current count: $followedSessionsCount")
+        val followedSessionsCount =
+            getIntFromSettings(FOLLOWED_SESSIONS_COUNT_KEY, DEFAULT_FOLLOWED_SESSIONS_COUNT)
+        Log.v(LogKeys.followedSessionsCount, "Current count: $followedSessionsCount")
         return followedSessionsCount
     }
 
     fun increaseFollowedSessionsCount() {
         val followedSessionsCount = followedSessionsCount()
         saveToSettings(FOLLOWED_SESSIONS_COUNT_KEY, followedSessionsCount + 1)
-        Log.v("FollowedSessionsCount", "Increased to: ${followedSessionsCount + 1}")
+        Log.v(LogKeys.followedSessionsCount, "Increased to: ${followedSessionsCount + 1}")
     }
 
     fun decreaseFollowedSessionsCount() {
         val followedSessionsCount = followedSessionsCount()
         if (followedSessionsCount > 0) {
             saveToSettings(FOLLOWED_SESSIONS_COUNT_KEY, followedSessionsCount - 1)
-            Log.v("FollowedSessionsCount", "Decreased to: ${followedSessionsCount - 1}")
+            Log.v(LogKeys.followedSessionsCount, "Decreased to: ${followedSessionsCount - 1}")
         }
     }
 
     fun mobileActiveSessionsCount(): Int {
-        return getIntFromSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT)
+        val mobileActiveSessionsCount = getIntFromSettings(
+            MOBILE_ACTIVE_SESSIONS_COUNT_KEY,
+            DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT
+        )
+        Log.v(LogKeys.mobileActiveSessionsCount, "Current count: $mobileActiveSessionsCount")
+        return mobileActiveSessionsCount
     }
 
     fun increaseActiveMobileSessionsCount() {
-        saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount() + 1)
+        val mobileActiveSessionsCount = mobileActiveSessionsCount()
+        saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount + 1)
+        Log.v(LogKeys.mobileActiveSessionsCount, "Increased to: ${mobileActiveSessionsCount + 1}")
     }
 
     fun decreaseActiveMobileSessionsCount() {
+        val mobileActiveSessionsCount = mobileActiveSessionsCount()
         saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount() - 1)
+        Log.v(LogKeys.mobileActiveSessionsCount, "Decreased to: ${mobileActiveSessionsCount - 1}")
     }
 
     fun isUsingSatelliteView(): Boolean {
@@ -176,6 +193,10 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     fun toggleCrowdMapEnabled() {
         val enabled = !isCrowdMapEnabled()
         saveToSettings(CROWD_MAP_ENABLED_KEY, enabled)
+    }
+
+    fun toggleDormantStreamAlert(enabled: Boolean) {
+        saveToSettings(DORMANT_STREAM_ALERT_KEY, enabled)
     }
 
     fun toggleThemeChangeEnabled() {
@@ -221,10 +242,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(DELETE_SESSION_IN_PROGRESS_KEY, deleteInProgress)
     }
 
-    fun login(profileName: String, email: String, authToken: String) {
+    fun login(profileName: String, email: String, authToken: String, dormantStreamAlert: Boolean = true) {
         saveToSettings(PROFILE_NAME_KEY, profileName)
         saveToSettings(EMAIL_KEY, email)
         saveToSettings(AUTH_TOKEN_KEY, authToken)
+        saveToSettings(DORMANT_STREAM_ALERT_KEY, dormantStreamAlert)
     }
 
 

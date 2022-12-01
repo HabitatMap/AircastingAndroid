@@ -4,7 +4,7 @@ import com.google.gson.Gson
 import com.opencsv.CSVParserBuilder
 import com.opencsv.CSVReaderBuilder
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
-import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.model.Measurement
 import java.io.File
 import java.io.FileReader
@@ -45,8 +45,8 @@ class StubData {
             return File(uri.path).readText()
         }
 
-        fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsRes {
-            return Gson().fromJson(json, SessionsInRegionsRes::class.java)
+        fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsResponse {
+            return Gson().fromJson(json, SessionsInRegionsResponse::class.java)
         }
 
         fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {

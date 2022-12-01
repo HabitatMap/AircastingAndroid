@@ -415,5 +415,7 @@
     <string name="edit_note_des_hide">La note a été créée le :</string>
     <string name="edit_note_save_changes_btn">Sauvegarder les modifications</string>
     <string name="edit_note_delete_btn">Supprimer la note</string>
+    <string name="dormant_stream_alert_setting_name">Alerte de flux dormant</string>
+    <string name="dormant_stream_alert_setting_description"><![CDATA[Envoyer un e-mail lorsque les sessions fixes actives deviennent inactives pendant >30 minutes]]></string>
 
 </resources>

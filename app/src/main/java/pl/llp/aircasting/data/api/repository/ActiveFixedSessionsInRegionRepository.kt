@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.repository
 
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
-import pl.llp.aircasting.data.api.response.search.SessionsInRegionsRes
+import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.util.Constants
@@ -42,7 +42,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
     suspend fun getSessionsFromRegion(
         square: GeoSquare,
         sensorInfo: SensorInformation
-    ): Resource<SessionsInRegionsRes> {
+    ): Resource<SessionsInRegionsResponse> {
         return try {
             val response =
                 /* This is a temporary workaround, as AB3 sensorInfo has not been provided here
@@ -67,10 +67,10 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
     }
 
     private fun combineResponses(
-        ab2: SessionsInRegionsRes,
-        ab3: SessionsInRegionsRes
+        ab2: SessionsInRegionsResponse,
+        ab3: SessionsInRegionsResponse
     ) =
-        SessionsInRegionsRes(
+        SessionsInRegionsResponse(
             ab2.fetchableSessionsCount + ab3.fetchableSessionsCount,
             ab2.sessions + ab3.sessions
         )

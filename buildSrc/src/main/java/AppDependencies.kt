@@ -6,6 +6,7 @@ object AppDependencies {
     private const val coroutinesCore = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
     private const val coroutinesAndroid =
         "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutines}"
+    private const val coroutinesTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutines}"
 
     /* AndroidX */
     private const val appCompat = "androidx.appcompat:appcompat:${Versions.androidX}"
@@ -201,6 +202,7 @@ object AppDependencies {
         add(awaitility)
     }
     val testImplementation = arrayListOf<String>().apply {
+        add(coroutinesTest)
         add(mockitoCore)
         add(junit)
         add(mockitoKotlin)

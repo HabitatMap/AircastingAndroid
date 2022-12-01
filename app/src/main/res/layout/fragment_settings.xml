@@ -319,7 +319,6 @@
                         android:layout_height="wrap_content"
                         android:text="@string/map_enable_description"
                         android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
-                        app:layout_constraintBottom_toTopOf="@id/separator5"
                         app:layout_constraintEnd_toEndOf="@id/description_guideline"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/map_settings_button" />
@@ -337,10 +336,47 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/aircasting_grey_100"
-                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/map_enable_description" />
+                        app:layout_constraintTop_toBottomOf="@+id/map_enable_description" />
+
+                    <TextView
+                        android:id="@+id/dormant_stream_alert_settings_button"
+                        style="@style/Widget.Aircasting.SettingsButtons"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dormant_stream_alert_setting_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/separator5" />
+
+                    <TextView
+                        android:id="@+id/dormant_stream_alert_settings_description"
+                        style="@style/Widget.Aircasting.SettingsDescription"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dormant_stream_alert_setting_description"
+                        android:textAppearance="@style/TextAppearance.Aircasting.SettingsDescription"
+                        app:layout_constraintTop_toBottomOf="@id/dormant_stream_alert_settings_button"
+                        app:layout_constraintEnd_toEndOf="@id/description_guideline"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/dormant_stream_alert_settings_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@+id/dormant_stream_alert_settings_button"
+                        app:layout_constraintEnd_toEndOf="@+id/dormant_stream_alert_settings_button"
+                        app:layout_constraintTop_toTopOf="@+id/dormant_stream_alert_settings_button" />
+
+                    <View
+                        android:id="@+id/separator10"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/aircasting_grey_100"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/dormant_stream_alert_settings_description" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,8 +7,14 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.params.UserSettingsBody
+import pl.llp.aircasting.data.api.params.UserSettingsData
+import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
@@ -23,7 +29,9 @@ class SettingsController(
     var viewMvc: SettingsViewMvcImpl?,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager,
-    private val logoutService: LogoutService
+    private val logoutService: LogoutService,
+    private val apiService: ApiService,
+    private val coroutineScope: CoroutineScope? = mRootActivity?.lifecycleScope,
 ) : SettingsViewMvc.Listener,
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
@@ -69,6 +77,14 @@ class SettingsController(
 
     override fun onToggleCrowdMapEnabled() {
         mSettings.toggleCrowdMapEnabled()
+    }
+
+    override fun onToggleDormantStreamAlert(enabled: Boolean) {
+        coroutineScope?.launch {
+            apiService.updateUserSettings(UserSettingsBody(UserSettingsData(enabled)))
+        }
+
+        mSettings.toggleDormantStreamAlert(enabled)
     }
 
     override fun onToggleMapsEnabled() {
