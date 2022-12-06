@@ -8,6 +8,7 @@ import pl.llp.aircasting.ui.view.fragments.*
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
+import pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -39,7 +40,8 @@ import javax.inject.Singleton
         NewSessionWizardModule::class,
         ViewModelModule::class,
         DispatcherModule::class,
-        FragmentModule::class
+        FragmentModule::class,
+        RepositoryModule::class
     ]
 )
 interface AppComponent {
@@ -59,6 +61,7 @@ interface AppComponent {
     fun inject(fragment: MobileDormantFragment)
     fun inject(fragment: ConfirmationFragment)
     fun inject(fragment: FixedFragment)
+    fun inject(fragment: CreateThresholdAlertBottomSheet)
     fun inject(fragment: LetsBeginFragment)
     fun inject(activity: NewSessionActivity)
     fun inject(fragment: SessionDetailsFragment)

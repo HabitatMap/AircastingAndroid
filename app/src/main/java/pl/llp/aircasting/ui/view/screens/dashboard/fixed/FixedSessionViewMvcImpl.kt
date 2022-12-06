@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.FixedSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet
 
-class FixedSessionViewMvcImpl(
+open class FixedSessionViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup,
-    supportFragmentManager: FragmentManager
-) :
-    SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    private val supportFragmentManager: FragmentManager
+) : SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     FixedSessionViewMvc,
-    SessionActionsBottomSheet.Listener {
+    FixedSessionActionsBottomSheet.Listener {
 
     override fun showMeasurementsTableValues(): Boolean {
         return false
@@ -40,7 +40,7 @@ class FixedSessionViewMvcImpl(
     }
 
     override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
-        return SessionActionsBottomSheet(this)
+        return FixedSessionActionsBottomSheet(this)
     }
 
     override fun showChart() = false
@@ -79,6 +79,11 @@ class FixedSessionViewMvcImpl(
         for (listener in listeners) {
             listener.onSessionDeleteClicked(session)
         }
+        dismissBottomSheet()
+    }
+
+    override fun createThresholdAlertPressed() {
+        CreateThresholdAlertBottomSheet(mSessionPresenter?.session).show(supportFragmentManager)
         dismissBottomSheet()
     }
 }

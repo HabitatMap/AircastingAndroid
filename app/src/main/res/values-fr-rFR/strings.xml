@@ -417,6 +417,10 @@
     <string name="edit_note_delete_btn">Supprimer la note</string>
     <string name="dormant_stream_alert_setting_name">Alerte de flux dormant</string>
     <string name="dormant_stream_alert_setting_description"><![CDATA[Envoyer un e-mail lorsque les sessions fixes actives deviennent inactives pendant >30 minutes]]></string>
+    <string name="threshold_alerts">Alertes de seuil</string>
+    <string name="hourly_frequency">1 heure</string>
+    <string name="daily_frequency">24 heures</string>
+    <string name="threshold_alerts_bottom_sheet_subtitle">Recevez une notification lorsque la valeur mesurée d\'un flux dépasse le seuil donné</string>
 
 
 </resources>

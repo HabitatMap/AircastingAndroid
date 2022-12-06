@@ -41,6 +41,12 @@
     <string name="reconnect_session">Reconnect session</string>
     <string name="stop_session">Finish recording session</string>
     <string name="delete_session">Delete session</string>
+    <string name="threshold_alerts">Threshold alerts</string>
+    <string name="threshold_alerts_bottom_sheet_subtitle">Get notified when measured value for a stream exceeds given threshold</string>
+    <string name="threshold_alerts_threshold_value">Threshold</string>
+    <string name="not_numeric_value_error">Value should be numeric!</string>
+    <string name="daily_frequency">24 hours</string>
+    <string name="hourly_frequency">1 hour</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="follow_button">follow</string>
@@ -538,5 +544,8 @@
     <string name="to">to</string>
     <string name="dormant_stream_alert_setting_name">Dormant stream alert</string>
     <string name="dormant_stream_alert_setting_description"><![CDATA[Send email when active fixed sessions go dormant for >30 minutes]]></string>
+
+    <!-- Generic -->
+    <string name="save_button">Save</string>
 
 </resources>

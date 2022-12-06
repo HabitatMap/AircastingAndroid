@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="pl.llp.aircasting.util.databinding.Converter" />
+
+        <import type="android.view.View" />
+
+        <import type="pl.llp.aircasting.ui.viewmodel.ThresholdAlertFrequency" />
+
+        <variable
+            name="alert"
+            type="pl.llp.aircasting.ui.viewmodel.ThresholdAlertUiRepresentation" />
+
+        <variable
+            name="onCheckChanged"
+            type="android.widget.CompoundButton.OnCheckedChangeListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/streamTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{alert.streamTitle}"
+            android:textAppearance="@style/TextAppearance.Aircasting.Checkbox"
+            app:layout_constraintBottom_toBottomOf="@+id/alertEnabledSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/alertEnabledSwitch"
+            tools:text="PM1" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/alertEnabledSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@={alert.enabled}"
+            android:onCheckedChanged="@{onCheckChanged}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/alertOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="@{alert.enabled ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/alertEnabledSwitch">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/thresholdAlertValueLayout"
+                style="@style/Widget.Aircasting.TextInputEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:hint="@string/threshold_alerts_threshold_value"
+                app:errorEnabled="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/thresholdAlertValue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="numberDecimal"
+                    android:text="@={Converter.doubleToString(alert.thresholdUi)}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/frequency_toggle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                app:checkedButton="@={alert.frequency}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.25"
+                app:selectionRequired="true"
+                app:singleSelection="true"
+                tools:checkedButton="@id/hourly_frequency_button">
+
+                <Button
+                    android:id="@+id/hourly_frequency_button"
+                    style="@style/Widget.Aircasting.ToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/hourly_frequency" />
+
+                <Button
+                    android:id="@+id/daily_frequency_button"
+                    style="@style/Widget.Aircasting.ToggleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/daily_frequency" />
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

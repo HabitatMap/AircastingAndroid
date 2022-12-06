@@ -419,5 +419,9 @@
     <string name="edit_note_delete_btn">Borrar nota</string>
     <string name="dormant_stream_alert_setting_name">Alerta de flujo inactivo</string>
     <string name="dormant_stream_alert_setting_description"><![CDATA[Enviar correo electrónico cuando las sesiones fijas activas quedan inactivas durante >30 minutos]]></string>
+    <string name="threshold_alerts">Alertas de umbral</string>
+    <string name="hourly_frequency">1 hora</string>
+    <string name="daily_frequency">24 horas</string>
+    <string name="threshold_alerts_bottom_sheet_subtitle">Reciba una notificación cuando el valor medido de un flujo exceda el umbral dado</string>
 
 </resources>

@@ -39,7 +39,7 @@ object Versions {
     const val junit = "4.13.2"
     const val kotlinJunit = "1.6.20"
     const val mockitoKotlin = "4.0.0"
-    const val robolectric = "4.8.1"
+    const val robolectric = "4.9"
     const val testCoreKtx = "1.4.0"
     const val testExtJunit = "1.1.3"
     const val espressoContrib = "3.5.0-alpha07"

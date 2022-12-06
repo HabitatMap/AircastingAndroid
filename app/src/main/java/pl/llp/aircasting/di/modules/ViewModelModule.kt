@@ -6,12 +6,20 @@ import dagger.Binds
 import dagger.MapKey
 import dagger.Module
 import dagger.multibindings.IntoMap
-import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.di.factories.ViewModelFactory
+import pl.llp.aircasting.ui.viewmodel.CreateThresholdAlertBottomSheetViewModel
+import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import kotlin.reflect.KClass
 
 @Module
 abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateThresholdAlertBottomSheetViewModel::class)
+    internal abstract fun bindCreateThresholdAlertBottomSheetViewModel(
+        createThresholdAlertBottomSheetViewModel: CreateThresholdAlertBottomSheetViewModel
+    ): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey(SearchFollowViewModel::class)
@@ -19,7 +27,6 @@ abstract class ViewModelModule {
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory
-
 }
 
 @Target(

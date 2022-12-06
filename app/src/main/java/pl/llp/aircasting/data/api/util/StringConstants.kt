@@ -34,4 +34,5 @@ object StringConstants {
     const val PM2_5 = "PM2.5"
     const val PM10 = "PM10"
     const val RH = "RH"
+    const val O3 = "O3"
 }

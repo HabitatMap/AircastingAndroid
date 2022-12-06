@@ -131,3 +131,5 @@ fun encodeToBase64(filepath: Uri?): String? {
         ""
     }
 }
+
+fun detailedType(sensorName: String) = sensorName.split("-").last()

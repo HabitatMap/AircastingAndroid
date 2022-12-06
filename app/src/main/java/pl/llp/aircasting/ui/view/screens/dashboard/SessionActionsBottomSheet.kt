@@ -1,11 +1,12 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.widget.ImageView
+import kotlinx.android.synthetic.main.session_actions.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import kotlinx.android.synthetic.main.session_actions.view.*
 
-class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet() {
+open class SessionActionsBottomSheet(private val mListener: Listener?) : BottomSheet() {
+    constructor() : this(null)
     interface Listener {
         fun editSessionPressed()
         fun shareSessionPressed()
@@ -23,17 +24,17 @@ class SessionActionsBottomSheet(private val mListener: Listener): BottomSheet() 
 
         val editButton = contentView?.edit_session_button
         editButton?.setOnClickListener {
-            mListener.editSessionPressed()
+            mListener?.editSessionPressed()
         }
 
         val shareButton = contentView?.share_session_button
         shareButton?.setOnClickListener {
-            mListener.shareSessionPressed()
+            mListener?.shareSessionPressed()
         }
 
         val deleteButton = contentView?.delete_session_button
         deleteButton?.setOnClickListener {
-            mListener.deleteSessionPressed()
+            mListener?.deleteSessionPressed()
         }
 
         val cancelButton = contentView?.cancel_button

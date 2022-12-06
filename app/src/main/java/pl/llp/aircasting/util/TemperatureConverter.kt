@@ -55,4 +55,5 @@ class TemperatureConverter private constructor(settings: Settings) {
     }
 
     private var mSettings: Settings? = settings
+    private var companion: Companion = Companion
 }

@@ -8,7 +8,10 @@ import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateAccount
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateFixedSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateMobileSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateThresholdAlert
+import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteThresholdAlert
 import pl.llp.aircasting.data.api.util.ApiConstants.urlExportSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlGetThresholdAlerts
 import pl.llp.aircasting.data.api.util.ApiConstants.urlLogin
 import pl.llp.aircasting.data.api.util.ApiConstants.urlResetPassword
 import pl.llp.aircasting.data.api.util.ApiConstants.urlSessionInGivenLocation
@@ -64,6 +67,9 @@ interface ApiService {
         @Query("measurements_limit") measurementsLimit: Int
     ): SessionWithStreamsAndMeasurementsResponse
 
+    @GET(urlGetThresholdAlerts)
+    suspend fun getThresholdAlerts(): List<ThresholdAlertResponse>
+
     /* POST Requests */
     @POST(urlCreateMobileSession)
     fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
@@ -88,4 +94,11 @@ interface ApiService {
 
     @POST(urlUpdateUserSettings)
     suspend fun updateUserSettings(@Body body: UserSettingsBody): Response<UserSettingsResponse>
+
+    @POST(urlCreateThresholdAlert)
+    suspend fun createThresholdAlert(@Body body: CreateThresholdAlertBody): CreateThresholdAlertResponse
+
+    /* DELETE Requests */
+    @DELETE(urlDeleteThresholdAlert)
+    suspend fun deleteThresholdAlert(@Path("id") id: Int)
 }

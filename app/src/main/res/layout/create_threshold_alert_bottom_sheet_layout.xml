@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="view"
+            type="pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet" />
+
+        <variable
+            name="viewModel"
+            type="pl.llp.aircasting.ui.viewmodel.CreateThresholdAlertBottomSheetViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/dialog_background">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/bottomsheet_card"
+            style="@style/Widget.Aircasting.BottomSheetCard"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/loader"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_loader"
+                    app:layout_anchor="@+id/content"
+                    app:layout_anchorGravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/aircasting_blue_400" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="@dimen/keyline_8"
+                    android:paddingTop="@dimen/keyline_8"
+                    android:paddingEnd="@dimen/keyline_8"
+                    android:visibility="invisible"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/close_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/keyline_4"
+                        android:paddingBottom="@dimen/keyline_4"
+                        android:src="@drawable/ic_x"
+                        app:layout_constraintBottom_toTopOf="@+id/title"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/keyline_6"
+                        android:text="@string/threshold_alerts"
+                        android:textColor="@color/aircasting_dark_blue"
+                        android:textSize="@dimen/text_size_xl"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/close_button"
+                        app:lineHeight="@dimen/keyline_6" />
+
+                    <TextView
+                        android:id="@+id/select_streams_subtitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/keyline_4"
+                        android:text="@string/threshold_alerts_bottom_sheet_subtitle"
+                        android:textAppearance="@style/TextAppearance.Aircasting.Dialog.Subtitle"
+                        android:textColor="@color/aircasting_grey_300"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/title" />
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/alertsRecycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fadeScrollbars="false"
+                        android:scrollbarStyle="insideInset"
+                        android:scrollbars="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        app:layout_constrainedHeight="true"
+                        app:layout_constraintBottom_toTopOf="@id/save_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/select_streams_subtitle"
+                        tools:listitem="@layout/create_threshold_alert_item" />
+
+
+                    <Button
+                        android:id="@+id/save_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginTop="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6"
+                        android:onClick="@{view::save}"
+                        android:text="@string/save_button"
+                        app:layout_constraintBottom_toTopOf="@+id/cancel_button"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/cancel_button"
+                        style="@style/Widget.Aircasting.TextButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/keyline_6"
+                        android:layout_marginEnd="@dimen/keyline_6"
+                        android:layout_marginBottom="@dimen/keyline_8"
+                        android:fontFamily="@font/moderat_trial_bold"
+                        android:onClick="@{view::close}"
+                        android:text="@string/cancel"
+                        android:textColor="@color/aircasting_blue_400"
+                        android:textSize="@dimen/button_text_size"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
