@@ -33,7 +33,6 @@ import javax.inject.Singleton
         AppModule::class,
         ApiModule::class,
         DatabaseModule::class,
-        NetworkModule::class,
         SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,

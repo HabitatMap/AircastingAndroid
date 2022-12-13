@@ -23,6 +23,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
+import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
@@ -49,6 +50,7 @@ import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLoc
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
+import java.net.HttpURLConnection
 import javax.inject.Inject
 
 /*
@@ -95,16 +97,13 @@ class SearchFollowTest {
     lateinit var server: MockWebServer
 
     private val newYork = "New York"
-    private val newYorkArgs: Bundle
-        get() {
-            return bundleOf(
-                "address" to newYork,
-                "lat" to "40.692985",
-                "lng" to "-73.964609",
-                "txtParameter" to measurementTypePM,
-                "txtSensor" to openAQ
-            )
-        }
+    private val newYorkArgs = bundleOf(
+        "address" to newYork,
+        "lat" to "40.692985",
+        "lng" to "-73.964609",
+        "txtParameter" to measurementTypePM,
+        "txtSensor" to openAQ
+    )
 
     @Before
     fun setup() {
@@ -113,6 +112,22 @@ class SearchFollowTest {
 
         server = getMockWebServerFrom(apiServiceFactory)
         server.start()
+
+        val newYorkResponse = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            .setBody(Util.readFile("NewYork.json"))
+
+        val newYorkDownloadSessionResponse = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            .setBody(Util.readFile("HabitatMap-WiFi.json"))
+
+        MockWebServerDispatcher.setNotFullPath(
+            mapOf(
+                "/api/fixed/active/sessions.json" to newYorkResponse,
+                "/api/fixed/sessions/" to newYorkDownloadSessionResponse
+            ),
+            server
+        )
 
         settings.login("NAME", "EMAIL", "TOKEN")
     }
@@ -211,14 +226,24 @@ class SearchFollowTest {
 
     @Test
     fun whenThereNoSessionsFound_numberShouldBeZero_listShouldBeEmpty() {
-        val args = bundleOf(
+        val noSessionsAreaArgs = bundleOf(
             "address" to "Surgut",
             "lat" to "61.265459",
             "lng" to "73.416532",
             "txtParameter" to measurementTypePM,
             "txtSensor" to airbeam
         )
-        launchMapScreen(args)
+        val noSessionsAreaResponse = MockResponse()
+            .setResponseCode(HttpURLConnection.HTTP_OK)
+            .setBody(Util.readFile("NoSessionsArea.json"))
+
+        MockWebServerDispatcher.setNotFullPath(
+            mapOf(
+                "/api/fixed/active/sessions.json" to noSessionsAreaResponse,
+            ),
+            server
+        )
+        launchMapScreen(noSessionsAreaArgs)
         waitForSessionData()
 
         onView(withId(R.id.recyclerFixedFollow))
@@ -303,7 +328,7 @@ class SearchFollowTest {
 
     @Test
     fun followingYourOwnSession_followButtonIsDisabled() {
-        settings.login(openAQ, "EMAIL", "TOKEN")
+        settings.login("HabitatMap", "EMAIL", "TOKEN")
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
@@ -431,8 +456,6 @@ class SearchFollowTest {
 
         onView(withId(R.id.places_autocomplete_search_bar))
             .perform(typeText(place))
-
-        onView(isRoot()).perform(waitFor(3500))
 
         onView(withId(R.id.places_autocomplete_search_bar))
             .check(matches(withText(place)))

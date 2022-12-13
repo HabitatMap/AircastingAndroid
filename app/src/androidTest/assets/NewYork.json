@@ -1,0 +1,44 @@
+{
+  "sessions": [
+    {
+      "id": 73217,
+      "uuid": "eb455b13-2fcf-4af2-9aec-5dcae5e406dc",
+      "title": "HabitatMap HQ - WiFi",
+      "start_time_local": "2018-11-27T10:22:28.000Z",
+      "end_time_local": "2022-12-14T08:11:37.000Z",
+      "last_hour_average": 0.311475409836066,
+      "is_indoor": false,
+      "latitude": 40.6802775,
+      "longitude": -73.976410156,
+      "type": "FixedSession",
+      "username": "HabitatMap",
+      "streams": {
+        "AirBeam2-PM2.5": {
+          "average_value": 1.0,
+          "id": 254472,
+          "max_latitude": 40.6802775,
+          "max_longitude": -73.976410156,
+          "measurement_short_type": "PM",
+          "measurement_type": "Particulate Matter",
+          "measurements_count": 2073528,
+          "min_latitude": 40.6802775,
+          "min_longitude": -73.976410156,
+          "sensor_name": "AirBeam2-PM2.5",
+          "sensor_package_name": "Airbeam2-001896106C5A",
+          "session_id": 73217,
+          "size": 2073528,
+          "start_latitude": 40.6802775,
+          "start_longitude": -73.976410156,
+          "threshold_high": 55,
+          "threshold_low": 12,
+          "threshold_medium": 35,
+          "threshold_very_high": 150,
+          "threshold_very_low": 0,
+          "unit_name": "microgram per cubic meter",
+          "unit_symbol": "µg/m³"
+        }
+      }
+    }
+  ],
+  "fetchableSessionsCount": 1
+}

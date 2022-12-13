@@ -4,6 +4,7 @@ import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -17,9 +18,10 @@ import pl.llp.aircasting.util.extensions.getStartOfTodayEpochFromYearAgo
 import javax.inject.Inject
 
 class ActiveFixedSessionsInRegionRepository @Inject constructor(
-    private val apiService: ApiService,
+    apiServiceFactory: ApiServiceFactory,
     private val responseHandler: ResponseHandler
 ) {
+    private val apiService: ApiService = apiServiceFactory.get(emptyList())
     companion object {
         fun constructAndGetJsonWith(
             square: GeoSquare,

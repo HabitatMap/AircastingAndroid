@@ -22,7 +22,7 @@ import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.helpers.JsonBody
+import pl.llp.aircasting.helpers.Util
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
 import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
 import pl.llp.aircasting.helpers.getMockWebServerFrom
@@ -71,7 +71,7 @@ class LoginTest {
     fun testLogin() {
         val loginResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(JsonBody.build(mapOf(
+            .setBody(Util.buildJson(mapOf(
                 "email" to "ania@example.org",
                 "username" to "ania",
                 "authentication_token" to "XYZ123FAKETOKEN"
@@ -79,7 +79,7 @@ class LoginTest {
 
         val syncResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(JsonBody.build(emptyMap<String, String>()))
+            .setBody(Util.buildJson(emptyMap<String, String>()))
 
         MockWebServerDispatcher.set(
             mapOf(

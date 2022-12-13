@@ -1,0 +1,63 @@
+{
+  "id": 73217,
+  "title": "HabitatMap HQ - WiFi",
+  "username": "HabitatMap",
+  "start_time": 1543314148000,
+  "end_time": 1671012277000,
+  "latitude": 40.6802775,
+  "longitude": -73.976410156,
+  "notes": [],
+  "is_indoor": false,
+  "streams": [
+    {
+      "stream_id": 254469,
+      "sensor_name": "AirBeam2-F",
+      "last_measurement_value": 41.0,
+      "max_latitude": 40.6802775,
+      "max_longitude": -73.976410156,
+      "measurements": [
+        {
+          "value": 39.0,
+          "time": 1670925879000,
+          "longitude": -73.976410156,
+          "latitude": 40.6802775
+        },
+        {
+          "value": 39.0,
+          "time": 1670925939000,
+          "longitude": -73.976410156,
+          "latitude": 40.6802775
+        },
+        {
+          "value": 39.0,
+          "time": 1670925999000,
+          "longitude": -73.976410156,
+          "latitude": 40.6802775
+        },
+        {
+          "value": 39.0,
+          "time": 1670926059000,
+          "longitude": -73.976410156,
+          "latitude": 40.6802775
+        },
+        {
+          "value": 39.0,
+          "time": 1670926119000,
+          "longitude": -73.976410156,
+          "latitude": 40.6802775
+        }
+      ],
+      "min_latitude": 40.6802775,
+      "min_longitude": -73.976410156,
+      "sensor_unit": "µg/m³",
+      "threshold_very_low": 0,
+      "threshold_low": 20,
+      "threshold_medium": 50,
+      "threshold_high": 100,
+      "threshold_very_high": 200,
+      "unit_name": "microgram per cubic meter",
+      "measurement_short_type": "PM",
+      "measurement_type": "Particulate Matter"
+    }
+  ]
+}
