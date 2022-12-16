@@ -154,6 +154,26 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         }
 
     @Test
+    fun saveEditedAlerts_whenThresholdValueIsNull_doesNotCreateIt_returnsFailure() =
+        testScope.runTest {
+            val uiAlerts = emptyList<ThresholdAlertUiRepresentation>()
+            val modifiedUiAlert = ThresholdAlertUiRepresentation(stream, _enabled = true, _threshold = null)
+            alertRepository = mock()
+            val session = mockSession(listOf(stream))
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            setAlertsFields(viewModel, uiAlerts = uiAlerts)
+
+            viewModel.saveEditedAlerts(listOf(modifiedUiAlert), session).collect { result ->
+                result.onSuccess {
+                    fail("Result was successful when threshold was null")
+                }
+                    .onFailure {
+                        verify(alertRepository, never()).create(any())
+                    }
+            }
+        }
+
+    @Test
     fun saveEditedAlerts_whenAlertWasDeleted_deletesAlert() = testScope.runTest {
         val uiAlert = ThresholdAlertUiRepresentation(stream, _enabled = true)
         val uiAlerts = listOf(uiAlert)
@@ -247,7 +267,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         // given
         createDataCaptor = ArgumentCaptor.forClass(CreateThresholdAlertData::class.java)
         deleteIdCaptor = ArgumentCaptor.forClass(Int::class.java)
-        val uiAlertToBeDeleted = ThresholdAlertUiRepresentation(stream, _enabled = true)
+        val uiAlertToBeDeleted = ThresholdAlertUiRepresentation(stream, _enabled = true, _threshold = 80.0)
         val alertToBeDeleted = mockAlert(id = 0)
         val idToBeDeleted = alertToBeDeleted.id
 
@@ -262,7 +282,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             on { sensorName } doReturn sensorNameForModified
             on { detailedType } doReturn "PM1"
         }
-        val uiAlertToBeModified = ThresholdAlertUiRepresentation(streamForModified, _enabled = true)
+        val uiAlertToBeModified = ThresholdAlertUiRepresentation(streamForModified, _enabled = true, _threshold = 90.0)
         val idToBeModified = 2
         val alertToBeModified =
             mockAlert(1, idToBeModified, 0.0, sensorName = sensorNameForModified)
@@ -295,6 +315,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
 
         val uiAlertCopyToBeCreated = uiAlertsCopy.find { it.stream == streamForCreated }!!
         uiAlertCopyToBeCreated.enabled = true
+        uiAlertCopyToBeCreated.threshold = 80.0
         val uiAlertCopyToBeCreatedData = CreateThresholdAlertData(
             uiAlertCopyToBeCreated.frequency.value,
             uiAlertCopyToBeCreated.sensorName,
@@ -321,7 +342,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
                     }
                 }
             }
-                .onFailure { fail("Result was a failure") }
+                .onFailure { fail(it.message) }
         }
     }
 

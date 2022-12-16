@@ -156,7 +156,7 @@ class ThresholdAlertUiRepresentation(
     val stream: MeasurementStream,
     val sensorName: String = stream.sensorName,
     _enabled: Boolean = false,
-    _threshold: Double? = 0.0,
+    _threshold: Double? = null,
     _frequency: ThresholdAlertFrequency = ThresholdAlertFrequency.HOURLY,
 ) : BaseObservable() {
     val streamTitle: String = stream.detailedType ?: "Unnamed stream"

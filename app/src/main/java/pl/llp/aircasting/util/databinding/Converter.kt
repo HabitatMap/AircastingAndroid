@@ -4,7 +4,8 @@ import androidx.databinding.InverseMethod
 
 object Converter {
     @JvmStatic
-    fun doubleToString(value: Double) = value.toString()
+    fun doubleToString(value: Double?) =
+        value?.toString() ?: ""
 
     @InverseMethod("doubleToString")
     @JvmStatic

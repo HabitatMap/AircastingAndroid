@@ -90,23 +90,27 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
     }
 
     fun save(view: View) {
-        if (formsAreValid())
+        if (formsAreValid()) {
             saveAlerts()
+            close(view)
+        }
         else
             context?.showToast("Please fill in threshold values!")
     }
 
     private fun saveAlerts() {
-        lifecycleScope.launch {
+        val activity = requireActivity()
+        activity.lifecycleScope.launch {
             viewModel.saveEditedAlerts(uiAlerts, session)
                 .flowOn(Dispatchers.Default)
                 .collect { result ->
                     result
-                        .onSuccess { this@CreateThresholdAlertBottomSheet.context?.showToast("Success") }
-                        .onFailure { this@CreateThresholdAlertBottomSheet.context?.showToast(it.message.toString()) }
+                        .onSuccess { activity.showToast("Success") }
+                        .onFailure { activity.showToast(it.message.toString()) }
                 }
         }
     }
 
-    private fun formsAreValid(): Boolean = uiAlerts.find { it.threshold == null } == null
+    private fun formsAreValid(): Boolean =
+        uiAlerts.find { it.threshold == null && it.enabled } == null
 }
