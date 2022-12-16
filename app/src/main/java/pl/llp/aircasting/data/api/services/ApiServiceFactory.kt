@@ -79,10 +79,12 @@ open class ApiServiceFactory @Inject constructor(
 
     protected open fun baseUrl(): HttpUrl {
         val suffix = "/"
-        var backendUrl = settings.getBackendUrl()
-        if (backendUrl?.last().toString() == suffix)
-            backendUrl = backendUrl?.dropLast(1)
-        val baseUrl = backendUrl + ":" + settings.getBackendPort()
+        val backendUrl = settings.getBackendUrl()
+
+        var baseUrl = backendUrl + ":" + settings.getBackendPort()
+
+        if (baseUrl.last().toString() != suffix)
+            baseUrl += suffix
 
         return baseUrl.toHttpUrl()
     }
