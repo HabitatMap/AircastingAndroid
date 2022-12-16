@@ -1,23 +1,22 @@
 package pl.llp.aircasting.util
 
-import java.util.*
+import pl.llp.aircasting.util.extensions.calendar
 import java.util.concurrent.TimeUnit
 
-class TimezoneHelper {
-    companion object {
-        fun getTimezoneOffsetInHours(): Int {
-            return TimeUnit.HOURS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.MILLISECONDS).toInt()
-        }
+object TimezoneHelper {
+    fun getTimezoneOffsetInHours(): Int {
+        return TimeUnit.HOURS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.MILLISECONDS)
+            .toInt()
+    }
 
-        fun getTimezoneOffsetInSeconds(): Int {
-            return TimeUnit.HOURS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.SECONDS).toInt()
-        }
+    fun getTimezoneOffsetInSeconds(): Int {
+        return TimeUnit.SECONDS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.MILLISECONDS)
+            .toInt()
+    }
 
-        fun getTimezoneOffsetInMillis(): Int {
-            val calendar = GregorianCalendar()
-            val timeZone = calendar.timeZone
+    fun getTimezoneOffsetInMillis(): Int {
+        val timeZone = calendar().timeZone
 
-            return timeZone.rawOffset
-        }
+        return timeZone.rawOffset
     }
 }
