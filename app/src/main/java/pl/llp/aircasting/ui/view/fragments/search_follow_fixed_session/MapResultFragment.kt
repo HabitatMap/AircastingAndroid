@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -188,9 +187,7 @@ class MapResultFragment @Inject constructor(
     }
 
     private fun goToDashboard() {
-        val intent = Intent(requireActivity(), MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
+        MainActivity.navigate(requireActivity())
     }
 
     private fun setupRecyclerView() {

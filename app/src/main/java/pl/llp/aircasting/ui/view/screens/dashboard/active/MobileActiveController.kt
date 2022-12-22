@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
+import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -21,12 +22,8 @@ import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.NewMeasurementEvent
-import pl.llp.aircasting.util.events.NoteCreatedEvent
-import pl.llp.aircasting.util.events.StandaloneModeEvent
-import pl.llp.aircasting.util.events.StopRecordingEvent
+import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.expandedCards
-import pl.llp.aircasting.util.extensions.goToDormantTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
@@ -53,7 +50,11 @@ class MobileActiveController(
 ),
     SessionsViewMvc.Listener,
     AddNoteBottomSheet.Listener,
-    AirBeamReconnector.Listener {
+    AirBeamReconnector.Listener,
+    FinishMobileSessionListener {
+
+    override val settings: Settings = mSettings
+    override val activity: Activity? = mRootActivity
 
     private var mSessionsObserver =
         ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -146,15 +147,10 @@ class MobileActiveController(
     override fun onFinishSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-
-        mSettings.decreaseActiveMobileSessionsCount()
-
-        if (mSettings.mobileActiveSessionsCount() < 1)
-            goToDormantTab()
+        onFinishMobileSessionConfirmed()
     }
 
     override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        mSettings.decreaseActiveMobileSessionsCount()
         SyncActivity.start(mRootActivity)
     }
 
@@ -170,10 +166,6 @@ class MobileActiveController(
         val deviceId = event.deviceId ?: return
 
         mViewMvc?.hideLoaderFor(deviceId)
-    }
-
-    private fun goToDormantTab() {
-        mRootActivity?.goToDormantTab()
     }
 
     @OptIn(DelicateCoroutinesApi::class)

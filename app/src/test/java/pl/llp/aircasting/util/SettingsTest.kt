@@ -9,6 +9,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
+import pl.llp.aircasting.util.Settings.Companion.DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT
+import pl.llp.aircasting.util.Settings.Companion.MOBILE_ACTIVE_SESSIONS_COUNT_KEY
 import kotlin.test.assertTrue
 
 @RunWith(MockitoJUnitRunner::class)
@@ -53,5 +55,35 @@ class SettingsTest {
         verify(sharedPreferences).getBoolean(any(), argumentCaptor.capture())
 
         assertTrue(argumentCaptor.value)
+    }
+
+    @Test
+    fun decreaseActiveMobileSessionsCount_whenCountIsBelowOne_doesNotDecreaseCount() {
+        val count = 0
+        whenever(
+            sharedPreferences.getInt(
+                MOBILE_ACTIVE_SESSIONS_COUNT_KEY,
+                DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT
+            )
+        ).doReturn(count)
+
+        settings.decreaseActiveMobileSessionsCount()
+
+        verify(editor, never()).putInt(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, count - 1)
+    }
+
+    @Test
+    fun decreaseActiveMobileSessionsCount_whenCountIsGreaterThanOne_decreasesCount() {
+        val count = 1
+        whenever(
+            sharedPreferences.getInt(
+                MOBILE_ACTIVE_SESSIONS_COUNT_KEY,
+                DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT
+            )
+        ).doReturn(count)
+
+        settings.decreaseActiveMobileSessionsCount()
+
+        verify(editor).putInt(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, count - 1)
     }
 }

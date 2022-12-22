@@ -23,8 +23,8 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val APP_RESTARTED = "app_restarted"
 
         private const val FOLLOWED_SESSIONS_COUNT_KEY = "followed_sesions_number"
-        private const val MOBILE_ACTIVE_SESSIONS_COUNT_KEY = "mobile_active_sessions"
-        private const val DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT = 0
+        const val MOBILE_ACTIVE_SESSIONS_COUNT_KEY = "mobile_active_sessions"
+        const val DEFAULT_MOBILE_ACTIVE_SESSIONS_COUNT = 0
         private const val THEME_SET_TO_DARK_KEY = "theme_dark"
         private const val KEEP_SCREEN_ON_KEY = "keep_screen_on"
         private const val USE_SATELLITE_VIEW = "use_satellite_view"
@@ -162,8 +162,13 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
 
     fun decreaseActiveMobileSessionsCount() {
         val mobileActiveSessionsCount = mobileActiveSessionsCount()
-        saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount() - 1)
-        Log.v(LogKeys.mobileActiveSessionsCount, "Decreased to: ${mobileActiveSessionsCount - 1}")
+        if (mobileActiveSessionsCount > 0) {
+            saveToSettings(MOBILE_ACTIVE_SESSIONS_COUNT_KEY, mobileActiveSessionsCount - 1)
+            Log.v(
+                LogKeys.mobileActiveSessionsCount,
+                "Decreased to: ${mobileActiveSessionsCount - 1}"
+            )
+        }
     }
 
     fun isUsingSatelliteView(): Boolean {
@@ -242,7 +247,12 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(DELETE_SESSION_IN_PROGRESS_KEY, deleteInProgress)
     }
 
-    fun login(profileName: String, email: String, authToken: String, dormantStreamAlert: Boolean = true) {
+    fun login(
+        profileName: String,
+        email: String,
+        authToken: String,
+        dormantStreamAlert: Boolean = true
+    ) {
         saveToSettings(PROFILE_NAME_KEY, profileName)
         saveToSettings(EMAIL_KEY, email)
         saveToSettings(AUTH_TOKEN_KEY, authToken)

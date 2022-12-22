@@ -8,7 +8,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
@@ -59,13 +58,4 @@ class FixedController(
         val intent = Intent(mContext, SearchFixedSessionActivity::class.java)
         mContext?.startActivity(intent)
     }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
 }

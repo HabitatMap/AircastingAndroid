@@ -20,7 +20,7 @@ import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.goToDormantTab
+import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
@@ -47,7 +47,7 @@ class MainController(
 
         NewSessionActivity.register(rootActivity, Session.Type.FIXED)
         NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
-        SyncActivity.register(rootActivity, onFinish = { rootActivity.goToDormantTab() })
+        SyncActivity.register(rootActivity, onFinish = { rootActivity.goToMobileDormantTab() })
 
         mSessionManager?.onStart()
     }

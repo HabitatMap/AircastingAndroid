@@ -93,7 +93,6 @@ open class MapController(
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
 
-        mSettings.decreaseActiveMobileSessionsCount()
         rootActivity.finish()
     }
 

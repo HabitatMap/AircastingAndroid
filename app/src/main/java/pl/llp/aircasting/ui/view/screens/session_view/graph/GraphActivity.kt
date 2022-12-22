@@ -67,7 +67,7 @@ class GraphActivity : BaseActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphController(
+        controller = GraphControllerFactory.get(
             this,
             sessionsViewModel,
             view,
@@ -77,7 +77,8 @@ class GraphActivity : BaseActivity() {
             settings,
             apiServiceFactory,
             airbeamReconnector,
-            permissionsManager
+            permissionsManager,
+            SessionsTab.fromInt(sessionTab)
         )
 
         controller?.onCreate()

@@ -12,10 +12,14 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.FOLLOWING_TAB_INDEX
+import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.exceptions.AircastingUncaughtExceptionHandler
 import pl.llp.aircasting.util.extensions.goToFollowingTab
+import pl.llp.aircasting.util.extensions.goToMobileActiveTab
+import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
@@ -27,11 +31,20 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     lateinit var apiServiceFactory: ApiServiceFactory
 
     companion object {
-        fun start(context: Context?) {
-            context?.let {
+        const val NAVIGATE_TO_TAB = "navigate_to_tab"
+        fun start(fromContext: Context?) {
+            fromContext?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                it.startActivity(intent)
+            }
+        }
+        fun navigate(fromContext: Context?, tabToNavigateTo: Int = FOLLOWING_TAB_INDEX) {
+            fromContext?.let {
+                val intent = Intent(it, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                intent.putExtra(NAVIGATE_TO_TAB, tabToNavigateTo)
                 it.startActivity(intent)
             }
         }
@@ -76,7 +89,12 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        goToFollowingTab()
+        val tab = intent?.getIntExtra(NAVIGATE_TO_TAB, FOLLOWING_TAB_INDEX) ?: FOLLOWING_TAB_INDEX
+        when (SessionsTab.fromInt(tab)) {
+            SessionsTab.MOBILE_DORMANT -> goToMobileDormantTab()
+            SessionsTab.MOBILE_ACTIVE -> goToMobileActiveTab()
+            else -> goToFollowingTab()
+        }
     }
 
     override fun onRequestPermissionsResult(

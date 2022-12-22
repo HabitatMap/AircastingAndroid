@@ -42,13 +42,4 @@ class MobileDormantController(
     override fun onExploreNewSessionsClicked() {
       // do nothing
     }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        // do nothing
-    }
-
 }

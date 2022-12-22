@@ -3,8 +3,6 @@ package pl.llp.aircasting.util.extensions
 import android.app.Activity
 import android.view.View
 import android.widget.ImageView
-import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.Navigation
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.android.synthetic.main.prominent_app_bar.*
@@ -27,7 +25,7 @@ fun Activity.goToMobileActiveTab() {
     Navigation.findNavController(this, R.id.nav_host_fragment).navigate(action)
 }
 
-fun Activity.goToDormantTab() {
+fun Activity.goToMobileDormantTab() {
     val action = MobileNavigationDirections.actionGlobalDashboard(SessionsTab.MOBILE_DORMANT.value)
     Navigation.findNavController(this, R.id.nav_host_fragment).navigate(action)
 }

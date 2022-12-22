@@ -14,9 +14,9 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.extensions.setupAppBar
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 class MapActivity : BaseActivity() {
@@ -71,7 +71,7 @@ class MapActivity : BaseActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = MapController(
+        controller = MapControllerFactory.get(
             this,
             sessionsViewModel,
             view,
@@ -81,7 +81,8 @@ class MapActivity : BaseActivity() {
             settings,
             apiServiceFactory,
             airbeamReconnector,
-            permissionsManager
+            permissionsManager,
+            SessionsTab.fromInt(sessionTab)
         )
 
         controller?.onCreate()
