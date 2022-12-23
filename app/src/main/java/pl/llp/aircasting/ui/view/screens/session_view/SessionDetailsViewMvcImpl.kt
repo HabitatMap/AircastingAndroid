@@ -18,6 +18,7 @@ import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialog
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
@@ -31,7 +32,9 @@ abstract class SessionDetailsViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager?
-) : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>(), SessionDetailsViewMvc,
+) : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>(),
+    SessionDetailsViewMvc,
+    SessionActionsBottomSheetListener,
     HLUDialogListener {
     private val mFragmentManager: FragmentManager? = supportFragmentManager
     private var mListener: SessionDetailsViewMvc.Listener? = null
@@ -107,7 +110,10 @@ abstract class SessionDetailsViewMvcImpl(
             )
 
             bindStatisticsContainer()
-            mHLUSlider.bindSensorThreshold(sessionPresenter?.selectedSensorThreshold(), sessionPresenter?.selectedStream)
+            mHLUSlider.bindSensorThreshold(
+                sessionPresenter?.selectedSensorThreshold(),
+                sessionPresenter?.selectedStream
+            )
             mSessionMeasurementsDescription?.visibility = View.VISIBLE
         }
     }

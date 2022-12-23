@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.network_password_dialog.view.*
-import kotlinx.android.synthetic.main.session_actions.view.cancel_button
+import kotlinx.android.synthetic.main.session_actions_modifiable.view.cancel_button
 
 class ConfirmationDeleteSessionDialog(
     private val mFragmentManager: FragmentManager,

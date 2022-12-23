@@ -16,6 +16,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
+import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
@@ -24,7 +25,7 @@ import pl.llp.aircasting.util.Settings
 open class ReorderingFollowingRecyclerAdapter(
     private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
-    private val mListener: SessionCardListener,
+    private val mListener: FollowingSessionViewMvc.Listener,
     supportFragmentManager: FragmentManager,
     private val mApplication: AircastingApplication =
         mInflater.context.applicationContext as AircastingApplication,

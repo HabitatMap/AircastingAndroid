@@ -7,10 +7,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.active.MobileActiveSessionActionsBottomSheet
 
 class MobileActiveSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -23,7 +21,7 @@ class MobileActiveSessionViewMvcImpl(
 ),
     MobileActiveSessionViewMvc,
     MobileActiveSessionViewMvc.DisconnectedViewListener,
-    ActiveSessionActionsBottomSheet.Listener {
+    MobileActiveSessionActionsBottomSheet.Listener {
 
     private val mDisconnectedView: DisconnectedView =
         DisconnectedView(context, this.rootView, supportFragmentManager, this)
@@ -45,9 +43,7 @@ class MobileActiveSessionViewMvcImpl(
             context.getString(R.string.session_last_sec_measurements_description)
     }
 
-    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
-        return ActiveSessionActionsBottomSheet(this, sessionPresenter, mSupportFragmentManager)
-    }
+    override fun showChart() = true
 
     override fun bindExpanded() {
         if (mSessionPresenter?.isDisconnected() == true) {

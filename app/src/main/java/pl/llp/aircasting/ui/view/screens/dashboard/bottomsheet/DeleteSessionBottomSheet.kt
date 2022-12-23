@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet
 
 import android.view.View
 import android.widget.CheckBox

@@ -6,13 +6,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 
-class FixedRecyclerAdapter(
+open class FixedRecyclerAdapter<ListenerType : FixedSessionViewMvc.Listener>(
     private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
     private val mListener: FixedSessionViewMvc.Listener,
-    supportFragmentManager: FragmentManager
+    supportFragmentManager: FragmentManager,
+    sessionsViewModel: SessionsViewModel = SessionsViewModel()
 ) : SessionsRecyclerAdapter<FixedSessionViewMvc.Listener>(
     recyclerView,
     mInflater,
@@ -21,7 +23,7 @@ class FixedRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val viewMvc =
-            FixedSessionViewMvcImpl(
+            FixedSessionViewMvcImpl<FixedSessionViewMvc.Listener>(
                 mInflater,
                 parent,
                 supportFragmentManager

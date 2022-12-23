@@ -9,11 +9,12 @@ import pl.llp.aircasting.data.model.Session
 class GraphViewFollowingMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
-): GraphViewFixedMvcImpl(inflater, parent, supportFragmentManager) {
+    supportFragmentManager: FragmentManager
+) : GraphViewFixedMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
-        mSessionMeasurementsDescription?.text = context.getString(R.string.session_last_min_measurements_description)
+        mSessionMeasurementsDescription?.text =
+            context.getString(R.string.session_last_min_measurements_description)
     }
 
     override fun getSessionType(): Session.Type {

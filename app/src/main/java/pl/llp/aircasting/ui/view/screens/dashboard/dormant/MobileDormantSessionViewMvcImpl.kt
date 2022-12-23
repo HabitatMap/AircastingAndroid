@@ -4,10 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.dormant.MobileDormantSessionActionsBottomSheet
 
 class MobileDormantSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -16,7 +14,7 @@ class MobileDormantSessionViewMvcImpl(
 ):
     SessionViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supporFragmentManager),
     MobileDormantSessionViewMvc,
-    SessionActionsBottomSheet.Listener
+    MobileDormantSessionActionsBottomSheet.Listener
 {
     override fun showMeasurementsTableValues(): Boolean {
         return false
@@ -35,12 +33,6 @@ class MobileDormantSessionViewMvcImpl(
     override fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
     }
-
-    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
-        return SessionActionsBottomSheet(this)
-    }
-
-    override fun showChart() = false
 
     override fun editSessionPressed() {
         val session = mSessionPresenter?.session ?: return

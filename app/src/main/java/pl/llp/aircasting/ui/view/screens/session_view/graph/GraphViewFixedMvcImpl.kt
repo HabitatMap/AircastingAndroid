@@ -10,8 +10,8 @@ import pl.llp.aircasting.data.model.Session
 open class GraphViewFixedMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
-): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
+    supportFragmentManager: FragmentManager
+) : GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun defaultZoomSpan(): Int? {
         return 24 * Constants.MILLIS_IN_HOUR // 24 hours

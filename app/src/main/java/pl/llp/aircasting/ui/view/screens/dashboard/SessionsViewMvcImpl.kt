@@ -52,7 +52,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter
-        addTouchHelperToRecyclerView()
         if (mAdapter is ItemTouchHelperAdapter) {
             val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
             val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
@@ -64,7 +63,6 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     abstract fun showDidYouKnowBox(): Boolean
     abstract fun recordNewSessionButtonId(): Int
     abstract fun onExploreNewSessionsButtonID(): Int
-    abstract fun addTouchHelperToRecyclerView()
 
     abstract fun buildAdapter(
         inflater: LayoutInflater,

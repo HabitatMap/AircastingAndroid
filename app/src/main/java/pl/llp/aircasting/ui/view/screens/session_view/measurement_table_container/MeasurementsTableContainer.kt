@@ -280,7 +280,8 @@ abstract class MeasurementsTableContainer {
 
     private fun setValueViewBorder(valueViewContainer: LinearLayout, color: Int) {
         val valueView = valueViewContainer.getChildAt(0)
-        valueView.background = SelectedSensorBorder(color)
+        valueView.background =
+            pl.llp.aircasting.ui.view.screens.session_view.SelectedSensorBorder(color)
     }
 
     private fun resetValueViewBorder(valueViewContainer: LinearLayout) {

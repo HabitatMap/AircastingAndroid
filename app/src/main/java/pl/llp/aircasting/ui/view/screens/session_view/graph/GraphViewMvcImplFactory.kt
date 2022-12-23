@@ -9,7 +9,7 @@ object GraphViewMvcImplFactory {
     fun get(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?,
+        supportFragmentManager: FragmentManager,
         sessionTab: SessionsTab
     ): GraphViewMvcImpl {
         return when (sessionTab) {

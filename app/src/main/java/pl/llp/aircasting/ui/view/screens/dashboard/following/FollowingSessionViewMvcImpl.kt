@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedSessionViewMvcImpl
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.visible
 
@@ -17,16 +15,14 @@ open class FollowingSessionViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup,
     supportFragmentManager: FragmentManager
-) :
-    SessionViewMvcImpl<SessionCardListener>(inflater, parent, supportFragmentManager),
-    FollowingSessionViewMvc {
+) : FixedSessionViewMvcImpl<FollowingSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
+    FollowingSessionViewMvc,
+    ModifiableFixedSessionActionsBottomSheet.Listener {
 
     private val noMeasurementsIcon: ImageView?
     private val noMeasurementsLabels: View?
 
     init {
-        val actionsView = this.rootView?.findViewById<ImageView>(R.id.session_actions_button)
-        actionsView?.gone()
         noMeasurementsIcon = this.rootView?.findViewById(R.id.session_no_measurements_icon)
         noMeasurementsLabels = this.rootView?.findViewById(R.id.session_no_measurements_labels)
     }
@@ -35,15 +31,11 @@ open class FollowingSessionViewMvcImpl(
         return true
     }
 
-    override fun showExpandedMeasurementsTableValues() = true
+    override fun showChart() = true
 
     override fun bindFollowButtons() {
         mUnfollowButton.visible()
         mFollowButton.gone()
-    }
-
-    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? {
-        return null
     }
 
     override fun bindMeasurementsTable() {
@@ -56,11 +48,6 @@ open class FollowingSessionViewMvcImpl(
     }
 
     override fun bindCollapsedMeasurementsDescription() {
-        mMeasurementsDescription?.text =
-            context.getString(R.string.session_last_min_measurements_description)
-    }
-
-    override fun bindExpandedMeasurementsDescription() {
         mMeasurementsDescription?.text =
             context.getString(R.string.session_last_min_measurements_description)
     }

@@ -2,44 +2,17 @@ package pl.llp.aircasting.ui.view.screens.session_view.graph
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_graph.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.ActiveSessionActionsBottomSheet
-import pl.llp.aircasting.util.extensions.gone
-import pl.llp.aircasting.util.extensions.visible
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.active.MobileActiveSessionActionsBottomSheet
 
 class GraphViewMobileActiveMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
+    supportFragmentManager: FragmentManager
 ) : GraphViewMvcImpl(inflater, parent, supportFragmentManager),
-    ActiveSessionActionsBottomSheet.Listener {
-    private var mSessionActionsButton: ImageView? = null
-    private var mBottomSheet: BottomSheet? = null
-
-    init {
-        mSessionActionsButton = rootView?.session_actions_button
-        mSessionActionsButton?.visible()
-        mSessionActionsButton?.setOnClickListener {
-            showBottomSheet(supportFragmentManager)
-        }
-    }
-
-    private fun showBottomSheet(supportFragmentManager: FragmentManager?) {
-        supportFragmentManager ?: return
-
-        mBottomSheet =
-            ActiveSessionActionsBottomSheet(this, mSessionPresenter, supportFragmentManager)
-        mBottomSheet?.show(supportFragmentManager)
-    }
-
-    private fun dismissBottomSheet() {
-        mBottomSheet?.dismiss()
-    }
+    MobileActiveSessionActionsBottomSheet.Listener {
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text =
@@ -74,8 +47,6 @@ class GraphViewMobileActiveMvcImpl(
         }
         dismissBottomSheet()
     }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {}
 
     override fun getSessionType(): Session.Type {
         return Session.Type.MOBILE

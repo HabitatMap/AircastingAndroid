@@ -65,9 +65,4 @@ class MobileDormantViewMvcImpl(
     override fun onExploreNewSessionsButtonID(): Int {
         return R.id.txtExploreExistingSessions
     }
-
-    override fun addTouchHelperToRecyclerView() {
-        // Do nothing here
-    }
-
 }

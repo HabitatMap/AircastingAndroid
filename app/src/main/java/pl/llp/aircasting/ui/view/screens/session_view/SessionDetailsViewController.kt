@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
@@ -18,6 +19,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.model.observers.FixedSessionObserver
 import pl.llp.aircasting.data.model.observers.MobileSessionObserver
+import pl.llp.aircasting.ui.view.common.SessionActionsHandler
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUValidationErrorToast
@@ -27,10 +29,7 @@ import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteDeletedEvent
 import pl.llp.aircasting.util.events.NoteEditedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.adjustMenuVisibility
-import pl.llp.aircasting.util.extensions.backToUIThread
-import pl.llp.aircasting.util.extensions.runOnIOThread
-import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.*
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -40,10 +39,29 @@ abstract class SessionDetailsViewController(
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager,
+    fragmentManager: FragmentManager,
     private val mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory
-) : SessionDetailsViewMvc.Listener,
+    mApiServiceFactory: ApiServiceFactory,
+    protected val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
+    private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
+    private val mDownloadService: SessionDownloadService = SessionDownloadService(
+        mApiService,
+        mErrorHandler
+    ),
+    private val mSessionRepository: SessionsRepository = SessionsRepository(),
+    private val mMeasurementsRepository: MeasurementsRepository = MeasurementsRepository(),
+) : SessionActionsHandler(
+    rootActivity,
+    mErrorHandler,
+    mSessionsViewModel,
+    fragmentManager,
+    mSettings,
+    mApiService,
+    rootActivity,
+    mDownloadService,
+    mSessionRepository
+),
+    SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
@@ -63,11 +81,6 @@ abstract class SessionDetailsViewController(
     }
     private var editNoteDialog: EditNoteBottomSheet? = null
 
-    protected val mErrorHandler = ErrorHandler(rootActivity)
-    private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
-    private val mDownloadService = SessionDownloadService(mApiService, mErrorHandler)
-    private val mSessionRepository = SessionsRepository()
-    private val mMeasurementsRepository = MeasurementsRepository()
     private var mShouldRefreshStatistics = AtomicBoolean(false)
 
     fun onCreate() {
@@ -240,5 +253,4 @@ abstract class SessionDetailsViewController(
 
         return measurements
     }
-
 }

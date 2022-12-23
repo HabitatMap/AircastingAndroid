@@ -11,12 +11,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.dormant.MobileDormantSessionActionsBottomSheet
 
 @RunWith(AndroidJUnit4::class)
-class SessionActionsBottomSheetTest {
+class MobileDormantSessionActionsBottomSheetTest {
 
-    private lateinit var fixedBottomSheetScenario: FragmentScenario<FixedSessionActionsBottomSheet>
-    private lateinit var bottomSheetScenario: FragmentScenario<SessionActionsBottomSheet>
+    private lateinit var fixedBottomSheetScenario: FragmentScenario<ModifiableFixedSessionActionsBottomSheet>
+    private lateinit var bottomSheetScenario: FragmentScenario<MobileDormantSessionActionsBottomSheet>
 
     @Test
     fun fixedSessionActionsBottomSheet_contains_createThresholdAlertButton() {

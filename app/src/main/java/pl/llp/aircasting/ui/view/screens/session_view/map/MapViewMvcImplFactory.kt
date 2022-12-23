@@ -9,7 +9,7 @@ object MapViewMvcImplFactory {
     fun get(
         inflater: LayoutInflater,
         parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?,
+        supportFragmentManager: FragmentManager,
         sessionTab: SessionsTab
     ): MapViewMvcImpl {
         return when (sessionTab) {

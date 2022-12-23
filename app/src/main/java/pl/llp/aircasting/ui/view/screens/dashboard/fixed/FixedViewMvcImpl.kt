@@ -8,7 +8,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
-class FixedViewMvcImpl(
+open class FixedViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
@@ -19,7 +19,7 @@ class FixedViewMvcImpl(
         inflater: LayoutInflater,
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<FixedSessionViewMvc.Listener> {
-        return FixedRecyclerAdapter(
+        return FixedRecyclerAdapter<FixedSessionViewMvc.Listener>(
             mRecyclerSessions,
             inflater,
             this,
@@ -60,9 +60,4 @@ class FixedViewMvcImpl(
     override fun onExploreNewSessionsButtonID(): Int {
         return R.id.txtExploreExistingSessions
     }
-
-    override fun addTouchHelperToRecyclerView() {
-        // Do nothing here
-    }
-
 }

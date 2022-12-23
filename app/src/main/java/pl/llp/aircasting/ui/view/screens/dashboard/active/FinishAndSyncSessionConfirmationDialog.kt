@@ -38,7 +38,7 @@ class FinishAndSyncSessionConfirmationDialog(
     }
 
     override fun finishSessionConfirmed() {
-        mListener.onFinishAndSyncSessionConfirmed(mSession)
+        mListener?.onFinishAndSyncSessionConfirmed(mSession)
         dismiss()
     }
 }

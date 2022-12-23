@@ -16,6 +16,7 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
@@ -29,7 +30,8 @@ abstract class SessionViewMvcImpl<ListenerType>(
     parent: ViewGroup,
     supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<ListenerType>(),
-    SessionViewMvc<ListenerType> {
+    SessionViewMvc<ListenerType>,
+    SessionActionsBottomSheetListener {
     protected val mLayoutInflater: LayoutInflater = inflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
 
@@ -120,9 +122,11 @@ abstract class SessionViewMvcImpl<ListenerType>(
 
     protected abstract fun showMeasurementsTableValues(): Boolean
     protected abstract fun showExpandedMeasurementsTableValues(): Boolean
-    protected abstract fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet?
 
-    protected open fun showChart() = true
+    private fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? =
+        sessionPresenter?.buildActionsBottomSheet(this, mSupportFragmentManager)
+
+    protected open fun showChart() = false
 
     private fun actionsButtonClicked() {
         mBottomSheet = buildBottomSheet(mSessionPresenter)

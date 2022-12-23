@@ -9,7 +9,7 @@ import pl.llp.aircasting.data.model.Session
 class GraphViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
+    supportFragmentManager: FragmentManager
 ): GraphViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {

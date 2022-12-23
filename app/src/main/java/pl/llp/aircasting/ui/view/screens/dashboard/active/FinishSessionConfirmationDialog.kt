@@ -15,7 +15,7 @@ import pl.llp.aircasting.ui.view.common.BaseDialog
 
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    protected val mListener: FinishSessionListener,
+    protected val mListener: FinishSessionListener?,
     protected val mSession: Session
 ) : BaseDialog(mFragmentManager) {
     private lateinit var mView: View
@@ -60,7 +60,7 @@ open class FinishSessionConfirmationDialog(
     }
 
     protected open fun finishSessionConfirmed() {
-        mListener.onFinishSessionConfirmed(mSession)
+        mListener?.onFinishSessionConfirmed(mSession)
         dismiss()
     }
 

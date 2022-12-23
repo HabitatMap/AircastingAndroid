@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet
 
 import android.content.Context
 import android.view.View

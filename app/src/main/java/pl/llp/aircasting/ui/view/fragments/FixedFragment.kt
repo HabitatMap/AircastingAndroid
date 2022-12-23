@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedController
+import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedViewMvcImpl
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class FixedFragment : Fragment() {
     private var controller: FixedController? = null
     private val sessionsViewModel by activityViewModels<SessionsViewModel>()
-    private var view: FixedViewMvcImpl? = null
+    private var view: FixedViewMvcImpl<FixedSessionViewMvc.Listener>? = null
 
     @Inject
     lateinit var settings: Settings

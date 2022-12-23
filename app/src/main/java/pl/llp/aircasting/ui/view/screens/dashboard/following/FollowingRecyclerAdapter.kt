@@ -7,21 +7,21 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
+import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedRecyclerAdapter
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.expandedCards
 
 open class FollowingRecyclerAdapter(
     private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
-    private val mListener: SessionCardListener,
+    private val mListener: FollowingSessionViewMvc.Listener,
     supportFragmentManager: FragmentManager,
     sessionsViewModel: SessionsViewModel = SessionsViewModel()
-) : SessionsRecyclerAdapter<SessionCardListener>(
+) : FixedRecyclerAdapter<FollowingSessionViewMvc.Listener>(
     recyclerView,
     mInflater,
+    mListener,
     supportFragmentManager,
     sessionsViewModel
 ) {

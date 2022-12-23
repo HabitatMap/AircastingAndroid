@@ -9,7 +9,7 @@ import pl.llp.aircasting.data.model.Session
 class MapViewMobileDormantMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
+    supportFragmentManager: FragmentManager
 ): MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {

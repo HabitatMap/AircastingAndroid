@@ -8,20 +8,22 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.navigation.Navigation
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
-import pl.llp.aircasting.ui.view.screens.dashboard.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
 
-class FixedController(
+open class FixedController(
     private val mRootActivity: FragmentActivity?,
     mViewMvc: SessionsViewMvc?,
     private val mSessionsViewModel: SessionsViewModel,
     mLifecycleOwner: LifecycleOwner,
-    mSettings: Settings,
+    private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
     val mContext: Context?
@@ -34,7 +36,8 @@ class FixedController(
     fragmentManager,
     mContext
 ),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+    SessionsViewMvc.Listener,
+    EditSessionBottomSheet.Listener {
 
     private var mSessionsObserver =
         FixedSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -57,5 +60,15 @@ class FixedController(
     override fun onExploreNewSessionsClicked() {
         val intent = Intent(mContext, SearchFixedSessionActivity::class.java)
         mContext?.startActivity(intent)
+    }
+
+    override fun onFollowButtonClicked(session: Session) {
+        super.onFollowButtonClicked(session)
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
+    }
+
+    override fun onUnfollowButtonClicked(session: Session) {
+        super.onUnfollowButtonClicked(session)
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
     }
 }

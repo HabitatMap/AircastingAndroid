@@ -78,8 +78,4 @@ class MobileActiveViewMvcImpl(
     override fun onExploreNewSessionsButtonID(): Int {
         return R.id.txtExploreExistingSessions
     }
-
-    override fun addTouchHelperToRecyclerView() {
-        // Do nothing here
-    }
 }

@@ -11,23 +11,38 @@ import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvcImpl
 
 
-abstract class MapViewMvcImpl: SessionDetailsViewMvcImpl {
+abstract class MapViewMvcImpl(
+    inflater: LayoutInflater,
+    parent: ViewGroup?,
+    supportFragmentManager: FragmentManager
+) : SessionDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
     private var mMapContainer: MapContainer?
     private val mLoader: ImageView?
-
-    constructor(
-        inflater: LayoutInflater,
-        parent: ViewGroup?,
-        supportFragmentManager: FragmentManager?
-    ): super(inflater, parent, supportFragmentManager) {
+    private var mSessionActionsButton: ImageView? =
+        rootView?.findViewById(R.id.session_actions_button)
+    private var mBottomSheet: BottomSheet? = null
+    init {
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
         mLoader = rootView?.loader_map
         showLoader(mLoader)
+        mSessionActionsButton?.setOnClickListener {
+            showBottomSheet(supportFragmentManager)
+        }
+    }
+
+    protected open fun showBottomSheet(supportFragmentManager: FragmentManager) {
+        mSessionPresenter?.buildActionsBottomSheet(this, supportFragmentManager)
+            ?.show(supportFragmentManager)
+    }
+
+    protected fun dismissBottomSheet() {
+        mBottomSheet?.dismiss()
     }
 
     override fun layoutId(): Int {

@@ -5,27 +5,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.FixedSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet
 
-open class FixedSessionViewMvcImpl(
+open class FixedSessionViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
     inflater: LayoutInflater,
     parent: ViewGroup,
     private val supportFragmentManager: FragmentManager
 ) : SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
     FixedSessionViewMvc,
-    FixedSessionActionsBottomSheet.Listener {
+    ModifiableFixedSessionActionsBottomSheet.Listener {
 
     override fun showMeasurementsTableValues(): Boolean {
         return false
-    }
-
-    override fun bindExpanded() {
-        if (mSessionPresenter?.isExternal() == true) mActionsButton.visibility = View.GONE
-        super.bindExpanded()
     }
 
     override fun showExpandedMeasurementsTableValues() = true
@@ -38,12 +31,6 @@ open class FixedSessionViewMvcImpl(
         mMeasurementsDescription?.text =
             context.getString(R.string.session_last_min_measurements_description)
     }
-
-    override fun buildBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet {
-        return FixedSessionActionsBottomSheet(this)
-    }
-
-    override fun showChart() = false
 
     override fun bindFollowButtons() {
         if (mSessionPresenter?.session?.followed == true) {
