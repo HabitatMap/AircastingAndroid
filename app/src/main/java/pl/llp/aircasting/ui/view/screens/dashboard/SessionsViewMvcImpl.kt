@@ -24,7 +24,9 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-) : BaseObservableViewMvc<SessionsViewMvc.Listener>(), SessionsViewMvc {
+) : BaseObservableViewMvc<SessionsViewMvc.Listener>(),
+    SessionsViewMvc {
+
     private var mRecordSessionButton: Button? = null
     private var mOnExploreBtn: Button? = null
     protected var mRecyclerSessions: RecyclerView? = null

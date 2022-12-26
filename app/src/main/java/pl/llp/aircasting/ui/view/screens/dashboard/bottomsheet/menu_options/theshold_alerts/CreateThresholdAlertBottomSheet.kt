@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.theshold_alerts
 
 import android.util.Log
 import android.view.View

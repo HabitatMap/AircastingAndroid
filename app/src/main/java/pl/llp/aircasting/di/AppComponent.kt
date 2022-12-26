@@ -8,7 +8,9 @@ import pl.llp.aircasting.ui.view.fragments.*
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
-import pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.edit.EditSessionBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.share.ShareSessionBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.theshold_alerts.CreateThresholdAlertBottomSheet
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -60,7 +62,6 @@ interface AppComponent {
     fun inject(fragment: MobileDormantFragment)
     fun inject(fragment: ConfirmationFragment)
     fun inject(fragment: FixedFragment)
-    fun inject(fragment: CreateThresholdAlertBottomSheet)
     fun inject(fragment: LetsBeginFragment)
     fun inject(activity: NewSessionActivity)
     fun inject(fragment: SessionDetailsFragment)
@@ -69,6 +70,10 @@ interface AppComponent {
     fun inject(fragment: ReorderingFollowingFragment)
     fun inject(fragment: DashboardFragment)
     fun inject(fragment: ReorderingDashboardFragment)
+
+    fun inject(bottomSheet: CreateThresholdAlertBottomSheet)
+    fun inject(bottomSheet: EditSessionBottomSheet)
+    fun inject(bottomSheet: ShareSessionBottomSheet)
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)

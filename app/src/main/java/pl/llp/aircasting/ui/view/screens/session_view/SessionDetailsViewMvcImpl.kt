@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
 import pl.llp.aircasting.R
@@ -17,8 +18,9 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.SessionActionsBottomSheetListener
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialog
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
@@ -31,12 +33,12 @@ import pl.llp.aircasting.util.extensions.stopAnimation
 abstract class SessionDetailsViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager?
+    supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>(),
     SessionDetailsViewMvc,
     SessionActionsBottomSheetListener,
     HLUDialogListener {
-    private val mFragmentManager: FragmentManager? = supportFragmentManager
+    private val mFragmentManager: FragmentManager = supportFragmentManager
     private var mListener: SessionDetailsViewMvc.Listener? = null
 
     private val mSessionDateTextView: TextView?
@@ -50,6 +52,9 @@ abstract class SessionDetailsViewMvcImpl(
     private val mMoreButton: ImageView?
     private val mMoreInvisibleButton: Button?
     private val mHLUSlider: HLUSlider
+    private var mBottomSheet: BottomSheet? = null
+    private val mLoader: ImageView?
+    private var mSessionActionsButton: ImageView? = null
 
     private val mMeasurementsRepository = MeasurementsRepository()
     private var using24HourFormat: Boolean? = true
@@ -70,6 +75,12 @@ abstract class SessionDetailsViewMvcImpl(
             StatisticsContainer(this.rootView, context)
         } else {
             null
+        }
+        mLoader = rootView?.loader_map
+        showLoader()
+        mSessionActionsButton = rootView?.findViewById(R.id.session_actions_button)
+        mSessionActionsButton?.setOnClickListener {
+            showBottomSheet(supportFragmentManager)
         }
         mMoreButton = this.rootView?.more_button
         mMoreInvisibleButton = this.rootView?.more_invisible_button
@@ -124,6 +135,15 @@ abstract class SessionDetailsViewMvcImpl(
 
     override fun refreshStatisticsContainer() {
         mStatisticsContainer?.refresh(mSessionPresenter)
+    }
+
+    protected open fun showBottomSheet(supportFragmentManager: FragmentManager) {
+        mBottomSheet = mSessionPresenter?.buildActionsBottomSheet(this)
+        mBottomSheet?.show(supportFragmentManager)
+    }
+
+    protected fun dismissBottomSheet() {
+        mBottomSheet?.dismiss()
     }
 
     private fun showSlider() {
@@ -197,18 +217,16 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     private fun onMoreButtonPressed() {
-        mFragmentManager?.let {
-            val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
-            val measurementStream = mSessionPresenter?.selectedStream
-            HLUDialog(sensorThreshold, measurementStream, mFragmentManager, this).show()
-        }
+        val sensorThreshold = mSessionPresenter?.selectedSensorThreshold()
+        val measurementStream = mSessionPresenter?.selectedStream
+        HLUDialog(sensorThreshold, measurementStream, mFragmentManager, this).show()
     }
 
-    fun showLoader(loader: ImageView?) {
-        loader?.startAnimation()
+    protected fun showLoader() {
+        mLoader?.startAnimation()
     }
 
-    fun hideLoader(loader: ImageView?) {
-        loader?.stopAnimation()
+    protected fun hideLoader() {
+        mLoader?.stopAnimation()
     }
 }

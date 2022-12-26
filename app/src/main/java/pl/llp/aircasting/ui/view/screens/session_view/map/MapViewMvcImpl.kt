@@ -3,15 +3,12 @@ package pl.llp.aircasting.ui.view.screens.session_view.map
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_map.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvcImpl
@@ -23,26 +20,8 @@ abstract class MapViewMvcImpl(
     supportFragmentManager: FragmentManager
 ) : SessionDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
     private var mMapContainer: MapContainer?
-    private val mLoader: ImageView?
-    private var mSessionActionsButton: ImageView? =
-        rootView?.findViewById(R.id.session_actions_button)
-    private var mBottomSheet: BottomSheet? = null
     init {
         mMapContainer = MapContainer(rootView, context, supportFragmentManager)
-        mLoader = rootView?.loader_map
-        showLoader(mLoader)
-        mSessionActionsButton?.setOnClickListener {
-            showBottomSheet(supportFragmentManager)
-        }
-    }
-
-    protected open fun showBottomSheet(supportFragmentManager: FragmentManager) {
-        mSessionPresenter?.buildActionsBottomSheet(this, supportFragmentManager)
-            ?.show(supportFragmentManager)
-    }
-
-    protected fun dismissBottomSheet() {
-        mBottomSheet?.dismiss()
     }
 
     override fun layoutId(): Int {
@@ -67,10 +46,9 @@ abstract class MapViewMvcImpl(
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) {
-            hideLoader(mLoader)
+            hideLoader()
         }
         mMapContainer?.bindSession(mSessionPresenter)
-
     }
 
     override fun centerMap(location: Location) {

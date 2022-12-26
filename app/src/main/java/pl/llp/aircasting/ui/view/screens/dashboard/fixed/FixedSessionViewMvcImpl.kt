@@ -6,16 +6,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet
 
 open class FixedSessionViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
     inflater: LayoutInflater,
     parent: ViewGroup,
     private val supportFragmentManager: FragmentManager
 ) : SessionViewMvcImpl<FixedSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
-    FixedSessionViewMvc,
-    ModifiableFixedSessionActionsBottomSheet.Listener {
+    FixedSessionViewMvc {
 
     override fun showMeasurementsTableValues(): Boolean {
         return false
@@ -40,37 +37,5 @@ open class FixedSessionViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
             mFollowButton.visibility = View.VISIBLE
             mUnfollowButton.visibility = View.GONE
         }
-    }
-
-    override fun editSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onSessionEditClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun shareSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onSessionShareClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun deleteSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onSessionDeleteClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun createThresholdAlertPressed() {
-        CreateThresholdAlertBottomSheet(mSessionPresenter?.session).show(supportFragmentManager)
-        dismissBottomSheet()
     }
 }

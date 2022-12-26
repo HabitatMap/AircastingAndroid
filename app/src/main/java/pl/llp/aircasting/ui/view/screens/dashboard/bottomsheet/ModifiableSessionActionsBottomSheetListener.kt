@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet
 
 interface ModifiableSessionActionsBottomSheetListener {
     fun editSessionPressed()

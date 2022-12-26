@@ -2,15 +2,12 @@ package pl.llp.aircasting.ui.view.screens.session_view.graph
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import kotlinx.android.synthetic.main.activity_graph.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.SensorThreshold
-import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvcImpl
@@ -23,10 +20,6 @@ abstract class GraphViewMvcImpl(
     protected val supportFragmentManager: FragmentManager
 ) : SessionDetailsViewMvcImpl(inflater, parent, supportFragmentManager) {
     private var graphContainer: GraphContainer?
-    private val mLoader: ImageView?
-    private var mSessionActionsButton: ImageView? =
-        rootView?.findViewById(R.id.session_actions_button)
-    private var mBottomSheet: BottomSheet? = null
 
     init {
         graphContainer = GraphContainer(
@@ -37,11 +30,6 @@ abstract class GraphViewMvcImpl(
             this::measurementsSample,
             notes()
         )
-        mSessionActionsButton?.setOnClickListener {
-            showBottomSheet(supportFragmentManager)
-        }
-        mLoader = rootView?.loader_graph
-        showLoader(mLoader)
     }
 
     abstract fun defaultZoomSpan(): Int?
@@ -71,9 +59,8 @@ abstract class GraphViewMvcImpl(
     override fun bindSession(sessionPresenter: SessionPresenter?) {
         super.bindSession(sessionPresenter)
         graphContainer?.bindSession(mSessionPresenter)
-        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true) hideLoader(
-            mLoader
-        )
+        if (mSessionPresenter?.selectedStream?.measurements?.isNotEmpty() == true)
+            hideLoader()
     }
 
     override fun onMeasurementStreamChanged(measurementStream: MeasurementStream) {
@@ -102,14 +89,5 @@ abstract class GraphViewMvcImpl(
     override fun onDestroy() {
         graphContainer?.destroy()
         graphContainer = null
-    }
-
-    private fun showBottomSheet(supportFragmentManager: FragmentManager) {
-        mSessionPresenter?.buildActionsBottomSheet(this, supportFragmentManager)
-            ?.show(supportFragmentManager)
-    }
-
-    protected fun dismissBottomSheet() {
-        mBottomSheet?.dismiss()
     }
 }

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedSessionViewMvcImpl
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.visible
@@ -16,8 +15,7 @@ open class FollowingSessionViewMvcImpl(
     parent: ViewGroup,
     supportFragmentManager: FragmentManager
 ) : FixedSessionViewMvcImpl<FollowingSessionViewMvc.Listener>(inflater, parent, supportFragmentManager),
-    FollowingSessionViewMvc,
-    ModifiableFixedSessionActionsBottomSheet.Listener {
+    FollowingSessionViewMvc {
 
     private val noMeasurementsIcon: ImageView?
     private val noMeasurementsLabels: View?

@@ -3,6 +3,7 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import pl.llp.aircasting.util.Settings
@@ -49,5 +50,19 @@ open class ApiModule {
 
         val apiService = apiServiceFactory.get(authToken)
         return SessionsSyncService.get(apiService, errorHandler, settings)
+    }
+
+    @Provides
+    @Singleton
+    @Nullable
+    fun providesSessionDownloadService(
+        apiServiceFactory: ApiServiceFactory,
+        settings: Settings,
+        errorHandler: ErrorHandler
+    ): SessionDownloadService? {
+        val authToken = settings.getAuthToken() ?: return null
+
+        val apiService = apiServiceFactory.get(authToken)
+        return SessionDownloadService(apiService, errorHandler)
     }
 }

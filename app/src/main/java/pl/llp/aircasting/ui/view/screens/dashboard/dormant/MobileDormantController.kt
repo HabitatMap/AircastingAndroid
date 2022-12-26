@@ -9,7 +9,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.MobileDormantSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.EditSessionBottomSheet
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 
@@ -22,10 +21,18 @@ class MobileDormantController(
     mApiServiceFactory: ApiServiceFactory,
     fragmentManager: FragmentManager,
     private val mContext: Context?
-): SessionsController(mRootActivity, mViewMvc, mSessionsViewModel, mSettings, mApiServiceFactory, fragmentManager, mContext),
-    SessionsViewMvc.Listener, EditSessionBottomSheet.Listener {
+) : SessionsController(
+    mRootActivity,
+    mViewMvc,
+    mSessionsViewModel,
+    mSettings,
+    mApiServiceFactory,
+    fragmentManager,
+    mContext
+), SessionsViewMvc.Listener {
 
-    private var mSessionsObserver = MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
+    private var mSessionsObserver =
+        MobileDormantSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
 
     override fun registerSessionsObserver() {
         mSessionsObserver.observe(mSessionsViewModel.loadMobileDormantSessionsWithMeasurementsAndNotes())
@@ -40,6 +47,6 @@ class MobileDormantController(
     }
 
     override fun onExploreNewSessionsClicked() {
-      // do nothing
+        // do nothing
     }
 }

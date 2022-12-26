@@ -1,19 +1,17 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.active
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active
 
 import android.view.View
-import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.active_session_actions.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.SessionActionsBottomSheetListener
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
 
 open class MobileActiveSessionActionsBottomSheet(
     private val mListener: Listener?,
-    private val mSessionPresenter: SessionPresenter?,
-    private val mSupportFragmentManager: FragmentManager
+    private val mSessionPresenter: SessionPresenter?
 ) : BottomSheet() {
     interface Listener: FinishSessionListener, SessionActionsBottomSheetListener {
         fun addNotePressed()
@@ -48,7 +46,7 @@ open class MobileActiveSessionActionsBottomSheet(
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
             dismiss()
-            FinishSessionConfirmationDialog(mSupportFragmentManager, mListener, session).show()
+            FinishSessionConfirmationDialog(parentFragmentManager, mListener, session).show()
         }
     }
 

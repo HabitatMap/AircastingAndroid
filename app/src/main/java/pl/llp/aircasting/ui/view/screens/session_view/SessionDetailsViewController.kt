@@ -19,7 +19,6 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.model.observers.FixedSessionObserver
 import pl.llp.aircasting.data.model.observers.MobileSessionObserver
-import pl.llp.aircasting.ui.view.common.SessionActionsHandler
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUValidationErrorToast
@@ -39,7 +38,7 @@ abstract class SessionDetailsViewController(
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    fragmentManager: FragmentManager,
+    val fragmentManager: FragmentManager,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     protected val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
@@ -50,18 +49,7 @@ abstract class SessionDetailsViewController(
     ),
     private val mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mMeasurementsRepository: MeasurementsRepository = MeasurementsRepository(),
-) : SessionActionsHandler(
-    rootActivity,
-    mErrorHandler,
-    mSessionsViewModel,
-    fragmentManager,
-    mSettings,
-    mApiService,
-    rootActivity,
-    mDownloadService,
-    mSessionRepository
-),
-    SessionDetailsViewMvc.Listener,
+) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {

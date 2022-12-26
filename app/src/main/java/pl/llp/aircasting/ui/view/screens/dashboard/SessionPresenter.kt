@@ -1,16 +1,15 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
-import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorName
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.SessionActionsBottomSheetListener
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.ModifiableFixedSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.fixed.UnmodifiableFixedSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.active.MobileActiveSessionActionsBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.dormant.MobileDormantSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.fixed.ModifiableFixedSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.fixed.UnmodifiableFixedSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.dormant.MobileDormantSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartData
 import java.util.*
 
@@ -124,28 +123,26 @@ class SessionPresenter() {
     }
 
     fun buildActionsBottomSheet(
-        listener: SessionActionsBottomSheetListener,
-        fragmentManager: FragmentManager
+        listener: SessionActionsBottomSheetListener? = null
     ): BottomSheet? {
         return when (session?.tab) {
             SessionsTab.MOBILE_ACTIVE ->
                 MobileActiveSessionActionsBottomSheet(
                     listener as? MobileActiveSessionActionsBottomSheet.Listener,
-                    this,
-                    fragmentManager
+                    this
                 )
             SessionsTab.MOBILE_DORMANT ->
                 MobileDormantSessionActionsBottomSheet(
-                    listener as? MobileDormantSessionActionsBottomSheet.Listener
+                    session
                 )
             SessionsTab.FIXED, SessionsTab.FOLLOWING ->
                 if (isExternal())
                     UnmodifiableFixedSessionActionsBottomSheet(
-                        listener as? UnmodifiableFixedSessionActionsBottomSheet.Listener
+                        session
                     )
                 else
                     ModifiableFixedSessionActionsBottomSheet(
-                        listener as? ModifiableFixedSessionActionsBottomSheet.Listener
+                        session
                     )
             else -> null
         }

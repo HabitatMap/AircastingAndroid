@@ -1,4 +1,4 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.delete
 
 import android.view.View
 import android.widget.CheckBox
@@ -7,16 +7,20 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import kotlinx.android.synthetic.main.delete_session_bottom_sheet.view.*
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmationDeleteSessionDialog
+import pl.llp.aircasting.util.events.DeleteSessionEvent
+import pl.llp.aircasting.util.events.DeleteStreamsEvent
 
 
-class DeleteSessionBottomSheet(private val mListener: Listener, private val session: Session): BottomSheet() {
-    interface Listener {
-        fun onDeleteStreamsPressed(session: Session)
-    }
+class DeleteSessionBottomSheet(
+    private val session: Session?
+) : BottomSheet() {
+
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, DeleteStreamOption> = HashMap()
     private lateinit var allStreamsCheckbox: CheckBox
@@ -45,13 +49,53 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         }
 
         deleteStreamsButton?.setOnClickListener {
-            mListener.onDeleteStreamsPressed(session)
+            val streamsToDelete = getStreamsToDelete()
+            if (deleteAllStreamsSelected(
+                    allStreamsBoxSelected(),
+                    getStreamsToDelete().size,
+                    session?.streams?.size
+                )
+            ) {
+                ConfirmationDeleteSessionDialog(parentFragmentManager) {
+                    deleteSession(session?.uuid)
+                }
+                    .show()
+            } else {
+                ConfirmationDeleteSessionDialog(parentFragmentManager) {
+                    deleteStreams(session, streamsToDelete)
+                }
+                    .show()
+            }
         }
 
         mStreamsOptionsContainer = contentView?.streams_options_container
         generateStreamsOptions()
 
         setAllStreamsCheckboxListener()
+    }
+
+    private fun deleteSession(sessionUUID: String?) {
+        sessionUUID ?: return
+
+        val event = DeleteSessionEvent(sessionUUID)
+        EventBus.getDefault().post(event)
+        dismiss()
+    }
+
+    private fun deleteStreams(session: Session?, streamsToDelete: List<MeasurementStream>?) {
+        session ?: return
+
+        val event = DeleteStreamsEvent(session, streamsToDelete)
+        EventBus.getDefault().post(event)
+        dismiss()
+    }
+
+    private fun deleteAllStreamsSelected(
+        allStreamsBoxSelected: Boolean,
+        selectedOptionsCount: Int?,
+        sessionStreamsCount: Int?
+    ): Boolean {
+        return (allStreamsBoxSelected) || (selectedOptionsCount == sessionStreamsCount)
     }
 
     fun setAllStreamsCheckboxListener() {
@@ -82,14 +126,15 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
     private fun generateStreamsOptions() {
         val wholeSessionCheckboxTitle = resources.getString(R.string.delete_all_data_from_session)
         allStreamsCheckbox = CheckBox(context)
-        val wholeSessionCheckboxView = createCheckboxView(allStreamsCheckbox, wholeSessionCheckboxTitle)
+        val wholeSessionCheckboxView =
+            createCheckboxView(allStreamsCheckbox, wholeSessionCheckboxTitle)
         val separatingLineView = createSeparatingLineView()
-      
+
         mStreamsOptionsContainer?.addView(wholeSessionCheckboxView)
         mStreamsOptionsContainer?.addView(separatingLineView)
 
-        val sessionStreams = session.activeStreams
-        sessionStreams.forEach { stream ->
+        val sessionStreams = session?.activeStreams
+        sessionStreams?.forEach { stream ->
             val singleStreamCheckboxTitle = stream.detailedType
             val streamCheckbox = CheckBox(context)
             val streamCheckboxView = createCheckboxView(streamCheckbox, singleStreamCheckboxTitle)
@@ -102,19 +147,34 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         checkbox.id = View.generateViewId()
         checkbox.text = displayedValue
         val buttonPaddingLeft = context?.resources?.getDimension(R.dimen.keyline_4)?.toInt() ?: 0
-        val radioButtonPaddingTopBottom = context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
+        val radioButtonPaddingTopBottom =
+            context?.resources?.getDimension(R.dimen.keyline_2)?.toInt() ?: 0
 
-        val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        val drawable = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_selector) }
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        val drawable =
+            context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_selector) }
 
         layoutParams.leftMargin = 10
         layoutParams.bottomMargin = 10
 
-        checkbox.setPadding(buttonPaddingLeft, radioButtonPaddingTopBottom, 0, radioButtonPaddingTopBottom)
+        checkbox.setPadding(
+            buttonPaddingLeft,
+            radioButtonPaddingTopBottom,
+            0,
+            radioButtonPaddingTopBottom
+        )
 
         checkbox.layoutParams = layoutParams
         checkbox.buttonDrawable = drawable
-        checkbox.background = context?.let { AppCompatResources.getDrawable(it, R.drawable.checkbox_background_selector) }
+        checkbox.background = context?.let {
+            AppCompatResources.getDrawable(
+                it,
+                R.drawable.checkbox_background_selector
+            )
+        }
 
         TextViewCompat.setTextAppearance(checkbox, R.style.TextAppearance_Aircasting_Checkbox)
 
@@ -127,7 +187,13 @@ class DeleteSessionBottomSheet(private val mListener: Listener, private val sess
         layoutParams.bottomMargin = 32
         layoutParams.topMargin = 8
         layoutParams.leftMargin = 8
-        view.setBackgroundColor(ResourcesCompat.getColor(view.context.resources, R.color.aircasting_grey_50, null))
+        view.setBackgroundColor(
+            ResourcesCompat.getColor(
+                view.context.resources,
+                R.color.aircasting_grey_50,
+                null
+            )
+        )
         view.layoutParams = layoutParams
 
         return view

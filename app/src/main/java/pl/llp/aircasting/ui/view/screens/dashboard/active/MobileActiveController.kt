@@ -90,18 +90,6 @@ class MobileActiveController(
         // Do nothing
     }
 
-    override fun onEditSessionClicked(session: Session) {
-        // do nothing
-    }
-
-    override fun onShareSessionClicked(session: Session) {
-        // do nothing
-    }
-
-    override fun onDeleteStreamsPressed(session: Session) {
-        // do nothing
-    }
-
     override fun onExpandSessionCard(session: Session) {
         super.onExpandSessionCard(session)
         expandedCards()?.add(session.uuid)
@@ -134,14 +122,6 @@ class MobileActiveController(
             errorCallback = { errorCallback() },
             finallyCallback = { finallyCallback(session) }
         )
-    }
-
-    override fun onEditDataPressed(
-        session: Session,
-        name: String,
-        tags: ArrayList<String>
-    ) { // Edit session bottom sheet handling
-        // do nothing
     }
 
     override fun onFinishSessionConfirmed(session: Session) {

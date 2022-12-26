@@ -12,7 +12,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.FixedSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
@@ -36,8 +35,7 @@ open class FixedController(
     fragmentManager,
     mContext
 ),
-    SessionsViewMvc.Listener,
-    EditSessionBottomSheet.Listener {
+    SessionsViewMvc.Listener {
 
     private var mSessionsObserver =
         FixedSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)

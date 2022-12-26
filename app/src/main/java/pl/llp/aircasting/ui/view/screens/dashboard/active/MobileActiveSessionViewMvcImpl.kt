@@ -8,7 +8,7 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.session_actions.mobile.active.MobileActiveSessionActionsBottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
 
 class MobileActiveSessionViewMvcImpl(
     inflater: LayoutInflater,

@@ -7,7 +7,7 @@
 
         <variable
             name="view"
-            type="pl.llp.aircasting.ui.view.screens.dashboard.theshold_alerts.CreateThresholdAlertBottomSheet" />
+            type="pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.theshold_alerts.CreateThresholdAlertBottomSheet" />
 
         <variable
             name="viewModel"

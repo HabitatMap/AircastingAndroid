@@ -11,10 +11,6 @@ import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.common.SessionActionsHandler
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.DeleteSessionBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.EditSessionBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.ShareSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
 import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
@@ -29,11 +25,11 @@ abstract class SessionsController(
     private val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    fragmentManager: FragmentManager,
+    val fragmentManager: FragmentManager,
     private var context: Context?,
     private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
     protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity!!),
-    mDownloadService: SessionDownloadService = SessionDownloadService(mApiService, mErrorHandler),
+    val mDownloadService: SessionDownloadService = SessionDownloadService(mApiService, mErrorHandler),
     mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mDownloadMeasurementsService: DownloadMeasurementsService =
         DownloadMeasurementsService(mApiService, mErrorHandler),
@@ -41,19 +37,7 @@ abstract class SessionsController(
         ActiveSessionMeasurementsRepository(),
     private val sessionFollower: SessionFollower =
         SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository),
-) : SessionActionsHandler(
-    mRootActivity,
-    mErrorHandler,
-    mSessionsViewModel,
-    fragmentManager,
-    mSettings,
-    mApiService,
-    context,
-    mDownloadService,
-    mSessionRepository
-), SessionsViewMvc.Listener, EditSessionBottomSheet.Listener,
-    ShareSessionBottomSheet.Listener,
-    DeleteSessionBottomSheet.Listener {
+) : SessionsViewMvc.Listener {
     protected abstract fun registerSessionsObserver()
     protected abstract fun unregisterSessionsObserver()
 
@@ -110,6 +94,7 @@ abstract class SessionsController(
         }
     }
 
+    // TODO: Refactor to separate interface for Mobile Active Sessions
     override fun onDisconnectSessionClicked(session: Session) {}
     override fun addNoteClicked(session: Session) {}
     override fun onReconnectSessionClicked(session: Session) {}

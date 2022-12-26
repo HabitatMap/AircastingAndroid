@@ -1,6 +1,6 @@
-package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet
+package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.share
 
-import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
@@ -9,27 +9,34 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.services.CSVGenerationService
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.CSVHelper
+import pl.llp.aircasting.util.ShareHelper
+import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.events.SessionsSyncEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
 import pl.llp.aircasting.util.extensions.*
+import javax.inject.Inject
 
 class ShareSessionBottomSheet(
-    private val mListener: Listener,
-    val session: Session,
-    private val mContext: Context?
+    private var mSession: Session?
 ) : BottomSheet() {
-    interface Listener {
-        fun onShareLinkPressed(session: Session, sensor: String)
-        fun onShareFilePressed(session: Session, emailInput: String)
-    }
-
     class CurrentSessionStreams(
         val sensorName: String,
         val detailedType: String?
@@ -43,11 +50,17 @@ class ShareSessionBottomSheet(
     private var loader: ImageView? = null
     lateinit var chosenSensor: String
 
+    private val mSessionsViewModel by activityViewModels<SessionsViewModel>()
+
+    @Inject
+    lateinit var mErrorHandler: ErrorHandler
+
     override fun layoutId(): Int {
         return R.layout.share_session_bottom_sheet
     }
 
     override fun setup() {
+        (requireActivity().application as AircastingApplication).appComponent.inject(this)
         EventBus.getDefault().safeRegister(this)
 
         expandBottomSheet()
@@ -77,21 +90,29 @@ class ShareSessionBottomSheet(
             dismiss()
         }
 
-        if (session.locationless) {
-            radioGroup?.visibility = View.GONE
-            shareLinkButton?.visibility = View.GONE
-            selectStreamTextView?.visibility = View.GONE
-            emailInput?.visibility = View.GONE
-            emailCsvTextView?.text = getString(R.string.generate_csv_file_without_share_link)
-        } else {
-            setRadioButtonsForChosenSession()
-
-            radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-                chosenSensor = fieldValues[checkedId]?.sensorName.toString()
+        lifecycleScope.launch {
+            mSession?.let { session ->
+                val dbSession = withContext(Dispatchers.IO) {
+                    mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                }
+                mSession = dbSession?.let { Session(it) }
             }
+            if (mSession?.locationless == true) {
+                radioGroup?.visibility = View.GONE
+                shareLinkButton?.visibility = View.GONE
+                selectStreamTextView?.visibility = View.GONE
+                emailInput?.visibility = View.GONE
+                emailCsvTextView?.text = getString(R.string.generate_csv_file_without_share_link)
+            } else {
+                setRadioButtonsForChosenSession()
 
-            shareLinkButton?.setOnClickListener {
-                shareLinkPressed()
+                radioGroup?.setOnCheckedChangeListener { group, checkedId ->
+                    chosenSensor = fieldValues[checkedId]?.sensorName.toString()
+                }
+
+                shareLinkButton?.setOnClickListener {
+                    shareLinkPressed()
+                }
             }
         }
     }
@@ -100,14 +121,14 @@ class ShareSessionBottomSheet(
     fun onMessageEvent(sync: SessionsSyncEvent) = Handler(Looper.getMainLooper()).post {
         if (sync.inProgress) {
             shareFileButton?.isEnabled = false
-            shareFileButton?.text = mContext?.getString(R.string.sync_in_progress)
+            shareFileButton?.text = context?.getString(R.string.sync_in_progress)
             loader?.apply {
                 startAnimation()
                 visible()
             }
         } else {
             shareFileButton?.isEnabled = true
-            shareFileButton?.text = mContext?.getString(R.string.share_file)
+            shareFileButton?.text = context?.getString(R.string.share_file)
             loader?.apply {
                 stopAnimation()
                 inVisible()
@@ -116,31 +137,68 @@ class ShareSessionBottomSheet(
     }
 
     private fun shareFilePressed() {
+        val session = mSession ?: return
+
         val emailInput = emailInput?.text.toString().trim()
-        if (!session.locationless) {
-            if (!isValidEmail(emailInput)) {
-                showError()
-                return
-            }
+        if (session.locationless && !isValidEmail(emailInput)) {
+            showError()
+            return
         }
-        mListener.onShareFilePressed(session, emailInput)
+
+        if (session.locationless) {
+            shareLocalFile(session)
+        } else {
+            val event = ExportSessionEvent(session, emailInput)
+            EventBus.getDefault().post(event)
+        }
         dismiss()
+    }
+
+    private fun shareLocalFile(session: Session) {
+        context ?: return
+
+        CSVGenerationService(
+            session,
+            requireActivity().applicationContext,
+            CSVHelper(),
+            mErrorHandler
+        ).start()
     }
 
     private fun showError() {
         emailInputLayout?.error = " "
-        mContext?.showToast(getString(R.string.provided_email_is_not_correct), Toast.LENGTH_LONG)
+        requireActivity().showToast(
+            getString(R.string.provided_email_is_not_correct),
+            Toast.LENGTH_LONG
+        )
     }
 
     fun shareLinkPressed() {
-        mListener.onShareLinkPressed(session, chosenSensor)
+        if (mSession?.urlLocation != null) {
+            openShareIntentChooser()
+        } else {
+            mErrorHandler.handleAndDisplay(SessionUploadPendingError())
+        }
         dismiss()
+    }
+
+    private fun openShareIntentChooser() {
+        val session = mSession ?: return
+
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, ShareHelper.shareLink(session, chosenSensor, context))
+            putExtra(Intent.EXTRA_SUBJECT, context?.getString(R.string.share_title))
+            type = "text/plain"
+        }
+        val chooser = Intent.createChooser(sendIntent, context?.getString(R.string.share_link))
+        context?.startActivity(chooser)
     }
 
     private fun setRadioButtonsForChosenSession() {
         fieldValues.clear()
-        val currentSessionStreams = session.activeStreams
-        currentSessionStreams.forEach { stream ->
+        val currentSessionStreams = mSession?.activeStreams
+        currentSessionStreams?.forEach { stream ->
             setRadioButtonProperties(stream)
         }
         radioGroup?.check(fieldValues.keys.minOrNull() ?: 0)
