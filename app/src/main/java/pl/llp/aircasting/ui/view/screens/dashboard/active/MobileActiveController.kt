@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
-import android.app.Activity
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
@@ -13,13 +12,10 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
-import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
-import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
@@ -27,7 +23,6 @@ import pl.llp.aircasting.util.extensions.expandedCards
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
-import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
 
 class MobileActiveController(
     private val mRootActivity: FragmentActivity?,
@@ -49,12 +44,7 @@ class MobileActiveController(
     mContext
 ),
     SessionsViewMvc.Listener,
-    AddNoteBottomSheet.Listener,
-    AirBeamReconnector.Listener,
-    FinishMobileSessionListener {
-
-    override val settings: Settings = mSettings
-    override val activity: Activity? = mRootActivity
+    AirBeamReconnector.Listener {
 
     private var mSessionsObserver =
         ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)
@@ -99,22 +89,6 @@ class MobileActiveController(
         expandedCards()?.remove(session.uuid)
     }
 
-    override fun onDisconnectSessionClicked(session: Session) {
-        if (isSDKLessOrEqualToNMR1()) {
-            SyncUnavailableDialog(this.fragmentManager)
-                .show()
-        } else {
-            EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
-            airBeamReconnector.disconnect(session)
-        }
-    }
-
-    override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, mContext, mErrorHandler, permissionsManager).show(
-            fragmentManager
-        )
-    }
-
     override fun onReconnectSessionClicked(session: Session) {
         mViewMvc?.showReconnectingLoaderFor(session)
         airBeamReconnector.reconnect(session,
@@ -123,23 +97,6 @@ class MobileActiveController(
             finallyCallback = { finallyCallback(session) }
         )
     }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        val event = StopRecordingEvent(session.uuid)
-        EventBus.getDefault().post(event)
-        onFinishMobileSessionConfirmed()
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        SyncActivity.start(mRootActivity)
-    }
-
-    override fun addNotePressed(session: Session, note: Note) {
-        val event = NoteCreatedEvent(session, note)
-        EventBus.getDefault().post(event)
-    }
-
-    override fun showCameraHelperDialog() {}
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {

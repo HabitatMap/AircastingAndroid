@@ -73,7 +73,6 @@ class DisconnectedView(
         mSecondaryButton?.setOnClickListener {
             FinishSessionConfirmationDialog(
                 mSupportFragmentManager,
-                mListener,
                 session
             ).show()
         }
@@ -89,14 +88,12 @@ class DisconnectedView(
         mPrimaryButton?.setOnClickListener {
             FinishAndSyncSessionConfirmationDialog(
                 mSupportFragmentManager,
-                mListener,
                 session
             ).show()
         }
         mSecondaryButton?.setOnClickListener {
             FinishSessionConfirmationDialog(
                 mSupportFragmentManager,
-                mListener,
                 session
             ).show()
         }

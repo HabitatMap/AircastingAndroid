@@ -124,7 +124,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     protected abstract fun showExpandedMeasurementsTableValues(): Boolean
 
     private fun buildActionsBottomSheet(sessionPresenter: SessionPresenter?): BottomSheet? =
-        sessionPresenter?.buildActionsBottomSheet(this)
+        sessionPresenter?.buildActionsBottomSheet()
 
     protected open fun showChart() = false
 

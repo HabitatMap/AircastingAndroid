@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
 
 class MobileActiveSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -20,8 +19,7 @@ class MobileActiveSessionViewMvcImpl(
     supportFragmentManager
 ),
     MobileActiveSessionViewMvc,
-    MobileActiveSessionViewMvc.DisconnectedViewListener,
-    MobileActiveSessionActionsBottomSheet.Listener {
+    MobileActiveSessionViewMvc.DisconnectedViewListener {
 
     private val mDisconnectedView: DisconnectedView =
         DisconnectedView(context, this.rootView, supportFragmentManager, this)
@@ -66,44 +64,10 @@ class MobileActiveSessionViewMvcImpl(
         }
     }
 
-    override fun addNotePressed() {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.addNoteClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun disconnectSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.onSessionDisconnectClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
     override fun onSessionReconnectClicked(session: Session) {
         val session = mSessionPresenter?.session ?: return
         for (listener in listeners) {
             listener.onSessionReconnectClicked(session)
-        }
-    }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onFinishSessionConfirmed(session)
-        }
-
-        dismissBottomSheet()
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onFinishAndSyncSessionConfirmed(session)
         }
     }
 }

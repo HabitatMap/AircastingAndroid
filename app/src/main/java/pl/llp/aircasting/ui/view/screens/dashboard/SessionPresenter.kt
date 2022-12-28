@@ -5,7 +5,6 @@ import pl.llp.aircasting.data.model.SensorName
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.fixed.ModifiableFixedSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.fixed.UnmodifiableFixedSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
@@ -122,13 +121,10 @@ class SessionPresenter() {
         this.sensorThresholds = hash
     }
 
-    fun buildActionsBottomSheet(
-        listener: SessionActionsBottomSheetListener? = null
-    ): BottomSheet? {
+    fun buildActionsBottomSheet(): BottomSheet? {
         return when (session?.tab) {
             SessionsTab.MOBILE_ACTIVE ->
                 MobileActiveSessionActionsBottomSheet(
-                    listener as? MobileActiveSessionActionsBottomSheet.Listener,
                     this
                 )
             SessionsTab.MOBILE_DORMANT ->

@@ -17,11 +17,10 @@ class SessionPresenterTest {
         val session = mock<Session> {
             on { tab } doReturn SessionsTab.MOBILE_ACTIVE
         }
-        val listener = mock<MobileActiveSessionActionsBottomSheet.Listener>()
         val presenter = SessionPresenter()
         presenter.session = session
 
-        val bottomSheet = presenter.buildActionsBottomSheet(listener)
+        val bottomSheet = presenter.buildActionsBottomSheet()
 
         assertIs<MobileActiveSessionActionsBottomSheet>(bottomSheet)
     }
@@ -31,11 +30,10 @@ class SessionPresenterTest {
         val session = mock<Session> {
             on { tab } doReturn SessionsTab.MOBILE_DORMANT
         }
-        val listener = mock<MobileActiveSessionActionsBottomSheet.Listener>()
         val presenter = SessionPresenter()
         presenter.session = session
 
-        val bottomSheet = presenter.buildActionsBottomSheet(listener)
+        val bottomSheet = presenter.buildActionsBottomSheet()
 
         assertIs<MobileDormantSessionActionsBottomSheet>(bottomSheet)
     }
@@ -50,13 +48,12 @@ class SessionPresenterTest {
             on { tab } doReturn SessionsTab.FOLLOWING
             on { isExternal } doReturn false
         }
-        val listener = mock<MobileActiveSessionActionsBottomSheet.Listener>()
         val presenter = SessionPresenter()
 
         presenter.session = session
-        val bottomSheet = presenter.buildActionsBottomSheet(listener)
+        val bottomSheet = presenter.buildActionsBottomSheet()
         presenter.session = sessionFollowed
-        val bottomSheetFollowing = presenter.buildActionsBottomSheet(listener)
+        val bottomSheetFollowing = presenter.buildActionsBottomSheet()
 
         assertIs<ModifiableFixedSessionActionsBottomSheet>(bottomSheet)
         assertIs<ModifiableFixedSessionActionsBottomSheet>(bottomSheetFollowing)
@@ -72,13 +69,12 @@ class SessionPresenterTest {
             on { tab } doReturn SessionsTab.FOLLOWING
             on { isExternal } doReturn true
         }
-        val listener = mock<MobileActiveSessionActionsBottomSheet.Listener>()
         val presenter = SessionPresenter()
 
         presenter.session = session
-        val bottomSheet = presenter.buildActionsBottomSheet(listener)
+        val bottomSheet = presenter.buildActionsBottomSheet()
         presenter.session = sessionFollowed
-        val bottomSheetFollowing = presenter.buildActionsBottomSheet(listener)
+        val bottomSheetFollowing = presenter.buildActionsBottomSheet()
 
         assertIs<UnmodifiableFixedSessionActionsBottomSheet>(bottomSheet)
         assertIs<UnmodifiableFixedSessionActionsBottomSheet>(bottomSheetFollowing)

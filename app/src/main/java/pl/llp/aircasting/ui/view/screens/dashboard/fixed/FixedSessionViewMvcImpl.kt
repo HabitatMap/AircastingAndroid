@@ -18,6 +18,8 @@ open class FixedSessionViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
         return false
     }
 
+
+
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun bindCollapsedMeasurementsDescription() {

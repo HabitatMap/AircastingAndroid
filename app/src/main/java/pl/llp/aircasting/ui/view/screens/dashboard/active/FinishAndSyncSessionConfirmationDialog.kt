@@ -9,9 +9,8 @@ import pl.llp.aircasting.data.model.Session
 
 class FinishAndSyncSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    mListener: FinishSessionListener,
     mSession: Session
-) : FinishSessionConfirmationDialog(mFragmentManager, mListener, mSession) {
+) : FinishSessionConfirmationDialog(mFragmentManager, mSession) {
 
     override fun buildHeader(): SpannableStringBuilder {
         return SpannableStringBuilder()
@@ -38,7 +37,7 @@ class FinishAndSyncSessionConfirmationDialog(
     }
 
     override fun finishSessionConfirmed() {
-        mListener?.onFinishAndSyncSessionConfirmed(mSession)
+        onFinishAndSyncMobileSessionConfirmed()
         dismiss()
     }
 }

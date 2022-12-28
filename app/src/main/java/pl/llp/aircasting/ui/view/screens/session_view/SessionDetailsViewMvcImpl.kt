@@ -138,7 +138,7 @@ abstract class SessionDetailsViewMvcImpl(
     }
 
     protected open fun showBottomSheet(supportFragmentManager: FragmentManager) {
-        mBottomSheet = mSessionPresenter?.buildActionsBottomSheet(this)
+        mBottomSheet = mSessionPresenter?.buildActionsBottomSheet()
         mBottomSheet?.show(supportFragmentManager)
     }
 

@@ -2,27 +2,40 @@ package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active
 
 import android.view.View
 import kotlinx.android.synthetic.main.active_session_actions.view.*
+import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
+import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
-import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
+import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
+import pl.llp.aircasting.util.events.StandaloneModeEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
+import javax.inject.Inject
 
 open class MobileActiveSessionActionsBottomSheet(
-    private val mListener: Listener?,
     private val mSessionPresenter: SessionPresenter?
 ) : BottomSheet() {
-    interface Listener: FinishSessionListener, SessionActionsBottomSheetListener {
-        fun addNotePressed()
-        fun disconnectSessionPressed()
-    }
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
+
+    @Inject
+    lateinit var permissionsManager: PermissionsManager
+
+    @Inject
+    lateinit var airBeamReconnector: AirBeamReconnector
 
     override fun layoutId(): Int {
         return R.layout.active_session_actions
     }
 
     override fun setup() {
+        (requireActivity().application as AircastingApplication).appComponent.inject(this)
         setupDisconnectedButton()
         setupStopButton()
         setupAddNoteButton()
@@ -30,11 +43,19 @@ open class MobileActiveSessionActionsBottomSheet(
     }
 
     private fun setupDisconnectedButton() {
+        val session = mSessionPresenter?.session ?: return
         val disconnectButton = contentView?.disconnect_session_button
 
-        if (mSessionPresenter?.isDisconnectable() == true) {
+        if (mSessionPresenter.isDisconnectable()) {
             disconnectButton?.setOnClickListener {
-                mListener?.disconnectSessionPressed()
+                if (isSDKLessOrEqualToNMR1()) {
+                    SyncUnavailableDialog(parentFragmentManager)
+                        .show()
+                } else {
+                    EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
+                    airBeamReconnector.disconnect(session)
+                }
+                dismiss()
             }
         } else {
             disconnectButton?.visibility = View.GONE
@@ -45,8 +66,8 @@ open class MobileActiveSessionActionsBottomSheet(
         val stopButton = contentView?.stop_session_button
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
+            FinishSessionConfirmationDialog(parentFragmentManager, session).show()
             dismiss()
-            FinishSessionConfirmationDialog(parentFragmentManager, mListener, session).show()
         }
     }
 
@@ -54,7 +75,10 @@ open class MobileActiveSessionActionsBottomSheet(
         val addNoteButton = contentView?.add_note_button
         val session = mSessionPresenter?.session ?: return
         addNoteButton?.setOnClickListener {
-            mListener?.addNotePressed()
+            AddNoteBottomSheet(session, requireActivity(), errorHandler, permissionsManager).show(
+                parentFragmentManager
+            )
+            dismiss()
         }
     }
 

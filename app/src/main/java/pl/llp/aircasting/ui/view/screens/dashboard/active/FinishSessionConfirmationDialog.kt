@@ -7,20 +7,27 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.color
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseDialog
+import pl.llp.aircasting.util.Settings
+import javax.inject.Inject
 
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    protected val mListener: FinishSessionListener?,
     protected val mSession: Session
-) : BaseDialog(mFragmentManager) {
+) : BaseDialog(mFragmentManager),
+    FinishMobileSessionListener {
     private lateinit var mView: View
 
     override fun setupView(inflater: LayoutInflater): View {
+        rootActivity = requireActivity()
+        (rootActivity.application as AircastingApplication).appComponent.inject(this)
+
         mView = inflater.inflate(R.layout.finish_session_confirmation_dialog, null)
 
         mView.informations_text_view.text = buildDescription()
@@ -60,7 +67,7 @@ open class FinishSessionConfirmationDialog(
     }
 
     protected open fun finishSessionConfirmed() {
-        mListener?.onFinishSessionConfirmed(mSession)
+        onFinishMobileSessionConfirmed(mSession)
         dismiss()
     }
 
@@ -69,4 +76,9 @@ open class FinishSessionConfirmationDialog(
             ResourcesCompat.getColor(it.resources, R.color.aircasting_blue_400, null)
         } ?: Color.GRAY
     }
+
+    @Inject
+    override lateinit var settings: Settings
+
+    override lateinit var rootActivity: FragmentActivity
 }

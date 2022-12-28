@@ -8,16 +8,12 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.active.CameraPermissionHelperDialog
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewController
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
-import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
-import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
@@ -43,8 +39,7 @@ open class MapController(
     mSettings,
     mApiServiceFactory
 ),
-    SessionDetailsViewMvc.Listener,
-    AddNoteBottomSheet.Listener {
+    SessionDetailsViewMvc.Listener {
     private var mLocateRequested = false
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -76,44 +71,17 @@ open class MapController(
 
     private fun requestLocation() {
         mLocateRequested = true
-        LocationHelper.checkLocationServicesSettings(rootActivity)
+        LocationHelper.checkLocationServicesSettings(mRootActivity)
     }
 
     fun onLocationSettingsSatisfied() {
         LocationHelper.start()
     }
 
-    override fun addNoteClicked(session: Session) {
-        AddNoteBottomSheet(this, session, rootActivity, mErrorHandler, permissionsManager).show(
-            fragmentManager
-        )
-    }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        val event = StopRecordingEvent(session.uuid)
-        EventBus.getDefault().post(event)
-
-        rootActivity.finish()
-    }
-
     override fun onSessionDisconnectClicked(session: Session) {
         EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
         airBeamReconnector.disconnect(session)
-        rootActivity.finish()
-    }
-
-    override fun addNotePressed(session: Session, note: Note) {
-        val event = NoteCreatedEvent(session, note)
-        EventBus.getDefault().post(event)
-        mViewMvc?.addNote(note)
-    }
-
-    override fun showCameraHelperDialog() {
-        CameraPermissionHelperDialog(mFragmentManager) {
-            permissionsManager.requestCameraPermission(
-                rootActivity
-            )
-        }.show()
+        mRootActivity.finish()
     }
 
     override fun deleteNotePressed(

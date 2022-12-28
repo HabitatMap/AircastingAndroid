@@ -8,10 +8,12 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.util.extensions.visible
@@ -19,17 +21,11 @@ import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
 
 class AddNoteBottomSheet(
-    private val mListener: Listener,
     private var mSession: Session,
     private val mContext: Context?,
     private val mErrorHandler: ErrorHandler,
     private val mPermissionsManager: PermissionsManager
 ) : BottomSheet() {
-    interface Listener {
-        fun addNotePressed(session: Session, note: Note)
-        fun showCameraHelperDialog()
-    }
-
     private var noteInput: EditText? = null
     private var mPhotoPath: String? = null
     private val mDate: Date = Date()
@@ -95,7 +91,8 @@ class AddNoteBottomSheet(
                     mSessionNotes.last().number + 1,
                     mPhotoPath
                 )
-                mListener.addNotePressed(mSession, note)
+                val event = NoteCreatedEvent(mSession, note)
+                EventBus.getDefault().post(event)
                 dismiss()
             } else {
                 note = Note(
@@ -106,7 +103,8 @@ class AddNoteBottomSheet(
                     0,
                     mPhotoPath
                 )
-                mListener.addNotePressed(mSession, note)
+                val event = NoteCreatedEvent(mSession, note)
+                EventBus.getDefault().post(event)
                 dismiss()
             }
         } else showEmptyError()
@@ -139,6 +137,10 @@ class AddNoteBottomSheet(
     }
 
     private fun showCameraHelperDialog() {
-        mListener.showCameraHelperDialog()
+        CameraPermissionHelperDialog(parentFragmentManager) {
+            mPermissionsManager.requestCameraPermission(
+                requireActivity()
+            )
+        }.show()
     }
 }

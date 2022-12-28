@@ -95,8 +95,6 @@ abstract class SessionsController(
     }
 
     // TODO: Refactor to separate interface for Mobile Active Sessions
-    override fun onDisconnectSessionClicked(session: Session) {}
-    override fun addNoteClicked(session: Session) {}
     override fun onReconnectSessionClicked(session: Session) {}
 
     override fun onExpandSessionCard(session: Session) {

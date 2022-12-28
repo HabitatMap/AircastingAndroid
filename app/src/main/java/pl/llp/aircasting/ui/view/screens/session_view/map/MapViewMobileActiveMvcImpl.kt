@@ -5,47 +5,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.MobileActiveSessionActionsBottomSheet
 
 class MapViewMobileActiveMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager
-) : MapViewMvcImpl(inflater, parent, supportFragmentManager),
-    MobileActiveSessionActionsBottomSheet.Listener {
+) : MapViewMvcImpl(inflater, parent, supportFragmentManager) {
 
     override fun bindSessionMeasurementsDescription() {
         mSessionMeasurementsDescription?.text =
             context.getString(R.string.session_last_sec_measurements_description)
-    }
-
-    override fun addNotePressed() {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.addNoteClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun onFinishSessionConfirmed(session: Session) {
-        val session = mSessionPresenter?.session ?: return
-
-        for (listener in listeners) {
-            listener.onFinishSessionConfirmed(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun disconnectSessionPressed() {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.onSessionDisconnectClicked(session)
-        }
-        dismissBottomSheet()
-    }
-
-    override fun onFinishAndSyncSessionConfirmed(session: Session) {
-        // do nothing
     }
 
     override fun getSessionType(): Session.Type {

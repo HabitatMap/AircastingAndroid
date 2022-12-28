@@ -7,12 +7,9 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvc
 interface MobileActiveSessionViewMvc:
     SessionViewMvc<MobileActiveSessionViewMvc.Listener> {
 
-    interface DisconnectedViewListener: FinishSessionListener {
+    interface DisconnectedViewListener {
         fun onSessionReconnectClicked(session: Session)
     }
 
-    interface Listener: SessionCardListener, DisconnectedViewListener {
-        fun onSessionDisconnectClicked(session: Session)
-        fun addNoteClicked(session: Session)
-    }
+    interface Listener: SessionCardListener, DisconnectedViewListener
 }

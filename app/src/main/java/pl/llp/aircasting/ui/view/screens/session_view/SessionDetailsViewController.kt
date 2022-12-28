@@ -33,7 +33,7 @@ import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class SessionDetailsViewController(
-    protected val rootActivity: AppCompatActivity,
+    protected val mRootActivity: AppCompatActivity,
     protected val mSessionsViewModel: SessionsViewModel,
     protected var mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
@@ -41,7 +41,7 @@ abstract class SessionDetailsViewController(
     val fragmentManager: FragmentManager,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    protected val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
+    protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity),
     private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
     private val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,
@@ -54,14 +54,14 @@ abstract class SessionDetailsViewController(
     private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
         FixedSessionObserver(
-            rootActivity,
+            mRootActivity,
             mSessionsViewModel,
             mSessionPresenter,
             this::onSessionChanged
         )
     } else {
         MobileSessionObserver(
-            rootActivity,
+            mRootActivity,
             mSessionsViewModel,
             mSessionPresenter,
             this::onSessionChanged
@@ -80,8 +80,8 @@ abstract class SessionDetailsViewController(
 
     open fun onResume() {
         mShouldRefreshStatistics.set(true)
-        rootActivity.adjustMenuVisibility(false)
-        if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        mRootActivity.adjustMenuVisibility(false)
+        if (mSettings.isKeepScreenOnEnabled()) mRootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun onSessionChanged(coroutineScope: CoroutineScope) {
@@ -113,11 +113,11 @@ abstract class SessionDetailsViewController(
 
 
     override fun onHLUDialogValidationFailed() {
-        HLUValidationErrorToast.show(rootActivity)
+        HLUValidationErrorToast.show(mRootActivity)
     }
 
     fun onDestroy() {
-        rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        mRootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         EventBus.getDefault().unregister(this)
         mViewMvc?.unregisterListener(this)
         mViewMvc = null
@@ -127,7 +127,7 @@ abstract class SessionDetailsViewController(
         startEditNoteDialog(session, noteNumber)
 
         session?.let {
-            rootActivity.lifecycleScope.launch {
+            mRootActivity.lifecycleScope.launch {
                 mDownloadService.download(session.uuid)
                     .onSuccess {
                         withContext(Dispatchers.IO) { mSessionRepository.update(session) }

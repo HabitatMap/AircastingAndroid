@@ -20,9 +20,7 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
 
     interface Listener: HLUListener {
         fun locateRequested()
-        fun addNoteClicked(session: Session)
         fun noteMarkerClicked(session: Session?, noteNumber: Int)
-        fun onFinishSessionConfirmed(session: Session)
         fun onSessionDisconnectClicked(session: Session)
         fun refreshSession()
     }

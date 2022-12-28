@@ -4,15 +4,12 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.common.ObservableViewMvc
-import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionListener
 
 interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
 
-    interface Listener : FinishSessionListener {
+    interface Listener {
         fun onRecordNewSessionClicked()
         fun onExploreNewSessionsClicked()
-        fun onDisconnectSessionClicked(session: Session)
-        fun addNoteClicked(session: Session)
         fun onReconnectSessionClicked(session: Session)
         fun onFollowButtonClicked(session: Session)
         fun onUnfollowButtonClicked(session: Session)
