@@ -146,7 +146,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         return -1
     }
 
-    open fun reloadSession(session: Session) {
+    fun reloadSession(session: Session) {
         update(session)
     }
 
