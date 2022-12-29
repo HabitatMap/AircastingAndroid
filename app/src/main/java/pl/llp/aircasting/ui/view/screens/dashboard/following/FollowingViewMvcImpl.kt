@@ -20,6 +20,7 @@ open class FollowingViewMvcImpl(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<SessionCardListener> {
         return FollowingRecyclerAdapter(
+            mRecyclerSessions,
             inflater,
             this,
             supportFragmentManager

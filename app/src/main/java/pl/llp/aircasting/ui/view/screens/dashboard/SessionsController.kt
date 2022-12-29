@@ -30,7 +30,6 @@ import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.events.UpdateSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.extensions.backToUIThread
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.showToast
 
@@ -104,16 +103,14 @@ abstract class SessionsController(
     }
 
     private fun reloadSession(session: Session) {
-        runOnIOThread { scope ->
+        mRootActivity?.lifecycleScope?.launch {
             val dbSessionWithMeasurements =
-                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
+                mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
+
             dbSessionWithMeasurements?.let {
                 val reloadedSession = Session(it)
-
-                backToUIThread(scope) {
-                    mViewMvc?.reloadSession(reloadedSession)
-                    mViewMvc?.hideLoaderFor(session)
-                }
+                mViewMvc?.hideLoaderFor(session)
+                mViewMvc?.reloadSession(reloadedSession)
             }
         }
     }

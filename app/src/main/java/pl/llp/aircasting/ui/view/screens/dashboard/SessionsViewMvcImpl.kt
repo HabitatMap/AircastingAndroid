@@ -109,11 +109,11 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     override fun showLoaderFor(session: Session) {
-        mAdapter.showLoaderFor(session)
+        mAdapter.toggleLoaderFor(session, true)
     }
 
     override fun hideLoaderFor(session: Session) {
-        mAdapter.hideLoaderFor(session)
+        mAdapter.toggleLoaderFor(session, false)
     }
 
     override fun hideLoaderFor(deviceId: String) {
@@ -121,11 +121,11 @@ abstract class SessionsViewMvcImpl<ListenerType>(
     }
 
     override fun showReconnectingLoaderFor(session: Session) {
-        mAdapter.showReconnectingLoaderFor(session)
+        mAdapter.toggleReconnectingLoaderFor(session, true)
     }
 
     override fun hideReconnectingLoaderFor(session: Session) {
-        mAdapter.hideReconnectingLoaderFor(session)
+        mAdapter.toggleReconnectingLoaderFor(session, false)
     }
 
     override fun reloadSession(session: Session) {

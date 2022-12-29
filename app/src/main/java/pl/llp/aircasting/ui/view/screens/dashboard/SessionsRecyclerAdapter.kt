@@ -1,20 +1,24 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
 import android.view.LayoutInflater
+import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.extensions.found
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
 
 abstract class SessionsRecyclerAdapter<ListenerType>(
+    private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager,
     protected val mSessionsViewModel: SessionsViewModel = SessionsViewModel()
@@ -68,10 +72,9 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             if (found(position)) {
                 val presenter = mSessionPresenters[position]
                 mSessionsViewModel.viewModelScope.launch {
-                    withContext(Dispatchers.IO) {
-                        presenter.session =
-                            prepareSession(it, mSessionPresenters[position].expanded)
-                    }
+                    presenter.session =
+                        prepareSession(it, mSessionPresenters[position].expanded)
+
                     presenter.chartData?.refresh(it)
 
                     mSessionPresenters.updateItemAt(position, presenter)
@@ -90,52 +93,39 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
-    private fun found(position: Int) = position != -1
-
     protected open fun initSessionPresenter(
         session: Session,
         sensorThresholds: Map<String, SensorThreshold>
-    ) = SessionPresenter(
-        session,
-        sensorThresholds
-    )
+    ) = SessionPresenter(session, sensorThresholds)
 
-    fun showLoaderFor(session: Session) {
+    fun toggleLoaderFor(session: Session, loading: Boolean) {
         val position = mSessionPresenters.indexOf(SessionPresenter(session))
         if (found(position)) {
-            val sessionPresenter = mSessionPresenters[position]
-            sessionPresenter?.loading = true
+            mSessionPresenters[position]?.loading = loading
 
-            notifyItemChanged(position)
+            toggleLoaderAt(position, loading)
         }
     }
 
-    fun hideLoaderFor(session: Session) {
-        val position = mSessionPresenters.indexOf(SessionPresenter(session))
-        if (found(position)) {
-            mSessionPresenters[position]?.loading = false
-
-            notifyItemChanged(position)
-        }
+    private fun toggleLoaderAt(position: Int, loading: Boolean) {
+        val view = recyclerView?.layoutManager?.findViewByPosition(position)
+        val loader = view?.findViewById<ImageView>(R.id.loader)
+        if (loading)
+            loader?.startAnimation()
+        else
+            loader?.stopAnimation()
     }
 
-    fun showReconnectingLoaderFor(session: Session) {
+    fun toggleReconnectingLoaderFor(
+        session: Session,
+        reconnecting: Boolean
+    ) {
         val position = mSessionPresenters.indexOf(SessionPresenter(session))
         if (found(position)) {
             val sessionPresenter = mSessionPresenters[position]
-            sessionPresenter?.reconnecting = true
+            sessionPresenter?.reconnecting = reconnecting
 
-            notifyItemChanged(position)
-        }
-    }
-
-    fun hideReconnectingLoaderFor(session: Session) {
-        val position = mSessionPresenters.indexOf(SessionPresenter(session))
-        if (found(position)) {
-            val sessionPresenter = mSessionPresenters[position]
-            sessionPresenter?.reconnecting = false
-
-            notifyItemChanged(position)
+            toggleLoaderAt(position, reconnecting)
         }
     }
 
@@ -144,7 +134,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         if (found(position)) {
             mSessionPresenters[position]?.loading = false
 
-            notifyItemChanged(position)
+            toggleLoaderAt(position, false)
         }
     }
 
@@ -156,7 +146,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         return -1
     }
 
-    fun reloadSession(session: Session) {
+    open fun reloadSession(session: Session) {
         update(session)
     }
 

@@ -24,6 +24,7 @@ class MobileActiveViewMvcImpl(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<MobileActiveSessionViewMvc.Listener> {
         return MobileActiveRecyclerAdapter(
+            mRecyclerSessions,
             inflater,
             this,
             supportFragmentManager

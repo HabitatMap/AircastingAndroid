@@ -30,6 +30,8 @@ fun EventBus.safeRegister(subscriber: Any) {
     }
 }
 
+fun found(position: Int) = position != -1
+
 fun labelFormat(value: Float?): String {
     return "%d".format(value?.toInt())
 }

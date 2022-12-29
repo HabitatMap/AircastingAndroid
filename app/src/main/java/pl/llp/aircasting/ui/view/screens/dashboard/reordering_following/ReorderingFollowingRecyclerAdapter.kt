@@ -6,6 +6,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.RecyclerView
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -21,6 +22,7 @@ import pl.llp.aircasting.util.ItemTouchHelperAdapter
 import pl.llp.aircasting.util.Settings
 
 open class ReorderingFollowingRecyclerAdapter(
+    private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
     private val mListener: SessionCardListener,
     supportFragmentManager: FragmentManager,
@@ -33,7 +35,13 @@ open class ReorderingFollowingRecyclerAdapter(
     private var mSessionFollower: SessionFollower =
         SessionFollower(mSettings, mActiveSessionsRepository, mSessionRepository),
     sessionsViewModel: SessionsViewModel = SessionsViewModel()
-) : FollowingRecyclerAdapter(mInflater, mListener, supportFragmentManager, sessionsViewModel),
+) : FollowingRecyclerAdapter(
+    recyclerView,
+    mInflater,
+    mListener,
+    supportFragmentManager,
+    sessionsViewModel
+),
     ItemTouchHelperAdapter {
 
     @SuppressLint("ClickableViewAccessibility")

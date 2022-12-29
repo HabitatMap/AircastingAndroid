@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
-import pl.llp.aircasting.util.ItemTouchHelperAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionCardListener
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingViewMvcImpl
+import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
+import pl.llp.aircasting.util.ItemTouchHelperAdapter
 
 class ReorderingFollowingViewMvcImpl(
     inflater: LayoutInflater,
@@ -22,6 +22,7 @@ class ReorderingFollowingViewMvcImpl(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<SessionCardListener> {
         return ReorderingFollowingRecyclerAdapter(
+            mRecyclerSessions,
             inflater,
             this,
             supportFragmentManager
@@ -37,5 +38,4 @@ class ReorderingFollowingViewMvcImpl(
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
     }
-
 }

@@ -20,6 +20,7 @@ class FixedViewMvcImpl(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<FixedSessionViewMvc.Listener> {
         return FixedRecyclerAdapter(
+            mRecyclerSessions,
             inflater,
             this,
             supportFragmentManager

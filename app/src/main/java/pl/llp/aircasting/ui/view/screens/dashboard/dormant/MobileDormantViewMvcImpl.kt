@@ -25,6 +25,7 @@ class MobileDormantViewMvcImpl(
         supportFragmentManager: FragmentManager
     ): SessionsRecyclerAdapter<MobileDormantSessionViewMvc.Listener> {
         return MobileDormantRecyclerAdapter(
+            mRecyclerSessions,
             inflater,
             this,
             supportFragmentManager

@@ -22,6 +22,10 @@ class MobileDormantSessionViewMvcImpl(
         return false
     }
 
+    override fun bindMeasurementsTable() {
+        super.bindMeasurementsTable()
+    }
+
     override fun showExpandedMeasurementsTableValues() = true
 
     override fun bindCollapsedMeasurementsDescription() {
