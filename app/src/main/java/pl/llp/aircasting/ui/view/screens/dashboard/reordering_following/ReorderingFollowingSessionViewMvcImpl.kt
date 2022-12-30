@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingSessionViewMvcImpl
+import pl.llp.aircasting.util.extensions.inVisible
 
 class ReorderingFollowingSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -15,6 +16,7 @@ class ReorderingFollowingSessionViewMvcImpl(
 
     init {
         mReorderSessionButton = findViewById(R.id.reorder_session_button)
+        mActionsButton.inVisible()
     }
 
     override fun setExpandCollapseButton() {
