@@ -18,7 +18,8 @@ open class FixedRecyclerAdapter<ListenerType : FixedSessionViewMvc.Listener>(
 ) : SessionsRecyclerAdapter<FixedSessionViewMvc.Listener>(
     recyclerView,
     mInflater,
-    supportFragmentManager
+    supportFragmentManager,
+    sessionsViewModel
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

@@ -10,14 +10,14 @@ class MobileDormantSessionViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup,
     supporFragmentManager: FragmentManager
-): SessionViewMvcImpl<MobileDormantSessionViewMvc.Listener>(inflater, parent, supporFragmentManager),
+) : SessionViewMvcImpl<MobileDormantSessionViewMvc.Listener>(
+    inflater,
+    parent,
+    supporFragmentManager
+),
     MobileDormantSessionViewMvc {
     override fun showMeasurementsTableValues(): Boolean {
         return false
-    }
-
-    override fun bindMeasurementsTable() {
-        super.bindMeasurementsTable()
     }
 
     override fun showExpandedMeasurementsTableValues() = true
@@ -27,6 +27,7 @@ class MobileDormantSessionViewMvcImpl(
     }
 
     override fun bindExpandedMeasurementsDescription() {
-        mMeasurementsDescription?.text = context.getString(R.string.session_avg_measurements_description)
+        mMeasurementsDescription?.text =
+            context.getString(R.string.session_avg_measurements_description)
     }
 }
