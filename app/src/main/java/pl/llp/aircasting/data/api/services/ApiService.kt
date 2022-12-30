@@ -31,16 +31,16 @@ interface ApiService {
     suspend fun downloadSession(@Query("uuid") uuid: String): SessionResponse
 
     @GET(ApiConstants.urlDownloadSession)
-    fun downloadSessionWithMeasurements(
+    suspend fun downloadSessionWithMeasurements(
         @Query("uuid") uuid: String,
         @Query("stream_measurements") streamMeasurements: Boolean = true
-    ): Call<SessionWithMeasurementsResponse>
+    ): SessionWithMeasurementsResponse
 
     @GET(ApiConstants.urlDownloadFixedMeasurements)
-    fun downloadFixedMeasurements(
+    suspend fun downloadFixedMeasurements(
         @Query("uuid") uuid: String,
         @Query("last_measurement_sync") lastMeasurementSync: String
-    ): Call<SessionWithMeasurementsResponse>
+    ): SessionWithMeasurementsResponse
 
     @GET(urlLogin)
     fun login(): Call<UserResponse>

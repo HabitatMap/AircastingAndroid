@@ -33,8 +33,8 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionById(id)
     }
 
-    fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
-        return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
+    suspend fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+        return mDatabase.sessions().loadSessionAndMeasurementsByUUIDSuspend(uuid)
     }
 
     fun getSessionIdByUUID(uuid: String): Long? {

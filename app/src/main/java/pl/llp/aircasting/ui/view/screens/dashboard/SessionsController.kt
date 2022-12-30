@@ -3,7 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -30,7 +30,10 @@ abstract class SessionsController(
     private var context: Context?,
     private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
     protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity!!),
-    val mDownloadService: SessionDownloadService = SessionDownloadService(mApiService, mErrorHandler),
+    val mDownloadService: SessionDownloadService = SessionDownloadService(
+        mApiService,
+        mErrorHandler
+    ),
     mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mDownloadMeasurementsService: DownloadMeasurementsService =
         DownloadMeasurementsService(mApiService, mErrorHandler),
@@ -82,16 +85,14 @@ abstract class SessionsController(
         GraphActivity.start(mRootActivity, sensorName, session.uuid, session.tab)
     }
 
-    private fun reloadSession(session: Session) {
-        mRootActivity?.lifecycleScope?.launch {
-            val dbSessionWithMeasurements =
-                mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
+    private suspend fun reloadSession(session: Session) {
+        val dbSessionWithMeasurements =
+            mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
 
-            dbSessionWithMeasurements?.let {
-                val reloadedSession = Session(it)
-                mViewMvc?.hideLoaderFor(session)
-                mViewMvc?.reloadSession(reloadedSession)
-            }
+        dbSessionWithMeasurements?.let {
+            val reloadedSession = Session(it)
+            mViewMvc?.hideLoaderFor(session)
+            mViewMvc?.reloadSession(reloadedSession)
         }
     }
 
@@ -100,7 +101,9 @@ abstract class SessionsController(
 
     override fun onExpandSessionCard(session: Session) {
         mViewMvc?.showLoaderFor(session)
-        val finallyCallback = { reloadSession(session) }
-        mDownloadMeasurementsService.downloadMeasurements(session, finallyCallback)
+        mSessionsViewModel.viewModelScope.launch {
+            mDownloadMeasurementsService.downloadMeasurements(session)
+            reloadSession(session)
+        }
     }
 }

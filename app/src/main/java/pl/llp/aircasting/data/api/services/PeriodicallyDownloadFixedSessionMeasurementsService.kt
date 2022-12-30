@@ -1,19 +1,18 @@
 package pl.llp.aircasting.data.api.services
 
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import retrofit2.Call
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 
 
-class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    private val sessionsRepository = SessionsRepository()
-    private val thread = DownloadThread()
-    private val downloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler)
+class PeriodicallyDownloadFixedSessionMeasurementsService(
+    private val apiService: ApiService,
+    private val errorHandler: ErrorHandler,
+    private val sessionsRepository: SessionsRepository = SessionsRepository(),
+    private val downloadMeasurementsService: DownloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler),
+) {
+    private val thread: DownloadThread = DownloadThread()
 
     fun start() {
         thread.start()
@@ -31,13 +30,11 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
         thread.paused = false
     }
 
-    // TODO: consider using WorkManager
-    // https://developer.android.com/topic/libraries/architecture/workmanager/basics
+    // TODO: Convert to coroutine
     private inner class DownloadThread : Thread() {
         private val POLL_INTERVAL = 60 * 1000L // 1 minute
         var paused = false
-        private var call: Call<SessionWithMeasurementsResponse>? = null
-
+        private var call: Job? = null
 
         override fun run() {
             try {
@@ -67,10 +64,10 @@ class PeriodicallyDownloadFixedSessionMeasurementsService(private val apiService
             }
         }
 
+        @OptIn(DelicateCoroutinesApi::class)
         private fun downloadMeasurements(sessionId: Long, session: Session) {
-            GlobalScope.launch(Dispatchers.IO) {
-                call =
-                    downloadMeasurementsService.enqueueDownloadingMeasurementsForFixed(sessionId, session)
+            call = GlobalScope.launch {
+                downloadMeasurementsService.downloadMeasurementsForFixed(session, sessionId)
             }
         }
     }

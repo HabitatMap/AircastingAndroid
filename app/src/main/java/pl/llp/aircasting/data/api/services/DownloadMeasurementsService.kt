@@ -1,124 +1,106 @@
 package pl.llp.aircasting.data.api.services
 
+import android.database.sqlite.SQLiteConstraintException
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
-import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.DateConverter
+import pl.llp.aircasting.util.events.LogoutEvent
+import pl.llp.aircasting.util.exceptions.DBInsertException
+import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.runOnIOThread
-import retrofit2.Call
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.services.AveragingService
+import java.util.concurrent.atomic.AtomicBoolean
 
 class DownloadMeasurementsService(
     private val apiService: ApiService,
-    private val errorHandler: ErrorHandler
+    private val errorHandler: ErrorHandler,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val callCanceled: AtomicBoolean = AtomicBoolean(false),
+    private val sessionsRepository: SessionsRepository = SessionsRepository(),
+    private val measurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
+    private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
+    private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
 ) {
-    private val sessionsRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val activeMeasurementsRepository = ActiveSessionMeasurementsRepository()
-    private val measurementsRepository = MeasurementsRepository()
 
-    fun downloadMeasurements(session: Session, finallyCallback: (() -> Unit)? = null) {
-        runOnIOThread {
-            val dbSession = sessionsRepository.getSessionWithMeasurementsByUUID(session.uuid)
-            dbSession?.let {
-                enqueueDownloadingMeasurements(dbSession, session, finallyCallback)
-            }
+    init {
+        EventBus.getDefault().safeRegister(this)
+    }
+
+    suspend fun downloadMeasurements(session: Session) {
+        val dbSession = sessionsRepository.getSessionWithMeasurementsByUUID(session.uuid)
+        dbSession?.let {
+            downloadMeasurements(session, dbSession)
         }
     }
 
-    private fun enqueueDownloadingMeasurements(
-        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+    private suspend fun downloadMeasurements(
         session: Session,
-        finallyCallback: (() -> Unit)? = null
-    ): Call<SessionWithMeasurementsResponse>? {
-        return when (session.type) {
-            Session.Type.MOBILE -> enqueueDownloadingMeasurementsForMobile(
-                dbSessionWithMeasurements,
+        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+    ) {
+        when (session.type) {
+            Session.Type.MOBILE -> downloadMeasurementsForMobile(
                 session,
-                finallyCallback
+                dbSessionWithMeasurements
             )
-            Session.Type.FIXED -> enqueueDownloadingMeasurementsForFixed(
-                dbSessionWithMeasurements,
+            Session.Type.FIXED -> downloadMeasurementsForFixed(
                 session,
-                finallyCallback
+                dbSessionWithMeasurements.session.id
             )
         }
     }
 
-    private fun enqueueDownloadingMeasurementsForMobile(
-        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+    private suspend fun downloadMeasurementsForMobile(
         session: Session,
-        finallyCallback: (() -> Unit)? = null
-    ): Call<SessionWithMeasurementsResponse>? {
+        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+    ) = withContext(dispatcher) {
         if (hasMeasurements(dbSessionWithMeasurements)) {
-            finallyCallback?.invoke()
-            return null
+            return@withContext
         }
-
-        val call = apiService.downloadSessionWithMeasurements(session.uuid)
 
         val sessionId = dbSessionWithMeasurements.session.id
 
-        call.enqueue(
-            DownloadMeasurementsCallback(
-                sessionId,
-                session,
-                sessionsRepository,
-                measurementStreamsRepository,
-                activeMeasurementsRepository,
-                measurementsRepository,
-                errorHandler,
-                finallyCallback
-            )
-        )
-
-        return call
+        runCatching {
+            apiService.downloadSessionWithMeasurements(session.uuid)
+        }.onSuccess {
+            saveSessionData(it, session, sessionId)
+        }.onFailure {
+            errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+        }
     }
 
     private fun hasMeasurements(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject): Boolean {
         return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
-    private fun enqueueDownloadingMeasurementsForFixed(
-        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+    suspend fun downloadMeasurementsForFixed(
         session: Session,
-        finallyCallback: (() -> Unit)? = null
-    ): Call<SessionWithMeasurementsResponse> {
-        return enqueueDownloadingMeasurementsForFixed(
-            dbSessionWithMeasurements.session.id,
-            session,
-            finallyCallback
-        )
-    }
-
-    fun enqueueDownloadingMeasurementsForFixed(
         sessionId: Long,
-        session: Session,
-        finallyCallback: (() -> Unit)? = null
-    ): Call<SessionWithMeasurementsResponse> {
+    ) = withContext(dispatcher) {
         val lastMeasurementSyncTimeString = lastMeasurementTimeString(sessionId, session)
 
-        val call =
-            apiService.downloadFixedMeasurements(session.uuid, lastMeasurementSyncTimeString)
-
-        call.enqueue(
-            DownloadMeasurementsCallback(
-                sessionId,
-                session,
-                sessionsRepository,
-                measurementStreamsRepository,
-                activeMeasurementsRepository,
-                measurementsRepository,
-                errorHandler,
-                finallyCallback
+        runCatching {
+            apiService.downloadFixedMeasurements(
+                session.uuid,
+                lastMeasurementSyncTimeString
             )
-        )
-
-        return call
+        }.onSuccess {
+            saveSessionData(it, session, sessionId)
+        }.onFailure {
+            errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+        }
     }
 
     private fun lastMeasurementTimeString(sessionId: Long, session: Session): String {
@@ -128,5 +110,66 @@ class DownloadMeasurementsService(
 
         return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, session.isExternal)
     }
-}
 
+    private fun saveSessionData(
+        response: SessionWithMeasurementsResponse,
+        session: Session,
+        sessionId: Long
+    ) {
+        response.streams.let { streams ->
+            val streamResponses = streams.values
+            if (!callCanceled.get()) {
+                try {
+                    streamResponses.forEach { streamResponse ->
+                        saveStreamData(streamResponse, session, sessionId)
+                    }
+                    updateSessionEndTime(session, response.end_time)
+                } catch (e: SQLiteConstraintException) {
+                    errorHandler.handle(DBInsertException(e))
+                }
+            }
+        }
+    }
+
+    private fun saveStreamData(
+        streamResponse: SessionStreamWithMeasurementsResponse,
+        session: Session,
+        sessionId: Long
+    ) {
+        val averagingService = AveragingService.get(sessionId)
+        val stream = MeasurementStream(streamResponse)
+        val streamId = measurementStreamsRepository.getIdOrInsert(
+            sessionId,
+            stream
+        )
+        val averagingFrequency = averagingService?.currentAveragingThreshold()?.windowSize ?: 1
+        val measurements = MeasurementsFactory.get(
+            streamResponse.measurements,
+            averagingFrequency,
+            session.isExternal
+        )
+        measurementsRepository.insertAll(streamId, sessionId, measurements)
+
+        // We are using active_session_measurements table for following sessions to optimize the app's performance
+        // Because of that when we launch the app after some time of inactivity we have to insert all
+        // new measurements for following session to active_measurements_table apart from the basic measurements db table
+
+        if (session.isFixed() && session.followedAt != null) {
+            activeMeasurementsRepository.createOrReplaceMultipleRows(
+                streamId,
+                sessionId,
+                measurements
+            )
+        }
+    }
+
+    private fun updateSessionEndTime(session: Session, endTimeString: String?) {
+        if (endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
+        sessionsRepository.update(session)
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: LogoutEvent) {
+        callCanceled.set(true)
+    }
+}

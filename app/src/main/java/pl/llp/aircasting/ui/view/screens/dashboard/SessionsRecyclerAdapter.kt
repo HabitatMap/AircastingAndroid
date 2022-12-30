@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -66,7 +67,10 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
-    private fun update(session: Session?) {
+    private fun update(
+        session: Session?,
+        coroutineScope: CoroutineScope = mSessionsViewModel.viewModelScope
+    ) {
         session?.let { it ->
             val position = mSessionPresenters.indexOf(SessionPresenter(it))
             if (found(position)) {
