@@ -56,4 +56,14 @@ class FollowingController(
     override fun onCollapseSessionCard(session: Session) {
         expandedCards()?.remove(session.uuid)
     }
+
+    override fun onFollowButtonClicked(session: Session) {
+        super.onFollowButtonClicked(session)
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
+    }
+
+    override fun onUnfollowButtonClicked(session: Session) {
+        super.onUnfollowButtonClicked(session)
+        mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
+    }
 }
