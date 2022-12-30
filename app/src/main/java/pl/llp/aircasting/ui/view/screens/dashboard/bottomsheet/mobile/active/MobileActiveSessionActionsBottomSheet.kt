@@ -76,7 +76,7 @@ open class MobileActiveSessionActionsBottomSheet(
         val session = mSessionPresenter?.session ?: return
         addNoteButton?.setOnClickListener {
             AddNoteBottomSheet(session, requireActivity(), errorHandler, permissionsManager).show(
-                parentFragmentManager
+                requireActivity().supportFragmentManager
             )
             dismiss()
         }
