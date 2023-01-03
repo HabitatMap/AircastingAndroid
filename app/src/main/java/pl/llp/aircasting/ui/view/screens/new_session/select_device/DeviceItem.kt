@@ -5,23 +5,36 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : Parcelable {
-    open val name: String
-    open val address: String
-    open val id: String
-    open val type: Type
+open class DeviceItem(
+    private val mBluetoothDevice: BluetoothDevice? = null,
+    open val name: String = mBluetoothDevice?.name ?: "Unknown",
+    open val address: String = mBluetoothDevice?.address ?: "",
+    open val id: String = name.split(":", "-").last(),
+    open val type: Type = getType(name),
+    ) : Parcelable {
 
     companion object {
         private val AIRBEAM1_NAME_REGEX = "airbeam"
         private val AIRBEAM2_NAME_REGEX = "airbeam2"
         private val AIRBEAM3_NAME_REGEX = "airbeam3"
-    }
 
-    init {
-        name = mBluetoothDevice?.name ?: "Unknown"
-        address = mBluetoothDevice?.address ?: ""
-        id = name.split(":", "-").last()
-        type = getType(name)
+        private fun getType(name: String?): Type {
+            name ?: return Type.OTHER
+
+            if (name.contains(AIRBEAM2_NAME_REGEX, true)) {
+                return Type.AIRBEAM2
+            }
+
+            if (name.contains(AIRBEAM3_NAME_REGEX, true)) {
+                return Type.AIRBEAM3
+            }
+
+            if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
+                return Type.AIRBEAM1
+            }
+
+            return Type.OTHER
+        }
     }
 
     enum class Type(val value: Int) {
@@ -44,23 +57,5 @@ open class DeviceItem(private val mBluetoothDevice: BluetoothDevice? = null) : P
 
     fun isSyncable(): Boolean {
         return arrayOf(Type.AIRBEAM3).contains(type)
-    }
-
-    private fun getType(name: String?): Type {
-        name ?: return Type.OTHER
-
-        if (name.contains(AIRBEAM2_NAME_REGEX, true)) {
-            return Type.AIRBEAM2
-        }
-
-        if (name.contains(AIRBEAM3_NAME_REGEX, true)) {
-            return Type.AIRBEAM3
-        }
-
-        if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
-            return Type.AIRBEAM1
-        }
-
-        return Type.OTHER
     }
 }
