@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam2
 
 import android.bluetooth.BluetoothSocket
+import android.util.Log
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
@@ -13,7 +14,7 @@ import java.util.*
 open class AirBeam2Connector(
     mSettings: Settings,
     private val mErrorHandler: ErrorHandler
-): AirBeamConnector() {
+) : AirBeamConnector() {
     private val mAirBeamConfigurator = AirBeam2Configurator(mSettings)
     private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
 
@@ -54,7 +55,7 @@ open class AirBeam2Connector(
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         private val mmSocket: BluetoothSocket? by lazy(LazyThreadSafetyMode.NONE) {
             val device = deviceItem.bluetoothDevice
-            device?.createInsecureRfcommSocketToServiceRecord(SPP_SERIAL)
+            device?.createRfcommSocketToServiceRecord(SPP_SERIAL)
         }
 
         private lateinit var mOutputStream: OutputStream
@@ -73,8 +74,9 @@ open class AirBeam2Connector(
                     connectionEstablished.set(true)
                     mAirBeam2Reader.run(socket.inputStream)
                 }
-            } catch(e: IOException) {
-                mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector: IOException connection established ${connectionEstablished.get()}"))
+            } catch (e: IOException) {
+                Log.e("RECONNECTION LOGS", e.stackTraceToString())
+                 mErrorHandler.handle(SensorDisconnectedError("called from Airbeam2Connector: IOException connection established ${connectionEstablished.get()}"))
                 onDisconnected(deviceItem)
 
                 if (!cancelStarted.get() && !connectionEstablished.get()) {
@@ -82,7 +84,7 @@ open class AirBeam2Connector(
                     mErrorHandler.handle(AirBeamConnectionOpenFailed(e))
                     cancel()
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 onConnectionFailed(deviceItem)
 
                 mErrorHandler.handle(UnknownError(e))

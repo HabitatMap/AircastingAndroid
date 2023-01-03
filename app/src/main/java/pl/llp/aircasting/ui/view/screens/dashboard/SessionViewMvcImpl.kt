@@ -13,10 +13,8 @@ import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.expanded_session_view.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.Chart
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.MeasurementsTableContainer
 import pl.llp.aircasting.ui.view.screens.session_view.measurement_table_container.SessionCardMeasurementsTableContainer
@@ -30,8 +28,7 @@ abstract class SessionViewMvcImpl<ListenerType>(
     parent: ViewGroup,
     supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<ListenerType>(),
-    SessionViewMvc<ListenerType>,
-    SessionActionsBottomSheetListener {
+    SessionViewMvc<ListenerType> {
     protected val mLayoutInflater: LayoutInflater = inflater
     protected val mMeasurementsTableContainer: MeasurementsTableContainer
 
@@ -193,15 +190,10 @@ abstract class SessionViewMvcImpl<ListenerType>(
     }
 
     private fun bindMeasurementsDescription() {
-        val sessionStatus = mSessionPresenter?.session?.status
-        val sessionIsDisconnected = Session.Status.DISCONNECTED
-        val isFixedSession = mSessionPresenter?.isFixed()
-
-        when {
-            sessionStatus == sessionIsDisconnected && isFixedSession == false -> mMeasurementsDescription?.gone()
-            mSessionPresenter?.expanded == true -> bindExpandedMeasurementsDescription()
-            else -> bindCollapsedMeasurementsDescription()
-        }
+        if (mSessionPresenter?.expanded == true)
+            bindExpandedMeasurementsDescription()
+        else
+            bindCollapsedMeasurementsDescription()
     }
 
     protected open fun bindMeasurementsTable() {

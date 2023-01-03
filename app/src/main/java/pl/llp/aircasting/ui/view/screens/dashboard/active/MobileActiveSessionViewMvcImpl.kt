@@ -1,13 +1,13 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionViewMvcImpl
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.visible
 
 class MobileActiveSessionViewMvcImpl(
     inflater: LayoutInflater,
@@ -17,13 +17,10 @@ class MobileActiveSessionViewMvcImpl(
     inflater,
     parent,
     supportFragmentManager
-),
-    MobileActiveSessionViewMvc,
-    MobileActiveSessionViewMvc.DisconnectedViewListener {
+), MobileActiveSessionViewMvc {
 
     private val mDisconnectedView: DisconnectedView =
-        DisconnectedView(context, this.rootView, supportFragmentManager, this)
-    private val mSupportFragmentManager: FragmentManager = supportFragmentManager
+        DisconnectedView(context, this.rootView, supportFragmentManager)
 
     override fun showMeasurementsTableValues(): Boolean {
         return true
@@ -37,8 +34,7 @@ class MobileActiveSessionViewMvcImpl(
     }
 
     override fun bindExpandedMeasurementsDescription() {
-        mMeasurementsDescription?.text =
-            context.getString(R.string.session_last_sec_measurements_description)
+        bindCollapsedMeasurementsDescription()
     }
 
     override fun showChart() = true
@@ -47,27 +43,22 @@ class MobileActiveSessionViewMvcImpl(
         if (mSessionPresenter?.isDisconnected() == true) {
             mDisconnectedView.show(mSessionPresenter)
 
-            mActionsButton.visibility = View.GONE
-            mCollapseSessionButton.visibility = View.GONE
-            mExpandSessionButton.visibility = View.GONE
             mSessionCardLayout.background =
                 context.let { AppCompatResources.getDrawable(it, R.drawable.top_border) }
-            mExpandedSessionView.visibility = View.GONE
+            mCollapseSessionButton.gone()
+            mActionsButton.gone()
+            mExpandSessionButton.gone()
+            mExpandedSessionView.gone()
+            mMeasurementsDescription?.gone()
+            hideLoader()
         } else {
-            mDisconnectedView.hide()
-
-            mActionsButton.visibility = View.VISIBLE
+            mMeasurementsDescription?.visible()
+            mActionsButton.visible()
             setExpandCollapseButton()
             mSessionCardLayout.background = null
-
             super.bindExpanded()
-        }
-    }
 
-    override fun onSessionReconnectClicked(session: Session) {
-        val session = mSessionPresenter?.session ?: return
-        for (listener in listeners) {
-            listener.onSessionReconnectClicked(session)
+            mDisconnectedView.hide()
         }
     }
 }

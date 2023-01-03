@@ -129,8 +129,10 @@ open class SensorsModule {
     open fun providesAirBeamConnectorFactory(
         application: AircastingApplication,
         settings: Settings,
-        errorHandler: ErrorHandler
-    ): AirBeamConnectorFactory = AirBeamConnectorFactory(application, settings, errorHandler)
+        errorHandler: ErrorHandler,
+        bluetoothManager: BluetoothManager
+    ): AirBeamConnectorFactory =
+        AirBeamConnectorFactory(application, settings, errorHandler, bluetoothManager)
 
     @Provides
     @Singleton
@@ -138,7 +140,8 @@ open class SensorsModule {
         application: AircastingApplication,
         sessionsRepository: SessionsRepository,
         airBeamDiscoveryService: AirBeamDiscoveryService
-    ): AirBeamReconnector = AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
+    ): AirBeamReconnector =
+        AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
 
     @Provides
     @Singleton
@@ -153,8 +156,11 @@ open class SensorsModule {
 
     @Provides
     @Singleton
-    open fun providesMicrophoneReader(audioReader: AudioReader, errorHandler: ErrorHandler, settings: Settings): MicrophoneReader
-            = MicrophoneReader(audioReader, errorHandler, settings)
+    open fun providesMicrophoneReader(
+        audioReader: AudioReader,
+        errorHandler: ErrorHandler,
+        settings: Settings
+    ): MicrophoneReader = MicrophoneReader(audioReader, errorHandler, settings)
 
     @Provides
     @Singleton

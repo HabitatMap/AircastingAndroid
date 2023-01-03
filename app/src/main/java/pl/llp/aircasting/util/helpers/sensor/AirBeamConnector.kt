@@ -1,18 +1,20 @@
 package pl.llp.aircasting.util.helpers.sensor
 
-import android.bluetooth.BluetoothAdapter
-import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
 
-abstract class AirBeamConnector {
+abstract class AirBeamConnector(
+    private val bluetoothManager: BluetoothManager? = null
+) {
     interface Listener {
         fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?)
         fun onConnectionFailed(deviceItem: DeviceItem)
@@ -42,8 +44,7 @@ abstract class AirBeamConnector {
         connectionTimedOut.set(false)
 
         // Cancel discovery because it otherwise slows down the connection.
-        val bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
-        bluetoothAdapter?.cancelDiscovery()
+        bluetoothManager?.cancelDiscovery()
 
         if (!connectionStarted.get()) {
             failAfterTimeout(deviceItem)

@@ -11,13 +11,15 @@ import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.MissingDeviceAfterConnectionError
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 
 open class AirBeam3Connector(
     private val mContext: Context,
     mSettinngs: Settings,
-    private val mErrorHandler: ErrorHandler
-): AirBeamConnector(), ConnectionObserver {
+    private val mErrorHandler: ErrorHandler,
+    private val bluetoothManager: BluetoothManager
+): AirBeamConnector(bluetoothManager), ConnectionObserver {
     private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
 
     override fun start(deviceItem: DeviceItem) {

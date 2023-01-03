@@ -6,9 +6,11 @@ import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.MOBILE_ACTIVE_TAB_INDEX
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -55,6 +57,7 @@ open class MobileActiveSessionActionsBottomSheet(
                     EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
                     airBeamReconnector.disconnect(session)
                 }
+                MainActivity.navigate(context, MOBILE_ACTIVE_TAB_INDEX)
                 dismiss()
             }
         } else {

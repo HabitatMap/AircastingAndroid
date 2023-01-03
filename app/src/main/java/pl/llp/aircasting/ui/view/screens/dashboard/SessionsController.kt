@@ -96,9 +96,6 @@ abstract class SessionsController(
         }
     }
 
-    // TODO: Refactor to separate interface for Mobile Active Sessions
-    override fun onReconnectSessionClicked(session: Session) {}
-
     override fun onExpandSessionCard(session: Session) {
         mViewMvc?.showLoaderFor(session)
         mSessionsViewModel.viewModelScope.launch {

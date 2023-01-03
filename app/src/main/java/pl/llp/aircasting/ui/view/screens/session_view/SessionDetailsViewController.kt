@@ -51,7 +51,7 @@ abstract class SessionDetailsViewController(
     private val mMeasurementsRepository: MeasurementsRepository = MeasurementsRepository(),
 ) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
-    private var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
+    protected var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
     private val mSessionObserver = if (mViewMvc?.getSessionType() == Session.Type.FIXED) {
         FixedSessionObserver(
             mRootActivity,
@@ -167,7 +167,6 @@ abstract class SessionDetailsViewController(
             }
             query.await()
         }
-
     }
 
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {

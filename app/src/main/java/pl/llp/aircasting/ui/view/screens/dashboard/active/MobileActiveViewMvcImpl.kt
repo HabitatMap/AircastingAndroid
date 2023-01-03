@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
@@ -28,14 +27,6 @@ class MobileActiveViewMvcImpl(
             this,
             supportFragmentManager
         )
-    }
-
-    override fun onSessionReconnectClicked(session: Session) {
-        for (listener in listeners) {
-            session.deviceId?.let { deviceId ->
-                listener.onReconnectSessionClicked(session)
-            }
-        }
     }
 
     override fun layoutId(): Int {

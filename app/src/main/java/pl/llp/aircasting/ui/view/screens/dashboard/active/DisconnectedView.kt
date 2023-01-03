@@ -1,29 +1,43 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
+import android.app.Activity
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.disconnected_view.view.*
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.util.extensions.gone
-import pl.llp.aircasting.util.extensions.startAnimation
-import pl.llp.aircasting.util.extensions.stopAnimation
-import pl.llp.aircasting.util.extensions.visible
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.*
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import javax.inject.Inject
 
 class DisconnectedView(
     context: Context,
     rootView: View?,
-    supportFragmentManager: FragmentManager,
-    listener: MobileActiveSessionViewMvc.DisconnectedViewListener
+    supportFragmentManager: FragmentManager
 ) {
     private val mContext: Context = context
-    private val mListener: MobileActiveSessionViewMvc.DisconnectedViewListener = listener
+    private val rootActivity: Activity? = mContext.getActivity()
     private val mSupportFragmentManager: FragmentManager = supportFragmentManager
+    private var lifecycleScope: LifecycleCoroutineScope? = null
 
     private val mDisconnectedView: View?
     private val mHeader: TextView?
@@ -32,6 +46,17 @@ class DisconnectedView(
     private val mSecondaryButton: Button?
     private val mReconnectingLoader: ImageView?
 
+    @Inject
+    lateinit var airBeamReconnector: AirBeamReconnector
+
+    @Inject
+    lateinit var mErrorHandler: ErrorHandler
+
+    @Inject
+    lateinit var bluetoothManager: BluetoothManager
+
+    lateinit var session: Session
+
     init {
         mDisconnectedView = rootView?.disconnected_view
         mHeader = rootView?.disconnected_view_bluetooth_device_header
@@ -39,25 +64,33 @@ class DisconnectedView(
         mPrimaryButton = rootView?.disconnected_view_bluetooth_device_reconnect_button
         mSecondaryButton = rootView?.disconnected_view_bluetooth_device_finish_button
         mReconnectingLoader = rootView?.reconnecting_loader
+
+        (rootActivity?.application as? AircastingApplication)?.appComponent?.inject(this)
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: AirBeamReconnector.FinalizedEvent) {
+        if (event.sessionUuid == session.uuid)
+            hideReconnectingLoader()
     }
 
     fun show(sessionPresenter: SessionPresenter?) {
-        val session = sessionPresenter?.session
-        session ?: return
+        lifecycleScope = mDisconnectedView?.findViewTreeLifecycleOwner()?.lifecycleScope
+        session = sessionPresenter?.session ?: return
 
-        if (session.isAirBeam3()) bindAirBeam3(session) else bindBluetoothDevice(session)
+        EventBus.getDefault().safeRegister(this)
 
-        bindReconnectingLoader(sessionPresenter)
+        if (session.isAirBeam3())
+            bindAirBeam3(session)
+        else
+            bindBluetoothDevice(session)
 
         mDisconnectedView?.visible()
     }
 
     fun hide() {
         mDisconnectedView?.gone()
-    }
-
-    private fun bindReconnectingLoader(sessionPresenter: SessionPresenter) {
-        if (sessionPresenter.reconnecting) showReconnectingLoader() else hideReconnectingLoader()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun bindBluetoothDevice(session: Session) {
@@ -69,7 +102,19 @@ class DisconnectedView(
         mSecondaryButton?.text =
             mContext.getString(R.string.disconnected_view_bluetooth_device_finish_button)
 
-        mPrimaryButton?.setOnClickListener { mListener.onSessionReconnectClicked(session) }
+        mPrimaryButton?.setOnClickListener {
+            showReconnectingLoader()
+            airBeamReconnector.reconnect(
+                session,
+                deviceItem = null,
+                errorCallback = {
+                    mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+                },
+                finallyCallback = {
+                    lifecycleScope?.launch { hideReconnectingLoader() }
+                },
+            )
+        }
         mSecondaryButton?.setOnClickListener {
             FinishSessionConfirmationDialog(
                 mSupportFragmentManager,
@@ -96,6 +141,23 @@ class DisconnectedView(
                 mSupportFragmentManager,
                 session
             ).show()
+        }
+        mReconnectingLoader?.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            showReconnectingLoader()
+            mReconnectingLoader.imageTintList = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    mContext,
+                    R.color.aircasting_blue_400
+                )
+            )
+            mDisconnectedView?.let {
+                startToStart = it.id
+                topToTop = it.id
+                bottomToTop = ConstraintLayout.LayoutParams.UNSET
+                bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+                endToEnd = ConstraintLayout.LayoutParams.UNSET
+                endToStart = ConstraintLayout.LayoutParams.UNSET
+            }
         }
     }
 

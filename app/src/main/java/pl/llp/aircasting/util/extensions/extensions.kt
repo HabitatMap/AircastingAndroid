@@ -1,5 +1,8 @@
 package pl.llp.aircasting.util.extensions
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -51,6 +54,9 @@ fun View.inVisible() {
 fun View.gone() {
     visibility = View.GONE
 }
+
+tailrec fun Context.getActivity(): Activity? = this as? Activity
+    ?: (this as? ContextWrapper)?.baseContext?.getActivity()
 
 fun View.setMargins(
     left: Int = this.marginLeft,

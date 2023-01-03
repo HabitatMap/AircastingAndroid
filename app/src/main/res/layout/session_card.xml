@@ -127,8 +127,6 @@
             <TableRow android:id="@+id/measurement_values" />
         </TableLayout>
 
-        <include layout="@layout/disconnected_view" />
-
         <ImageView
             android:id="@+id/loader"
             android:layout_width="wrap_content"
@@ -140,14 +138,28 @@
             app:tint="@color/aircasting_blue_400"
             tools:visibility="visible" />
 
-        <include
-            android:id="@+id/expanded_session_view"
-            layout="@layout/expanded_session_view"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/keyline_6"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/measurements_table"
-            tools:visibility="visible" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/measurements_table"
+            tools:layout_editor_absoluteX="16dp">
+
+            <include
+                layout="@layout/disconnected_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/expanded_session_view"
+                layout="@layout/expanded_session_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/keyline_6"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/measurements_table"
+                tools:visibility="visible" />
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -10,7 +10,6 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     interface Listener {
         fun onRecordNewSessionClicked()
         fun onExploreNewSessionsClicked()
-        fun onReconnectSessionClicked(session: Session)
         fun onFollowButtonClicked(session: Session)
         fun onUnfollowButtonClicked(session: Session)
         fun onMapButtonClicked(session: Session, sensorName: String?)
@@ -30,6 +29,4 @@ interface SessionsViewMvc : ObservableViewMvc<SessionsViewMvc.Listener> {
     fun hideLoaderFor(session: Session)
     fun hideLoaderFor(deviceId: String)
     fun reloadSession(session: Session)
-    fun showReconnectingLoaderFor(session: Session)
-    fun hideReconnectingLoaderFor(session: Session)
 }

@@ -39,6 +39,7 @@ open class AirBeamRecordSessionService: AirBeamService() {
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
+        // Device item loses data here
         mDeviceItem?.let { deviceItem ->
             val sessionUUID: String? = mIntent?.getStringExtra(SESSION_UUID_KEY)
             connect(deviceItem, sessionUUID)

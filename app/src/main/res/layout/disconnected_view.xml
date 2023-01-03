@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/disconnected_view"
@@ -11,7 +12,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@color/aircasting_blue_50"
         android:padding="@dimen/keyline_8"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <TextView
             android:id="@+id/disconnected_view_bluetooth_device_header"
@@ -53,15 +55,15 @@
             android:id="@+id/reconnecting_loader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_loader"
-            android:elevation="10dp"
             android:layout_marginEnd="@dimen/keyline_4"
-            android:layout_marginTop="@dimen/keyline_2"
+            android:elevation="10dp"
+            android:src="@drawable/ic_loader"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/disconnected_view_bluetooth_device_reconnect_button"
             app:layout_constraintBottom_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
             app:layout_constraintEnd_toEndOf="@id/disconnected_view_bluetooth_device_reconnect_button"
-            app:tint="@color/aircasting_white" />
+            app:layout_constraintTop_toTopOf="@id/disconnected_view_bluetooth_device_reconnect_button"
+            app:tint="@color/aircasting_white"
+            tools:visibility="visible" />
 
         <Button
             android:id="@+id/disconnected_view_bluetooth_device_finish_button"

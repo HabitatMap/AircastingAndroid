@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -67,10 +66,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         }
     }
 
-    private fun update(
-        session: Session?,
-        coroutineScope: CoroutineScope = mSessionsViewModel.viewModelScope
-    ) {
+    private fun update(session: Session?) {
         session?.let { it ->
             val position = mSessionPresenters.indexOf(SessionPresenter(it))
             if (found(position)) {
@@ -118,19 +114,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             loader?.startAnimation()
         else
             loader?.stopAnimation()
-    }
-
-    fun toggleReconnectingLoaderFor(
-        session: Session,
-        reconnecting: Boolean
-    ) {
-        val position = mSessionPresenters.indexOf(SessionPresenter(session))
-        if (found(position)) {
-            val sessionPresenter = mSessionPresenters[position]
-            sessionPresenter?.reconnecting = reconnecting
-
-            toggleLoaderAt(position, reconnecting)
-        }
     }
 
     fun hideLoaderFor(deviceId: String) {

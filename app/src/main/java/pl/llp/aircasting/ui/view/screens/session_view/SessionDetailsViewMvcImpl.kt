@@ -20,7 +20,6 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.SessionActionsBottomSheetListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialog
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUDialogListener
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUSlider
@@ -36,7 +35,6 @@ abstract class SessionDetailsViewMvcImpl(
     supportFragmentManager: FragmentManager
 ) : BaseObservableViewMvc<SessionDetailsViewMvc.Listener>(),
     SessionDetailsViewMvc,
-    SessionActionsBottomSheetListener,
     HLUDialogListener {
     private val mFragmentManager: FragmentManager = supportFragmentManager
     private var mListener: SessionDetailsViewMvc.Listener? = null

@@ -8,6 +8,7 @@ import pl.llp.aircasting.ui.view.fragments.*
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
+import pl.llp.aircasting.ui.view.screens.dashboard.active.DisconnectedView
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.edit.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.share.ShareSessionBottomSheet
@@ -79,6 +80,7 @@ interface AppComponent {
     fun inject(bottomSheet: MobileActiveSessionActionsBottomSheet)
 
     fun inject(dialog: FinishSessionConfirmationDialog)
+    fun inject(view: DisconnectedView)
 
     fun inject(fragment: SettingsFragment)
     fun inject(activity: MyAccountActivity)
