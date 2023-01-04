@@ -103,6 +103,8 @@ object AppDependencies {
      */
     private const val junit = "junit:junit:${Versions.junit}"
     private const val kotlinJunit = "org.jetbrains.kotlin:kotlin-test-junit:${Versions.kotlinJunit}"
+    private const val orchestrator = "androidx.test:orchestrator:${Versions.orchestrator}"
+    private const val testRunner = "androidx.test:runner:${Versions.testRunner}}"
 
     /* Espresso */
     private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
@@ -200,6 +202,7 @@ object AppDependencies {
         add(testExtJunitKTX)
         add(testExtJunit)
         add(awaitility)
+        add(testRunner)
     }
     val testImplementation = arrayListOf<String>().apply {
         add(coroutinesTest)
@@ -212,6 +215,9 @@ object AppDependencies {
     val debugImplementation = arrayListOf<String>().apply {
         add(leakCanary)
         add(fragmentTesting)
+    }
+    val androidTestUtil = arrayListOf<String>().apply {
+        add(orchestrator)
     }
 }
 
@@ -248,5 +254,11 @@ fun DependencyHandler.testImplementation(list: List<String>) {
 fun DependencyHandler.debugImplementation(list: List<String>) {
     list.forEach { dependency ->
         add("debugImplementation", dependency)
+    }
+}
+
+fun DependencyHandler.androidTestUtil(list: List<String>) {
+    list.forEach { dependency ->
+        add("androidTestUtil", dependency)
     }
 }

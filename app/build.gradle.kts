@@ -20,6 +20,7 @@ android {
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
+        testInstrumentationRunnerArguments["clearPackageData"] = "true"
         resourceConfigurations.addAll(arrayOf("en", "fr", "sp"))
 
         javaCompileOptions {
@@ -60,6 +61,7 @@ android {
         animationsDisabled = true
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
+        execution = "ANDROID_TEST_ORCHESTRATOR"
     }
 
     compileOptions {
@@ -89,6 +91,6 @@ dependencies {
     androidTestImplementation(AppDependencies.androidTestImplementation)
     testImplementation(AppDependencies.testImplementation)
     debugImplementation(AppDependencies.debugImplementation)
+    androidTestUtil(AppDependencies.androidTestUtil)
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.9.0")
 }
-

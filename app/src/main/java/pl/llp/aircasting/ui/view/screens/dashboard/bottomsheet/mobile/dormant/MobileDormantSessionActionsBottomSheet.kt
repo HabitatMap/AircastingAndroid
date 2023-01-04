@@ -13,6 +13,7 @@ import pl.llp.aircasting.util.extensions.showToast
 class MobileDormantSessionActionsBottomSheet(
     private val session: Session?
 ) : ShareableSessionActionsBottomSheet(session) {
+    constructor() : this(null)
 
     override fun layoutId() = R.layout.session_actions_modifiable
 

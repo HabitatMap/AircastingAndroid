@@ -28,6 +28,8 @@
         <item name="colorPrimary">@color/aircasting_green</item>
     </style>
 
+    <style name="Theme.Aircasting.Test" parent="Theme.Material3.DayNight" />
+
     <!-- Typography -->
 
     <style name="TextAppearance.Aircasting.Headline1" parent="@style/TextAppearance.AppCompat">

@@ -11,7 +11,7 @@ import kotlin.test.assertEquals
 
 class ApiServiceFactoryTest {
     @Test
-    fun baseUrl_getsUrlFromSettings_constructsBaseUrlWithPort() {
+    fun baseUrl_getsUrlFromSettings_constructsBaseUrlWithPort_hasSlashAtTheEnd() {
         val modifiedUrl = "https://aircasting.habitatmap.org"
         val port = "80"
         val settings = mock<Settings> {
@@ -25,23 +25,7 @@ class ApiServiceFactoryTest {
         verify(settings).getBackendUrl()
         verify(settings).getBackendPort()
         assertEquals("$modifiedUrl:$port".toHttpUrl(), result)
-    }
-
-    @Test
-    fun baseUrl_whenUrlContainsSlashAtTheEnd_dropsItBeforeConstructingBaseUrl() {
-        val modifiedUrl = "https://aircasting.habitatmap.org/"
-        val port = "80"
-        val settings = mock<Settings> {
-            on { getBackendUrl() } doReturn modifiedUrl
-            on { getBackendPort() } doReturn port
-        }
-        val factory = Factory(settings)
-
-        val result = factory.baseUrl()
-
-        verify(settings).getBackendUrl()
-        verify(settings).getBackendPort()
-        assertEquals("${modifiedUrl.dropLast(1)}:$port".toHttpUrl(), result)
+        assertEquals('/', result.toString().last())
     }
 }
 

@@ -22,10 +22,7 @@ import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
-import pl.llp.aircasting.helpers.Util
-import pl.llp.aircasting.helpers.MockWebServerDispatcher
-import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
-import pl.llp.aircasting.helpers.getMockWebServerFrom
+import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import java.net.HttpURLConnection
@@ -88,10 +85,9 @@ class LoginTest {
             ),
             getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
         )
+        settings.onboardingAccepted()
 
         testRule.launchActivity(null)
-
-        settings.onboardingAccepted()
 
         onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("ania@example.org"))
         Espresso.closeSoftKeyboard()
@@ -99,9 +95,10 @@ class LoginTest {
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.login_button)).perform(click())
 
-        Thread.sleep(2000)
+        waitAndRetry {
+            onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
+        }
 
-        onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         assertEquals(settings.getAuthToken(), "XYZ123FAKETOKEN")
     }
 }

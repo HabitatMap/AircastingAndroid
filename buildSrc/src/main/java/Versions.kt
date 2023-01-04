@@ -46,6 +46,8 @@ object Versions {
     const val awaitility = "4.2.0"
     const val fragmentTesting = "1.5.1"
     const val leakCanary = "2.9.1"
+    const val testRunner = "1.4.0"
+    const val orchestrator = "1.4.1"
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.0.2"

@@ -66,6 +66,7 @@ class ReorderingFollowingRecyclerAdapterTest {
             mock(),
             mock(),
             mock(),
+            mock(),
             sessionFollower,
             sessionsViewModel
         )
