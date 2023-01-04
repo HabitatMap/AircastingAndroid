@@ -1,61 +1,70 @@
 package pl.llp.aircasting.util.exceptions
 
-abstract class BaseException(private val mCause: Exception? = null, private val mMessageToDisplay: String? = null): Exception(mCause) {
+abstract class BaseException(
+    private val mCause: Exception? = null,
+    private val mMessageToDisplay: String? = null
+) : Exception(mCause) {
     val messageToDisplay: String? get() = mMessageToDisplay
 }
 
 class BluetoothNotSupportedException :
     BaseException(null, "Bluetooth is not supported on this device")
 
-class AudioReaderError(errorCode: Int):
-    BaseException(Exception("Audio reader error code: ${errorCode}"), "Unexpected error while reading audio")
+class AudioReaderError(errorCode: Int) :
+    BaseException(
+        Exception("Audio reader error code: ${errorCode}"),
+        "Unexpected error while reading audio"
+    )
 
-class UnknownError(cause: Exception):
+class UnknownError(cause: Exception) :
     BaseException(cause, "Something went wrong, please contact our support")
 
-class AirBeamConnectionOpenFailed(cause: Exception):
+class AirBeamConnectionOpenFailed(cause: Exception) :
     BaseException(cause)
 
-class AirBeam2ConfiguringFailed(cause: Exception):
+class AirBeam2ConfiguringFailed(cause: Exception) :
     BaseException(cause)
 
-class AirBeam2ConnectionCloseFailed(cause: Exception):
+class AirBeam2ConnectionCloseFailed(cause: Exception) :
     BaseException(cause)
 
 class BLENotSupported :
     BaseException(null, "BLE is not supported by this device.")
 
-class AirBeam3ConfiguringFailed(type: String, status: Int):
+class AirBeam3ConfiguringFailed(type: String, status: Int) :
     BaseException(null, "Configuration of $type failed with status code: $status.")
 
 class InternalAPIError :
     BaseException(null, "Something went wrong, please contact our support.")
 
-class SyncError(t: Throwable? = null):
+class SyncError(t: Throwable? = null) :
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 
-class SessionExportFailedError(t: Throwable? = null):
-        BaseException(Exception(t), "Something wrong happened during exporting session data.")
+class SessionExportFailedError(t: Throwable? = null) :
+    BaseException(Exception(t), "Something wrong happened during exporting session data.")
 
-class SessionUploadPendingError(t: Throwable? = null):
-        BaseException(Exception(t), "Session upload pending - wait a couple of minutes and try again.")
+class SessionUploadPendingError(t: Throwable? = null) :
+    BaseException(Exception(t), "Session upload pending - wait a couple of minutes and try again.")
 
-class DownloadMeasurementsError(t: Throwable? = null):
+class DownloadMeasurementsError(t: Throwable? = null) :
     BaseException(Exception(t))
 
-class UnexpectedAPIError(t: Throwable? = null):
+class UnexpectedAPIError(t: Throwable? = null) :
     BaseException(Exception(t), "Something went wrong, please contact our support.")
 
-class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null):
+class ChooseAirBeamLocationSelectingPlaceError(t: Throwable? = null) :
     BaseException(Exception(t))
 
-class AirBeamResponseParsingError(line: String, t: Throwable? = null):
+class AirBeamResponseParsingError(line: String, t: Throwable? = null) :
     BaseException(Exception(t), "Error while parsing line: '$line'.")
 
-class DBInsertException(t: Throwable? = null):
-    BaseException(Exception(t), "Trying to insert or update session data after the DB has been cleaned.")
+class DBInsertException(t: Throwable? = null) :
+    BaseException(
+        Exception(t),
+        "Trying to insert or update session data after the DB has been cleaned."
+    )
 
-class MissingDeviceAfterConnectionError: BaseException()
+class MissingDeviceAfterConnectionError : BaseException()
 
 // SD card sync
 
@@ -63,32 +72,41 @@ class SDCardMissingSDCardUploadFixedMeasurementsServiceError : BaseException()
 
 class SDCardMissingSessionsSyncServiceError : BaseException()
 
-class SDCardSessionsInitialSyncError(cause: Exception? = null):
+class SDCardSessionsInitialSyncError(cause: Exception? = null) :
     BaseException(cause, "There was a problem while refreshing sessions list.")
 
-class SDCardMeasurementsParsingError(cause: Exception):
+class SDCardMeasurementsParsingError(cause: Exception) :
     BaseException(cause, "There was a problem while parsing measurements from SD card.")
 
 class SDCardDownloadedFileCorrupted :
     BaseException(null, "Download from SD card was corrupted.")
 
-class SDCardSessionsFinalSyncError(cause: Exception? = null):
+class SDCardSessionsFinalSyncError(cause: Exception? = null) :
     BaseException(cause, "There was a problem while sending mobile sessions to the backend.")
 
 class NotesNoLocationError :
-    BaseException(null, "Note could not be added because location of last measurement could not be retrieved.")
+    BaseException(
+        null,
+        "Note could not be added because location of last measurement could not be retrieved."
+    )
 
 class CSVGenerationError :
     BaseException(null, "There was a problem while generating a CSV file.")
 
-class SensorDisconnectedError(additionalMessage: String?):
+class SensorDisconnectedError(additionalMessage: String?) :
     BaseException(null, "RECONNECTION LOGS: ${additionalMessage}")
 
-class ParseDateError(cause: Exception? = null):
-        BaseException(cause, "There was a problem when parsing a date")
+class ParseDateError(cause: Exception? = null) :
+    BaseException(cause, "There was a problem when parsing a date")
 
-class SDCardSyncError(additionalMessage: String?):
+class SDCardSyncError(additionalMessage: String?) :
     BaseException(null, "SD CARD SYNC LOGS: ${additionalMessage}")
 
-class AirbeamServiceError(additionalMessage: String?):
+class AirbeamServiceError(additionalMessage: String?) :
     BaseException(null, "AirBeam service error: ${additionalMessage}")
+
+// Threshold Alerts
+class ThresholdAlert {
+    class SaveChangesError(cause: Throwable?) :
+        BaseException(null, "Threshold Alert saving error: ${cause?.message}")
+}

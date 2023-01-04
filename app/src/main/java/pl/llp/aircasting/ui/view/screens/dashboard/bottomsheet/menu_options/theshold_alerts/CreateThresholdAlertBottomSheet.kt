@@ -16,6 +16,7 @@ import pl.llp.aircasting.databinding.CreateThresholdAlertBottomSheetLayoutBindin
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.CreateThresholdAlertBottomSheetViewModel
 import pl.llp.aircasting.ui.viewmodel.ThresholdAlertUiRepresentation
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
@@ -31,6 +32,9 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     private lateinit var viewModel: CreateThresholdAlertBottomSheetViewModel
 
@@ -106,7 +110,7 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
                 .collect { result ->
                     result
                         .onSuccess { activity.showToast("Success") }
-                        .onFailure { activity.showToast(it.message.toString()) }
+                        .onFailure { errorHandler.showError(it.message.toString()) }
                 }
         }
     }

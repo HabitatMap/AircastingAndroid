@@ -21,10 +21,13 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.TemperatureConverter
 import pl.llp.aircasting.util.TimezoneHelper
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.ThresholdAlert
 import javax.inject.Inject
 
 class CreateThresholdAlertBottomSheetViewModel @Inject constructor(
-    private val alertRepository: ThresholdAlertRepository
+    private val alertRepository: ThresholdAlertRepository,
+    private val errorHandler: ErrorHandler
 ) : ViewModel() {
     private lateinit var alerts: List<ThresholdAlertResponse>
     private lateinit var uiAlerts: List<ThresholdAlertUiRepresentation>
@@ -49,7 +52,7 @@ class CreateThresholdAlertBottomSheetViewModel @Inject constructor(
                     buildEmptyAlert(stream)
                 }
             }
-            // We are giving Deep copy to view for modifying and later compare it with original
+            // We are giving Deep copy to view for modifying and later we compare it to original
             val copy = uiAlerts.map { it.copy() }
             emit(Result.success(copy))
         }
@@ -94,7 +97,12 @@ class CreateThresholdAlertBottomSheetViewModel @Inject constructor(
                 else -> replaceAlert(oldAlert, updatedAlert, session)
             }
 
-            if (savingChangesResult.isFailure) success = false
+            if (savingChangesResult.isFailure) {
+                errorHandler.handle(
+                    ThresholdAlert.SaveChangesError(savingChangesResult.exceptionOrNull())
+                )
+                success = false
+            }
         }
         val result = if (success) Result.success(Unit)
         else Result.failure(Exception("Something went wrong. Some data has not been saved"))
