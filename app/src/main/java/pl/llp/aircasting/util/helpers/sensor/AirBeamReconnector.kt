@@ -4,16 +4,14 @@ import android.content.Context
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.concurrent.timerTask
 
 class AirBeamReconnector(
     private val mContext: Context,
@@ -28,10 +26,6 @@ class AirBeamReconnector(
     var mReconnectionTriesNumber: Int? = null
     private val RECONNECTION_TRIES_MAX = 15
     private val RECONNECTION_TRIES_INTERVAL = 15000L // 15s between reconnection tries
-
-    private val RECONNECTION_TRIES_RESET_DELAY =
-        RECONNECTION_TRIES_INTERVAL + 5000L // we need to have delay
-    // greater than interval between tries so we don't trigger another try after we successfully reconnected
 
     fun disconnect(session: Session) {
         mStandaloneMode.set(true)
@@ -83,9 +77,6 @@ class AirBeamReconnector(
 
     private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
         try {
-            if (deviceItem == null)
-                throw SensorDisconnectedError("Re-connectable DeviceItem was null")
-
             AirBeamReconnectSessionService.startService(
                 mContext,
                 deviceId,
@@ -93,7 +84,7 @@ class AirBeamReconnector(
                 mSession?.uuid
             )
         } catch (e: Exception) {
-            Log.d("TAG", e.message.toString())
+            Log.d(bluetoothReconnection, e.stackTraceToString())
         }
     }
 
@@ -101,11 +92,11 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-            if (mSession != null && mErrorCallback != null && mFinallyCallback != null) {
-                reconnect(mSession!!, null, mErrorCallback!!, mFinallyCallback!!)
-            }
+
+            val session = mSession ?: return
+            reconnect(session, null, mErrorCallback, mFinallyCallback)
         } else {
-            mFinallyCallback?.invoke()
+            finalizeReconnectionWithError()
         }
     }
 
@@ -126,22 +117,11 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
-        resetTriesNumberWithDelay()
         mAirBeamDiscoveryService.reset()
 
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
-        mFinallyCallback?.invoke()
-        unregisterFromEventBus()
-    }
-
-    private fun resetTriesNumberWithDelay() {
-        if (mReconnectionTriesNumber != null) {
-            val timerTask = timerTask {
-                mReconnectionTriesNumber = null
-            }
-            Timer().schedule(timerTask, RECONNECTION_TRIES_RESET_DELAY)
-        }
+        finalizeReconnection()
     }
 
     @Subscribe
@@ -150,7 +130,6 @@ class AirBeamReconnector(
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
                     finalizeReconnectionWithError()
-                    resetTriesNumberWithDelay()
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
@@ -164,6 +143,7 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnectionWithError() {
+        Log.e(bluetoothReconnection, "Finalized with error. Reconnection tries: $mReconnectionTriesNumber")
         mErrorCallback?.invoke()
         finalizeReconnection()
     }
@@ -175,6 +155,7 @@ class AirBeamReconnector(
 
     private fun finalizeReconnection() {
         mAirBeamDiscoveryService.reset()
+        mReconnectionTriesNumber = null
         mFinallyCallback?.invoke()
         EventBus.getDefault().postSticky(FinalizedEvent(mSession?.uuid))
         unregisterFromEventBus()
