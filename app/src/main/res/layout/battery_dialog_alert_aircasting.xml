@@ -61,7 +61,7 @@
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginBottom="@dimen/keyline_6"
-        android:backgroundTint="@color/aircasting_white"
+        android:backgroundTint="@color/background_main"
         android:text="@string/cancel"
         android:textColor="@color/aircasting_blue_400" />
 

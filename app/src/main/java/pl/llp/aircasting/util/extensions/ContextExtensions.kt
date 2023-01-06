@@ -10,7 +10,6 @@ import android.net.NetworkCapabilities
 import android.os.PowerManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -20,7 +19,6 @@ import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
-import kotlinx.android.synthetic.main.prominent_app_bar.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
@@ -149,10 +147,10 @@ fun initializePlacesApi(mContext: Context) {
 
 fun GoogleMap.setMapTypeToNormalWithStyle(mSettings: Settings, mContext: Context) {
     this.mapType = GoogleMap.MAP_TYPE_NORMAL
-    if (mSettings.isDarkThemeEnabled()) styleDarkGoogleMap(this, mContext) else styleGoogleMap(
-        this,
-        mContext
-    )
+    if (mSettings.isDarkThemeEnabled())
+        styleDarkGoogleMap(this, mContext)
+    else
+        styleGoogleMap(this, mContext)
 }
 
 fun GoogleMap.setMapType(mSettings: Settings, mContext: Context) {

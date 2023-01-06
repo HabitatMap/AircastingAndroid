@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_5"
             android:layout_marginEnd="@dimen/keyline_5"
-            android:background="@drawable/search_input_field_background"
+            android:background="@drawable/edit_text_round_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/include">
@@ -52,7 +52,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/keyline_5"
                 android:layout_marginTop="@dimen/keyline_2"
-                android:textColor="@android:color/background_dark"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Results for: particular matter" />
@@ -64,7 +63,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/keyline_2"
                 android:layout_marginEnd="@dimen/keyline_5"
-                android:textColor="@android:color/background_dark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="using: OpenAQ" />
@@ -113,11 +111,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/keyline_3"
-                    android:textColor="@android:color/background_dark"
                     android:visibility="invisible"
                     app:layout_constraintBottom_toTopOf="@+id/recyclerFixedFollow"
                     app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Sessions showing 9 of 9 results" />
+                    tools:text="Sessions showing 9 of 9 results"
+                    tools:visibility="visible" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerFixedFollow"

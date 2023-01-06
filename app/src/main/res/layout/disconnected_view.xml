@@ -62,7 +62,7 @@
             app:layout_constraintBottom_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
             app:layout_constraintEnd_toEndOf="@id/disconnected_view_bluetooth_device_reconnect_button"
             app:layout_constraintTop_toTopOf="@id/disconnected_view_bluetooth_device_reconnect_button"
-            app:tint="@color/aircasting_white"
+            app:tint="@color/background_main"
             tools:visibility="visible" />
 
         <Button

@@ -45,7 +45,7 @@ import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
-import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
@@ -93,7 +93,7 @@ class SearchFollowTest {
     lateinit var searchActivityScenario: ActivityScenario<SearchFixedSessionActivity>
 
     lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
-    lateinit var mapScenario: FragmentScenario<MapResultFragment>
+    lateinit var mapScenario: FragmentScenario<SearchLocationResultFragment>
     lateinit var server: MockWebServer
 
     private val newYork = "New York"

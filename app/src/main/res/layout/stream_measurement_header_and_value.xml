@@ -61,7 +61,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white" />
+                    app:tint="@color/background_main" />
 
                 <TextView
                     android:id="@+id/measurement_value_f"
@@ -107,7 +107,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white" />
+                    app:tint="@color/background_main" />
 
                 <TextView
                     android:id="@+id/measurement_value_pm_one"
@@ -153,7 +153,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white" />
+                    app:tint="@color/background_main" />
 
                 <TextView
                     android:id="@+id/measurement_value_two_point_five"
@@ -199,7 +199,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white" />
+                    app:tint="@color/background_main" />
 
                 <TextView
                     android:id="@+id/measurement_value_10"
@@ -249,7 +249,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     app:srcCompat="@drawable/ic_circle"
-                    app:tint="@color/aircasting_white" />
+                    app:tint="@color/background_main" />
 
                 <TextView
                     android:id="@+id/measurement_value_rh"

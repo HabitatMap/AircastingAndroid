@@ -3,13 +3,13 @@
 
     <style name="Theme.Aircasting" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
-        <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
+        <item name="colorPrimaryDark">@color/background_main</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
-        <item name="colorOnPrimary">@color/colorBackground</item>
-        <item name="colorSurface">@color/colorBackground</item>
-        <item name="android:colorBackground">@color/colorBackground</item>
-
+        <item name="colorOnPrimary">@color/background_main</item>
+        <item name="colorSurface">@color/background_main</item>
+        <item name="android:colorBackground">@color/background_main</item>
+        <item name="elevationOverlayEnabled">false</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Aircasting.Headline2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.Aircasting.Headline3</item>
@@ -24,43 +24,7 @@
         <item name="switchStyle">@style/Widget.Aircasting.Switch</item>
     </style>
 
-    <style name="Widget.Aircasting.ExpandedCardButtons" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/colorBackground</item>
-        <item name="android:textColor">@color/aircasting_blue_400</item>
-        <item name="android:textSize">@dimen/text_size_xs</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:paddingTop">1dp</item>
-        <item name="android:paddingBottom">5dp</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="fontFamily">@font/muli_semi_bold</item>
-        <item name="android:fontFamily">@font/muli_semi_bold</item>
-        <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
-    </style>
-
-    <style name="Widget.Aircasting.SettingsButtons" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/colorBackground</item>
-        <item name="android:textColor">@color/aircasting_grey_700</item>
-        <item name="android:textSize">@dimen/text_size_s</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:paddingStart">@dimen/keyline_8</item>
-        <item name="android:paddingEnd">@dimen/keyline_8</item>
-        <item name="android:paddingTop">@dimen/keyline_2</item>
-        <item name="android:paddingBottom">@dimen/keyline_2</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="fontFamily">@font/muli_bold</item>
-        <item name="android:fontFamily">@font/muli_bold</item>
-    </style>
-
-    <style name="Widget.Aircasting.SettingsButton" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/colorBackground</item>
-        <item name="android:textColor">@color/aircasting_grey_700</item>
-        <item name="android:textSize">@dimen/text_size_s</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:paddingStart">@dimen/keyline_8</item>
-        <item name="android:paddingEnd">@dimen/keyline_8</item>
-        <item name="android:paddingTop">@dimen/keyline_2</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="fontFamily">@font/muli_bold</item>
-        <item name="android:fontFamily">@font/muli_bold</item>
+    <style name="Widget.Aircasting.AppBar.Night" parent="Widget.Aircasting.AppBar">
+        <item name="navigationIconTint">@color/navigation_back_button</item>
     </style>
 </resources>

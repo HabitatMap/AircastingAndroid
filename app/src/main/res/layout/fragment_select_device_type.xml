@@ -22,7 +22,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/select_device_type_bluetooth_card"
-        style="@style/Widget.Aircasting.Cards"
+        style="@style/Widget.Aircasting.Cards.Contrast"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         app:cardElevation="5dp"
@@ -40,9 +40,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxHeight="150dp"
-            android:paddingLeft="@dimen/keyline_4"
-
-            >
+            android:paddingLeft="@dimen/keyline_4">
             <TextView
                 android:id="@+id/bluetooth_device_card_header"
                 android:layout_width="match_parent"
@@ -83,7 +81,7 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/select_device_type_microphone_card"
-        style="@style/Widget.Aircasting.Cards"
+        style="@style/Widget.Aircasting.Cards.Contrast"
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         app:cardElevation="5dp"

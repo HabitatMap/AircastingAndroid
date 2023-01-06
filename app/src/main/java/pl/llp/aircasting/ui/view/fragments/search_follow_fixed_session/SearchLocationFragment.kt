@@ -22,12 +22,12 @@ import kotlinx.android.synthetic.main.app_bar.view.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants
-import pl.llp.aircasting.databinding.FragmentSearchFollowLocationBinding
+import pl.llp.aircasting.databinding.FragmentSearchLocationBinding
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.extensions.gone
 import pl.llp.aircasting.util.extensions.initializePlacesApi
-import pl.llp.aircasting.util.extensions.setStyle
+import pl.llp.aircasting.util.extensions.setHintStyle
 import pl.llp.aircasting.util.extensions.visible
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class SearchLocationFragment @Inject constructor(
     factory: ViewModelProvider.Factory
 ) : Fragment() {
 
-    private var _binding: FragmentSearchFollowLocationBinding? = null
+    private var _binding: FragmentSearchLocationBinding? = null
     private val binding get() = _binding!!
     private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(
         factoryProducer = { factory }
@@ -59,7 +59,7 @@ class SearchLocationFragment @Inject constructor(
     ): View {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
-        _binding = FragmentSearchFollowLocationBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchLocationBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -136,13 +136,12 @@ class SearchLocationFragment @Inject constructor(
 
         autocompleteFragment.apply {
             editTextInput = view?.findViewById(R.id.places_autocomplete_search_input) as EditText
-            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)
-                ?.gone()
+            view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            editTextInput.setStyle(
-                getString(R.string.search_session_query_hint),
-                R.color.aircasting_grey_300
-            )
+            editTextInput.apply {
+                hint = getString(R.string.search_session_query_hint)
+                setHintStyle(R.color.aircasting_grey_300)
+            }
 
             setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
@@ -150,24 +149,17 @@ class SearchLocationFragment @Inject constructor(
         }
     }
 
-    private fun AutocompleteSupportFragment.onPlaceSelectedListener(etPlace: EditText?) {
+    private fun AutocompleteSupportFragment.onPlaceSelectedListener(placeTextInput: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address as String
+                placeTextInput?.hint = address
                 mLat = place.latLng?.latitude.toString()
                 mLng = place.latLng?.longitude.toString()
 
                 saveInputsToViewModel()
 
-                setTextColor()
                 binding.btnContinue.visible()
-            }
-
-            private fun setTextColor() {
-                if (mSettings.isDarkThemeEnabled()) etPlace?.setStyle(
-                    address,
-                    R.color.aircasting_white
-                ) else etPlace?.setStyle(address, R.color.black_color)
             }
 
             override fun onError(status: Status) {
@@ -181,7 +173,7 @@ class SearchLocationFragment @Inject constructor(
             mSavedAddress.observe(viewLifecycleOwner) { mAddress ->
                 if (mAddress != null) {
 
-                    editTextInput.setText(mAddress)
+                    editTextInput.hint = mAddress
                     address = mAddress
                     binding.btnContinue.visible()
                 }
@@ -222,7 +214,7 @@ class SearchLocationFragment @Inject constructor(
         )
 
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragmentContainer, MapResultFragment::class.java, args)
+            ?.replace(R.id.fragmentContainer, SearchLocationResultFragment::class.java, args)
             ?.commit()
     }
 }

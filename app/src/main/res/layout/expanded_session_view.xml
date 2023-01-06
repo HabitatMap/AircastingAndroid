@@ -53,7 +53,7 @@
         android:backgroundTint="@color/aircasting_blue_400"
         android:minHeight="0dp"
         android:text="@string/follow_button"
-        android:textColor="@color/aircasting_white"
+        android:textColor="@color/background_main"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chart_container" />
 

@@ -5,7 +5,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.*
-import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.MapResultFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.active.DisconnectedView
@@ -88,7 +88,7 @@ interface AppComponent {
     fun inject(fragment: ClearingSDCardFragment)
     fun inject(fragment: SDCardClearedFragment)
     fun inject(fragment: SearchLocationFragment)
-    fun inject(fragment: MapResultFragment)
+    fun inject(fragment: SearchLocationResultFragment)
 
     fun inject(activity: MicrophoneService)
     fun inject(activity: AirBeamRecordSessionService)

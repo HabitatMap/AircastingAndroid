@@ -28,6 +28,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import kotlinx.android.synthetic.main.app_bar.view.*
+import kotlinx.android.synthetic.main.fragment_search_location_result.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
@@ -37,7 +38,7 @@ import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
 import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.model.GeoSquare
-import pl.llp.aircasting.databinding.FragmentSearchFollowResultBinding
+import pl.llp.aircasting.databinding.FragmentSearchLocationResultBinding
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedBottomSheet
@@ -48,13 +49,13 @@ import pl.llp.aircasting.util.Status.*
 import pl.llp.aircasting.util.extensions.*
 import javax.inject.Inject
 
-class MapResultFragment @Inject constructor(
+class SearchLocationResultFragment @Inject constructor(
     factory: ViewModelProvider.Factory,
     private val mSettings: Settings
 ) : Fragment(), OnMapReadyCallback,
     GoogleMap.OnMarkerClickListener, GoogleMap.OnCameraMoveStartedListener {
 
-    private var _binding: FragmentSearchFollowResultBinding? = null
+    private var _binding: FragmentSearchLocationResultBinding? = null
     private val binding get() = _binding!!
 
     private val searchFollowViewModel by activityViewModels<SearchFollowViewModel>(factoryProducer = { factory })
@@ -81,7 +82,7 @@ class MapResultFragment @Inject constructor(
     ): View {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
-        _binding = FragmentSearchFollowResultBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchLocationResultBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -114,7 +115,12 @@ class MapResultFragment @Inject constructor(
 
     private fun goToPreviousFragment() {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragmentContainer, SearchLocationFragment::class.java, null, "searchLocation")
+            ?.replace(
+                R.id.fragmentContainer,
+                SearchLocationFragment::class.java,
+                null,
+                "searchLocation"
+            )
             ?.disallowAddToBackStack()
             ?.commit()
     }
@@ -141,17 +147,20 @@ class MapResultFragment @Inject constructor(
         val autocompleteFragment =
             childFragmentManager.findFragmentById(R.id.place_autocomplete_results) as AutocompleteSupportFragment
         autocompleteFragment.apply {
-            val etPlace =
-                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
             view?.findViewById<ImageButton>(R.id.places_autocomplete_search_button)?.gone()
 
-            setSearchTextColor(etPlace)
+            val placeTextInput =
+                view?.findViewById<EditText>(R.id.places_autocomplete_search_input)
+            placeTextInput?.apply {
+                hint = address
+                setHintStyle(R.color.aircasting_grey_300)
+            }
 
             initialisePlacesClient()
 
             setPlaceFields(listOf(Place.Field.ADDRESS, Place.Field.LAT_LNG))
 
-            setupOnPlaceSelectedListener(etPlace)
+            setupOnPlaceSelectedListener(placeTextInput)
         }
     }
 
@@ -160,14 +169,14 @@ class MapResultFragment @Inject constructor(
         placesClient = Places.createClient(requireContext())
     }
 
-    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(etPlace: EditText?) {
+    private fun AutocompleteSupportFragment.setupOnPlaceSelectedListener(placeTextInput: EditText?) {
         setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
                 address = place.address as String
+                placeTextInput?.hint = address
                 val lat = place.latLng?.latitude
                 val lng = place.latLng?.longitude
 
-                setSearchTextColor(etPlace)
                 if (lat != null && lng != null) {
                     moveMapToSelectedLocationAndRefresh(lat, lng)
                 }
@@ -177,13 +186,6 @@ class MapResultFragment @Inject constructor(
                 Log.d("onError", status.statusMessage.toString())
             }
         })
-    }
-
-    private fun setSearchTextColor(etPlace: EditText?) {
-        if (mSettings.isDarkThemeEnabled()) etPlace?.setStyle(
-            address,
-            R.color.aircasting_white
-        ) else etPlace?.setStyle(address, R.color.black_color)
     }
 
     private fun goToDashboard() {
@@ -388,7 +390,7 @@ class MapResultFragment @Inject constructor(
         if (mSettings.isUsingSatelliteView()) binding.txtShowingSessionsNumber.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
-                R.color.aircasting_white
+                R.color.background_main
             )
         )
     }

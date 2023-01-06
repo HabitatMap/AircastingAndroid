@@ -64,7 +64,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         TemperatureConverter.setup(settings)
 
         //New map renderer
-        MapsInitializer.initialize(applicationContext, Renderer.LATEST, this)
+        MapsInitializer.initialize(applicationContext, null, this)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)

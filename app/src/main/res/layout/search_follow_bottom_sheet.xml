@@ -213,7 +213,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/keyline_2"
-                    android:backgroundTint="@color/aircasting_white"
+                    android:backgroundTint="@color/background_main"
                     android:text="@string/unfollow_session"
                     android:textColor="@color/aircasting_blue_400"
                     android:visibility="invisible"

@@ -15,13 +15,13 @@
           android:pathData="M15,9L9,15"
           android:strokeLineJoin="round"
           android:strokeWidth="1.5"
-          android:strokeColor="@color/aircasting_white"
+          android:strokeColor="@color/background_main"
           android:strokeLineCap="round"/>
       <path
           android:pathData="M9,9L15,15"
           android:strokeLineJoin="round"
           android:strokeWidth="1.5"
-          android:strokeColor="@color/aircasting_white"
+          android:strokeColor="@color/background_main"
           android:strokeLineCap="round"/>
   </group>
 </vector>

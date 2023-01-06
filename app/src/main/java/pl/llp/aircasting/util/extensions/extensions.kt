@@ -69,12 +69,9 @@ fun View.setMargins(
     }
 }
 
-fun EditText.setStyle(mHint: String, mHintColor: Int) {
-    this.apply {
-        hint = mHint
-        textSize = 15.0f
-        setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
-    }
+fun EditText.setHintStyle(mHintColor: Int) {
+    textSize = 15.0f
+    setHintTextColor(ContextCompat.getColor(this.context, mHintColor))
 }
 
 fun View.disableForASecond() {

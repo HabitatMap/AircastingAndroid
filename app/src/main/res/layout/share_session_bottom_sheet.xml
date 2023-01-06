@@ -179,7 +179,7 @@
                             android:layout_alignStart="@+id/share_file_button"
                             android:layout_centerVertical="true"
                             android:visibility="invisible"
-                            app:tint="@color/aircasting_white"
+                            app:tint="@color/background_main"
                             tools:visibility="visible"/>
 
                     </RelativeLayout>

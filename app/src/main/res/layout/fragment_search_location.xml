@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/keyline_7"
             android:layout_marginEnd="@dimen/keyline_7"
-            android:background="@drawable/search_input_field_background"
+            android:background="@drawable/edit_text_round_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

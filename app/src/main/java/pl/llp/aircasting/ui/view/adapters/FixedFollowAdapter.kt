@@ -87,7 +87,7 @@ class FixedFollowAdapter constructor(
     private fun setCardViewToDefault(cardView: MaterialCardView) {
         cardView.apply {
             strokeWidth = 0
-            strokeColor = ContextCompat.getColor(context, R.color.aircasting_white)
+            strokeColor = ContextCompat.getColor(context, R.color.background_main)
         }
     }
 

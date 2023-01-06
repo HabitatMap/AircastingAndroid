@@ -27,7 +27,7 @@
                 style="@style/Widget.AppCompat.ActionButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/aircasting_white"
+                android:backgroundTint="@color/background_main"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"

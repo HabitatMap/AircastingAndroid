@@ -7,9 +7,9 @@
         <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>
         <item name="colorSecondary">@color/aircasting_dark_blue</item>
         <item name="colorAccent">@color/aircasting_pink</item>
-        <item name="colorOnPrimary">@color/aircasting_white</item>
-        <item name="colorSurface">@color/aircasting_white</item>
-        <item name="android:colorBackground">@color/aircasting_white</item>
+        <item name="colorOnPrimary">@color/background_main</item>
+        <item name="colorSurface">@color/background_main</item>
+        <item name="android:colorBackground">@color/background_main</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.Aircasting.Headline2</item>
         <item name="textAppearanceHeadline3">@style/TextAppearance.Aircasting.Headline3</item>
@@ -80,7 +80,6 @@
         <item name="android:textColor">@color/aircasting_dark_blue</item>
         <item name="android:textSize">@dimen/text_size_xl</item>
     </style>
-
 
     <style name="TextAppearance.Aircasting.Body1" parent="@style/TextAppearance.AppCompat">
         <item name="android:fontFamily">@font/muli_regular</item>
@@ -315,7 +314,7 @@
 
     <style name="Widget.Aircasting.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:backgroundTint">@color/button_background_tint</item>
-        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:minHeight">@dimen/button_min_height</item>
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.Button</item>
         <item name="android:paddingTop">@dimen/keyline_4</item>
@@ -371,7 +370,7 @@
 
     <style name="ThemeOverlay.Aircasting.Switch" parent="">
         <item name="colorOnSurface">@color/aircasting_blue_400</item>
-        <item name="colorSurface">@color/aircasting_white</item>
+        <item name="colorSurface">@color/background_main</item>
         <item name="colorAccent">@color/aircasting_blue_400</item>
     </style>
 
@@ -379,7 +378,7 @@
         <item name="iconSize">20dp</item>
         <item name="iconTint">@color/aircasting_dark_blue</item>
         <item name="iconPadding">@dimen/keyline_6</item>
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:backgroundTint">@color/background_main</item>
         <item name="android:textColor">@color/aircasting_dark_blue</item>
         <item name="android:textSize">@dimen/text_size_s</item>
         <item name="android:textAlignment">viewStart</item>
@@ -391,7 +390,7 @@
     </style>
 
     <style name="Widget.Aircasting.BottomSheetTextButton" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:backgroundTint">@color/background_main</item>
         <item name="android:textColor">@color/aircasting_dark_blue</item>
         <item name="android:textSize">@dimen/text_size_s</item>
         <item name="android:textAlignment">center</item>
@@ -426,7 +425,7 @@
 
     <style name="Widget.Aircasting.ExpandedCardButtonUnfollow" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:translationX">0dp</item>
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:backgroundTint">@color/background_main</item>
         <item name="android:textColor">@color/aircasting_blue_400</item>
         <item name="android:translationY">0dp</item>
         <item name="android:translationZ">0dp</item>
@@ -442,7 +441,7 @@
     </style>
 
     <style name="Widget.Aircasting.SettingsButtons" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:background">@color/transparent</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>
         <item name="android:textSize">@dimen/text_size_s</item>
         <item name="android:textAlignment">viewStart</item>
@@ -455,21 +454,8 @@
         <item name="android:fontFamily">@font/muli_bold</item>
     </style>
 
-    <style name="Widget.Aircasting.SettingsButton" parent="@style/Widget.Aircasting.TextButton">
-        <item name="android:backgroundTint">@color/aircasting_white</item>
-        <item name="android:textColor">@color/aircasting_grey_700</item>
-        <item name="android:textSize">@dimen/text_size_s</item>
-        <item name="android:textAlignment">viewStart</item>
-        <item name="android:paddingStart">@dimen/keyline_8</item>
-        <item name="android:paddingEnd">@dimen/keyline_8</item>
-        <item name="android:paddingTop">@dimen/keyline_2</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="fontFamily">@font/muli_bold</item>
-        <item name="android:fontFamily">@font/muli_bold</item>
-    </style>
-
     <style name="Widget.Aircasting.SettingsDescription" parent="">
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:backgroundTint">@color/background_main</item>
         <item name="android:textAlignment">viewStart</item>
         <item name="android:paddingStart">@dimen/keyline_8</item>
         <item name="android:paddingBottom">@dimen/keyline_4</item>
@@ -495,6 +481,10 @@
         <item name="cardElevation">@dimen/cardview_default_elevation</item>
     </style>
 
+    <style name="Widget.Aircasting.Cards.Contrast" parent="Widget.Aircasting.Cards">
+        <item name="cardBackgroundColor">@color/background_overlay</item>
+    </style>
+
     <style name="ThemeOverlay.Aircasting.Cards" parent="">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
         <item name="textAppearanceHeadline1">@style/TextAppearance.Aircasting.Cards.Headline1</item>
@@ -504,7 +494,7 @@
     <!-- BottomSheet Cards -->
 
     <style name="Widget.Aircasting.BottomSheetCard" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="android:backgroundTint">@color/aircasting_white</item>
+        <item name="android:backgroundTint">@color/background_main</item>
         <item name="cardElevation">10dp</item>
         <item name="cardCornerRadius">20dp</item>
         <item name="enforceMaterialTheme">false</item>
@@ -525,12 +515,13 @@
     <style name="Widget.Aircasting.AppBarLayout" parent="">
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
-        <item name="background">@color/aircasting_white</item>
+        <item name="background">@color/background_main</item>
     </style>
 
     <style name="Widget.Aircasting.AppBar" parent="@style/Widget.MaterialComponents.Toolbar.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.Aircasting.AppBar</item>
         <item name="titleTextAppearance">@style/TextAppearance.Aircasting.AppBar</item>
+        <item name="navigationIconTint">@color/navigation_back_button</item>
         <item name="android:elevation">0dp</item>
         <item name="android:orientation">vertical</item>
         <item name="android:paddingBottom">@dimen/keyline_2</item>
@@ -570,7 +561,7 @@
 
     <style name="Widget.Aircasting.BottomSheet" parent="@style/Theme.MaterialComponents.BottomSheetDialog">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
-        <item name="colorOnPrimary">@color/aircasting_white</item>
+        <item name="colorOnPrimary">@color/background_main</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">@color/aircasting_dark_blue</item>
@@ -608,11 +599,8 @@
     </style>
 
     <style name="Widget.Aircasting.TextInputShapeAppearance" parent="">
-        <item name="cornerFamilyTopLeft">cut</item>
-        <item name="cornerFamilyBottomLeft">cut</item>
-        <item name="cornerFamilyTopRight">cut</item>
-        <item name="cornerFamilyBottomRight">cut</item>
-        <item name="cornerSize">0dp</item>
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/edit_text_corner_radius</item>
     </style>
 
     <!-- New session details -->
