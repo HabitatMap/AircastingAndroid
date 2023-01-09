@@ -3,19 +3,29 @@ package pl.llp.aircasting.ui.view.screens.settings.my_account
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import kotlinx.android.synthetic.main.activity_myaccount.view.*
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
 import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class MyAccountActivity : BaseActivity() {
 
-    private var controller: MyAccountController? = null
+    private lateinit var rootView: View
 
     @Inject
     lateinit var logoutService: LogoutService
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private lateinit var viewModel: MyAccountViewModel
 
     companion object {
         fun start(context: Context?) {
@@ -32,21 +42,31 @@ class MyAccountActivity : BaseActivity() {
         (application as AircastingApplication)
             .appComponent.inject(this)
 
-        val view = MyAccountViewMvcImpl(this, layoutInflater, null)
-        controller = MyAccountController(this, view, settings, logoutService)
+        viewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[MyAccountViewModel::class.java]
 
-        setContentView(view.rootView)
+        rootView = layoutInflater.inflate(R.layout.activity_myaccount, null, false)
+
+        setupLayout()
         setupAppBar(this, topAppBar)
+
+        setContentView(rootView)
     }
 
-    override fun onStart() {
-        super.onStart()
-        controller?.onStart()
+    private fun setupLayout() {
+        rootView.apply {
+            sign_out_button.setOnClickListener { viewModel.logout() }
+            delete_account_button.setOnClickListener { showAreYouSureDialog() }
+            header.text = getString(R.string.my_account_info).format(viewModel.userName)
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        controller?.onStop()
+    private fun showAreYouSureDialog() {
+        ConfirmDangerActionDialog(
+            supportFragmentManager,
+            viewModel::deleteAccount
+        ).show()
     }
-
 }

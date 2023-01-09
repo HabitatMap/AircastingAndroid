@@ -423,5 +423,9 @@
     <string name="hourly_frequency">1 hora</string>
     <string name="daily_frequency">24 horas</string>
     <string name="threshold_alerts_bottom_sheet_subtitle">Reciba una notificación cuando el valor medido de un flujo exceda el umbral dado</string>
+    <string name="threshold_alerts_threshold_value">Límite</string>
+    <string name="not_numeric_value_error">¡El valor debe ser numérico!</string>
+    <string name="my_account_delete_account">Borrar cuenta</string>
+    <string name="save_button">Salvar</string>
 
 </resources>

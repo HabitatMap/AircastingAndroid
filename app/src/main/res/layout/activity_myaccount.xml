@@ -57,5 +57,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header" />
+
+        <Button
+            android:id="@+id/delete_account_button"
+            style="@style/Widget.Aircasting.Button.DangerAction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_10"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginEnd="@dimen/keyline_10"
+            android:drawableEnd="@drawable/ic_baseline_chevron_right_white"
+            android:text="@string/my_account_delete_account"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.Aircasting.Cards.Headline1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sign_out_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

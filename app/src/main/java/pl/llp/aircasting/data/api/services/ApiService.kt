@@ -12,7 +12,6 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateThresholdAlert
 import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteThresholdAlert
 import pl.llp.aircasting.data.api.util.ApiConstants.urlExportSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlGetThresholdAlerts
-import pl.llp.aircasting.data.api.util.ApiConstants.urlLogin
 import pl.llp.aircasting.data.api.util.ApiConstants.urlResetPassword
 import pl.llp.aircasting.data.api.util.ApiConstants.urlSessionInGivenLocation
 import pl.llp.aircasting.data.api.util.ApiConstants.urlSessionWithStreamsAndMeasurements
@@ -21,6 +20,7 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlSync
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
+import pl.llp.aircasting.data.api.util.ApiConstants.urlUser
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
@@ -42,7 +42,7 @@ interface ApiService {
         @Query("last_measurement_sync") lastMeasurementSync: String
     ): SessionWithMeasurementsResponse
 
-    @GET(urlLogin)
+    @GET(urlUser)
     fun login(): Call<UserResponse>
 
     @GET(urlExportSession)
@@ -101,4 +101,7 @@ interface ApiService {
     /* DELETE Requests */
     @DELETE(urlDeleteThresholdAlert)
     suspend fun deleteThresholdAlert(@Path("id") id: Int)
+
+    @DELETE(urlUser)
+    suspend fun deleteAccount(): Response<DeleteAccountResponse?>
 }

@@ -105,8 +105,11 @@ class SDCardSyncError(additionalMessage: String?) :
 class AirbeamServiceError(additionalMessage: String?) :
     BaseException(null, "AirBeam service error: ${additionalMessage}")
 
-// Threshold Alerts
-class ThresholdAlert {
+object ThresholdAlert {
     class SaveChangesError(cause: Throwable?) :
         BaseException(null, "Threshold Alert saving error: ${cause?.message}")
+}
+
+object Account {
+    class DeleteError(cause: Throwable?) : BaseException(Exception(cause))
 }

@@ -12,7 +12,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmationDeleteSessionDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
 import pl.llp.aircasting.util.events.DeleteSessionEvent
 import pl.llp.aircasting.util.events.DeleteStreamsEvent
 
@@ -57,12 +57,12 @@ class DeleteSessionBottomSheet(
                     session?.streams?.size
                 )
             ) {
-                ConfirmationDeleteSessionDialog(parentFragmentManager) {
+                ConfirmDangerActionDialog(parentFragmentManager) {
                     deleteSession(session?.uuid)
                 }
                     .show()
             } else {
-                ConfirmationDeleteSessionDialog(parentFragmentManager) {
+                ConfirmDangerActionDialog(parentFragmentManager) {
                     deleteStreams(session, streamsToDelete)
                 }
                     .show()

@@ -8,12 +8,20 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import pl.llp.aircasting.di.factories.ViewModelFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.edit.EditSessionBottomSheetViewModel
+import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountViewModel
 import pl.llp.aircasting.ui.viewmodel.CreateThresholdAlertBottomSheetViewModel
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import kotlin.reflect.KClass
 
 @Module
 abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(MyAccountViewModel::class)
+    internal abstract fun bindMyAccountViewModel(
+        myAccountViewModel: MyAccountViewModel
+    ): ViewModel
+
     @Binds
     @IntoMap
     @ViewModelKey(EditSessionBottomSheetViewModel::class)

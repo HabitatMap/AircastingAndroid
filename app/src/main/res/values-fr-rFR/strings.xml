@@ -421,6 +421,10 @@
     <string name="hourly_frequency">1 heure</string>
     <string name="daily_frequency">24 heures</string>
     <string name="threshold_alerts_bottom_sheet_subtitle">Recevez une notification lorsque la valeur mesurée d\'un flux dépasse le seuil donné</string>
+    <string name="threshold_alerts_threshold_value">Seuil</string>
+    <string name="not_numeric_value_error">La valeur doit être numérique !</string>
+    <string name="my_account_delete_account">Supprimer le compte</string>
+    <string name="save_button">Sauver</string>
 
 
 </resources>

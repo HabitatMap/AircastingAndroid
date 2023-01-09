@@ -3,12 +3,12 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.R
-import pl.llp.aircasting.ui.view.common.BaseDialog
 import kotlinx.android.synthetic.main.network_password_dialog.view.*
 import kotlinx.android.synthetic.main.session_actions_modifiable.view.cancel_button
+import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.common.BaseDialog
 
-class ConfirmationDeleteSessionDialog(
+class ConfirmDangerActionDialog(
     private val mFragmentManager: FragmentManager,
     val okCallback: () -> (Unit)
 ): BaseDialog(mFragmentManager) {

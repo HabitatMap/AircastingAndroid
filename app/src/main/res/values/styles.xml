@@ -323,6 +323,10 @@
         <item name="shapeAppearance">@style/Widget.Aircasting.RoundedButtonShapeAppearance</item>
     </style>
 
+    <style name="Widget.Aircasting.Button.DangerAction" parent="Widget.Aircasting.Button">
+        <item name="android:backgroundTint">@color/red_danger</item>
+    </style>
+
     <style name="Widget.Aircasting.CutButtonShapeAppearance" parent="">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">0dp</item>

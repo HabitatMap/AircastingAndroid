@@ -61,7 +61,9 @@ open class ApiServiceFactory @Inject constructor(
         )
     }
 
-    fun get(authToken: String): ApiService {
+    fun get(authToken: String?): ApiService {
+        authToken ?: return get(emptyList())
+
         val credentialsEncoded =
             encodedCredentials(
                 authToken,

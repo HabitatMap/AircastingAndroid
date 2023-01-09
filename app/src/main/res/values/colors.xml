@@ -13,6 +13,8 @@
     <color name="aircasting_grey_300">#A1A2A6</color>
     <color name="aircasting_grey_700">#737578</color>
 
+    <color name="red_danger">#FF0000</color>
+
     <color name="navigation_back_button">@color/black</color>
 
     <color name="black">#000000</color>
