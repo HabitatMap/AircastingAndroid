@@ -16,8 +16,12 @@ class Measurement(
     var averagingFrequency: Int = 1
 ) {
 
-    constructor(event: NewMeasurementEvent, latitude: Double?, longitude: Double?) :
-            this(event.measuredValue, Date(event.creationTime), latitude, longitude)
+    constructor(
+        event: NewMeasurementEvent,
+        latitude: Double?,
+        longitude: Double?,
+        creationTime: Date = Date()
+    ) : this(event.measuredValue, creationTime, latitude, longitude)
 
     constructor(measurementDBObject: MeasurementDBObject) : this(
         measurementDBObject.value,

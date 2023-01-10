@@ -30,7 +30,7 @@ open class MeasurementStream(
     private var mMeasurements: List<Measurement> = listOf()
 ) {
     constructor(measurementEvent: NewMeasurementEvent) : this(
-        measurementEvent.packageName,
+        measurementEvent.sensorPackageName,
         measurementEvent.sensorName,
         measurementEvent.measurementType,
         measurementEvent.measurementShortType,

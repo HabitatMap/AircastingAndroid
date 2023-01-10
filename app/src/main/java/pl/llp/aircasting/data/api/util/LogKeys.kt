@@ -6,3 +6,6 @@ object LogKeys {
 
     const val bluetoothReconnection = "BLUETOOTH_RECONNECTION"
 }
+
+val Any.TAG: String
+    get() = this::class.java.simpleName

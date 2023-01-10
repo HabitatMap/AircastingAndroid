@@ -1,10 +1,8 @@
 package pl.llp.aircasting.util.events
 
-import java.util.*
-
 
 class NewMeasurementEvent(
-    val packageName: String,
+    val sensorPackageName: String,
     val sensorName: String,
     val measurementType: String,
     val measurementShortType: String,
@@ -17,8 +15,5 @@ class NewMeasurementEvent(
     val thresholdVeryHigh: Int,
     val measuredValue: Double
 ) {
-    val creationTime = Date().time
-
-    val deviceId get(): String? = packageName.split(':').lastOrNull()
-
+    val deviceId get(): String? = sensorPackageName.split(':').lastOrNull()
 }
