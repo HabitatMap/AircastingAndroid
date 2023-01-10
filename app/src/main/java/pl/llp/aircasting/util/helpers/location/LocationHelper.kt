@@ -85,19 +85,23 @@ class LocationHelper(mContext: Context) {
     fun start() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                locationResult
-                for (location in locationResult.locations) {
-                    mLastLocation = location
-                }
+                if (locationChanged(locationResult.lastLocation))
+                    mLastLocation = locationResult.lastLocation
 
                 EventBus.getDefault()
                     .post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
             }
         }
 
-        fusedLocationClient.requestLocationUpdates(locationRequest,
-            locationCallback as LocationCallback, Looper.getMainLooper())
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback as LocationCallback, Looper.getMainLooper()
+        )
 
+    }
+
+    private fun locationChanged(result: Location): Boolean {
+        return mLastLocation?.let { result.distanceTo(it) > 5f } ?: true
     }
 
     fun stop() {
