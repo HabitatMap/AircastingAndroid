@@ -22,6 +22,7 @@ import javax.inject.Inject
 open class MobileActiveSessionActionsBottomSheet(
     private val mSessionPresenter: SessionPresenter?
 ) : BottomSheet() {
+    constructor() : this(null)
 
     @Inject
     lateinit var errorHandler: ErrorHandler

@@ -26,6 +26,7 @@ import javax.inject.Inject
 class EditSessionBottomSheet(
     private var mSession: Session?
 ) : BottomSheet() {
+    constructor() : this(null)
 
     private var sessionNameInputLayout: TextInputLayout? = null
     private var sessionNameInput: EditText? = null

@@ -20,6 +20,7 @@ import pl.llp.aircasting.util.events.DeleteStreamsEvent
 class DeleteSessionBottomSheet(
     private val session: Session?
 ) : BottomSheet() {
+    constructor() : this(null)
 
     private var mStreamsOptionsContainer: LinearLayout? = null
     private var checkBoxMap: HashMap<CheckBox, DeleteStreamOption> = HashMap()

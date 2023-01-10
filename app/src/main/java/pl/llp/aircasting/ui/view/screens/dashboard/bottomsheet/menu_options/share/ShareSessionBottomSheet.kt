@@ -37,6 +37,8 @@ import javax.inject.Inject
 class ShareSessionBottomSheet(
     private var mSession: Session?
 ) : BottomSheet() {
+    constructor() : this(null)
+
     class CurrentSessionStreams(
         val sensorName: String,
         val detailedType: String?
