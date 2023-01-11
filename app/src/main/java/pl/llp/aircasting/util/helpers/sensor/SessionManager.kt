@@ -1,28 +1,34 @@
 package pl.llp.aircasting.util.helpers.sensor
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.CoroutineContextProviderImpl
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
-import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.new_measurement_handler.NewMeasurementAirBeamHandler
 import pl.llp.aircasting.util.helpers.sensor.new_measurement_handler.NewMeasurementSingleStreamHandler
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
 
+@OptIn(DelicateCoroutinesApi::class)
 class SessionManager(
     private val mContext: Context,
     apiService: ApiService,
@@ -33,6 +39,7 @@ class SessionManager(
     private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
     private val noteRepository: NoteRepository = NoteRepository(),
+    private val newMeasurementFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
     private val newMeasurementAirBeamHandler: NewMeasurementAirBeamHandler = NewMeasurementAirBeamHandler(
         settings,
         errorHandler,
@@ -48,8 +55,10 @@ class SessionManager(
         measurementStreamsRepository,
         measurementsRepository,
         activeSessionMeasurementsRepository
-    )
+    ),
 ) {
+    private val coroutineScope =
+        CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context())
     private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
     private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
     private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
@@ -62,6 +71,12 @@ class SessionManager(
     private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
         null
     private var mCallback: (() -> Unit)? = null
+
+    private val subscriber: Job = newMeasurementFlow.onEach {
+        Log.v(TAG, "NewMeasurement: ${it.measuredValue} ${it.measurementShortType}")
+        newMeasurementAirBeamHandler.handle(it)
+    }
+        .launchIn(coroutineScope)
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
@@ -99,10 +114,19 @@ class SessionManager(
     }
 
     // ASYNC handles all addMeasurement() in a different thread (potentially creating a lot of them)
-    @Subscribe(sticky = true, threadMode = ThreadMode.ASYNC)
-    fun onMessageEvent(event: NewMeasurementEvent) = when (event.sensorPackageName) {
-        MicrophoneDeviceItem.DEFAULT_ID -> newMeasurementMicrophoneHandler.handle(event)
-        else -> newMeasurementAirBeamHandler.handle(event)
+    @Subscribe
+    fun onMessageEvent(event: NewMeasurementEvent) {
+        coroutineScope.launch {
+            subscriber
+            newMeasurementFlow.emit(event)
+        }
+//        when (event.sensorPackageName) {
+//            MicrophoneDeviceItem.DEFAULT_ID -> newMeasurementMicrophoneHandler.handle(
+//                event
+//            )
+//            else ->
+//                newMeasurementFlow.tryEmit(event)
+//        }
     }
 
     @Subscribe

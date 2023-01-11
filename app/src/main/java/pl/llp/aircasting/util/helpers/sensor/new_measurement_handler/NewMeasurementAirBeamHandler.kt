@@ -14,6 +14,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.*
@@ -70,7 +71,7 @@ open class NewMeasurementAirBeamHandler(
         deviceId: String,
         measurementStream: MeasurementStream,
         measurement: Measurement
-    ) {
+    ) = runOnIOThread {
         val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId)
         sessionId?.let {
             try {
