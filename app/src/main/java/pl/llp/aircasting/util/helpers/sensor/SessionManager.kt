@@ -1,17 +1,15 @@
 package pl.llp.aircasting.util.helpers.sensor
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.*
-import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
@@ -22,13 +20,13 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
-import pl.llp.aircasting.util.helpers.sensor.new_measurement_handler.NewMeasurementAirBeamHandler
-import pl.llp.aircasting.util.helpers.sensor.new_measurement_handler.NewMeasurementSingleStreamHandler
+import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
+import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
+import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
 
-@OptIn(DelicateCoroutinesApi::class)
 class SessionManager(
     private val mContext: Context,
     apiService: ApiService,
@@ -39,53 +37,51 @@ class SessionManager(
     private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
     private val noteRepository: NoteRepository = NoteRepository(),
-    private val newMeasurementFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
-    private val newMeasurementAirBeamHandler: NewMeasurementAirBeamHandler = NewMeasurementAirBeamHandler(
+
+    private val airBeamNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
+    private val microphoneNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
+
+    private val coroutineScope: CoroutineScope
+    = CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context()),
+    private val sessionsSyncService: SessionsSyncService
+    = SessionsSyncService.get(apiService, errorHandler, settings),
+    private val sessionUpdateService: UpdateSessionService
+    = UpdateSessionService(apiService, errorHandler, mContext),
+    private val exportSessionService: ExportSessionService
+    = ExportSessionService(apiService, errorHandler, mContext),
+    private val fixedSessionUploadService: FixedSessionUploadService
+    = FixedSessionUploadService(apiService, errorHandler),
+    private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService
+    = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler),
+    private val periodicallySyncSessionsService: PeriodicallySyncSessionsService
+    = PeriodicallySyncSessionsService(settings, sessionsSyncService),
+    private var averagingBackgroundService: AveragingBackgroundService? = null,
+
+    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? = null,
+    private var mCallback: (() -> Unit)? = null,
+    private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
+        coroutineScope,
         settings,
-        errorHandler,
+        fixedSessionUploadService,
         sessionsRepository,
+        activeSessionMeasurementsRepository,
+        sessionsSyncService,
+        errorHandler,
         measurementStreamsRepository,
         measurementsRepository,
-        activeSessionMeasurementsRepository
-    ),
-    private val newMeasurementMicrophoneHandler: NewMeasurementSingleStreamHandler = NewMeasurementSingleStreamHandler(
-        settings,
-        errorHandler,
-        sessionsRepository,
-        measurementStreamsRepository,
-        measurementsRepository,
-        activeSessionMeasurementsRepository
-    ),
+        airBeamNewMeasurementEventFlow,
+        microphoneNewMeasurementEventFlow,
+    )
 ) {
-    private val coroutineScope =
-        CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context())
-    private val sessionsSyncService = SessionsSyncService.get(apiService, errorHandler, settings)
-    private val sessionUpdateService = UpdateSessionService(apiService, errorHandler, mContext)
-    private val exportSessionService = ExportSessionService(apiService, errorHandler, mContext)
-    private val fixedSessionUploadService = FixedSessionUploadService(apiService, errorHandler)
-    private val fixedSessionDownloadMeasurementsService =
-        PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler)
-    private val periodicallySyncSessionsService =
-        PeriodicallySyncSessionsService(settings, sessionsSyncService)
-    private var averagingBackgroundService: AveragingBackgroundService? = null
-    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
-        null
-    private var mCallback: (() -> Unit)? = null
-
-    private val subscriber: Job = newMeasurementFlow.onEach {
-        Log.v(TAG, "NewMeasurement: ${it.measuredValue} ${it.measurementShortType}")
-        newMeasurementAirBeamHandler.handle(it)
-    }
-        .launchIn(coroutineScope)
 
     @Subscribe
-    fun onMessageEvent(event: StartRecordingEvent) {
-        startRecording(event.session, event.wifiSSID, event.wifiPassword)
+    fun onMessageEvent(event: StartRecordingEvent) = coroutineScope.launch {
+        recordingHandler.startRecording(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
-    fun onMessageEvent(event: StopRecordingEvent) {
-        stopRecording(event.sessionUUID)
+    fun onMessageEvent(event: StopRecordingEvent) = coroutineScope.launch {
+        recordingHandler.stopRecording(event.sessionUUID)
     }
 
     @Subscribe
@@ -113,20 +109,12 @@ class SessionManager(
         deleteNote(event)
     }
 
-    // ASYNC handles all addMeasurement() in a different thread (potentially creating a lot of them)
     @Subscribe
-    fun onMessageEvent(event: NewMeasurementEvent) {
-        coroutineScope.launch {
-            subscriber
-            newMeasurementFlow.emit(event)
+    fun onMessageEvent(event: NewMeasurementEvent) = coroutineScope.launch {
+        when (event.sensorPackageName) {
+            MicrophoneDeviceItem.DEFAULT_ID -> microphoneNewMeasurementEventFlow.emit(event)
+            else -> airBeamNewMeasurementEventFlow.emit(event)
         }
-//        when (event.sensorPackageName) {
-//            MicrophoneDeviceItem.DEFAULT_ID -> newMeasurementMicrophoneHandler.handle(
-//                event
-//            )
-//            else ->
-//                newMeasurementFlow.tryEmit(event)
-//        }
     }
 
     @Subscribe
@@ -206,55 +194,6 @@ class SessionManager(
         runOnIOThread {
             sessionsRepository.disconnectMobileBluetoothSessions()
             sessionsRepository.finishMobileMicSessions()
-        }
-    }
-
-    private fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        var DBsessionId: Long? = null
-
-        EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
-
-        session.startRecording()
-
-        if (session.isFixed()) {
-            session.setFollowedAtNow()
-            settings.increaseFollowedSessionsCount()
-            fixedSessionUploadService.upload(session)
-        }
-
-        runOnIOThread {
-            DBsessionId = sessionsRepository.insert(session)
-            if (session.isMobile()) {
-                DBsessionId?.let {
-                    val averagingService = AveragingService.get(it)
-
-                    averagingService?.let { averagingService ->
-                        averagingBackgroundService = AveragingBackgroundService(averagingService)
-                        averagingBackgroundService?.start()
-                        averagingPreviousMeasurementsBackgroundService =
-                            AveragingPreviousMeasurementsBackgroundService(averagingService)
-                        averagingPreviousMeasurementsBackgroundService?.start()
-                    }
-                }
-            }
-
-        }
-    }
-
-    private fun stopRecording(uuid: String) {
-        runOnIOThread {
-            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
-            val session = sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)
-            session?.let {
-                it.stopRecording()
-
-                sessionsRepository.update(it)
-                activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
-                sessionsSyncService.sync()
-                averagingBackgroundService?.stop()
-                averagingPreviousMeasurementsBackgroundService?.stop()
-                AveragingService.destroy(sessionId)
-            }
         }
     }
 
@@ -357,7 +296,8 @@ class SessionManager(
                     noteRepository.update(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session -> updateSession(session) }
+            if (event.session?.endTime != null)
+                updateSession(event.session)
         }
     }
 
@@ -369,9 +309,8 @@ class SessionManager(
                     noteRepository.delete(sessionId, event.note)
                 }
             }
-            if (event.session?.endTime != null) event.session.let { session ->
-                updateSession(session)
-            }
+            if (event.session?.endTime != null)
+                updateSession(event.session)
         }
     }
 }
