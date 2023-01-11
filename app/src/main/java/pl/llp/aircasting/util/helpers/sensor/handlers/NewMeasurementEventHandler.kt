@@ -2,6 +2,11 @@ package pl.llp.aircasting.util.helpers.sensor.handlers
 
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -22,7 +27,6 @@ import java.util.Calendar.SECOND
 import java.util.concurrent.atomic.AtomicInteger
 
 
-
 abstract class NewMeasurementEventHandler(
     private val settings: Settings,
     private val errorHandler: ErrorHandler,
@@ -36,29 +40,33 @@ abstract class NewMeasurementEventHandler(
     private val counter = AtomicInteger(0)
     private lateinit var timestamp: Date
 
-    fun handle(event: NewMeasurementEvent) {
-        val measurementStream = MeasurementStream(event)
+    private lateinit var job: Job
 
-        val locationless = settings.areMapsDisabled()
-        val lat: Double?
-        val lon: Double?
+    fun observe(flow: SharedFlow<NewMeasurementEvent>, coroutineScope: CoroutineScope) {
+        job = flow.onEach { event ->
+            val measurementStream = MeasurementStream(event)
 
-        if (locationless) {
-            val fakeLocation = Session.Location.FAKE_LOCATION
-            lat = fakeLocation.latitude
-            lon = fakeLocation.longitude
-        } else {
-            val location = LocationHelper.lastLocation()
-            lat = location?.latitude
-            lon = location?.longitude
-        }
+            val locationless = settings.areMapsDisabled()
+            val lat: Double?
+            val lon: Double?
 
-        val measurement = Measurement(event, lat, lon, creationTime())
-        Log.v(TAG, "Measurement time: ${measurement.time}")
+            if (locationless) {
+                val fakeLocation = Session.Location.FAKE_LOCATION
+                lat = fakeLocation.latitude
+                lon = fakeLocation.longitude
+            } else {
+                val location = LocationHelper.lastLocation()
+                lat = location?.latitude
+                lon = location?.longitude
+            }
 
-        val deviceId = event.deviceId ?: return
+            val measurement = Measurement(event, lat, lon, creationTime())
+            Log.v(TAG, "Measurement time: ${measurement.time}")
 
-        saveToDB(deviceId, measurementStream, measurement)
+            val deviceId = event.deviceId ?: return@onEach
+
+            saveToDB(deviceId, measurementStream, measurement)
+        }.launchIn(coroutineScope)
     }
 
     private fun creationTime(): Date {
@@ -93,6 +101,7 @@ abstract class NewMeasurementEventHandler(
 
     fun reset() {
         counter.set(0)
+        job.cancel()
     }
 }
 

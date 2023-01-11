@@ -1,15 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.handlers
 
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.SharedFlow
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -39,8 +34,9 @@ class RecordingHandlerImpl(
     private val errorHandler: ErrorHandler,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
-    private val airBeamNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent>,
-    private val microphoneNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent>,
+
+    private val airBeamNewMeasurementEventFlow: SharedFlow<NewMeasurementEvent>,
+    private val microphoneNewMeasurementEventFlow: SharedFlow<NewMeasurementEvent>,
 
     private val airBeamNewMeasurementEventHandler: NewMeasurementEventHandler = AirBeamNewMeasurementEventHandler(
         settings,
@@ -62,8 +58,6 @@ class RecordingHandlerImpl(
     private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
         null
     private var averagingBackgroundService: AveragingBackgroundService? = null
-    private lateinit var microphoneNewMeasurementObserver: Job
-    private lateinit var airBeamNewMeasurementObserver: Job
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         val databaseSessionId: Long?
@@ -97,19 +91,15 @@ class RecordingHandlerImpl(
     }
 
     private fun startObservingNewMeasurements(deviceType: DeviceItem.Type?) = when (deviceType) {
-        DeviceItem.Type.MIC -> microphoneNewMeasurementObserver =
-            microphoneNewMeasurementEventFlow.onEach {
-                Log.v(
-                    TAG,
-                    "AirBeam NewMeasurement: ${it.measuredValue} ${it.measurementShortType}"
-                )
-                airBeamNewMeasurementEventHandler.handle(it)
-            }.launchIn(coroutineScope)
+        DeviceItem.Type.MIC -> microphoneNewMeasurementEventHandler.observe(
+            microphoneNewMeasurementEventFlow,
+            coroutineScope
+        )
 
-        else -> airBeamNewMeasurementObserver = airBeamNewMeasurementEventFlow.onEach {
-            Log.v(TAG, "AirBeam NewMeasurement: ${it.measuredValue} ${it.measurementShortType}")
-            airBeamNewMeasurementEventHandler.handle(it)
-        }.launchIn(coroutineScope)
+        else -> airBeamNewMeasurementEventHandler.observe(
+            airBeamNewMeasurementEventFlow,
+            coroutineScope
+        )
     }
 
     override fun stopRecording(uuid: String) {
@@ -123,17 +113,15 @@ class RecordingHandlerImpl(
             averagingBackgroundService?.stop()
             averagingPreviousMeasurementsBackgroundService?.stop()
             AveragingService.destroy(sessionId)
-            stopObservingMeasurements(session)
+            stopObservingNewMeasurements(session)
         }
     }
 
-    private fun stopObservingMeasurements(session: Session) = when (session.deviceType) {
+    private fun stopObservingNewMeasurements(session: Session) = when (session.deviceType) {
         DeviceItem.Type.MIC -> {
-            microphoneNewMeasurementObserver.cancel()
             microphoneNewMeasurementEventHandler.reset()
         }
         else -> {
-            airBeamNewMeasurementObserver.cancel()
             airBeamNewMeasurementEventHandler.reset()
         }
     }
