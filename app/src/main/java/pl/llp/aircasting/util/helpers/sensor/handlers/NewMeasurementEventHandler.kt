@@ -26,51 +26,58 @@ import java.util.*
 import java.util.Calendar.SECOND
 import java.util.concurrent.atomic.AtomicInteger
 
+interface NewMeasurementEventHandler {
+    fun observe(
+        flow: SharedFlow<NewMeasurementEvent>,
+        coroutineScope: CoroutineScope,
+        numberOfStreams: Int = 5
+    ): Job
+}
 
-abstract class NewMeasurementEventHandler(
+class NewMeasurementEventHandlerImpl(
     private val settings: Settings,
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
-) {
-    abstract val numberOfStreams: Int
+) : NewMeasurementEventHandler {
 
     private val counter = AtomicInteger(0)
     private lateinit var timestamp: Date
 
-    private lateinit var job: Job
+    override fun observe(
+        flow: SharedFlow<NewMeasurementEvent>,
+        coroutineScope: CoroutineScope,
+        numberOfStreams: Int
+    ) = flow.onEach { event ->
+        val measurementStream = MeasurementStream(event)
 
-    fun observe(flow: SharedFlow<NewMeasurementEvent>, coroutineScope: CoroutineScope) {
-        job = flow.onEach { event ->
-            val measurementStream = MeasurementStream(event)
+        val locationless = settings.areMapsDisabled()
+        val lat: Double?
+        val lon: Double?
 
-            val locationless = settings.areMapsDisabled()
-            val lat: Double?
-            val lon: Double?
+        if (locationless) {
+            val fakeLocation = Session.Location.FAKE_LOCATION
+            lat = fakeLocation.latitude
+            lon = fakeLocation.longitude
+        } else {
+            val location = LocationHelper.lastLocation()
+            lat = location?.latitude
+            lon = location?.longitude
+        }
 
-            if (locationless) {
-                val fakeLocation = Session.Location.FAKE_LOCATION
-                lat = fakeLocation.latitude
-                lon = fakeLocation.longitude
-            } else {
-                val location = LocationHelper.lastLocation()
-                lat = location?.latitude
-                lon = location?.longitude
-            }
+        val measurement = Measurement(event, lat, lon, creationTime(numberOfStreams))
+        Log.v(TAG, "Measurement time: ${measurement.time}")
 
-            val measurement = Measurement(event, lat, lon, creationTime())
-            Log.v(TAG, "Measurement time: ${measurement.time}")
+        val deviceId = event.deviceId ?: return@onEach
 
-            val deviceId = event.deviceId ?: return@onEach
+        saveToDB(deviceId, measurementStream, measurement)
+    }.launchIn(coroutineScope)
 
-            saveToDB(deviceId, measurementStream, measurement)
-        }.launchIn(coroutineScope)
-    }
 
-    private fun creationTime(): Date {
-        if (counter.getAndIncrement().mod(5) == 0)
+    private fun creationTime(numberOfStreams: Int): Date {
+        if (counter.getAndIncrement().mod(numberOfStreams) == 0)
             timestamp = currentTimeTruncatedToSeconds()
         return timestamp
     }
@@ -98,47 +105,4 @@ abstract class NewMeasurementEventHandler(
             }
         }
     }
-
-    fun reset() {
-        counter.set(0)
-        job.cancel()
-    }
-}
-
-class AirBeamNewMeasurementEventHandler(
-    settings: Settings,
-    errorHandler: ErrorHandler,
-    sessionsRepository: SessionsRepository,
-    measurementStreamsRepository: MeasurementStreamsRepository,
-    measurementsRepository: MeasurementsRepository,
-    activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
-) : NewMeasurementEventHandler(
-    settings,
-    errorHandler,
-    sessionsRepository,
-    measurementStreamsRepository,
-    measurementsRepository,
-    activeSessionMeasurementsRepository
-) {
-    override val numberOfStreams: Int
-        get() = 5
-}
-
-open class MicrophoneNewMeasurementEventHandler(
-    settings: Settings,
-    errorHandler: ErrorHandler,
-    sessionsRepository: SessionsRepository,
-    measurementStreamsRepository: MeasurementStreamsRepository,
-    measurementsRepository: MeasurementsRepository,
-    activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
-) : NewMeasurementEventHandler(
-    settings,
-    errorHandler,
-    sessionsRepository,
-    measurementStreamsRepository,
-    measurementsRepository,
-    activeSessionMeasurementsRepository
-) {
-    override val numberOfStreams: Int
-        get() = 1
 }

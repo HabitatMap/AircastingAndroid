@@ -1,7 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.handlers
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -37,45 +39,32 @@ class RecordingHandlerImpl(
 
     private val airBeamNewMeasurementEventFlow: SharedFlow<NewMeasurementEvent>,
     private val microphoneNewMeasurementEventFlow: SharedFlow<NewMeasurementEvent>,
-
-    private val airBeamNewMeasurementEventHandler: NewMeasurementEventHandler = AirBeamNewMeasurementEventHandler(
-        settings,
-        errorHandler,
-        sessionsRepository,
-        measurementStreamsRepository,
-        measurementsRepository,
-        activeSessionMeasurementsRepository
-    ),
-    private val microphoneNewMeasurementEventHandler: NewMeasurementEventHandler = MicrophoneNewMeasurementEventHandler(
-        settings,
-        errorHandler,
-        sessionsRepository,
-        measurementStreamsRepository,
-        measurementsRepository,
-        activeSessionMeasurementsRepository
-    ),
 ) : RecordingHandler {
     private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
         null
     private var averagingBackgroundService: AveragingBackgroundService? = null
 
+    private val observers = mutableMapOf<Session, Job>()
+
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        val databaseSessionId: Long?
+        coroutineScope.launch {
+            val databaseSessionId: Long?
 
-        EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
+            EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
-        session.startRecording()
-        databaseSessionId = sessionsRepository.insert(session)
+            session.startRecording()
+            databaseSessionId = sessionsRepository.insert(session)
 
-        when (session.type) {
-            Session.Type.FIXED -> {
-                session.setFollowedAtNow()
-                settings.increaseFollowedSessionsCount()
-                fixedSessionUploadService.upload(session)
-            }
-            Session.Type.MOBILE -> {
-                startAveragingServices(databaseSessionId)
-                startObservingNewMeasurements(session.deviceType)
+            when (session.type) {
+                Session.Type.FIXED -> {
+                    session.setFollowedAtNow()
+                    settings.increaseFollowedSessionsCount()
+                    fixedSessionUploadService.upload(session)
+                }
+                Session.Type.MOBILE -> {
+                    startAveragingServices(databaseSessionId)
+                    startObservingNewMeasurements(session)
+                }
             }
         }
     }
@@ -90,39 +79,47 @@ class RecordingHandlerImpl(
         }
     }
 
-    private fun startObservingNewMeasurements(deviceType: DeviceItem.Type?) = when (deviceType) {
-        DeviceItem.Type.MIC -> microphoneNewMeasurementEventHandler.observe(
-            microphoneNewMeasurementEventFlow,
-            coroutineScope
+    private fun startObservingNewMeasurements(session: Session) {
+        val handler = NewMeasurementEventHandlerImpl(
+            settings,
+            errorHandler,
+            sessionsRepository,
+            measurementStreamsRepository,
+            measurementsRepository,
+            activeSessionMeasurementsRepository
         )
 
-        else -> airBeamNewMeasurementEventHandler.observe(
-            airBeamNewMeasurementEventFlow,
-            coroutineScope
+        val flow = when (session.deviceType) {
+            DeviceItem.Type.MIC -> microphoneNewMeasurementEventFlow
+            else -> airBeamNewMeasurementEventFlow
+        }
+
+        observers[session] = handler.observe(
+            flow,
+            coroutineScope,
+            session.defaultNumberOfStreams()
         )
     }
 
     override fun stopRecording(uuid: String) {
-        val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
+        coroutineScope.launch {
+            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
 
-        sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)?.let { session ->
-            session.stopRecording()
-            sessionsRepository.update(session)
-            activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
-            sessionsSyncService.sync()
-            averagingBackgroundService?.stop()
-            averagingPreviousMeasurementsBackgroundService?.stop()
-            AveragingService.destroy(sessionId)
-            stopObservingNewMeasurements(session)
+            sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)?.let { session ->
+                session.stopRecording()
+                sessionsRepository.update(session)
+                activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
+                sessionsSyncService.sync()
+                averagingBackgroundService?.stop()
+                averagingPreviousMeasurementsBackgroundService?.stop()
+                AveragingService.destroy(sessionId)
+                stopObservingNewMeasurements(session)
+            }
         }
     }
 
-    private fun stopObservingNewMeasurements(session: Session) = when (session.deviceType) {
-        DeviceItem.Type.MIC -> {
-            microphoneNewMeasurementEventHandler.reset()
-        }
-        else -> {
-            airBeamNewMeasurementEventHandler.reset()
-        }
+    private fun stopObservingNewMeasurements(session: Session) {
+        observers[session]?.cancel()
+        observers.remove(session)
     }
 }

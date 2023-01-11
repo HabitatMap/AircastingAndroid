@@ -43,6 +43,7 @@ class SessionManager(
 
     private val coroutineScope: CoroutineScope
     = CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context()),
+
     private val sessionsSyncService: SessionsSyncService
     = SessionsSyncService.get(apiService, errorHandler, settings),
     private val sessionUpdateService: UpdateSessionService
@@ -75,12 +76,12 @@ class SessionManager(
 ) {
 
     @Subscribe
-    fun onMessageEvent(event: StartRecordingEvent) = coroutineScope.launch {
+    fun onMessageEvent(event: StartRecordingEvent) {
         recordingHandler.startRecording(event.session, event.wifiSSID, event.wifiPassword)
     }
 
     @Subscribe
-    fun onMessageEvent(event: StopRecordingEvent) = coroutineScope.launch {
+    fun onMessageEvent(event: StopRecordingEvent) {
         recordingHandler.stopRecording(event.sessionUUID)
     }
 

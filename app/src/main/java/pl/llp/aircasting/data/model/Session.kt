@@ -371,6 +371,11 @@ open class Session(
         return streams.sortedWith(compareBy({ it.sensorNameOrder() }, { it.detailedType }))
     }
 
+    fun defaultNumberOfStreams(): Int = when (deviceType) {
+        DeviceItem.Type.MIC, DeviceItem.Type.OTHER -> 1
+        else -> 5
+    }
+
     fun infoString(): String {
         return "${displayedType.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }}: ${sensorPackageNamesString()}"
     }
