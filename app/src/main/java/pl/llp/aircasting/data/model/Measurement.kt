@@ -18,10 +18,9 @@ class Measurement(
 
     constructor(
         event: NewMeasurementEvent,
-        latitude: Double?,
-        longitude: Double?,
+        location: Session.Location?,
         creationTime: Date = Date()
-    ) : this(event.measuredValue, creationTime, latitude, longitude)
+    ) : this(event.measuredValue, creationTime, location?.latitude, location?.longitude)
 
     constructor(measurementDBObject: MeasurementDBObject) : this(
         measurementDBObject.value,

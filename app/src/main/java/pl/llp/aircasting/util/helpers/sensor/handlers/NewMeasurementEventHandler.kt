@@ -41,7 +41,8 @@ class NewMeasurementEventHandlerImpl(
 ) : NewMeasurementEventHandler {
 
     private val counter = AtomicInteger(0)
-    private lateinit var timestamp: Date
+    private var timestamp: Date? = null
+    private var location: Session.Location? = null
 
     override fun observe(
         flow: SharedFlow<NewMeasurementEvent>,
@@ -52,36 +53,41 @@ class NewMeasurementEventHandlerImpl(
 
         val measurementStream = MeasurementStream(event)
 
-        val locationless = settings.areMapsDisabled()
-        val lat: Double?
-        val lon: Double?
-
-        if (locationless) {
-            val fakeLocation = Session.Location.FAKE_LOCATION
-            lat = fakeLocation.latitude
-            lon = fakeLocation.longitude
-        } else {
-            val location = LocationHelper.lastLocation()
-            lat = location?.latitude
-            lon = location?.longitude
-        }
-
-        val measurement = Measurement(event, lat, lon, creationTime(numberOfStreams))
-
+        val measurement = Measurement(
+            event,
+            creationLocation(numberOfStreams),
+            creationTime(numberOfStreams)
+        )
         saveToDB(deviceId, measurementStream, measurement)
+
+        counter.incrementAndGet()
     }.launchIn(coroutineScope)
 
+    private fun creationLocation(numberOfStreams: Int): Session.Location {
+        val currentLocation = Session.Location.get(
+            LocationHelper.lastLocation(),
+            settings.areMapsDisabled()
+        )
+
+        if (allMeasurementsFromSetReceived(numberOfStreams))
+            location = currentLocation
+        return location ?: currentLocation
+    }
 
     private fun creationTime(numberOfStreams: Int): Date {
-        /*
-        AirBeam spins out a set of 5 measurements per second in MobileActive sessions.
-        To ensure that all incoming measurements from a set get the same timestamp,
-        we only update it when we get full set (=5 for AirBeam)
-        */
-        if (counter.getAndIncrement().mod(numberOfStreams) == 0)
-            timestamp = currentTimeTruncatedToSeconds()
-        return timestamp
+        val currentTime = currentTimeTruncatedToSeconds()
+        if (allMeasurementsFromSetReceived(numberOfStreams))
+            timestamp = currentTime
+        return timestamp ?: currentTime
     }
+
+    /*
+    AirBeam spins out a set of 5 measurements per second in MobileActive sessions.
+    To ensure that all incoming measurements from a set get the same time/location,
+    we only update it when we get full set (=5 for AirBeam)
+    */
+    private fun allMeasurementsFromSetReceived(numberOfStreams: Int) =
+        counter.get().mod(numberOfStreams) == 0
 
     private fun currentTimeTruncatedToSeconds() = DateUtils.truncate(Date(), SECOND)
 

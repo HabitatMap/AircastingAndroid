@@ -98,7 +98,7 @@ abstract class SessionDetailsViewController(
     fun onMessageEvent(event: NewMeasurementEvent) {
         if (event.sensorName == mSessionPresenter.selectedStream?.sensorName) {
             val location = LocationHelper.lastLocation()
-            val measurement = Measurement(event, location?.latitude, location?.longitude)
+            val measurement = Measurement(event, Session.Location.get(location))
 
             mViewMvc?.bindSession(mSessionPresenter)
             mViewMvc?.addMeasurement(measurement)
