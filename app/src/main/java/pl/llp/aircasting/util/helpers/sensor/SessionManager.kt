@@ -4,8 +4,6 @@ import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
@@ -22,7 +20,6 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
-import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
@@ -37,9 +34,6 @@ class SessionManager(
     private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
     private val noteRepository: NoteRepository = NoteRepository(),
-
-    private val airBeamNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
-    private val microphoneNewMeasurementEventFlow: MutableSharedFlow<NewMeasurementEvent> = MutableSharedFlow(),
 
     private val coroutineScope: CoroutineScope
     = CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context()),
@@ -70,8 +64,6 @@ class SessionManager(
         errorHandler,
         measurementStreamsRepository,
         measurementsRepository,
-        airBeamNewMeasurementEventFlow,
-        microphoneNewMeasurementEventFlow,
     )
 ) {
 
@@ -111,11 +103,8 @@ class SessionManager(
     }
 
     @Subscribe
-    fun onMessageEvent(event: NewMeasurementEvent) = coroutineScope.launch {
-        when (event.sensorPackageName) {
-            MicrophoneDeviceItem.DEFAULT_ID -> microphoneNewMeasurementEventFlow.emit(event)
-            else -> airBeamNewMeasurementEventFlow.emit(event)
-        }
+    fun onMessageEvent(event: NewMeasurementEvent) {
+        recordingHandler.handle(event)
     }
 
     @Subscribe
