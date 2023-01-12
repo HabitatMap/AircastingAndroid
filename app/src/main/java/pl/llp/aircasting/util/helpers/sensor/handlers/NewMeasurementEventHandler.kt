@@ -1,14 +1,12 @@
 package pl.llp.aircasting.util.helpers.sensor.handlers
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.apache.commons.lang3.time.DateUtils
-import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -51,6 +49,8 @@ class NewMeasurementEventHandlerImpl(
         coroutineScope: CoroutineScope,
         numberOfStreams: Int
     ) = flow.onEach { event ->
+        val deviceId = event.deviceId ?: return@onEach
+
         val measurementStream = MeasurementStream(event)
 
         val locationless = settings.areMapsDisabled()
@@ -68,15 +68,17 @@ class NewMeasurementEventHandlerImpl(
         }
 
         val measurement = Measurement(event, lat, lon, creationTime(numberOfStreams))
-        Log.v(TAG, "Measurement time: ${measurement.time}")
-
-        val deviceId = event.deviceId ?: return@onEach
 
         saveToDB(deviceId, measurementStream, measurement)
     }.launchIn(coroutineScope)
 
 
     private fun creationTime(numberOfStreams: Int): Date {
+        /*
+        AirBeam spins out a set of 5 measurements per second in MobileActive sessions.
+        To ensure that all incoming measurements from a set get the same timestamp,
+        we only update it when we get full set (=5 for AirBeam)
+        */
         if (counter.getAndIncrement().mod(numberOfStreams) == 0)
             timestamp = currentTimeTruncatedToSeconds()
         return timestamp
