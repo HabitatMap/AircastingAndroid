@@ -44,7 +44,7 @@ class RecordingHandlerImpl(
         null
     private var averagingBackgroundService: AveragingBackgroundService? = null
 
-    private val observers = mutableMapOf<Session, Job>()
+    private val observers = mutableMapOf<String, Job>()
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         coroutineScope.launch {
@@ -94,7 +94,7 @@ class RecordingHandlerImpl(
             else -> airBeamNewMeasurementEventFlow
         }
 
-        observers[session] = handler.observe(
+        observers[session.uuid] = handler.observe(
             flow,
             coroutineScope,
             session.defaultNumberOfStreams()
@@ -113,13 +113,13 @@ class RecordingHandlerImpl(
                 averagingBackgroundService?.stop()
                 averagingPreviousMeasurementsBackgroundService?.stop()
                 AveragingService.destroy(sessionId)
-                stopObservingNewMeasurements(session)
+                stopObservingNewMeasurements(uuid)
             }
         }
     }
 
-    private fun stopObservingNewMeasurements(session: Session) {
-        observers[session]?.cancel()
-        observers.remove(session)
+    private fun stopObservingNewMeasurements(sessionUuid: String) {
+        observers[sessionUuid]?.cancel()
+        observers.remove(sessionUuid)
     }
 }
