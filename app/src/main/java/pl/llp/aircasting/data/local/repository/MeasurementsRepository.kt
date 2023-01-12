@@ -24,7 +24,7 @@ class MeasurementsRepository {
         mDatabase.measurements().insertAll(measurementDBObjects)
     }
 
-    fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
+    suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val measurementDBObject = MeasurementDBObject(
             measurementStreamId,
             sessionId,

@@ -66,6 +66,9 @@ interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(session: SessionDBObject): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertSuspend(session: SessionDBObject): Long
+
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
@@ -101,6 +104,13 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
     fun loadSessionByDeviceIdStatusAndType(
+        deviceId: String,
+        status: Session.Status,
+        type: Session.Type
+    ): SessionDBObject?
+
+    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
+    suspend fun loadSessionByDeviceIdStatusAndTypeSuspend(
         deviceId: String,
         status: Session.Status,
         type: Session.Type

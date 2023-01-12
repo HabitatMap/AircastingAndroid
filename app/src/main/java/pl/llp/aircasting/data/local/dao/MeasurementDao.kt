@@ -13,7 +13,7 @@ interface MeasurementDao {
     fun getByStreamId(streamId: Long): List<MeasurementDBObject>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(measurement: MeasurementDBObject): Long
+    suspend fun insert(measurement: MeasurementDBObject): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(measurements: List<MeasurementDBObject>): List<Long>

@@ -14,8 +14,14 @@ interface MeasurementStreamDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(measurementStream: MeasurementStreamDBObject): Long
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertSuspend(measurementStream: MeasurementStreamDBObject): Long
+
     @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
     fun loadStreamBySessionIdAndSensorName(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
+
+    @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
+    suspend fun loadStreamBySessionIdAndSensorNameSuspend(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
 
     @Query("SELECT id FROM measurement_streams WHERE session_id in (:sessionIds)")
     fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>

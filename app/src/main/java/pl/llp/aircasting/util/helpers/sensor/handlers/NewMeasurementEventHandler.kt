@@ -18,7 +18,6 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.*
 import java.util.Calendar.SECOND
@@ -86,16 +85,16 @@ class NewMeasurementEventHandlerImpl(
 
     private fun currentTimeTruncatedToSeconds() = DateUtils.truncate(Date(), SECOND)
 
-    private fun saveToDB(
+    private suspend fun saveToDB(
         deviceId: String,
         measurementStream: MeasurementStream,
         measurement: Measurement
-    ) = runOnIOThread {
+    ) {
         val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId)
         sessionId?.let {
             try {
                 val measurementStreamId =
-                    measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
+                    measurementStreamsRepository.getIdOrInsertSuspend(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, sessionId, measurement)
                 activeSessionMeasurementsRepository.createOrReplace(
                     sessionId,

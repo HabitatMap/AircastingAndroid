@@ -1,7 +1,6 @@
 package pl.llp.aircasting.data.local.repository
 
 import pl.llp.aircasting.data.api.util.Constants
-import pl.llp.aircasting.data.api.util.StringConstants
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
@@ -19,7 +18,7 @@ class ActiveSessionMeasurementsRepository {
 
     private val mDatabase = DatabaseProvider.get()
 
-    fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
+    suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
             measurementStreamId,
             sessionId,
@@ -47,13 +46,13 @@ class ActiveSessionMeasurementsRepository {
         mDatabase.activeSessionsMeasurements().insertAll(measurementDBObjects)
     }
 
-    private fun deleteAndInsert(measurement: ActiveSessionMeasurementDBObject) {
+    private suspend fun deleteAndInsert(measurement: ActiveSessionMeasurementDBObject) {
         mDatabase.activeSessionsMeasurements().deleteAndInsertInTransaction(measurement)
     }
 
-    fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
+    suspend fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
         val lastMeasurementsCount =
-            mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
+            mDatabase.activeSessionsMeasurements().countBySessionAndStreamSuspend(sessionId, streamId)
 
         if (lastMeasurementsCount > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(

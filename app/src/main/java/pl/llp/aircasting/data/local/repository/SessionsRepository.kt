@@ -16,8 +16,14 @@ class SessionsRepository {
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
-    fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+    suspend fun insertSuspend(session: Session): Long {
+        val sessionDBObject =
+            SessionDBObject(session)
+        return mDatabase.sessions().insertSuspend(sessionDBObject)
+    }
+
+    suspend fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
+        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndTypeSuspend(
             deviceId,
             Session.Status.RECORDING, Session.Type.MOBILE
         )
