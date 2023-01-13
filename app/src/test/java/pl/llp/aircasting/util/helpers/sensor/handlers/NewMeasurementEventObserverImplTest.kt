@@ -9,6 +9,7 @@ import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
@@ -16,10 +17,7 @@ import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
-import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
-import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.Settings
@@ -47,8 +45,7 @@ class NewMeasurementEventObserverImplTest {
     @Mock
     lateinit var measurementStreamsRepository: MeasurementStreamsRepository
 
-    @Mock
-    lateinit var measurementsRepository: MeasurementsRepositoryImpl
+    private var measurementsRepository: MeasurementsRepository = mock<MeasurementsRepositoryImpl>()
 
     @Captor
     lateinit var measurementCaptor: ArgumentCaptor<Measurement>
@@ -102,21 +99,43 @@ class NewMeasurementEventObserverImplTest {
     }
 
     @Test
-    fun observe_setsIdenticalTimeAndLocationToMeasurementsInOneSet() = testScope.runTest {
+    fun observe_setsIdenticalTimeToMeasurementsInOneSet() = testScope.runTest {
+        val deviceId = "123"
+        val sessionId = 2L
+        whenever(sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId))
+            .thenReturn(sessionId)
+        val streamId = 1L
+        whenever(measurementStreamsRepository.getIdOrInsertSuspend(any(), any()))
+            .thenReturn(streamId)
         val db = mutableListOf<Measurement>()
-        whenever(measurementsRepository.insert(any(), any(), any())).thenAnswer {
-            val measurement = it.getArgument(2, Measurement::class.java)
+        measurementsRepository = object : MeasurementsRepository {
+            override suspend fun insert(
+                measurementStreamId: Long,
+                sessionId: Long,
+                measurement: Measurement
+            ): Long {
+                db.add(measurement)
+                return db.indexOf(measurement).toLong()
+            }
         }
+        observer = NewMeasurementEventObserverImpl(
+            settings,
+            errorHandler,
+            sessionsRepository,
+            measurementStreamsRepository,
+            measurementsRepository,
+            activeSessionMeasurementsRepository
+        )
         val events = listOf(
             newMeasurementEvent(1.0),
             newMeasurementEvent(2.0),
             newMeasurementEvent(3.0),
             newMeasurementEvent(4.0),
-            newMeasurementEvent(5.0),
-            newMeasurementEvent(6.0)
+            newMeasurementEvent(5.0)
         )
         val flow = MutableSharedFlow<NewMeasurementEvent>()
 
+        // when
         observer.observe(flow, testScope, 5)
         yield()
         events.forEach {
@@ -126,7 +145,12 @@ class NewMeasurementEventObserverImplTest {
         }
         advanceTimeBy(200L * events.size)
 
-
+        // then
+        val firstMeasurementTime = db.first().time
+        events.forEachIndexed { index, event ->
+            assertEquals(event.measuredValue, db[index].value)
+            assertEquals(firstMeasurementTime, db[index].time)
+        }
         coroutineContext.cancelChildren()
     }
 
@@ -145,4 +169,10 @@ class NewMeasurementEventObserverImplTest {
             thresholdVeryHigh = 1,
             measuredValue = value,
         )
+
+    @Ignore("Can't manipulate location to check that")
+    @Test
+    fun observe_setsIdenticalLocationToMeasurementsInOneSet() {
+        // TODO
+    }
 }

@@ -5,9 +5,11 @@ import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 
-//interface MeasurementsRepository
+interface MeasurementsRepository {
+    suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long
+}
 
-class MeasurementsRepositoryImpl {
+class MeasurementsRepositoryImpl : MeasurementsRepository {
     private val mDatabase = DatabaseProvider.get()
 
     fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
@@ -26,7 +28,7 @@ class MeasurementsRepositoryImpl {
         mDatabase.measurements().insertAll(measurementDBObjects)
     }
 
-    suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
+    override suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val measurementDBObject = MeasurementDBObject(
             measurementStreamId,
             sessionId,
