@@ -85,7 +85,7 @@ class RecordingHandlerImpl(
 
     private fun startObservingNewMeasurements(session: Session) {
         session.deviceId ?: return
-        val handler = NewMeasurementEventHandlerImpl(
+        val handler = NewMeasurementEventObserverImpl(
             settings,
             errorHandler,
             sessionsRepository,
@@ -124,5 +124,6 @@ class RecordingHandlerImpl(
     private fun stopObservingNewMeasurements(deviceId: String?) {
         observers[deviceId]?.cancel()
         observers.remove(deviceId)
+        flows.remove(deviceId)
     }
 }

@@ -23,7 +23,7 @@ import java.util.*
 import java.util.Calendar.SECOND
 import java.util.concurrent.atomic.AtomicInteger
 
-interface NewMeasurementEventHandler {
+interface NewMeasurementEventObserver {
     fun observe(
         flow: SharedFlow<NewMeasurementEvent>,
         coroutineScope: CoroutineScope,
@@ -31,14 +31,14 @@ interface NewMeasurementEventHandler {
     ): Job
 }
 
-class NewMeasurementEventHandlerImpl(
+class NewMeasurementEventObserverImpl(
     private val settings: Settings,
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
-) : NewMeasurementEventHandler {
+) : NewMeasurementEventObserver {
 
     private val counter = AtomicInteger(0)
     private var timestamp: Date? = null
