@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 class SearchFollowViewModel @Inject constructor(
     private val activeFixedRepo: ActiveFixedSessionsInRegionRepository,
-    private val measurementsRepository: MeasurementsRepository,
+    private val measurementsRepository: MeasurementsRepositoryImpl,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val sessionsRepository: SessionsRepository,

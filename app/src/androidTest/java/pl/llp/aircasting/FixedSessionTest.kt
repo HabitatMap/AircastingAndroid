@@ -21,7 +21,7 @@ import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -62,7 +62,7 @@ class FixedSessionTest {
     lateinit var measurementStreamRepository: MeasurementStreamsRepository
 
     @Inject
-    lateinit var measurementsRepository: MeasurementsRepository
+    lateinit var measurementsRepository: MeasurementsRepositoryImpl
 
     lateinit var server: MockWebServer
 

@@ -31,7 +31,7 @@ class SessionManager(
     private val errorHandler: ErrorHandler = ErrorHandler(mContext),
     private val sessionsRepository: SessionsRepository = SessionsRepository(),
     private val measurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
-    private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
+    private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
     private val noteRepository: NoteRepository = NoteRepository(),
 

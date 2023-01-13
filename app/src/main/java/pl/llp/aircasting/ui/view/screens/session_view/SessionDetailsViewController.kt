@@ -14,7 +14,7 @@ import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.*
 import pl.llp.aircasting.data.model.observers.FixedSessionObserver
@@ -48,7 +48,7 @@ abstract class SessionDetailsViewController(
         mErrorHandler
     ),
     private val mSessionRepository: SessionsRepository = SessionsRepository(),
-    private val mMeasurementsRepository: MeasurementsRepository = MeasurementsRepository(),
+    private val mMeasurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
 ) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     protected var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)

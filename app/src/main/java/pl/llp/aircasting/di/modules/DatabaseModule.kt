@@ -18,7 +18,7 @@ class DatabaseModule {
 
     @Provides
     @Singleton
-    fun providesMeasurementsRepository(): MeasurementsRepository = MeasurementsRepository()
+    fun providesMeasurementsRepository(): MeasurementsRepositoryImpl = MeasurementsRepositoryImpl()
 
     @Provides
     @Singleton

@@ -6,7 +6,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.util.Settings
@@ -75,7 +75,7 @@ open class SensorsModule {
         csvIterator: SDCardCSVIterator,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
-        measurementsRepository: MeasurementsRepository
+        measurementsRepository: MeasurementsRepositoryImpl
     ): SDCardMobileSessionsProcessor = SDCardMobileSessionsProcessor(
         csvFileFactory,
         csvIterator,
@@ -91,7 +91,7 @@ open class SensorsModule {
         csvIterator: SDCardCSVIterator,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
-        measurementsRepository: MeasurementsRepository
+        measurementsRepository: MeasurementsRepositoryImpl
     ): SDCardFixedSessionsProcessor = SDCardFixedSessionsProcessor(
         csvFileFactory,
         csvIterator,

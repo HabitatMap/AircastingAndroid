@@ -18,7 +18,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -48,7 +48,7 @@ class NewMeasurementEventObserverImplTest {
     lateinit var measurementStreamsRepository: MeasurementStreamsRepository
 
     @Mock
-    lateinit var measurementsRepository: MeasurementsRepository
+    lateinit var measurementsRepository: MeasurementsRepositoryImpl
 
     @Captor
     lateinit var measurementCaptor: ArgumentCaptor<Measurement>

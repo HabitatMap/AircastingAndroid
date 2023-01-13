@@ -5,7 +5,9 @@ import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 
-class MeasurementsRepository {
+//interface MeasurementsRepository
+
+class MeasurementsRepositoryImpl {
     private val mDatabase = DatabaseProvider.get()
 
     fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {

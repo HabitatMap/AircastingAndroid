@@ -2,7 +2,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import java.io.File
@@ -12,7 +12,7 @@ class SDCardFixedSessionsProcessor(
     mSDCardCSVIterator: SDCardCSVIterator,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    mMeasurementsRepository: MeasurementsRepository
+    mMeasurementsRepository: MeasurementsRepositoryImpl
 ) : SDCardSessionsProcessor(
     mCSVFileFactory,
     mSDCardCSVIterator,

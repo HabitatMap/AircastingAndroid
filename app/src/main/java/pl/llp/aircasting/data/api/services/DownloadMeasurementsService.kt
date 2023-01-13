@@ -11,7 +11,7 @@ import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
@@ -31,7 +31,7 @@ class DownloadMeasurementsService(
     private val callCanceled: AtomicBoolean = AtomicBoolean(false),
     private val sessionsRepository: SessionsRepository = SessionsRepository(),
     private val measurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
-    private val measurementsRepository: MeasurementsRepository = MeasurementsRepository(),
+    private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
     private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
 ) {
 

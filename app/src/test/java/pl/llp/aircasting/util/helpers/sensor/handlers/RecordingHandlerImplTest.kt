@@ -16,7 +16,7 @@ import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
@@ -51,7 +51,7 @@ class RecordingHandlerImplTest {
     lateinit var measurementStreamsRepository: MeasurementStreamsRepository
 
     @Mock
-    lateinit var measurementsRepository: MeasurementsRepository
+    lateinit var measurementsRepository: MeasurementsRepositoryImpl
 
     @Spy
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf()

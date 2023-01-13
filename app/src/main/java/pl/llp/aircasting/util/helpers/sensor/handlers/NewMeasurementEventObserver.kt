@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.onEach
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -36,7 +36,7 @@ class NewMeasurementEventObserverImpl(
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
-    private val measurementsRepository: MeasurementsRepository,
+    private val measurementsRepository: MeasurementsRepositoryImpl,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
 ) : NewMeasurementEventObserver {
 

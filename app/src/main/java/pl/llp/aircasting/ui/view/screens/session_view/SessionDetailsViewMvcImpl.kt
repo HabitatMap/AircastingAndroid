@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.activity_map.view.*
 import kotlinx.android.synthetic.main.hlu_slider.view.*
 import kotlinx.android.synthetic.main.session_details.view.*
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Note
@@ -54,7 +54,7 @@ abstract class SessionDetailsViewMvcImpl(
     private val mLoader: ImageView?
     private var mSessionActionsButton: ImageView? = null
 
-    private val mMeasurementsRepository = MeasurementsRepository()
+    private val mMeasurementsRepository = MeasurementsRepositoryImpl()
     private var using24HourFormat: Boolean? = true
 
     init {

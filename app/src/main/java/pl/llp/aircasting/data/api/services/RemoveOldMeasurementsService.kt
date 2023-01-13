@@ -1,13 +1,13 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import java.util.*
 
 class RemoveOldMeasurementsService {
-    private val measurementRepository = MeasurementsRepository()
+    private val measurementRepository = MeasurementsRepositoryImpl()
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60

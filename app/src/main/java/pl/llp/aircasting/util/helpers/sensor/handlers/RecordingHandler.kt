@@ -9,7 +9,7 @@ import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
@@ -35,7 +35,7 @@ class RecordingHandlerImpl(
     private val sessionsSyncService: SessionsSyncService,
     private val errorHandler: ErrorHandler,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
-    private val measurementsRepository: MeasurementsRepository,
+    private val measurementsRepository: MeasurementsRepositoryImpl,
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf(),
     private val observers: MutableMap<String, Job> = mutableMapOf(),
 ) : RecordingHandler {

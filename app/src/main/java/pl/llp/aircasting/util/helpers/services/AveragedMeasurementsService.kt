@@ -1,7 +1,7 @@
 package pl.llp.aircasting.util.helpers.services
 
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -12,7 +12,7 @@ class AveragedMeasurementsService(sessionUUID: String) {
         var averagingService: AveragingService? = null
         val sessionsRepository = SessionsRepository()
         var sessionId : Long? = 0
-        val measurementsRepository = MeasurementsRepository()
+        val measurementsRepository = MeasurementsRepositoryImpl()
         val streamRepository = MeasurementStreamsRepository()
 
     init {

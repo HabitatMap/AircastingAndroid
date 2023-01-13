@@ -2,7 +2,7 @@ package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
@@ -39,7 +39,7 @@ class AveragingService private constructor(private val sessionId: Long) {
 
     private var mDBSession: SessionDBObject?
 
-    private val mMeasurementsRepository = MeasurementsRepository()
+    private val mMeasurementsRepository = MeasurementsRepositoryImpl()
     private val mMeasurementStreamsRepository = MeasurementStreamsRepository()
     private val mSessionsRepository = SessionsRepository()
 

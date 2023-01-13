@@ -135,7 +135,7 @@ class ActiveSessionMeasurementsRepository {
             streamId?.let { streamId ->
                 measurements =
                     measurementsList(
-                        MeasurementsRepository().getLastMeasurementsForStream(
+                        MeasurementsRepositoryImpl().getLastMeasurementsForStream(
                             streamId,
                             limit
                         )
