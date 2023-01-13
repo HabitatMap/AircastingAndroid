@@ -36,13 +36,12 @@ class RecordingHandlerImpl(
     private val errorHandler: ErrorHandler,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf(),
+    private val observers: MutableMap<String, Job> = mutableMapOf(),
 ) : RecordingHandler {
     private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
         null
     private var averagingBackgroundService: AveragingBackgroundService? = null
-
-    private val flows = mutableMapOf<String, MutableSharedFlow<NewMeasurementEvent>>()
-    private val observers = mutableMapOf<String, Job>()
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         coroutineScope.launch {
@@ -67,8 +66,10 @@ class RecordingHandlerImpl(
         }
     }
 
-    private fun startAveragingServices(it: Long) {
-        AveragingService.get(it)?.let { averagingService ->
+    private fun startAveragingServices(id: Long?) {
+        id ?: return
+
+        AveragingService.get(id)?.let { averagingService ->
             averagingBackgroundService = AveragingBackgroundService(averagingService)
             averagingBackgroundService?.start()
             averagingPreviousMeasurementsBackgroundService =

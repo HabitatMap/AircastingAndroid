@@ -20,6 +20,7 @@ import pl.llp.aircasting.data.api.util.StringConstants.responseOpenAQSensorNameO
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.TimezoneHelper
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotEquals
@@ -40,6 +41,8 @@ class CreateThresholdAlertBottomSheetViewModelTest {
     @Captor
     lateinit var createDataCaptor: ArgumentCaptor<CreateThresholdAlertData>
     private lateinit var deleteIdCaptor: ArgumentCaptor<Int>
+    
+    private val errorHandler = mock<ErrorHandler>()
 
     @Test
     fun getAlertsForDisplaying_whenSessionHasAlert_constructsUiAlertsWithInfoFromBackend() =
@@ -51,7 +54,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             alertRepository = mock {
                 on { activeAlerts() } doReturn flow { emit(alerts) }
             }
-            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
 
             viewModel.getAlertsForDisplaying(session).collect { result ->
                 result.onSuccess { uiAlerts ->
@@ -80,7 +83,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             alertRepository = mock {
                 on { activeAlerts() } doReturn flow { emit(emptyList()) }
             }
-            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
 
             viewModel.getAlertsForDisplaying(session).collect { result ->
                 result.onSuccess { uiAlerts ->
@@ -106,7 +109,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             alertRepository = mock {
                 on { activeAlerts() } doReturn flow { emit(emptyList()) }
             }
-            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
 
             viewModel.getAlertsForDisplaying(session).collect { result ->
                 result.onSuccess { uiAlertsCopy ->
@@ -128,7 +131,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
     @Test
     fun getAlertsForDisplaying_whenSessionIsNull_emitsFailure() = testScope.runTest {
         alertRepository = mock()
-        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
 
         viewModel.getAlertsForDisplaying(null).collect { result ->
             result.onSuccess {
@@ -143,7 +146,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             val uiAlerts = emptyList<ThresholdAlertUiRepresentation>()
             val modifiedUiAlert = ThresholdAlertUiRepresentation(stream)
             alertRepository = mock()
-            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
             setAlertsFields(viewModel, uiAlerts = uiAlerts)
 
             viewModel.saveEditedAlerts(listOf(modifiedUiAlert), null).collect { result ->
@@ -160,7 +163,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
             val modifiedUiAlert = ThresholdAlertUiRepresentation(stream, _enabled = true, _threshold = null)
             alertRepository = mock()
             val session = mockSession(listOf(stream))
-            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+            val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
             setAlertsFields(viewModel, uiAlerts = uiAlerts)
 
             viewModel.saveEditedAlerts(listOf(modifiedUiAlert), session).collect { result ->
@@ -182,7 +185,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         val alerts = mockAlerts()
         val id = alerts.first().id
         alertRepository = mock()
-        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
         setAlertsFields(viewModel, alerts, uiAlerts)
 
         uiAlertsCopy.first().enabled = false
@@ -202,7 +205,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         val uiAlertsCopy = uiAlerts.map { it.copy() }
         val session = mockSession(listOf(stream))
         alertRepository = mock()
-        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
         setAlertsFields(viewModel, uiAlerts = uiAlerts)
 
         val uiAlertCopy = uiAlertsCopy.first()
@@ -236,7 +239,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         val alerts = mockAlerts()
         val id = alerts.first().id
         alertRepository = mock()
-        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
         setAlertsFields(viewModel, alerts, uiAlerts)
 
         val uiAlertCopy = uiAlertsCopy.first()
@@ -291,7 +294,7 @@ class CreateThresholdAlertBottomSheetViewModelTest {
         val uiAlerts = listOf(uiAlertToBeDeleted, uiAlertToBeCreated, uiAlertToBeModified)
         val alerts = listOf(alertToBeDeleted, alertToBeModified)
         alertRepository = mock()
-        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository)
+        val viewModel = CreateThresholdAlertBottomSheetViewModel(alertRepository, errorHandler)
         setAlertsFields(viewModel, alerts, uiAlerts)
 
         val uiAlertsCopy = uiAlerts.map { it.copy() }
