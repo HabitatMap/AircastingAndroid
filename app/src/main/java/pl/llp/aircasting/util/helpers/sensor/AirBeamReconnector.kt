@@ -24,8 +24,8 @@ class AirBeamReconnector(
 
     private var mStandaloneMode = AtomicBoolean(false)
     var mReconnectionTriesNumber: Int? = null
-    private val RECONNECTION_TRIES_MAX = 15
-    private val RECONNECTION_TRIES_INTERVAL = 15000L // 15s between reconnection tries
+    private val RECONNECTION_TRIES_MAX = 50
+    private val RECONNECTION_TRIES_INTERVAL = 2000L // 2s between reconnection tries
 
     fun disconnect(session: Session) {
         mStandaloneMode.set(true)

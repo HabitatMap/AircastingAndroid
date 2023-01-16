@@ -4,8 +4,8 @@
     <color name="background_main">#242A40</color>
     <color name="background_overlay">#40475D</color>
 
-    <color name="settings_background_secondary">@color/background_overlay</color>
-    <color name="settings_background">@color/background_main</color>
+    <color name="settings_background_secondary">@color/background_main</color>
+    <color name="settings_background">@color/background_overlay</color>
 
     <color name="transparent">#00000000</color>
     <color name="aircasting_blue_400">#00B2EF</color>
@@ -23,7 +23,7 @@
     <color name="navigation_back_button">#E9ECEF</color>
 
     <color name="session_color_indicator_low">#96D788</color>
-    <color name="session_color_indicator_low_shadow">#3096D788</color>
+    <color name="session_color_indicator_low_shadow">#486258</color>
     <color name="session_color_indicator_medium">#FDD760</color>
     <color name="session_color_indicator_high">#F9A342</color>
     <color name="session_color_indicator_very_high">#E65F5E</color>

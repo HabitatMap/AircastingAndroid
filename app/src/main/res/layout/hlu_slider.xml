@@ -155,7 +155,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:thumbColor="@color/background_main"
+        app:thumbColor="@color/slider_thumb_color"
         app:thumbElevation="3dp"
         app:thumbRadius="@dimen/hlu_slider_thumb_radius"
         app:trackColorActive="@color/transparent"

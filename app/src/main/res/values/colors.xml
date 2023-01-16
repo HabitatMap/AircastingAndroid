@@ -28,6 +28,8 @@
     <color name="background_main">#FFFFFF</color>
     <color name="background_overlay">#F7FBFF</color>
 
+    <color name="slider_thumb_color">@color/white</color>
+
     <color name="settings_background">@color/background_main</color>
     <color name="settings_background_secondary">@color/aircasting_grey_50</color>
 
