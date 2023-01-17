@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.settings
 
+import android.widget.CompoundButton
 import pl.llp.aircasting.ui.view.common.ObservableViewMvc
 
 interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
@@ -14,7 +15,7 @@ interface SettingsViewMvc : ObservableViewMvc<SettingsViewMvc.Listener> {
 
     interface Listener {
         fun onMyAccountClicked()
-        fun onToggleThemeChange()
+        fun onToggleThemeChange(switchButton: CompoundButton?)
         fun onBackendSettingsClicked()
         fun onToggleKeepScreenOnEnabled()
         fun onToggle24hourFormatEnabled()

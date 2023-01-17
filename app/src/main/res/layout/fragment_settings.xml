@@ -132,13 +132,21 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@id/firstSeparator" />
 
+                    <LinearLayout
+                        android:id="@+id/theme_change_wrapper"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="false"
+                        app:layout_constraintBottom_toBottomOf="@+id/theme"
+                        app:layout_constraintEnd_toEndOf="@+id/theme"
+                        app:layout_constraintTop_toTopOf="@+id/theme">
+
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/theme_change"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@+id/theme"
-                        app:layout_constraintEnd_toEndOf="@+id/theme"
-                        app:layout_constraintTop_toTopOf="@+id/theme" />
+                        android:clickable="false" />
+                    </LinearLayout>
 
                     <View
                         android:id="@+id/separator"

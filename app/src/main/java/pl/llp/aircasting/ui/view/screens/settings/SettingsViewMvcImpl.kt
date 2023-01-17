@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
@@ -30,8 +31,8 @@ class SettingsViewMvcImpl(
         }
         val themeChangeBtn = rootView?.theme_change
         themeChangeBtn?.isChecked = mSettings.isDarkThemeEnabled()
-        themeChangeBtn?.setOnCheckedChangeListener { _, _ ->
-            onToggleThemeChangeEnabled()
+        rootView?.theme_change_wrapper?.setOnClickListener {
+            onToggleThemeChangeEnabled(themeChangeBtn)
         }
         val keepScreenOnSwitch = rootView?.keep_screen_on_switch
         keepScreenOnSwitch?.isChecked = mSettings.isKeepScreenOnEnabled()
@@ -89,9 +90,9 @@ class SettingsViewMvcImpl(
         }
     }
 
-    private fun onToggleThemeChangeEnabled() {
+    private fun onToggleThemeChangeEnabled(switch: CompoundButton?) {
         for (listener in listeners) {
-            listener.onToggleThemeChange()
+            listener.onToggleThemeChange(switch)
         }
     }
 

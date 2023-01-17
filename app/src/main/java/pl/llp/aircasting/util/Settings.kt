@@ -204,7 +204,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         saveToSettings(DORMANT_STREAM_ALERT_KEY, enabled)
     }
 
-    fun toggleThemeChangeEnabled() {
+    fun toggleThemeChange() {
         val enabled = !isDarkThemeEnabled()
         saveToSettings(THEME_SET_TO_DARK_KEY, enabled)
     }

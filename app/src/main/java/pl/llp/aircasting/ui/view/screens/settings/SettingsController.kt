@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.settings
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
@@ -17,6 +18,7 @@ import pl.llp.aircasting.data.api.params.UserSettingsData
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.util.Settings
@@ -54,12 +56,27 @@ class SettingsController(
         startBackendSettingsDialog()
     }
 
-    override fun onToggleThemeChange() {
-        mSettings.toggleThemeChangeEnabled()
-        if (mSettings.isDarkThemeEnabled()) AppCompatDelegate.setDefaultNightMode(
-            AppCompatDelegate.MODE_NIGHT_YES
-        ) else AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+    override fun onToggleThemeChange(switchButton: CompoundButton?) {
+        if (mSettings.mobileActiveSessionsCount() > 0)
+            ConfirmDangerActionDialog(
+                fragmentManager,
+                mContext?.getString(R.string.toggle_night_mode_change_caution)
+            ) {
+                toggleThemeSwitch(switchButton)
+            }.show()
+        else
+            toggleThemeSwitch(switchButton)
+    }
 
+    private fun toggleThemeSwitch(switchButton: CompoundButton?) {
+        if (mSettings.isDarkThemeEnabled())
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        else
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        mSettings.toggleThemeChange()
+
+        val dark = mSettings.isDarkThemeEnabled()
+        switchButton?.isChecked = dark
     }
 
     override fun onToggleKeepScreenOnEnabled() {
