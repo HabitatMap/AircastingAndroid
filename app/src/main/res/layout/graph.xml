@@ -2,39 +2,54 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart
-        android:id="@+id/graph"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/graph_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="-5dp"
-        android:layout_marginStart="-16dp"
-        android:layout_marginEnd="-20dp"
-        app:layout_constraintTop_toBottomOf="@id/measurements_table"
-        app:layout_constraintBottom_toTopOf="@id/from_label"/>
+        app:layout_constraintBottom_toTopOf="@id/from_label"
+        app:layout_constraintTop_toBottomOf="@id/measurements_table">
+
+        <pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart
+            android:id="@+id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="-14dp"
+            android:layout_marginStart="-16dp"
+            android:layout_marginEnd="-20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-16dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="-50dp"
+            android:layout_marginEnd="-20dp"
+            android:background="@color/graph_overlay" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <TextView
         android:id="@+id/from_label"
-        android:text="@string/from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
         android:layout_marginStart="@dimen/keyline_4"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="@dimen/keyline_3"
+        android:text="@string/from"
         android:textSize="@dimen/text_size_xxs"
-        app:layout_constraintTop_toBottomOf="@id/graph"
         app:layout_constraintBottom_toTopOf="@id/hlu"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/graph" />
 
     <TextView
         android:id="@+id/to_label"
-        android:text="@string/to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="@dimen/keyline_4"
         android:layout_marginBottom="@dimen/keyline_3"
+        android:text="@string/to"
         android:textSize="@dimen/text_size_xxs"
-        app:layout_constraintTop_toBottomOf="@id/graph"
         app:layout_constraintBottom_toTopOf="@id/hlu"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/graph" />
 </merge>

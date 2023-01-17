@@ -30,7 +30,6 @@
 
     <color name="mtrl_textinput_default_box_stroke_color">@color/aircasting_grey_100</color>
 
-    <color name="graph_overlay">#40FFFFFF</color>
     <color name="aircasting_blue_400_transparent">#5000B2EF</color>
     <color name="did_you_know_box_color">#F4F9FF</color>
 

@@ -55,14 +55,17 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.7" />
 
-    <include layout="@layout/graph" />
+    <include
+        layout="@layout/graph"
+        app:layout_constraintBottom_toTopOf="@id/hlu"
+        app:layout_constraintTop_toBottomOf="@id/measurements_view"
+        />
 
     <include
         android:id="@+id/hlu"
         layout="@layout/hlu_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/to_label" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
