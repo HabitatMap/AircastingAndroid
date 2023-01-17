@@ -85,8 +85,7 @@ class LocationHelper(mContext: Context) {
     fun start() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                if (locationChanged(locationResult.lastLocation))
-                    mLastLocation = locationResult.lastLocation
+                mLastLocation = locationResult.lastLocation
 
                 EventBus.getDefault()
                     .post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
@@ -98,10 +97,6 @@ class LocationHelper(mContext: Context) {
             locationCallback as LocationCallback, Looper.getMainLooper()
         )
 
-    }
-
-    private fun locationChanged(result: Location): Boolean {
-        return mLastLocation?.let { result.distanceTo(it) > 5f } ?: true
     }
 
     fun stop() {
