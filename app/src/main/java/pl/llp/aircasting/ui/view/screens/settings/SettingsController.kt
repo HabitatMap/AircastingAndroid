@@ -18,7 +18,7 @@ import pl.llp.aircasting.data.api.params.UserSettingsData
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
-import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDescriptionDialog
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.util.Settings
@@ -58,9 +58,10 @@ class SettingsController(
 
     override fun onToggleThemeChange(switchButton: CompoundButton?) {
         if (mSettings.mobileActiveSessionsCount() > 0)
-            ConfirmDangerActionDialog(
+            ConfirmDangerActionDescriptionDialog(
                 fragmentManager,
-                mContext?.getString(R.string.toggle_night_mode_change_caution)
+                title = mContext?.getString(R.string.toggle_night_mode_change_caution_header),
+                description = mContext?.getString(R.string.toggle_night_mode_change_caution_description)
             ) {
                 toggleThemeSwitch(switchButton)
             }.show()

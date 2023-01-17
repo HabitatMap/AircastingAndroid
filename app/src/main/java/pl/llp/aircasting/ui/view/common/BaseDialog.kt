@@ -10,7 +10,8 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 
-abstract class BaseDialog(private val mFragmentManager: FragmentManager): DialogFragment() {
+abstract class BaseDialog(private val mFragmentManager: FragmentManager?): DialogFragment() {
+    constructor() : this(null)
     companion object {
         const val TAG = "BaseDialog"
     }
@@ -32,6 +33,8 @@ abstract class BaseDialog(private val mFragmentManager: FragmentManager): Dialog
     }
 
     fun show() {
-        show(mFragmentManager, TAG)
+        if (mFragmentManager != null) {
+            show(mFragmentManager, TAG)
+        }
     }
 }

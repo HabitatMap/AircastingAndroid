@@ -10,11 +10,13 @@ import kotlinx.android.synthetic.main.session_actions_modifiable.view.cancel_but
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseDialog
 
-class ConfirmDangerActionDialog(
-    private val mFragmentManager: FragmentManager,
+open class ConfirmDangerActionDialog(
+    private val mFragmentManager: FragmentManager?,
     private val title: String? = null,
-    val okCallback: () -> (Unit),
-): BaseDialog(mFragmentManager) {
+    private val okCallback: () -> (Unit),
+) : BaseDialog(mFragmentManager) {
+    constructor() : this(null, null, {})
+
     private lateinit var mView: View
     override fun setupView(inflater: LayoutInflater): View {
         mView = inflater.inflate(R.layout.confirmation_dialog, null)
@@ -27,6 +29,7 @@ class ConfirmDangerActionDialog(
         mView.confirmation_dialog_header.text = title ?: getString(R.string.are_you_sure)
         return mView
     }
+
     private fun okButtonClicked() {
         okCallback()
         dismiss()

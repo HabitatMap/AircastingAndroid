@@ -277,7 +277,8 @@
     <string name="use_24_hour_format">Use 24-hour format</string>
     <string name="clear_sd_card">Clear SD card</string>
     <string name="your_privacy">Your privacy</string>
-    <string name="toggle_night_mode_change_caution">Please make sure you do not have mobile active sessions in progress\nOn Dark theme change all mobile active sessions will be disconnected</string>
+    <string name="toggle_night_mode_change_caution_header">You appear to have mobile active session in progress</string>
+    <string name="toggle_night_mode_change_caution_description">Please be aware that on Dark theme change all mobile active sessions will become disconnected</string>
 
     <!-- Clearing SD Card -->
     <string name="restart_airbeam_header">Restart your AirBeam</string>
