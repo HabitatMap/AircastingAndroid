@@ -75,8 +75,7 @@ class SettingsController(
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         mSettings.toggleThemeChange()
 
-        val dark = mSettings.isDarkThemeEnabled()
-        switchButton?.isChecked = dark
+        switchButton?.isChecked = mSettings.isDarkThemeEnabled()
     }
 
     override fun onToggleKeepScreenOnEnabled() {
