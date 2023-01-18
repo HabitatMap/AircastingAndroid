@@ -425,5 +425,7 @@
     <string name="not_numeric_value_error">La valeur doit être numérique !</string>
     <string name="my_account_delete_account">Supprimer le compte</string>
     <string name="save_button">Sauver</string>
+    <string name="toggle_night_mode_change_caution_header">Session mobile active</string>
+    <string name="toggle_night_mode_change_caution_description">Avertissement : activer ou désactiver le thème sombre lors de l\'enregistrement d\'une session mobile mettra fin aux connexions Bluetooth.</string>
 
 </resources>
