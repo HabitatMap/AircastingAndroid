@@ -96,7 +96,7 @@ abstract class SessionDetailsViewController(
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: NewMeasurementEvent) {
-        if (event.sensorName == mSessionPresenter.selectedStream?.sensorName) {
+        if (measurementIsFromSameSessionAndStream(event)) {
             val location = LocationHelper.lastLocation()
             val measurement = Measurement(event, Session.Location.get(location))
 
@@ -104,6 +104,9 @@ abstract class SessionDetailsViewController(
             mViewMvc?.addMeasurement(measurement)
         }
     }
+
+    private fun measurementIsFromSameSessionAndStream(event: NewMeasurementEvent) =
+        event.sensorName == mSessionPresenter.selectedStream?.sensorName && event.deviceId == mSessionPresenter.session?.deviceId
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
         runOnIOThread {
