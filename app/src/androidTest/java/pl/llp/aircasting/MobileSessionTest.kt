@@ -49,8 +49,8 @@ class MobileSessionTest {
     lateinit var permissionsManager: PermissionsManager
 
     @get:Rule
-    val testRule: ActivityTestRule<MainActivity>
-            = ActivityTestRule(MainActivity::class.java, false, false)
+    val testRule: ActivityTestRule<MainActivity> =
+        ActivityTestRule(MainActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
@@ -109,7 +109,9 @@ class MobileSessionTest {
         onView(withId(R.id.select_device_type_bluetooth_card)).perform(click())
 
         onView(withId(R.id.turn_on_airbeam_ready_button)).perform(click())
-        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(click())
+        onView(withText(containsString(FakeDeviceItem.NAME.uppercase(Locale.getDefault())))).perform(
+            click()
+        )
 
         onView(withId(R.id.connect_button)).perform(click())
         Thread.sleep(4000)
@@ -125,24 +127,23 @@ class MobileSessionTest {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(4000)
-
-        val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
-        measurementValuesRow.check(matches(hasMinimumChildCount(1)))
-
+        waitAndRetry {
+            val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
+            measurementValuesRow.check(matches(hasMinimumChildCount(1)))
+        }
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        Thread.sleep(1000)
-        openMap()
-        Thread.sleep(3000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        waitAndRetry(::openMap)
+
+        waitAndRetry {
+            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        }
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
-
         onView(isRoot()).perform(pressBack())
 
         expandCard()
@@ -150,12 +151,13 @@ class MobileSessionTest {
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        Thread.sleep(1000)
-        openGraph()
-        Thread.sleep(3000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
-        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        waitAndRetry(::openGraph)
+
+        waitAndRetry {
+            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        }
+        onView (withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
         onView(isRoot()).perform(pressBack())
@@ -163,20 +165,22 @@ class MobileSessionTest {
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeDown())
         stopSession()
         // should navigate to mobile tab
-        Thread.sleep(2000)
 
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        waitAndRetry {
+            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
+        }
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")))
         expandCard()
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(not(isDisplayed())))
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
-        Thread.sleep(1000)
-        openMap()
-        Thread.sleep(3000)
 
-        onView(withId(R.id.more_invisible_button)).perform(click())
+        waitAndRetry(::openMap)
+
+        waitAndRetry {
+            onView(withId(R.id.more_invisible_button)).perform(click())
+        }
         onView(isRoot()).perform(swipeUp())
         onView(withId(R.id.reset_button)).perform(click())
     }

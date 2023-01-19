@@ -1,6 +1,5 @@
 package pl.llp.aircasting.helpers
 
-import org.mockito.Mockito
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
@@ -14,14 +13,13 @@ class FakeDeviceItem {
     }
 }
 
-fun stubDeviceItem(): DeviceItem {
-    val deviceItem = Mockito.mock(DeviceItem::class.java)
-    whenever(deviceItem.id).thenReturn(FakeDeviceItem.ID)
-    whenever(deviceItem.name).thenReturn(FakeDeviceItem.NAME)
-    whenever(deviceItem.address).thenReturn(FakeDeviceItem.ADDRESS)
-    whenever(deviceItem.type).thenReturn(FakeDeviceItem.TYPE)
-    return deviceItem
-}
+fun stubDeviceItem() = DeviceItem(
+    null,
+    FakeDeviceItem.NAME,
+    FakeDeviceItem.ADDRESS,
+    FakeDeviceItem.ID,
+    FakeDeviceItem.TYPE
+)
 
 fun stubPairedDevice(bluetoothManager: BluetoothManager) {
     val deviceItem = stubDeviceItem()

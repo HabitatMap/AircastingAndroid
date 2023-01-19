@@ -45,8 +45,8 @@ import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
-import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.search.SearchFixedSessionActivity
 import pl.llp.aircasting.util.Settings
@@ -264,7 +264,7 @@ class SearchFollowTest {
         goToMapScreen()
         Espresso.pressBack()
 
-        searchFieldHasText(newYork)
+        searchFieldHasHint(newYork)
 
         searchActivityScenario.close()
     }

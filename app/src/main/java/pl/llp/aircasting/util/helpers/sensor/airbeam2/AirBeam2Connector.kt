@@ -7,6 +7,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.*
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import java.io.IOException
 import java.io.OutputStream
@@ -14,8 +15,9 @@ import java.util.*
 
 open class AirBeam2Connector(
     mSettings: Settings,
-    private val mErrorHandler: ErrorHandler
-) : AirBeamConnector() {
+    private val mErrorHandler: ErrorHandler,
+    bluetoothManager: BluetoothManager,
+) : AirBeamConnector(bluetoothManager) {
     private val mAirBeamConfigurator = AirBeam2Configurator(mSettings)
     private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
 
