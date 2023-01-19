@@ -80,7 +80,7 @@ class SessionsSyncService private constructor(
 
     @Subscribe
     fun onMessageEvent(logout: LogoutEvent) {
-        if (logout.inProgress)
+        if (logout.inProgress && !logout.afterAccountDeletion)
             sync()
     }
 

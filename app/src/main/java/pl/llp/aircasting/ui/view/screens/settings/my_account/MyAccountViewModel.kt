@@ -28,7 +28,7 @@ class MyAccountViewModel @Inject constructor(
             .onSuccess {
                 if (it.body()?.success == false) return@onSuccess
 
-                logout()
+                logoutService.logout(true)
                 Log.v("DeleteAccount", "success")
 
             }

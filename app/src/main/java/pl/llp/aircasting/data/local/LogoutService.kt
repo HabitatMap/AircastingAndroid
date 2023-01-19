@@ -20,11 +20,17 @@ class LogoutService @Inject constructor(
     private val appContext: Context,
     private val apiServiceFactory: ApiServiceFactory
 ) {
-    fun logout() {
+    fun logout(afterAccountDeletion: Boolean = false) {
         EventBus.getDefault().safeRegister(this)
         // to make sure downloading sessions stopped before we start deleting them
         LoginActivity.startAfterSignOut(appContext)
-        EventBus.getDefault().postSticky(LogoutEvent())
+
+        if (afterAccountDeletion) {
+            EventBus.getDefault().postSticky(LogoutEvent(isAfterAccountDeletion = true))
+            finaliseLogout()
+        }
+        else
+            EventBus.getDefault().postSticky(LogoutEvent())
     }
 
     suspend fun deleteAccount(): Result<Response<DeleteAccountResponse?>> {
@@ -41,11 +47,15 @@ class LogoutService @Inject constructor(
     @Subscribe
     fun onMessageEvent(sync: SessionsSyncEvent) {
         if (!sync.inProgress) {
-            EventBus.getDefault().unregister(this)
-            mSettings.logout()
-            clearDatabase()
-            SessionsSyncService.destroy()
-            EventBus.getDefault().postSticky(LogoutEvent(false))
+            finaliseLogout()
         }
+    }
+
+    private fun finaliseLogout() {
+        EventBus.getDefault().unregister(this)
+        mSettings.logout()
+        clearDatabase()
+        SessionsSyncService.destroy()
+        EventBus.getDefault().postSticky(LogoutEvent(false))
     }
 }
