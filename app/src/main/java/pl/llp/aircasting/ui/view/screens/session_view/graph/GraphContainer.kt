@@ -123,7 +123,7 @@ class GraphContainer(
         if (shouldUseDefaultZoom)
             zoomToDefaultAndUpdateLabels(entries)
         else
-            updateLabels(entries)
+            updateLabelsBasedOnVisibleTimeSpan()
         drawData(entries)
         drawMidnightPointLines(result.midnightPoint)
         drawThresholds()
@@ -178,10 +178,8 @@ class GraphContainer(
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
 
-        val span = last.x - first.x
-        val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
-
-        val from = max(last.x - zoomSpan, first.x)
+        // TODO: get visible boundary entries
+        val from = first.x
         val to = last.x
         drawLabels(from, to)
 
