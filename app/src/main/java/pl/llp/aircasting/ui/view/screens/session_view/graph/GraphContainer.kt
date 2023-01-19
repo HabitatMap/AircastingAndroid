@@ -57,7 +57,7 @@ class GraphContainer(
     private var mGraphDataGenerator: GraphDataGenerator
 
     private val mDefaultZoomSpan: Int? = defaultZoomSpan
-    private var shouldZoomToDefault = true
+    private var shouldZoomToDefaultAndUpdateLabels = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit = onTimeSpanChanged
     private var mGetMeasurementsSample: () -> List<Measurement> = getMeasurementsSample
     private var mMeasurementsSample: List<Measurement> = listOf()
@@ -84,12 +84,17 @@ class GraphContainer(
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
+        val graph = mGraph ?: return
+        mSessionPresenter ?: refresh(sessionPresenter)
+
+        val onTheRight = graph.highestVisibleX == graph.xChartMax
+
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
-        if (mGraph?.isFullyZoomedOut == true) {
+        if (graph.isFullyZoomedOut) {
             mVisibleEntriesNumber = mMeasurementsSample.size
-            shouldZoomToDefault = true
+            shouldZoomToDefaultAndUpdateLabels = onTheRight
         }
 
         drawSession()
@@ -144,9 +149,8 @@ class GraphContainer(
     }
 
     private fun zoomToDefaultAndUpdateLabels(entries: List<Entry>) {
-        if (!shouldZoomToDefault) return
+        if (!shouldZoomToDefaultAndUpdateLabels) return
         mGraph ?: return
-
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
 
@@ -163,7 +167,7 @@ class GraphContainer(
         val to = last.x
         drawLabels(from, to)
 
-        shouldZoomToDefault = false
+        shouldZoomToDefaultAndUpdateLabels = false
     }
 
     private fun buildLineData(entries: List<Entry>): LineData {

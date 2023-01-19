@@ -18,7 +18,7 @@ class GraphViewMobileActiveMvcImpl(
     }
 
     override fun defaultZoomSpan(): Int {
-        return 30 * 60 * 1000 // 30 minutes
+        return 1 * 60 * 1000 // 30 minutes
     }
 
     override fun getSessionType(): Session.Type {
