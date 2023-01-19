@@ -84,19 +84,14 @@ class GraphContainer(
     }
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
-        val graph = mGraph ?: return
-        shouldUseDefaultZoom = mSessionPresenter == null
-        if (shouldUseDefaultZoom) mVisibleEntriesNumber = mMeasurementsSample.size
+        mGraph ?: return
 
-//        val onTheRight = graph.highestVisibleX == graph.xChartMax
+        shouldUseDefaultZoom = mSessionPresenter == null
+//        if (shouldUseDefaultZoom) mVisibleEntriesNumber = mMeasurementsSample.size
 
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
-//        if (graph.isFullyZoomedOut) {
-//            mVisibleEntriesNumber = mMeasurementsSample.size
-//            shouldUseDefaultZoom = onTheRight
-//        }
 
         drawSession()
         if (mMeasurementsSample.isNotEmpty()) showGraph()
@@ -124,6 +119,7 @@ class GraphContainer(
             zoomToDefaultAndUpdateLabels(entries)
         else
             updateLabelsBasedOnVisibleTimeSpan()
+
         drawData(entries)
         drawMidnightPointLines(result.midnightPoint)
         drawThresholds()
@@ -169,21 +165,6 @@ class GraphContainer(
         val from = max(last.x - zoomSpan, first.x)
         val to = last.x
         drawLabels(from, to)
-
-//        shouldUseDefaultZoom = false
-    }
-
-    private fun updateLabels(entries: List<Entry>) {
-        mGraph ?: return
-        val first = entries.firstOrNull() ?: return
-        val last = entries.lastOrNull() ?: return
-
-        // TODO: get visible boundary entries
-        val from = first.x
-        val to = last.x
-        drawLabels(from, to)
-
-//        shouldUseDefaultZoom = false
     }
 
     private fun buildLineData(entries: List<Entry>): LineData {
