@@ -57,7 +57,7 @@ class GraphContainer(
     private var mGraphDataGenerator: GraphDataGenerator
 
     private val mDefaultZoomSpan: Int? = defaultZoomSpan
-    private var shouldZoomToDefaultAndUpdateLabels = true
+    private var shouldUseDefaultZoom = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit = onTimeSpanChanged
     private var mGetMeasurementsSample: () -> List<Measurement> = getMeasurementsSample
     private var mMeasurementsSample: List<Measurement> = listOf()
@@ -85,17 +85,18 @@ class GraphContainer(
 
     fun bindSession(sessionPresenter: SessionPresenter?) {
         val graph = mGraph ?: return
-        mSessionPresenter ?: refresh(sessionPresenter)
+        shouldUseDefaultZoom = mSessionPresenter == null
+        if (shouldUseDefaultZoom) mVisibleEntriesNumber = mMeasurementsSample.size
 
-        val onTheRight = graph.highestVisibleX == graph.xChartMax
+//        val onTheRight = graph.highestVisibleX == graph.xChartMax
 
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
-        if (graph.isFullyZoomedOut) {
-            mVisibleEntriesNumber = mMeasurementsSample.size
-            shouldZoomToDefaultAndUpdateLabels = onTheRight
-        }
+//        if (graph.isFullyZoomedOut) {
+//            mVisibleEntriesNumber = mMeasurementsSample.size
+//            shouldUseDefaultZoom = onTheRight
+//        }
 
         drawSession()
         if (mMeasurementsSample.isNotEmpty()) showGraph()
@@ -119,7 +120,10 @@ class GraphContainer(
         val entries = result.entries
         mNoteValueRanges = result.noteRanges
 
-        zoomToDefaultAndUpdateLabels(entries)
+        if (shouldUseDefaultZoom)
+            zoomToDefaultAndUpdateLabels(entries)
+        else
+            updateLabels(entries)
         drawData(entries)
         drawMidnightPointLines(result.midnightPoint)
         drawThresholds()
@@ -149,7 +153,6 @@ class GraphContainer(
     }
 
     private fun zoomToDefaultAndUpdateLabels(entries: List<Entry>) {
-        if (!shouldZoomToDefaultAndUpdateLabels) return
         mGraph ?: return
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
@@ -167,7 +170,22 @@ class GraphContainer(
         val to = last.x
         drawLabels(from, to)
 
-        shouldZoomToDefaultAndUpdateLabels = false
+//        shouldUseDefaultZoom = false
+    }
+
+    private fun updateLabels(entries: List<Entry>) {
+        mGraph ?: return
+        val first = entries.firstOrNull() ?: return
+        val last = entries.lastOrNull() ?: return
+
+        val span = last.x - first.x
+        val zoomSpan: Float = mDefaultZoomSpan?.toFloat() ?: span
+
+        val from = max(last.x - zoomSpan, first.x)
+        val to = last.x
+        drawLabels(from, to)
+
+//        shouldUseDefaultZoom = false
     }
 
     private fun buildLineData(entries: List<Entry>): LineData {
@@ -282,7 +300,8 @@ class GraphContainer(
                         }
                         1 -> {
                             noteNumber =
-                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number ?: 0
+                                mNotes?.get(mNoteValueRanges.indexOf(tempRanges.first()))?.number
+                                    ?: 0
                         }
                         else -> {
                             // If the clicked Entry is in range of 2 or more "Ranges" then we have to check which Range is the closest one
@@ -295,7 +314,8 @@ class GraphContainer(
                                 )
                                 if (rangeDistance < tempDistance) {
                                     tempDistance = rangeDistance
-                                    noteNumber = mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
+                                    noteNumber =
+                                        mNotes?.get(mNoteValueRanges.indexOf(range))?.number ?: -1
                                 }
                             }
                         }
