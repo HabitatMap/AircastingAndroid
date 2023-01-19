@@ -57,7 +57,7 @@ class GraphContainer(
     private var mGraphDataGenerator: GraphDataGenerator
 
     private val mDefaultZoomSpan: Int? = defaultZoomSpan
-    private var shouldUseDefaultZoom = true
+    private var graphIsInInitialState = true
     private var mOnTimeSpanChanged: (timeSpan: ClosedRange<Date>) -> Unit = onTimeSpanChanged
     private var mGetMeasurementsSample: () -> List<Measurement> = getMeasurementsSample
     private var mMeasurementsSample: List<Measurement> = listOf()
@@ -86,15 +86,16 @@ class GraphContainer(
     fun bindSession(sessionPresenter: SessionPresenter?) {
         mGraph ?: return
 
-        shouldUseDefaultZoom = mSessionPresenter == null
-//        if (shouldUseDefaultZoom) mVisibleEntriesNumber = mMeasurementsSample.size
+        graphIsInInitialState = mSessionPresenter == null
 
         mSessionPresenter = sessionPresenter
         mMeasurementsSample = mGetMeasurementsSample.invoke()
         mNotes = mSessionPresenter?.session?.notes
 
         drawSession()
-        if (mMeasurementsSample.isNotEmpty()) showGraph()
+
+        if (mMeasurementsSample.isNotEmpty())
+            showGraph()
     }
 
     fun refresh(sessionPresenter: SessionPresenter?) {
@@ -115,8 +116,8 @@ class GraphContainer(
         val entries = result.entries
         mNoteValueRanges = result.noteRanges
 
-        if (shouldUseDefaultZoom)
-            zoomToDefaultAndUpdateLabels(entries)
+        if (graphIsInInitialState)
+            zoomToDefaultAndSetLabels(entries)
         else
             updateLabelsBasedOnVisibleTimeSpan()
 
@@ -148,7 +149,7 @@ class GraphContainer(
         mGraph?.data = combinedData
     }
 
-    private fun zoomToDefaultAndUpdateLabels(entries: List<Entry>) {
+    private fun zoomToDefaultAndSetLabels(entries: List<Entry>) {
         mGraph ?: return
         val first = entries.firstOrNull() ?: return
         val last = entries.lastOrNull() ?: return
