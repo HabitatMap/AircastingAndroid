@@ -152,10 +152,6 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    override fun getGattCallback(): BleManagerGattCallback {
-        return GattCallback()
-    }
-
     private fun validateReadCharacteristic(characteristic: BluetoothGattCharacteristic?): Boolean {
         characteristic ?: return false
 
@@ -170,87 +166,85 @@ class AirBeam3Configurator(
         return properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0
     }
 
-    private inner class GattCallback : BleManagerGattCallback() {
-        public override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
-            val service = gatt.getService(SERVICE_UUID)
+    override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
+        val service = gatt.getService(SERVICE_UUID)
 
-            service ?: return false
+        service ?: return false
 
-            measurementsCharacteristics = MEASUREMENTS_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
+        measurementsCharacteristics = MEASUREMENTS_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
 
-            measurementsCharacteristics?.isEmpty() ?: return false
+        measurementsCharacteristics?.isEmpty() ?: return false
 
-            configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
-            downloadFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID)
-            downloadMetaDataFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID)
+        configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
+        downloadFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID)
+        downloadMetaDataFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID)
 
-            val characteristics = measurementsCharacteristics!!.union(arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic))
-            if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
-                return false
-            }
-
-            if (!validateConfigurationCharacteristic(configurationCharacteristic)) {
-                return false
-            }
-
-            return true
+        val characteristics = measurementsCharacteristics!!.union(arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic))
+        if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
+            return false
         }
 
-        override fun initialize() {
-            enableNotifications()
+        if (!validateConfigurationCharacteristic(configurationCharacteristic)) {
+            return false
         }
 
-        private fun enableDownloadFromSDCardNotifications(queue: RequestQueue) {
-            val downloadFromSDCardCharacteristic = downloadFromSDCardCharacteristic ?: return
-            val downloadMetaDataFromSDCardCharacteristic = downloadMetaDataFromSDCardCharacteristic ?: return
+        return true
+    }
 
-            var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
-            metaDatacallback.with { _, data ->
-                sdCardReader.onMetaDataDownloaded(data.value)
+    override fun initialize() {
+        enableNotifications()
+    }
+
+    private fun enableDownloadFromSDCardNotifications(queue: RequestQueue) {
+        val downloadFromSDCardCharacteristic = downloadFromSDCardCharacteristic ?: return
+        val downloadMetaDataFromSDCardCharacteristic = downloadMetaDataFromSDCardCharacteristic ?: return
+
+        var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
+        metaDatacallback.with { _, data ->
+            sdCardReader.onMetaDataDownloaded(data.value)
+        }
+
+        val measurementsCallback = setNotificationCallback(downloadFromSDCardCharacteristic)
+        measurementsCallback.with { _, data ->
+            sdCardReader.onMeasurementsDownloaded(data.value)
+        }
+
+        arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic).forEach { characteristic ->
+            queue.add(
+                enableNotifications(characteristic)
+                    .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
+            ).add(sleep(500))
+        }
+    }
+
+    private fun enableNotifications() {
+        val queue = beginAtomicRequestQueue()
+
+        enableDownloadFromSDCardNotifications(queue)
+
+        measurementsCharacteristics?.forEach { characteristic ->
+            val callback = setNotificationCallback(characteristic)
+            callback.with { _, data ->
+                airBeam3Reader.run(data)
             }
 
-            val measurementsCallback = setNotificationCallback(downloadFromSDCardCharacteristic)
-            measurementsCallback.with { _, data ->
-                sdCardReader.onMeasurementsDownloaded(data.value)
-            }
-
-            arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic).forEach { characteristic ->
-                queue.add(
-                    enableNotifications(characteristic)
-                        .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
-                ).add(sleep(500))
-            }
+            queue.add(
+                enableNotifications(characteristic)
+                    .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
+            ).add(sleep(500))
         }
+        queue.enqueue()
+    }
 
-        private fun enableNotifications() {
-            val queue = beginAtomicRequestQueue()
+    private fun onNotificationEnableFailure(characteristic: BluetoothGattCharacteristic, status: Int) {
+        mErrorHandler.handle(AirBeam3ConfiguringFailed("notification " + characteristic.uuid, status))
+    }
 
-            enableDownloadFromSDCardNotifications(queue)
-
-            measurementsCharacteristics?.forEach { characteristic ->
-                val callback = setNotificationCallback(characteristic)
-                callback.with { _, data ->
-                    airBeam3Reader.run(data)
-                }
-
-                queue.add(
-                    enableNotifications(characteristic)
-                        .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
-                ).add(sleep(500))
-            }
-            queue.enqueue()
-        }
-
-        private fun onNotificationEnableFailure(characteristic: BluetoothGattCharacteristic, status: Int) {
-            mErrorHandler.handle(AirBeam3ConfiguringFailed("notification " + characteristic.uuid, status))
-        }
-
-        override fun onDeviceDisconnected() {
-            measurementsCharacteristics = null
-            configurationCharacteristic = null
-            downloadFromSDCardCharacteristic = null
-            downloadMetaDataFromSDCardCharacteristic = null
-        }
+    fun reset() {
+        measurementsCharacteristics = null
+        configurationCharacteristic = null
+        downloadFromSDCardCharacteristic = null
+        downloadMetaDataFromSDCardCharacteristic = null
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
