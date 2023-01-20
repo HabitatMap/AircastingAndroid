@@ -91,9 +91,12 @@ object AppDependencies {
 
     /* Miscellaneous */
     private const val commonsCodec = "commons-codec:commons-codec:${Versions.commonsCodec}"
-    private const val androidBle = "no.nordicsemi.android:ble:${Versions.androidBle}"
     private const val mpAndroidChart =
         "com.github.PhilJay:MPAndroidChart:${Versions.mpAndroidChart}"
+
+    /* Bluetooth Low Energy */
+    private const val androidBle = "no.nordicsemi.android:ble:${Versions.androidBle}"
+    private const val androidBleKtx = "no.nordicsemi.android:ble-ktx:${Versions.androidBle}"
 
     /* Camera */
     private const val cameraImagePicker = "com.github.dhaval2404:imagepicker:${Versions.cameraImagePicker}"
@@ -176,6 +179,7 @@ object AppDependencies {
         add(roomDB)
         add(commonsCodec)
         add(androidBle)
+        add(androidBleKtx)
         add(mpAndroidChart)
         add(cameraImagePicker)
     }

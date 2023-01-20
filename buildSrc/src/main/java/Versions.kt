@@ -59,6 +59,7 @@ object Versions {
     const val roomDB = "2.4.2"
 
     const val commonsCodec = "1.14"
+
     const val androidBle = "2.6.0"
 
     const val mpAndroidChart = "v3.1.0"
