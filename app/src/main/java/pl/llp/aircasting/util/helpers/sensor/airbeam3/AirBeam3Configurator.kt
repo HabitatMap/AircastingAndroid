@@ -4,9 +4,11 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.content.Context
+import android.util.Log
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.Settings
@@ -165,6 +167,10 @@ class AirBeam3Configurator(
 
         val properties: Int = characteristic.properties
         return properties and BluetoothGattCharacteristic.PROPERTY_WRITE != 0
+    }
+
+    override fun log(priority: Int, message: String) {
+        Log.println(priority, TAG, message)
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {

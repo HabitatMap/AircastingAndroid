@@ -90,7 +90,8 @@ class DisconnectedView(
 
     fun hide() {
         mDisconnectedView?.gone()
-        EventBus.getDefault().unregister(this)
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this)
     }
 
     private fun bindBluetoothDevice(session: Session) {
