@@ -62,7 +62,7 @@ abstract class AirBeamConnector(
 
     private fun failAfterTimeout(deviceItem: DeviceItem) {
         mTimerTask = timerTask {
-            if (connectionEstablished.get() == false) {
+            if (!connectionEstablished.get()) {
                 connectionTimedOut.set(true)
                 mListener?.onConnectionFailed(deviceItem)
             }
@@ -93,7 +93,7 @@ abstract class AirBeamConnector(
 
     fun onConnectionFailed(deviceItem: DeviceItem) {
         mTimerTask?.cancel()
-        if (connectionTimedOut.get() == false) {
+        if (!connectionTimedOut.get()) {
             mListener?.onConnectionFailed(deviceItem)
         }
     }

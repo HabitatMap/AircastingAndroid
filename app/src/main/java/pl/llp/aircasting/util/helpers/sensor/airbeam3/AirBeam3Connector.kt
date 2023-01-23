@@ -16,11 +16,15 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 
 open class AirBeam3Connector(
     private val mContext: Context,
-    mSettinngs: Settings,
+    settings: Settings,
     private val mErrorHandler: ErrorHandler,
-    private val bluetoothManager: BluetoothManager
-): AirBeamConnector(bluetoothManager), ConnectionObserver {
-    private var airBeam3Configurator = AirBeam3Configurator(mContext, mErrorHandler, mSettinngs)
+    private val bluetoothManager: BluetoothManager,
+    private var airBeam3Configurator: AirBeam3Configurator = AirBeam3Configurator(
+        mContext,
+        mErrorHandler,
+        settings
+    )
+) : AirBeamConnector(bluetoothManager), ConnectionObserver {
 
     override fun start(deviceItem: DeviceItem) {
         if (bleNotSupported()) {
@@ -35,7 +39,7 @@ open class AirBeam3Connector(
             .timeout(0)
             .retry(3, 100)
             .useAutoConnect(true)
-            .fail { device, status ->  onFailedCallback(device, status)}
+            .fail { device, status -> onFailedCallback(device, status) }
             .done { _ -> onConnectionSuccessful(deviceItem) }
             .enqueue()
     }
@@ -86,10 +90,12 @@ open class AirBeam3Connector(
         val deviceItem = DeviceItem(device)
         onConnectionFailed(deviceItem)
     }
+
     override fun onDeviceReady(device: BluetoothDevice) {}
     override fun onDeviceDisconnecting(device: BluetoothDevice) {
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnecting"))
     }
+
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         val deviceItem = DeviceItem(device)
         airBeam3Configurator.reset()
