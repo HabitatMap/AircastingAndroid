@@ -1,5 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor
 
+import android.util.Log
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.AirBeamResponseParsingError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -32,7 +34,8 @@ class ResponseParser(private val errorHandler: ErrorHandler) {
         val parts = line.split(";".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
         if (parts.size < Fields.values().size) {
-            AirBeamResponseParsingError(line).printStackTrace()
+            val error = AirBeamResponseParsingError(line)
+            Log.e(TAG, "${error.message}\n${error.stackTraceToString()}")
             return null
         }
 
