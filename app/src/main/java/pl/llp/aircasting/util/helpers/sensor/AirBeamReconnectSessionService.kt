@@ -13,15 +13,11 @@ import pl.llp.aircasting.util.events.AirBeamDiscoveryFailedEvent
 class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     companion object {
-        val SESSION_UUID_KEY = "inputExtraSessionUUID"
-        val SESSION_DEVICE_ID_KEY = "inputExtraSessionDeviceId"
-
-        fun startService(context: Context, sessionDeviceId: String?, deviceItem: DeviceItem?, sessionUUID: String? = null) {
+        fun startService(context: Context, deviceItem: DeviceItem?, sessionUUID: String? = null) {
             val startIntent = Intent(context, AirBeamReconnectSessionService::class.java)
 
-            startIntent.putExtra(SESSION_DEVICE_ID_KEY, sessionDeviceId)
             deviceItem?.let { deviceItem ->
-                startIntent.putExtra(AirBeamSyncService.DEVICE_ITEM_KEY, deviceItem as Parcelable)
+                startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
             }
             startIntent.putExtra(SESSION_UUID_KEY, sessionUUID)
 

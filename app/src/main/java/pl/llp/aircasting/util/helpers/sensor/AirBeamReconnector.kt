@@ -57,11 +57,11 @@ class AirBeamReconnector(
         mFinallyCallback = finallyCallback
 
         if (deviceItem?.type == DeviceItem.Type.AIRBEAM3) {
-            reconnect(session.deviceId, deviceItem)
+            reconnect(deviceItem)
         } else {
             mAirBeamDiscoveryService.find(
-                deviceSelector = { deviceItem -> deviceItem.id == session.deviceId },
-                onDiscoverySuccessful = { deviceItem -> reconnect(deviceItem.id, deviceItem) },
+                deviceSelector = { device -> device.id == session.deviceId },
+                onDiscoverySuccessful = { device -> reconnect(device) },
                 onDiscoveryFailed = { onDiscoveryFailed() }
             )
         }
@@ -75,11 +75,10 @@ class AirBeamReconnector(
         reconnect(session, deviceItem)
     }
 
-    private fun reconnect(deviceId: String?, deviceItem: DeviceItem? = null) {
+    private fun reconnect(deviceItem: DeviceItem? = null) {
         try {
             AirBeamReconnectSessionService.startService(
                 mContext,
-                deviceId,
                 deviceItem,
                 mSession?.uuid
             )
@@ -134,7 +133,7 @@ class AirBeamReconnector(
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
                     Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-                    reconnect(event.deviceItem.id, event.deviceItem)
+                    reconnect(event.deviceItem)
                 }
             }
         } else {
