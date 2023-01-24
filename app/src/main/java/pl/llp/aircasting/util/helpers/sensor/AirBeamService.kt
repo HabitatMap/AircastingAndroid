@@ -1,14 +1,19 @@
 package pl.llp.aircasting.util.helpers.sensor
 
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
+import pl.llp.aircasting.util.extensions.runOnIOThread
 import javax.inject.Inject
 
 
@@ -65,21 +70,21 @@ abstract class AirBeamService: SensorService(),
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionFailed"))
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    fun onMessageEvent(event: SensorDisconnectedEvent) {
-//        errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
-//        if (airbeamReconnector.mReconnectionTriesNumber != null) return
-//
-//        event.sessionUUID?.let { sessionUUID ->
-//            runOnIOThread {
-//                val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
-//                sessionDBObject?.let { sessionDBObject ->
-//                    val session = Session(sessionDBObject)
-//                    if (session.type == Session.Type.MOBILE && session.deviceId == event.sessionDeviceId) {
-//                        airbeamReconnector.tryToReconnectPeriodically(session, event.device)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: SensorDisconnectedEvent) {
+        errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
+        if (airbeamReconnector.mReconnectionTriesNumber != null) return
+
+        event.sessionUUID?.let { sessionUUID ->
+            runOnIOThread {
+                val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
+                sessionDBObject?.let { sessionDBObject ->
+                    val session = Session(sessionDBObject)
+                    if (session.type == Session.Type.MOBILE && session.deviceId == event.sessionDeviceId) {
+                        airbeamReconnector.tryToReconnectPeriodically(session, event.device)
+                    }
+                }
+            }
+        }
+    }
 }

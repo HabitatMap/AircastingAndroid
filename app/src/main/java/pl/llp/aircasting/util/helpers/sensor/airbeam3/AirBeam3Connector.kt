@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log.VERBOSE
 import no.nordicsemi.android.ble.observer.ConnectionObserver
-import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_LINK_LOSS
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
@@ -100,14 +99,12 @@ open class AirBeam3Connector(
 
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         airBeam3Configurator.log(VERBOSE, "Disconnected reason: $reason")
-        if (reason != REASON_LINK_LOSS) {
-            val deviceItem = DeviceItem(device)
-            airBeam3Configurator.reset()
-            mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
-            onDisconnected(deviceItem)
-            disconnect()
-        } else {
 
-        }
+        val deviceItem = DeviceItem(device)
+        onDisconnected(deviceItem)
+
+        airBeam3Configurator.reset()
+        mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))
+        disconnect()
     }
 }
