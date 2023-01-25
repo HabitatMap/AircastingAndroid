@@ -16,8 +16,8 @@ class SDCardCSVIterator(
             var previousSessionUUID: String? = null
             var currentSession: CSVSession? = null
 
-            do {
-                val line = reader.readNext()
+            while (true) {
+                val line: Array<String>? = reader.readNext()
 
                 if (line == null) {
                     if (currentSession != null) {
@@ -26,25 +26,19 @@ class SDCardCSVIterator(
                     break
                 }
 
-                val currentSessionUUID =
-                    CSVSession.uuidFrom(
-                        line
-                    )
+                val currentSessionUUID = CSVSession.uuidFrom(line)
 
                 if (currentSessionUUID != previousSessionUUID) {
                     if (currentSession != null) {
                         yield(currentSession)
                     }
 
-                    currentSession =
-                        CSVSession(
-                            currentSessionUUID!!
-                        )
+                    currentSession = CSVSession(currentSessionUUID!!)
                     previousSessionUUID = currentSessionUUID
                 }
 
                 currentSession?.addMeasurements(line)
-            } while(line != null)
+            }
         } catch (e: IOException) {
             mErrorHandler.handle(SDCardMeasurementsParsingError(e))
         }
