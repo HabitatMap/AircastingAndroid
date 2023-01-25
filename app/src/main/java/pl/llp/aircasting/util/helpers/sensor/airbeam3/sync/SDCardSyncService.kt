@@ -118,8 +118,6 @@ class SDCardSyncService(
 
         val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
         averageAndSyncSDCardSessionsService.start()
-
-        EventBus.getDefault().post(SessionsSyncSuccessEvent())
     }
 
     @Subscribe
