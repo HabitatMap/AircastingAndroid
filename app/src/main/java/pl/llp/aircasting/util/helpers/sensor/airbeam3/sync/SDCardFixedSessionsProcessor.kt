@@ -1,6 +1,5 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -46,26 +45,5 @@ class SDCardFixedSessionsProcessor(
         csvSession.streams.forEach { (headerKey, csvMeasurements) ->
             processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
         }
-    }
-
-    override fun filterMeasurements(
-        sessionId: Long,
-        measurementStreamId: Long,
-        csvMeasurements: List<CSVMeasurement>
-    ): List<CSVMeasurement> {
-        val measurementsInDB =
-            mMeasurementsRepository.getBySessionIdAndStreamId(sessionId, measurementStreamId)
-
-        return csvMeasurements.filter { csvMeasurement ->
-            isNotAlreadyInDB(csvMeasurement, measurementsInDB)
-        }
-    }
-
-    private fun isNotAlreadyInDB(
-        csvMeasurement: CSVMeasurement,
-        measurementsInDB: List<MeasurementDBObject?>
-    ): Boolean {
-        val index = measurementsInDB.binarySearch{it?.time?.compareTo(csvMeasurement.time) ?: -1}
-        return index < 0
     }
 }
