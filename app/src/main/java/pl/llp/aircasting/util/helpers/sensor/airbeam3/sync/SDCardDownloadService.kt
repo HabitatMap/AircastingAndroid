@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
@@ -44,10 +45,15 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     fun deleteFiles() {
-        val files =
-            listOf(mCSVFileFactory.getMobileDirectory(), mCSVFileFactory.getFixedDirectory())
-        files.forEach { file ->
-            if (file?.exists() == true) file.delete()
+        val dirs = listOf(
+            mCSVFileFactory.getMobileDirectory(),
+            mCSVFileFactory.getFixedDirectory()
+        )
+        dirs.forEach { dir ->
+            if (dir?.exists() == true) {
+                val result = dir.deleteRecursively()
+                Log.v(TAG, "${dir.name} was deleted: $result")
+            }
         }
     }
 
