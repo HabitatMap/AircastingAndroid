@@ -88,6 +88,8 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     private fun writeToCorrespondingFile(lines: List<String>) = lines.forEach { line ->
+        Log.v(TAG, "Reading line: $line")
+
         val lineParams = line.split(AB_DELIMITER)
         val uuid = lineParams[1]
 
@@ -106,6 +108,7 @@ class SDCardDownloadService(mContext: Context) {
 
     private fun createAndOpenNewFile(sessionUUID: String) {
         val file = File(mCSVFileFactory.getDirectory(currentStep?.type), sessionUUID)
+        Log.v(TAG, "Creating file: $file")
         fileWriter = FileWriter(file)
     }
 }
