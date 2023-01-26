@@ -19,8 +19,8 @@ class SDCardMobileSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    override val file: File
-        get() = mCSVFileFactory.getMobileFile()
+    override val file: File?
+        get() = mCSVFileFactory.getMobileDirectory()
 
     // TODO: Discuss with someone how to derive base implementation of the method in SDCardSessionsProcessor
     override fun processSession(deviceId: String, csvSession: CSVSession?) {

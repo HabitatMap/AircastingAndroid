@@ -14,7 +14,7 @@ abstract class SDCardSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl
 ) {
-    abstract val file: File
+    abstract val file: File?
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
     open fun run(deviceId: String, onFinishCallback: ((MutableList<Long>) -> Unit)? = null) {
@@ -29,7 +29,12 @@ abstract class SDCardSessionsProcessor(
 
     abstract fun processSession(deviceId: String, csvSession: CSVSession?)
 
-    fun processMeasurements(deviceId: String, sessionId: Long, streamHeaderValue: Int, csvMeasurements: List<CSVMeasurement>) {
+    fun processMeasurements(
+        deviceId: String,
+        sessionId: Long,
+        streamHeaderValue: Int,
+        csvMeasurements: List<CSVMeasurement>
+    ) {
         val streamHeader = SDCardCSVFileFactory.Header.fromInt(streamHeaderValue)
         val csvMeasurementStream = CSVMeasurementStream.fromHeader(
             streamHeader
@@ -42,8 +47,11 @@ abstract class SDCardSessionsProcessor(
         )
 
         // filtering measurements to save only the once we don't already have
-        val filteredCSVMeasurements = filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
-        val measurements = filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
+        val filteredCSVMeasurements =
+            filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
+        val measurements =
+            filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
+
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 

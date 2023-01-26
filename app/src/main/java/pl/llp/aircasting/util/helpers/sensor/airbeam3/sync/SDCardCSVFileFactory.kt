@@ -4,9 +4,11 @@ import android.content.Context
 import java.io.File
 
 class SDCardCSVFileFactory(private val mContext: Context) {
-    private val DIR_NAME = "sync"
-    private val MOBILE_FILE_NAME = "mobile.csv"
-    private val FIXED_FILE_NAME = "fixed.csv"
+    companion object {
+        private const val DIR_NAME = "sync"
+        private const val MOBILE_DIR_NAME = "mobile"
+        private const val FIXED_DIR_NAME = "fixed"
+    }
 
     enum class Header(val value: Int) {
         INDEX(0),
@@ -28,24 +30,24 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         }
     }
 
-    fun getMobileFile(): File {
-        return getFile(MOBILE_FILE_NAME)
+    fun getMobileDirectory(): File? {
+        return getDirectory(MOBILE_DIR_NAME)
     }
 
-    fun getFixedFile(): File {
-        return getFile(FIXED_FILE_NAME)
+    fun getFixedDirectory(): File? {
+        return getDirectory(FIXED_DIR_NAME)
     }
 
-    fun getFile(stepType: SDCardReader.StepType): File {
-        return when(stepType) {
-            SDCardReader.StepType.MOBILE -> getMobileFile()
-            SDCardReader.StepType.FIXED_WIFI -> getFixedFile()
-            SDCardReader.StepType.FIXED_CELLULAR -> getFixedFile()
+    fun getDirectory(stepType: SDCardReader.StepType): File? {
+        // add sessions files
+        return when (stepType) {
+            SDCardReader.StepType.MOBILE -> getMobileDirectory()
+            SDCardReader.StepType.FIXED_WIFI -> getFixedDirectory()
+            SDCardReader.StepType.FIXED_CELLULAR -> getFixedDirectory()
         }
     }
 
-    private fun getFile(fileName: String): File {
-        val dir = mContext.getExternalFilesDir(DIR_NAME)
-        return File(dir, fileName)
-    }
+    private fun getDirectory(subDirectory: String): File? = mContext.getExternalFilesDir(
+        "$DIR_NAME/$subDirectory"
+    )
 }

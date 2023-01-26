@@ -15,7 +15,7 @@ class SDCardUploadFixedMeasurementsService(
 
     fun run(deviceId: String, onFinishCallback: () -> Unit) {
         runOnIOThread {
-            val file = mSDCardCSVFileFactory.getFixedFile()
+            val file = mSDCardCSVFileFactory.getFixedDirectory() ?: return@runOnIOThread
 
             mSDCardCSVIterator.run(file).forEach { csvSession ->
                 processSession(deviceId, csvSession)

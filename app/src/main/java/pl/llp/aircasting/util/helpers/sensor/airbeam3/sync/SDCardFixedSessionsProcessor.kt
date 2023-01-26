@@ -19,8 +19,8 @@ class SDCardFixedSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    override val file: File
-        get() = mCSVFileFactory.getFixedFile()
+    override val file: File?
+        get() = mCSVFileFactory.getFixedDirectory()
 
     override fun run(deviceId: String, onFinishCallback: ((MutableList<Long>) -> Unit)?) {
         super.run(deviceId, null)
@@ -28,6 +28,8 @@ class SDCardFixedSessionsProcessor(
 
     fun run(deviceId: String) {
         runOnIOThread {
+            val file = file ?: return@runOnIOThread
+
             mSDCardCSVIterator.run(file).forEach { csvSession ->
                 processSession(deviceId, csvSession)
             }

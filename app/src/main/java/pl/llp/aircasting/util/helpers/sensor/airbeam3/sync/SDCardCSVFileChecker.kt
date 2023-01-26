@@ -21,7 +21,7 @@ class SDCardCSVFileChecker(
         val mobileStep = getStep(steps, SDCardReader.StepType.MOBILE) ?: return false
         val expectedCount = mobileStep.measurementsCount
 
-        val file = mCSVFileFactory.getMobileFile()
+        val file = mCSVFileFactory.getMobileDirectory()
         return check(file, expectedCount)
     }
 
@@ -30,21 +30,21 @@ class SDCardCSVFileChecker(
         val cellularStep = getStep(steps, SDCardReader.StepType.FIXED_CELLULAR) ?: return false
         val expectedCount = wifiStep.measurementsCount + cellularStep.measurementsCount
 
-        val file = mCSVFileFactory.getFixedFile()
+        val file = mCSVFileFactory.getFixedDirectory()
         return check(file, expectedCount)
     }
 
-    private fun check(file: File, expectedCount: Int): Boolean {
+    private fun check(file: File?, expectedCount: Int): Boolean {
         val stats = calculateStats(file)
         return validateAcceptedCorruption(stats, expectedCount)
     }
 
-    private fun calculateStats(file: File): Stats {
-        val reader = FileReader(file)
+    private fun calculateStats(file: File?): Stats {
+        val reader = try { FileReader(file) } catch (e: Exception) { null }
         var allCount = 0
         var corruptedCount = 0
 
-        reader.forEachLine { line ->
+        reader?.forEachLine { line ->
             if (lineIsCorrupted(line)) {
                 corruptedCount += 1
             }

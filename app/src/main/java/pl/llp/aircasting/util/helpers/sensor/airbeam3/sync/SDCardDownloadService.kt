@@ -36,9 +36,10 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     fun deleteFiles() {
-        val files = listOf(mCSVFileFactory.getMobileFile(), mCSVFileFactory.getFixedFile())
+        val files =
+            listOf(mCSVFileFactory.getMobileDirectory(), mCSVFileFactory.getFixedDirectory())
         files.forEach { file ->
-            if (file.exists()) file.delete()
+            if (file?.exists() == true) file.delete()
         }
     }
 
@@ -72,15 +73,15 @@ class SDCardDownloadService(mContext: Context) {
         mOnDownloadFinished?.invoke(steps)
     }
 
-    private fun openSyncFile(step: SDCardReader.Step) {
+    private fun openSyncFileDirectory(step: SDCardReader.Step) {
         val stepType = step.type
-        when(stepType) {
+        when (stepType) {
             SDCardReader.StepType.MOBILE -> {
-                openSyncFile(stepType)
+                openSyncFileDirectory(stepType)
             }
             SDCardReader.StepType.FIXED_WIFI -> {
                 closeSyncFile()
-                openSyncFile(stepType)
+                openSyncFileDirectory(stepType)
             }
             SDCardReader.StepType.FIXED_CELLULAR -> {
                 // do nothing
@@ -89,9 +90,13 @@ class SDCardDownloadService(mContext: Context) {
         }
     }
 
-    private fun openSyncFile(stepType: SDCardReader.StepType) {
-        val file = mCSVFileFactory.getFile(stepType)
-        fileWriter = FileWriter(file)
+    private fun openSyncFileDirectory(stepType: SDCardReader.StepType) {
+        val file = mCSVFileFactory.getDirectory(stepType)
+        fileWriter = try {
+            FileWriter(file)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun writeToSyncFile(lines: String) {
