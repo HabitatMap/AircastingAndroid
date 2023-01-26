@@ -38,12 +38,13 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         return getDirectory(FIXED_DIR_NAME)
     }
 
-    fun getDirectory(stepType: SDCardReader.StepType): File? {
+    fun getDirectory(stepType: SDCardReader.StepType?): File? {
         // add sessions files
         return when (stepType) {
             SDCardReader.StepType.MOBILE -> getMobileDirectory()
             SDCardReader.StepType.FIXED_WIFI -> getFixedDirectory()
             SDCardReader.StepType.FIXED_CELLULAR -> getFixedDirectory()
+            else -> null
         }
     }
 

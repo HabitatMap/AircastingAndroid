@@ -8,15 +8,23 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
+import java.io.File
 import java.io.FileWriter
 
 class SDCardDownloadService(mContext: Context) {
-    private val DOWNLOAD_TAG = "SYNC"
+    companion object {
+        private const val DOWNLOAD_TAG = "SYNC"
+        private const val AB_DELIMITER = ","
+    }
+
     private val mCSVFileFactory = SDCardCSVFileFactory(mContext)
 
     private var fileWriter: FileWriter? = null
     private var counter = 0
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
+    private val currentStep get() = steps.lastOrNull()
+
+    private var currentSessionUUID: String? = null
 
     private var mOnDownloadFinished: ((steps: List<SDCardReader.Step>) -> Unit)? = null
     private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
@@ -54,57 +62,44 @@ class SDCardDownloadService(mContext: Context) {
 
     @Subscribe
     fun onEvent(event: SDCardReadEvent) {
-        val lines = event.lines
-        val linesString = lines.map { "$it\n" }.joinToString("")
-        writeToSyncFile(linesString)
+        val fourLinesOfMeasurements = event.lines
 
-        val linesCount = lines.size
+        writeToCorrespondingFile(fourLinesOfMeasurements)
+
+        val linesCount = fourLinesOfMeasurements.size
         counter += linesCount
 
-        val step = steps.lastOrNull()
-        step?.let { mOnLinesDownloaded?.invoke(it, counter) }
+        currentStep?.let { mOnLinesDownloaded?.invoke(it, counter) }
     }
 
     @Subscribe
     fun onEvent(event: SDCardReadFinished) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
-        closeSyncFile()
+
+        flashLinesInBufferAndCloseCurrentFile()
 
         mOnDownloadFinished?.invoke(steps)
     }
 
-    private fun openSyncFileDirectory(step: SDCardReader.Step) {
-        val stepType = step.type
-        when (stepType) {
-            SDCardReader.StepType.MOBILE -> {
-                openSyncFileDirectory(stepType)
-            }
-            SDCardReader.StepType.FIXED_WIFI -> {
-                closeSyncFile()
-                openSyncFileDirectory(stepType)
-            }
-            SDCardReader.StepType.FIXED_CELLULAR -> {
-                // do nothing
-                // should just append to the previous file
-            }
+    private fun writeToCorrespondingFile(lines: List<String>) = lines.forEach { line ->
+        val lineParams = line.split(AB_DELIMITER)
+        val uuid = lineParams[1]
+
+        if (uuid != currentSessionUUID) {
+            currentSessionUUID = uuid
+            flashLinesInBufferAndCloseCurrentFile()
+            createAndOpenNewFile(uuid)
         }
+        fileWriter?.write("$line\n")
     }
 
-    private fun openSyncFileDirectory(stepType: SDCardReader.StepType) {
-        val file = mCSVFileFactory.getDirectory(stepType)
-        fileWriter = try {
-            FileWriter(file)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    private fun writeToSyncFile(lines: String) {
-        fileWriter?.write(lines)
-    }
-
-    private fun closeSyncFile() {
+    private fun flashLinesInBufferAndCloseCurrentFile() {
         fileWriter?.flush()
         fileWriter?.close()
+    }
+
+    private fun createAndOpenNewFile(sessionUUID: String) {
+        val file = File(mCSVFileFactory.getDirectory(currentStep?.type), sessionUUID)
+        fileWriter = FileWriter(file)
     }
 }
