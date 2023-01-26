@@ -107,7 +107,7 @@ class SDCardDownloadService(mContext: Context) {
     }
 
     private fun createAndOpenNewFile(sessionUUID: String) {
-        val file = File(mCSVFileFactory.getDirectory(currentStep?.type), sessionUUID)
+        val file = File(mCSVFileFactory.getDirectory(currentStep?.type), "$sessionUUID.csv")
         Log.v(TAG, "Creating file: $file")
         fileWriter = FileWriter(file)
     }
