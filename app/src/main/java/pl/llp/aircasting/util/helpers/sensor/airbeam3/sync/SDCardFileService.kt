@@ -12,7 +12,7 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import java.io.File
 import java.io.FileWriter
 
-class SDCardDownloadService(mContext: Context) {
+class SDCardFileService(mContext: Context) {
     companion object {
         private const val DOWNLOAD_TAG = "SYNC"
         private const val AB_DELIMITER = ","
@@ -25,7 +25,7 @@ class SDCardDownloadService(mContext: Context) {
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
-    private val numberOfMeasurementsPerFile = mutableMapOf<String, Int>()
+    private val filePathByMeasurementsCount = mutableMapOf<String, Int>()
 
     private var currentSessionUUID: String? = null
     private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
@@ -60,7 +60,7 @@ class SDCardDownloadService(mContext: Context) {
         }
     }
 
-    fun deleteSyncFile(file: File) {
+    fun delete(file: File) {
         val result = file.delete()
         Log.v(TAG, "${file.name.split("/").last()} was deleted: $result")
     }
@@ -68,10 +68,7 @@ class SDCardDownloadService(mContext: Context) {
     @Subscribe
     fun onEvent(event: SDCardReadStepStartedEvent) {
         counter = 0
-        val step = event.step
-        steps.add(step)
-
-        openSyncFile(step)
+        steps.add(event.step)
     }
 
     @Subscribe
@@ -91,9 +88,9 @@ class SDCardDownloadService(mContext: Context) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
-        Log.v(TAG, numberOfMeasurementsPerFile.toString())
+        Log.v(TAG, filePathByMeasurementsCount.toString())
 
-        mOnDownloadFinished?.invoke(numberOfMeasurementsPerFile)
+        mOnDownloadFinished?.invoke(filePathByMeasurementsCount)
     }
 
     private fun writeToCorrespondingFile(lines: List<String>) = lines.forEach { line ->
@@ -106,9 +103,9 @@ class SDCardDownloadService(mContext: Context) {
             flashLinesInBufferAndCloseCurrentFile()
             currentSessionUUID = uuid
             createAndOpenNewFile()
-            numberOfMeasurementsPerFile[currentFilePath] = 1
+            filePathByMeasurementsCount[currentFilePath] = 1
         } else {
-            numberOfMeasurementsPerFile[currentFilePath]?.plus(1)
+            filePathByMeasurementsCount[currentFilePath]?.plus(1)
         }
         fileWriter?.write("$line\n")
     }

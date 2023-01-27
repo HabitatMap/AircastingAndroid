@@ -15,7 +15,7 @@ class SDCardCSVFileChecker {
             val file = File(entry.key)
             val numberOfMeasurementsInFile = entry.value
             val result = checkForCorruption(file, numberOfMeasurementsInFile)
-            emit(result)
+            emit(file to result)
         }
     }
 

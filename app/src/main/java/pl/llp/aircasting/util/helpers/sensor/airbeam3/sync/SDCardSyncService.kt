@@ -1,6 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.AverageAndSyncSDCardSessionsService
@@ -17,13 +21,18 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
-    private val mSDCardDownloadService: SDCardDownloadService,
+    private val mSDCardFileService: SDCardFileService,
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
     private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
     private val mSessionsSyncService: SessionsSyncService?,
     private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
-    private val mErrorHandler: ErrorHandler
+    private val mErrorHandler: ErrorHandler,
+    private val coroutineScope: CoroutineScope = CoroutineScope(
+        CoroutineContextProviderImpl(
+            Dispatchers.IO
+        ).context()
+    )
 ) {
     private val TAG = "SDCardSyncService"
 
@@ -54,21 +63,33 @@ class SDCardSyncService(
 
         airBeamConnector.triggerSDCardDownload()
 
-        mSDCardDownloadService.run(
+        mSDCardFileService.run(
             onLinesDownloaded = { step, linesCount ->
                 val event = SDCardLinesReadEvent(step, linesCount)
                 EventBus.getDefault().post(event)
             },
-            onDownloadFinished = { steps -> checkDownloadedFiles(steps) }
+            onDownloadFinished = { filePathByMeasurementsCount ->
+                checkDownloadedFiles(filePathByMeasurementsCount)
+            }
         )
     }
 
-    private fun checkDownloadedFiles(steps: List<SDCardReader.Step>) {
-        val airBeamConnector = mAirBeamConnector ?: return
+    private fun checkDownloadedFiles(filePathByMeasurementsCount: Map<String, Int>) = coroutineScope.launch {
+        val airBeamConnector = mAirBeamConnector ?: return@launch
 
         Log.d(TAG, "Checking downloaded files")
 
-        if (mSDCardCSVFileChecker.checkFiles(steps)) {
+        val fileCheckFlow = mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)
+        fileCheckFlow.collect { fileToResult ->
+            val fileIsCorrupted = !fileToResult.second
+            if (fileIsCorrupted) {
+                val file = fileToResult.first
+                mSDCardFileService.delete(file)
+                Log.e(TAG, "File $file is corrupted")
+            }
+        }
+        
+        if (mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)) {
             clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally()
             saveFixedMeasurementsLocally()
@@ -96,7 +117,8 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing mobile sessions")
 
-        mSDCardMobileSessionsProcessor.run(deviceItem.id
+        mSDCardMobileSessionsProcessor.run(
+            deviceItem.id
         ) { processedSessionsIds ->
             sendMobileMeasurementsToBackend(processedSessionsIds)
         }
@@ -158,7 +180,7 @@ class SDCardSyncService(
     }
 
     private fun finish() {
-        mSDCardDownloadService.deleteAllSyncFiles()
+        mSDCardFileService.deleteAllSyncFiles()
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
@@ -174,5 +196,6 @@ class SDCardSyncService(
         EventBus.getDefault().unregister(this)
         mDeviceItem = null
         mAirBeamConnector = null
+        coroutineScope.cancel()
     }
 }

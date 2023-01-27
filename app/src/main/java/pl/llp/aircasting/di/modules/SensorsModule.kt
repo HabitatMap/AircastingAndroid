@@ -26,16 +26,11 @@ open class SensorsModule {
     @Singleton
     fun providesSDCardDownloadService(
         application: AircastingApplication
-    ): SDCardDownloadService = SDCardDownloadService(application)
+    ): SDCardFileService = SDCardFileService(application)
 
     @Provides
     @Singleton
-    fun providesSDCardCSVFileChecker(
-        sdCardCSVFileFactory: SDCardCSVFileFactory
-    ): SDCardCSVFileChecker =
-        SDCardCSVFileChecker(
-            sdCardCSVFileFactory
-        )
+    fun providesSDCardCSVFileChecker(): SDCardCSVFileChecker = SDCardCSVFileChecker()
 
     @Provides
     @Singleton
@@ -103,7 +98,7 @@ open class SensorsModule {
     @Provides
     @Singleton
     fun providesSDCardSyncService(
-        sdCardDownloadService: SDCardDownloadService,
+        sdCardFileService: SDCardFileService,
         sdCardCSVFileChecker: SDCardCSVFileChecker,
         sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
         sdCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
@@ -111,7 +106,7 @@ open class SensorsModule {
         sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
         errorHandler: ErrorHandler
     ): SDCardSyncService = SDCardSyncService(
-        sdCardDownloadService,
+        sdCardFileService,
         sdCardCSVFileChecker,
         sdCardMobileSessionsProcessor,
         sdCardFixedSessionsProcessor,
