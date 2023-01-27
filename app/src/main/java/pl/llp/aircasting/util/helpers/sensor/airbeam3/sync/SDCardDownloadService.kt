@@ -25,11 +25,12 @@ class SDCardDownloadService(mContext: Context) {
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
-    private val measurementsCountPerUUID = mutableMapOf<String, Int>()
+    private val numberOfMeasurementsPerFile = mutableMapOf<String, Int>()
 
     private var currentSessionUUID: String? = null
+    private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
 
-    private var mOnDownloadFinished: ((steps: List<SDCardReader.Step>) -> Unit)? = null
+    private var mOnDownloadFinished: ((measurementsPerSession: Map<String, Int>) -> Unit)? = null
     private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
 
     init {
@@ -38,7 +39,7 @@ class SDCardDownloadService(mContext: Context) {
 
     fun run(
         onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
-        onDownloadFinished: (steps: List<SDCardReader.Step>) -> Unit
+        onDownloadFinished: (measurementsPerSession: Map<String, Int>) -> Unit
     ) {
         mOnLinesDownloaded = onLinesDownloaded
         mOnDownloadFinished = onDownloadFinished
@@ -90,9 +91,9 @@ class SDCardDownloadService(mContext: Context) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
-        Log.v(TAG, measurementsCountPerUUID.toString())
+        Log.v(TAG, numberOfMeasurementsPerFile.toString())
 
-        mOnDownloadFinished?.invoke(steps)
+        mOnDownloadFinished?.invoke(numberOfMeasurementsPerFile)
     }
 
     private fun writeToCorrespondingFile(lines: List<String>) = lines.forEach { line ->
@@ -102,12 +103,12 @@ class SDCardDownloadService(mContext: Context) {
         val uuid = lineParams[1]
 
         if (sessionHasChanged(uuid)) {
-            currentSessionUUID = uuid
             flashLinesInBufferAndCloseCurrentFile()
-            createAndOpenNewFile(uuid)
-            measurementsCountPerUUID[uuid] = 1
+            currentSessionUUID = uuid
+            createAndOpenNewFile()
+            numberOfMeasurementsPerFile[currentFilePath] = 1
         } else {
-            measurementsCountPerUUID[uuid]?.plus(1)
+            numberOfMeasurementsPerFile[currentFilePath]?.plus(1)
         }
         fileWriter?.write("$line\n")
     }
@@ -119,8 +120,8 @@ class SDCardDownloadService(mContext: Context) {
         fileWriter?.close()
     }
 
-    private fun createAndOpenNewFile(sessionUUID: String) {
-        val file = File(mCSVFileFactory.getDirectory(currentStep?.type), "$sessionUUID.csv")
+    private fun createAndOpenNewFile() {
+        val file = File(currentFilePath)
         Log.v(TAG, "Creating file: $file")
         fileWriter = FileWriter(file)
     }
