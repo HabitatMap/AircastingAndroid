@@ -1,10 +1,12 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
@@ -12,19 +14,24 @@ abstract class SDCardSessionsProcessor(
     val mSDCardCSVIterator: SDCardCSVIterator,
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    val mMeasurementsRepository: MeasurementsRepositoryImpl
+    val mMeasurementsRepository: MeasurementsRepositoryImpl,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
     abstract val file: File?
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
-    open fun run(deviceId: String, onFinishCallback: ((MutableList<Long>) -> Unit)? = null) {
-        runOnIOThread {
-            mSDCardCSVIterator.run(file).forEach { csvSession ->
-                processSession(deviceId, csvSession)
-            }
+    open fun run(
+        file: File,
+        deviceId: String,
+        onFinishCallback: ((MutableList<Long>) -> Unit)? = null
+    ) = coroutineScope.launch {
+        // Processing mobile sessions file (one file for all measurements)
 
-            onFinishCallback?.invoke(mProcessedSessionsIds)
+        mSDCardCSVIterator.run(file).forEach { csvSession ->
+            processSession(deviceId, csvSession)
         }
+
+        onFinishCallback?.invoke(mProcessedSessionsIds)
     }
 
     abstract fun processSession(deviceId: String, csvSession: CSVSession?)

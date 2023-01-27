@@ -4,20 +4,23 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.AverageAndSyncSDCardSessionsService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.CoroutineContextProviderImpl
+import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
+import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
-import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.*
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
@@ -74,51 +77,63 @@ class SDCardSyncService(
         )
     }
 
-    private fun checkDownloadedFiles(filePathByMeasurementsCount: Map<String, Int>) = coroutineScope.launch {
-        val airBeamConnector = mAirBeamConnector ?: return@launch
-
+    private fun checkDownloadedFiles(
+        filePathByMeasurementsCount: Map<String, Int>
+    ) = coroutineScope.launch {
         Log.d(TAG, "Checking downloaded files")
 
-        val fileCheckFlow = mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)
-        fileCheckFlow.collect { fileToResult ->
-            val fileIsCorrupted = !fileToResult.second
-            if (fileIsCorrupted) {
-                val file = fileToResult.first
-                mSDCardFileService.delete(file)
-                Log.e(TAG, "File $file is corrupted")
+        mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)
+            .onCompletion {
+                // clear SD card?
             }
-        }
-        
-        if (mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)) {
-            clearSDCard(airBeamConnector)
-            saveMobileMeasurementsLocally()
-            saveFixedMeasurementsLocally()
-        } else {
-            // fatal error, we can't proceed with sync
-            handleError(SDCardDownloadedFileCorrupted())
-            cleanup()
-        }
+            .collect { fileToResult ->
+                val file = fileToResult.first
+
+                val fileIsCorrupted = !fileToResult.second
+                if (fileIsCorrupted) {
+                    mSDCardFileService.delete(file)
+                    Log.e(TAG, "File $file is corrupted")
+                    return@collect
+                }
+
+                if (file.isMobile())
+                    performAveragingAndSaveMeasurements(file)
+                else
+                    saveFixedMeasurementsLocally(file)
+            }
+
+//            if (mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)) {
+//                clearSDCard(airBeamConnector)
+//                performAveragingAndSaveMeasurements()
+//            } else {
+//                // fatal error, we can't proceed with sync
+//                handleError(SDCardDownloadedFileCorrupted())
+//                cleanup()
+//            }
     }
 
-    private fun saveFixedMeasurementsLocally() {
+    private fun File.isMobile() = name.contains(SDCardCSVFileFactory.mobileFilesLocation)
+
+    private fun saveFixedMeasurementsLocally(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing fixed sessions")
 
-        mSDCardFixedSessionsProcessor.run(deviceItem.id)
+        mSDCardFixedSessionsProcessor.run(file, deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
         EventBus.getDefault().post(SDCardSyncErrorEvent(exception))
     }
 
-    private fun saveMobileMeasurementsLocally() {
+    private fun performAveragingAndSaveMeasurements(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing mobile sessions")
 
         mSDCardMobileSessionsProcessor.run(
-            deviceItem.id
+            file,
+            deviceItem.id,
         ) { processedSessionsIds ->
             sendMobileMeasurementsToBackend(processedSessionsIds)
         }
