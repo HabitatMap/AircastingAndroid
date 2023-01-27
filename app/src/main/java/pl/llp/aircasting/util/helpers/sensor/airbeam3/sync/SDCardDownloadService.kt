@@ -25,6 +25,8 @@ class SDCardDownloadService(mContext: Context) {
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
+    private val measurementsCountPerUUID = mutableMapOf<String, Int>()
+
     private var currentSessionUUID: String? = null
 
     private var mOnDownloadFinished: ((steps: List<SDCardReader.Step>) -> Unit)? = null
@@ -44,7 +46,7 @@ class SDCardDownloadService(mContext: Context) {
         steps = ArrayList()
     }
 
-    fun deleteFiles() {
+    fun deleteAllSyncFiles() {
         val dirs = listOf(
             mCSVFileFactory.getMobileDirectory(),
             mCSVFileFactory.getFixedDirectory()
@@ -52,9 +54,14 @@ class SDCardDownloadService(mContext: Context) {
         dirs.forEach { dir ->
             if (dir?.exists() == true) {
                 val result = dir.deleteRecursively()
-                Log.v(TAG, "${dir.name} was deleted: $result")
+                Log.v(TAG, "${dir.name.split("/").last()} was deleted: $result")
             }
         }
+    }
+
+    fun deleteSyncFile(file: File) {
+        val result = file.delete()
+        Log.v(TAG, "${file.name.split("/").last()} was deleted: $result")
     }
 
     @Subscribe
@@ -83,6 +90,7 @@ class SDCardDownloadService(mContext: Context) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
+        Log.v(TAG, measurementsCountPerUUID.toString())
 
         mOnDownloadFinished?.invoke(steps)
     }
@@ -93,13 +101,18 @@ class SDCardDownloadService(mContext: Context) {
         val lineParams = line.split(AB_DELIMITER)
         val uuid = lineParams[1]
 
-        if (uuid != currentSessionUUID) {
+        if (sessionHasChanged(uuid)) {
             currentSessionUUID = uuid
             flashLinesInBufferAndCloseCurrentFile()
             createAndOpenNewFile(uuid)
+            measurementsCountPerUUID[uuid] = 1
+        } else {
+            measurementsCountPerUUID[uuid]?.plus(1)
         }
         fileWriter?.write("$line\n")
     }
+
+    private fun sessionHasChanged(uuid: String) = uuid != currentSessionUUID
 
     private fun flashLinesInBufferAndCloseCurrentFile() {
         fileWriter?.flush()

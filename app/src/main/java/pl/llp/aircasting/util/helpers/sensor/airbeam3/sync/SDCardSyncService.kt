@@ -68,7 +68,7 @@ class SDCardSyncService(
 
         Log.d(TAG, "Checking downloaded files")
 
-        if (mSDCardCSVFileChecker.run(steps)) {
+        if (mSDCardCSVFileChecker.checkFiles(steps)) {
             clearSDCard(airBeamConnector)
             saveMobileMeasurementsLocally()
             saveFixedMeasurementsLocally()
@@ -158,7 +158,7 @@ class SDCardSyncService(
     }
 
     private fun finish() {
-        mSDCardDownloadService.deleteFiles()
+        mSDCardDownloadService.deleteAllSyncFiles()
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()

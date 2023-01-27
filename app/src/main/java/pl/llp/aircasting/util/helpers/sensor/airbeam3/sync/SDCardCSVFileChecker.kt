@@ -11,7 +11,16 @@ class SDCardCSVFileChecker(
 
     class Stats(val allCount: Int, val corruptedCount: Int)
 
-    fun run(steps: List<SDCardReader.Step>): Boolean {
+    fun checkFiles(steps: List<SDCardReader.Step>): Boolean {
+        steps.forEach { step ->
+            val dir = mCSVFileFactory.getDirectory(step.type)
+            val dirFiles = dir?.listFiles()
+            dirFiles?.forEach {
+                val expectedCount = step.measurementsCount
+
+            }
+        }
+
         if (!checkMobile(steps)) return false
 
         return checkFixed(steps)
