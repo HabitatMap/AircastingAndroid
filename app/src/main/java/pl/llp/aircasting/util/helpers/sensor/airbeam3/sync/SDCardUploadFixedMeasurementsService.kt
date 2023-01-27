@@ -4,25 +4,18 @@ import android.annotation.SuppressLint
 import android.util.Log
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import pl.llp.aircasting.util.extensions.runOnIOThread
+import java.io.File
 
 class SDCardUploadFixedMeasurementsService(
-    private val mSDCardCSVFileFactory: SDCardCSVFileFactory,
-    private val mSDCardCSVIterator: SDCardCSVIterator,
+    private val mSDCardCSVIterator: SDCardCSVIteratorFixed,
     private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
 
-    fun run(deviceId: String, onFinishCallback: () -> Unit) {
-        runOnIOThread {
-            val file = mSDCardCSVFileFactory.getFixedDirectory() ?: return@runOnIOThread
-
-            mSDCardCSVIterator.run(file).forEach { csvSession ->
-                processSession(deviceId, csvSession)
-            }
-
-            onFinishCallback.invoke()
-        }
+    fun run(file: File, deviceId: String) = runOnIOThread {
+        val csvSession = mSDCardCSVIterator.run(file)
+        processSession(deviceId, csvSession)
     }
 
     private fun processSession(deviceId: String, csvSession: CSVSession?) {
@@ -34,7 +27,8 @@ class SDCardUploadFixedMeasurementsService(
 
     // chunking here is kind of complicated, but it's needed this way, otherwise streams got dupplicated in a backend
     private fun chunkSession(csvSession: CSVSession): Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>> {
-        val measurementChunks = mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
+        val measurementChunks =
+            mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
 
         csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
             val streamHeader = SDCardCSVFileFactory.Header.fromInt(streamHeaderValue)
@@ -52,7 +46,11 @@ class SDCardUploadFixedMeasurementsService(
     }
 
     @SuppressLint("LongLogTag")
-    private fun uploadSession(deviceId: String, sessionUUID: String, allChunks: Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>) {
+    private fun uploadSession(
+        deviceId: String,
+        sessionUUID: String,
+        allChunks: Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>
+    ) {
         while (true) {
             val allStreamsChunks = allChunks.filter { (_, chunks) -> chunks.size > 0 }
             if (allStreamsChunks.isEmpty()) {
@@ -65,7 +63,12 @@ class SDCardUploadFixedMeasurementsService(
             allStreamsChunks.forEach { (csvMeasurementStream, csvMeasurementsChunks) ->
                 val csvMeasurementsChunk = csvMeasurementsChunks.removeAt(0)
 
-                uploadMeasurementsChunk(deviceId, sessionUUID, csvMeasurementStream, csvMeasurementsChunk)
+                uploadMeasurementsChunk(
+                    deviceId,
+                    sessionUUID,
+                    csvMeasurementStream,
+                    csvMeasurementsChunk
+                )
             }
         }
     }
@@ -91,7 +94,8 @@ class SDCardUploadFixedMeasurementsService(
             deviceId,
             csvMeasurementStream,
             csvMeasurementsChunk,
-            { Log.d(TAG, "Successfully finished chunk upload for ${csvMeasurementStream.sensorName}.") },
-            { Log.d(TAG, "Error while uploading chunk for ${csvMeasurementStream.sensorName}.") })
+            { Log.d(TAG,"Successfully finished chunk upload for ${csvMeasurementStream.sensorName}.") },
+            { Log.d(TAG, "Error while uploading chunk for ${csvMeasurementStream.sensorName}.") }
+        )
     }
 }

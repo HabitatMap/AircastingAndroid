@@ -11,27 +11,21 @@ import java.io.File
 
 abstract class SDCardSessionsProcessor(
     val mCSVFileFactory: SDCardCSVFileFactory,
-    val mSDCardCSVIterator: SDCardCSVIterator,
+    private val mSDCardCSVIterator: ISDCardCSVIterator,
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    protected val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-    abstract val file: File?
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
     open fun run(
         file: File,
-        deviceId: String,
-        onFinishCallback: ((MutableList<Long>) -> Unit)? = null
+        deviceId: String
     ) = coroutineScope.launch {
         // Processing mobile sessions file (one file for all measurements)
-
-        mSDCardCSVIterator.run(file).forEach { csvSession ->
-            processSession(deviceId, csvSession)
-        }
-
-        onFinishCallback?.invoke(mProcessedSessionsIds)
+        val csvSession = mSDCardCSVIterator.run(file)
+        processSession(deviceId, csvSession)
     }
 
     abstract fun processSession(deviceId: String, csvSession: CSVSession?)

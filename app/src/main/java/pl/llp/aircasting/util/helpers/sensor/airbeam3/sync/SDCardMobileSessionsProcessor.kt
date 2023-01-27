@@ -4,11 +4,10 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import java.io.File
 
 class SDCardMobileSessionsProcessor(
     mCSVFileFactory: SDCardCSVFileFactory,
-    mSDCardCSVIterator: SDCardCSVIterator,
+    mSDCardCSVIterator: ISDCardCSVIterator,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl
@@ -19,10 +18,7 @@ class SDCardMobileSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    override val file: File?
-        get() = mCSVFileFactory.getMobileDirectory()
-
-    // TODO: Discuss with someone how to derive base implementation of the method in SDCardSessionsProcessor
+    // driver method to process CSVSession derived from line
     override fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession ?: return
 
