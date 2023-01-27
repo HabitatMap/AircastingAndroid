@@ -30,6 +30,11 @@ class SDCardFileService(mContext: Context) {
     private var currentSessionUUID: String? = null
     private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
 
+    // TODO: Revert back to just steps and check their measurements
+    //  count as whole against AB3 expected lines count to check for corruption
+    //  If any step is corrupted - interrupt the sync process,
+    //  Don't clear SD Card and don't process the measurements
+
     private var mOnDownloadFinished: ((measurementsPerSession: Map<String, Int>) -> Unit)? = null
     private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
 

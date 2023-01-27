@@ -10,7 +10,6 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
-    val mCSVFileFactory: SDCardCSVFileFactory,
     private val mSDCardCSVIterator: ISDCardCSVIterator,
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
@@ -19,11 +18,10 @@ abstract class SDCardSessionsProcessor(
 ) {
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
-    open fun run(
+    fun run(
         file: File,
         deviceId: String
     ) = coroutineScope.launch {
-        // Processing mobile sessions file (one file for all measurements)
         val csvSession = mSDCardCSVIterator.run(file)
         processSession(deviceId, csvSession)
     }
@@ -47,7 +45,7 @@ abstract class SDCardSessionsProcessor(
             measurementStream
         )
 
-        // filtering measurements to save only the once we don't already have
+        // filtering measurements to save only the ones we don't already have
         val filteredCSVMeasurements =
             filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
         val measurements =

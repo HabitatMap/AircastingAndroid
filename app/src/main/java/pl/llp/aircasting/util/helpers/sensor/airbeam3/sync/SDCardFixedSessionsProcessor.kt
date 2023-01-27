@@ -11,7 +11,6 @@ class SDCardFixedSessionsProcessor(
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl
 ) : SDCardSessionsProcessor(
-    mCSVFileFactory,
     mSDCardCSVIterator,
     mSessionsRepository,
     mMeasurementStreamsRepository,

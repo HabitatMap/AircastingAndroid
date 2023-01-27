@@ -84,6 +84,7 @@ class SDCardSyncService(
             }
             .collect { fileToResult ->
                 val file = fileToResult.first
+                Log.v(TAG, "Consuming file: $file")
 
                 val fileIsCorrupted = !fileToResult.second
                 if (fileIsCorrupted) {
@@ -119,19 +120,16 @@ class SDCardSyncService(
     private fun performAveragingAndSaveMobileMeasurementsLocallyFrom(file: File) {
         val deviceItem = mDeviceItem ?: return
 
-        Log.d(TAG, "Processing mobile sessions")
+        Log.d(TAG, "Processing mobile session from $file")
 
         mSDCardMobileSessionsProcessor.run(
             file,
             deviceItem.id,
-        ) { processedSessionsIds ->
-            sendMobileMeasurementsToBackend(processedSessionsIds)
-        }
+        )
     }
 
     private fun syncMobileSessionWithBackendAndFinish() {
         val sessionsSyncService = mSessionsSyncService
-
 
         if (sessionsSyncService == null) {
             val cause = SDCardMissingSessionsSyncServiceError()
@@ -140,11 +138,10 @@ class SDCardSyncService(
             return
         }
 
-        Log.d(TAG, "Sending mobile sessions to backend")
-        mSessionsSyncStarted.set(true)
-
-        val averageAndSyncSDCardSessionsService = AverageAndSyncSDCardSessionsService(sessionsSyncService, sessionsIds)
-        averageAndSyncSDCardSessionsService.start()
+        Log.d(TAG, "Syncing mobile sessions with backend")
+        // TODO: Refactor sessions sync service to use suspend call
+        mSessionsSyncStartedByThis.set(true)
+        sessionsSyncService.sync()
     }
 
     @Subscribe
@@ -174,8 +171,9 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending fixed measurements to backend")
-        uploadFixedMeasurementsService.run(deviceItem.id,
-            onFinishCallback = { finish() }
+        uploadFixedMeasurementsService.run(
+            file,
+            deviceItem.id,
         )
     }
 
