@@ -1,14 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.api.services.AverageAndSyncSDCardSessionsService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.CoroutineContextProviderImpl
@@ -42,7 +38,7 @@ class SDCardSyncService(
     private var mAirBeamConnector: AirBeamConnector? = null
     private var mDeviceItem: DeviceItem? = null
 
-    private var mSessionsSyncStarted = AtomicBoolean(false)
+    private var mSessionsSyncStartedByThis = AtomicBoolean(false)
     /*
 
         High level sync flow:
@@ -84,7 +80,7 @@ class SDCardSyncService(
 
         mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)
             .onCompletion {
-                // clear SD card?
+                syncMobileSessionWithBackendAndFinish()
             }
             .collect { fileToResult ->
                 val file = fileToResult.first
@@ -97,36 +93,30 @@ class SDCardSyncService(
                 }
 
                 if (file.isMobile())
-                    performAveragingAndSaveMeasurements(file)
-                else
-                    saveFixedMeasurementsLocally(file)
+                    performAveragingAndSaveMobileMeasurementsLocallyFrom(file)
+                else {
+                    saveFixedMeasurementsLocallyFrom(file)?.invokeOnCompletion {
+                        sendFixedMeasurementsToBackendFrom(file)
+                    }
+                }
             }
-
-//            if (mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)) {
-//                clearSDCard(airBeamConnector)
-//                performAveragingAndSaveMeasurements()
-//            } else {
-//                // fatal error, we can't proceed with sync
-//                handleError(SDCardDownloadedFileCorrupted())
-//                cleanup()
-//            }
     }
 
     private fun File.isMobile() = name.contains(SDCardCSVFileFactory.mobileFilesLocation)
 
-    private fun saveFixedMeasurementsLocally(file: File) {
-        val deviceItem = mDeviceItem ?: return
+    private fun saveFixedMeasurementsLocallyFrom(file: File): Job? {
+        val deviceItem = mDeviceItem ?: return null
 
         Log.d(TAG, "Processing fixed sessions")
 
-        mSDCardFixedSessionsProcessor.run(file, deviceItem.id)
+        return mSDCardFixedSessionsProcessor.run(file, deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
         EventBus.getDefault().post(SDCardSyncErrorEvent(exception))
     }
 
-    private fun performAveragingAndSaveMeasurements(file: File) {
+    private fun performAveragingAndSaveMobileMeasurementsLocallyFrom(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing mobile sessions")
@@ -139,7 +129,7 @@ class SDCardSyncService(
         }
     }
 
-    private fun sendMobileMeasurementsToBackend(sessionsIds: MutableList<Long>) {
+    private fun syncMobileSessionWithBackendAndFinish() {
         val sessionsSyncService = mSessionsSyncService
 
 
@@ -159,9 +149,9 @@ class SDCardSyncService(
 
     @Subscribe
     fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        if (mSessionsSyncStarted.get()) {
-            mSessionsSyncStarted.set(false)
-            sendFixedMeasurementsToBackend()
+        if (mSessionsSyncStartedByThis.get()) {
+            mSessionsSyncStartedByThis.set(false)
+            finish()
         }
     }
 
@@ -171,7 +161,7 @@ class SDCardSyncService(
         cleanup()
     }
 
-    private fun sendFixedMeasurementsToBackend() {
+    private fun sendFixedMeasurementsToBackendFrom(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         val uploadFixedMeasurementsService = mSDCardUploadFixedMeasurementsService
@@ -189,13 +179,12 @@ class SDCardSyncService(
         )
     }
 
-    private fun clearSDCard(airBeamConnector: AirBeamConnector) {
-        Log.d(TAG, "Clearing SD card")
-        airBeamConnector.clearSDCard()
-    }
-
     private fun finish() {
+        Log.d(TAG, "Clearing SD card")
+        mAirBeamConnector?.clearSDCard()
+
         mSDCardFileService.deleteAllSyncFiles()
+
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
