@@ -1,49 +1,25 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import kotlinx.coroutines.flow.flow
 import java.io.File
 import java.io.FileReader
 
-class SDCardCSVFileChecker(
-    private val mCSVFileFactory: SDCardCSVFileFactory
-) {
+class SDCardCSVFileChecker {
     private val EXPECTED_FIELDS_COUNT = 13
     private val ACCEPTANCE_THRESHOLD = 0.8
 
     class Stats(val allCount: Int, val corruptedCount: Int)
 
-    fun checkFiles(steps: List<SDCardReader.Step>): Boolean {
-        steps.forEach { step ->
-            val dir = mCSVFileFactory.getDirectory(step.type)
-            val dirFiles = dir?.listFiles()
-            dirFiles?.forEach {
-                val expectedCount = step.measurementsCount
-
-            }
+    fun checkFilesForCorruption(filePathByMeasurementsCount: Map<String, Int>) = flow {
+        filePathByMeasurementsCount.forEach { entry ->
+            val file = File(entry.key)
+            val numberOfMeasurementsInFile = entry.value
+            val result = checkForCorruption(file, numberOfMeasurementsInFile)
+            emit(result)
         }
-
-        if (!checkMobile(steps)) return false
-
-        return checkFixed(steps)
     }
 
-    private fun checkMobile(steps: List<SDCardReader.Step>): Boolean {
-        val mobileStep = getStep(steps, SDCardReader.StepType.MOBILE) ?: return false
-        val expectedCount = mobileStep.measurementsCount
-
-        val file = mCSVFileFactory.getMobileDirectory()
-        return check(file, expectedCount)
-    }
-
-    private fun checkFixed(steps: List<SDCardReader.Step>): Boolean {
-        val wifiStep = getStep(steps, SDCardReader.StepType.FIXED_WIFI) ?: return false
-        val cellularStep = getStep(steps, SDCardReader.StepType.FIXED_CELLULAR) ?: return false
-        val expectedCount = wifiStep.measurementsCount + cellularStep.measurementsCount
-
-        val file = mCSVFileFactory.getFixedDirectory()
-        return check(file, expectedCount)
-    }
-
-    private fun check(file: File?, expectedCount: Int): Boolean {
+    private fun checkForCorruption(file: File?, expectedCount: Int): Boolean {
         val stats = calculateStats(file)
         return validateAcceptedCorruption(stats, expectedCount)
     }
@@ -78,9 +54,5 @@ class SDCardCSVFileChecker(
         // checks if downloaded file has at least 80% of expected lines
         // and if there is at most 20% of corrupted lines
         return stats.allCount >= countThreshold && stats.corruptedCount < corruptionThreshold
-    }
-
-    private fun getStep(steps: List<SDCardReader.Step>, stepType: SDCardReader.StepType): SDCardReader.Step? {
-        return steps.find { step -> step.type == stepType }
     }
 }
