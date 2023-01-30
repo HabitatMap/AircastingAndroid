@@ -2,7 +2,6 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.onCompletion
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -68,39 +67,61 @@ class SDCardSyncService(
                 EventBus.getDefault().post(event)
             },
             onDownloadFinished = { stepsByFilePaths ->
-                checkDownloadedFiles(stepsByFilePaths)
+                handleDownloadedFiles(stepsByFilePaths)
             }
         )
     }
 
-    private fun checkDownloadedFiles(
+    private fun handleDownloadedFiles(
         stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
     ) = coroutineScope.launch {
         Log.d(TAG, "Checking downloaded files")
 
-        mSDCardCSVFileChecker.checkFilesForCorruption(stepsByFilePaths)
-            .onCompletion {
-                syncMobileSessionWithBackendAndFinish()
+        if (mSDCardCSVFileChecker.areFilesCorrupted(stepsByFilePaths)) {
+            terminateSync()
+        } else {
+            clearSDCard()
+            saveMeasurements(stepsByFilePaths).invokeOnCompletion {
+
             }
-            .collect { fileToResult ->
-                val file = fileToResult.first
-                Log.v(TAG, "Consuming file: $file")
+//            if (file.isMobile())
+//                performAveragingAndSaveMobileMeasurementsLocallyFrom(file)
+//            else {
+//                saveFixedMeasurementsLocallyFrom(file)?.invokeOnCompletion {
+//                    sendFixedMeasurementsToBackendFrom(file)
+//                }
+//            }
+        }
+    }
 
-                val fileIsCorrupted = !fileToResult.second
-                if (fileIsCorrupted) {
-                    mSDCardFileService.delete(file)
-                    Log.e(TAG, "File $file is corrupted")
-                    return@collect
-                }
+    private fun clearSDCard() {
+        Log.d(TAG, "Clearing SD card")
+        mAirBeamConnector?.clearSDCard()
+    }
 
-                if (file.isMobile())
-                    performAveragingAndSaveMobileMeasurementsLocallyFrom(file)
-                else {
-                    saveFixedMeasurementsLocallyFrom(file)?.invokeOnCompletion {
-                        sendFixedMeasurementsToBackendFrom(file)
+    private fun CoroutineScope.saveMeasurements(stepsByFilePaths: Map<SDCardReader.Step?, List<String>>) =
+        launch {
+            stepsByFilePaths.entries.forEach { entry ->
+                when (entry.key?.type) {
+                    SDCardReader.StepType.MOBILE -> launch {
+                        entry.value.forEach { path ->
+                            performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
+                        }
                     }
+                    SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI -> launch {
+                        entry.value.forEach { path ->
+                            saveFixedMeasurementsLocallyFrom(File(path))
+
+                        }
+                    }
+                    else -> terminateSync()
                 }
             }
+        }
+
+    private fun terminateSync() {
+        handleError(SDCardDownloadedFileCorrupted())
+        cleanup()
     }
 
     private fun File.isMobile() = name.contains(SDCardCSVFileFactory.mobileFilesLocation)
@@ -178,9 +199,6 @@ class SDCardSyncService(
     }
 
     private fun finish() {
-        Log.d(TAG, "Clearing SD card")
-        mAirBeamConnector?.clearSDCard()
-
         mSDCardFileService.deleteAllSyncFiles()
 
         mDeviceItem?.let { deviceItem ->
