@@ -22,13 +22,14 @@ abstract class SDCardSessionsProcessor(
         file: File,
         deviceId: String
     ) = coroutineScope.launch {
+        // Mobile iterator should return already averaged measurements
         val csvSession = mSDCardCSVIterator.run(file)
         processSession(deviceId, csvSession)
     }
 
     abstract fun processSession(deviceId: String, csvSession: CSVSession?)
 
-    fun processMeasurements(
+    open fun processMeasurements(
         deviceId: String,
         sessionId: Long,
         streamHeaderValue: Int,

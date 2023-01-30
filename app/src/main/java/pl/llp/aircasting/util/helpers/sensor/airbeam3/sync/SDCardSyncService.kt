@@ -82,15 +82,8 @@ class SDCardSyncService(
         } else {
             clearSDCard()
             saveMeasurements(stepsByFilePaths).invokeOnCompletion {
-
+                syncMobileSessionWithBackendAndFinish()
             }
-//            if (file.isMobile())
-//                performAveragingAndSaveMobileMeasurementsLocallyFrom(file)
-//            else {
-//                saveFixedMeasurementsLocallyFrom(file)?.invokeOnCompletion {
-//                    sendFixedMeasurementsToBackendFrom(file)
-//                }
-//            }
         }
     }
 
@@ -99,32 +92,32 @@ class SDCardSyncService(
         mAirBeamConnector?.clearSDCard()
     }
 
-    private fun CoroutineScope.saveMeasurements(stepsByFilePaths: Map<SDCardReader.Step?, List<String>>) =
-        launch {
-            stepsByFilePaths.entries.forEach { entry ->
-                when (entry.key?.type) {
-                    SDCardReader.StepType.MOBILE -> launch {
-                        entry.value.forEach { path ->
-                            performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
-                        }
+    private fun CoroutineScope.saveMeasurements(
+        stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
+    ) = launch {
+        stepsByFilePaths.entries.forEach { entry ->
+            when (entry.key?.type) {
+                SDCardReader.StepType.MOBILE -> launch {
+                    entry.value.forEach { path ->
+                        performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
                     }
-                    SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI -> launch {
-                        entry.value.forEach { path ->
-                            saveFixedMeasurementsLocallyFrom(File(path))
-
-                        }
-                    }
-                    else -> terminateSync()
                 }
+                SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI -> launch {
+                    entry.value.forEach { path ->
+                        val file = File(path)
+                        saveFixedMeasurementsLocallyFrom(file)
+                        sendFixedMeasurementsToBackendFrom(file)
+                    }
+                }
+                else -> terminateSync()
             }
         }
+    }
 
     private fun terminateSync() {
         handleError(SDCardDownloadedFileCorrupted())
         cleanup()
     }
-
-    private fun File.isMobile() = name.contains(SDCardCSVFileFactory.mobileFilesLocation)
 
     private fun saveFixedMeasurementsLocallyFrom(file: File): Job? {
         val deviceItem = mDeviceItem ?: return null

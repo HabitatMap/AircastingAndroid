@@ -43,6 +43,16 @@ class SDCardMobileSessionsProcessor(
         }
     }
 
+    override fun processMeasurements(
+        deviceId: String,
+        sessionId: Long,
+        streamHeaderValue: Int,
+        csvMeasurements: List<CSVMeasurement>
+    ) {
+        // average previous measurements based on the calculated threshold window
+        super.processMeasurements(deviceId, sessionId, streamHeaderValue, csvMeasurements)
+    }
+
     private fun finishSession(sessionId: Long, session: Session) {
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
         session.stopRecording(lastMeasurementTime)
