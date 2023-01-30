@@ -25,7 +25,8 @@ class SDCardFileService(mContext: Context) {
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
-    private val filePathByMeasurementsCount = mutableMapOf<String, Int>()
+    // make Step to List of File Paths
+    private val stepByFilePaths = mutableMapOf<SDCardReader.Step?, MutableList<String>>()
 
     private var currentSessionUUID: String? = null
     private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
@@ -35,7 +36,7 @@ class SDCardFileService(mContext: Context) {
     //  If any step is corrupted - interrupt the sync process,
     //  Don't clear SD Card and don't process the measurements
 
-    private var mOnDownloadFinished: ((measurementsPerSession: Map<String, Int>) -> Unit)? = null
+    private var mOnDownloadFinished: ((measurementsPerSession: Map<SDCardReader.Step?, List<String>>) -> Unit)? = null
     private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
 
     init {
@@ -44,7 +45,7 @@ class SDCardFileService(mContext: Context) {
 
     fun run(
         onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
-        onDownloadFinished: (measurementsPerSession: Map<String, Int>) -> Unit
+        onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
     ) {
         mOnLinesDownloaded = onLinesDownloaded
         mOnDownloadFinished = onDownloadFinished
@@ -93,9 +94,9 @@ class SDCardFileService(mContext: Context) {
         Log.d(DOWNLOAD_TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
-        Log.v(TAG, filePathByMeasurementsCount.toString())
+        Log.v(TAG, stepByFilePaths.toString())
 
-        mOnDownloadFinished?.invoke(filePathByMeasurementsCount)
+        mOnDownloadFinished?.invoke(stepByFilePaths)
     }
 
     private fun writeToCorrespondingFile(lines: List<String>) = lines.forEach { line ->
@@ -108,9 +109,6 @@ class SDCardFileService(mContext: Context) {
             flashLinesInBufferAndCloseCurrentFile()
             currentSessionUUID = uuid
             createAndOpenNewFile()
-            filePathByMeasurementsCount[currentFilePath] = 1
-        } else {
-            filePathByMeasurementsCount[currentFilePath]?.plus(1)
         }
         fileWriter?.write("$line\n")
     }
@@ -126,5 +124,7 @@ class SDCardFileService(mContext: Context) {
         val file = File(currentFilePath)
         Log.v(TAG, "Creating file: $file")
         fileWriter = FileWriter(file)
+
+        stepByFilePaths[currentStep]?.add(currentFilePath)
     }
 }

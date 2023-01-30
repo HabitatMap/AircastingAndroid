@@ -67,18 +67,18 @@ class SDCardSyncService(
                 val event = SDCardLinesReadEvent(step, linesCount)
                 EventBus.getDefault().post(event)
             },
-            onDownloadFinished = { filePathByMeasurementsCount ->
-                checkDownloadedFiles(filePathByMeasurementsCount)
+            onDownloadFinished = { stepsByFilePaths ->
+                checkDownloadedFiles(stepsByFilePaths)
             }
         )
     }
 
     private fun checkDownloadedFiles(
-        filePathByMeasurementsCount: Map<String, Int>
+        stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
     ) = coroutineScope.launch {
         Log.d(TAG, "Checking downloaded files")
 
-        mSDCardCSVFileChecker.checkFilesForCorruption(filePathByMeasurementsCount)
+        mSDCardCSVFileChecker.checkFilesForCorruption(stepsByFilePaths)
             .onCompletion {
                 syncMobileSessionWithBackendAndFinish()
             }

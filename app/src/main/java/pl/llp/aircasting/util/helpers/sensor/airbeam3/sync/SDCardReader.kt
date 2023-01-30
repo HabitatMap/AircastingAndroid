@@ -1,10 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
-import org.greenrobot.eventbus.EventBus
 
 class SDCardReader {
     private val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
@@ -26,7 +26,7 @@ class SDCardReader {
         fun fromInt(value: Int) = values().firstOrNull { it.value == value }
     }
 
-    class Step(val type: StepType, val measurementsCount: Int)
+    data class Step(val type: StepType, val measurementsCount: Int)
 
     fun onMetaDataDownloaded(data: ByteArray?) {
         data ?: return

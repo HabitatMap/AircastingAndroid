@@ -10,8 +10,8 @@ class SDCardCSVFileChecker {
 
     class Stats(val allCount: Int, val corruptedCount: Int)
 
-    fun checkFilesForCorruption(filePathByMeasurementsCount: Map<String, Int>) = flow {
-        filePathByMeasurementsCount.forEach { entry ->
+    fun checkFilesForCorruption(stepsByFilePaths: Map<SDCardReader.Step?, List<String>>) = flow {
+        stepsByFilePaths.forEach { entry ->
             val file = File(entry.key)
             val numberOfMeasurementsInFile = entry.value
             val result = checkForCorruption(file, numberOfMeasurementsInFile)
