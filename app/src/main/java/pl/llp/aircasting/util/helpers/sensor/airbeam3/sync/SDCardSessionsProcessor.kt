@@ -23,7 +23,7 @@ abstract class SDCardSessionsProcessor(
         deviceId: String
     ) = coroutineScope.launch {
         // Mobile iterator should return already averaged measurements
-        val csvSession = mSDCardCSVIterator.run(file)
+        val csvSession = mSDCardCSVIterator.read(file)
         processSession(deviceId, csvSession)
     }
 

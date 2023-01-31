@@ -14,7 +14,7 @@ class SDCardUploadFixedMeasurementsService(
     private val TAG = "SDCardUploadFixedMeasurements"
 
     fun start(file: File, deviceId: String) = runOnIOThread {
-        val csvSession = mSDCardCSVIterator.run(file)
+        val csvSession = mSDCardCSVIterator.read(file)
         processSession(deviceId, csvSession)
     }
 
@@ -48,9 +48,11 @@ class SDCardUploadFixedMeasurementsService(
     @SuppressLint("LongLogTag")
     private fun uploadSession(
         deviceId: String,
-        sessionUUID: String,
+        sessionUUID: String?,
         allChunks: Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>
     ) {
+        sessionUUID ?: return
+
         while (true) {
             val allStreamsChunks = allChunks.filter { (_, chunks) -> chunks.size > 0 }
             if (allStreamsChunks.isEmpty()) {

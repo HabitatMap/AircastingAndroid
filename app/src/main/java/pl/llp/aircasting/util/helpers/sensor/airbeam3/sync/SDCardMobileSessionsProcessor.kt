@@ -19,7 +19,7 @@ class SDCardMobileSessionsProcessor(
 ) {
     // driver method to process CSVSession derived from line
     override fun processSession(deviceId: String, csvSession: CSVSession?) {
-        csvSession ?: return
+        csvSession?.uuid ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
         val session: Session?

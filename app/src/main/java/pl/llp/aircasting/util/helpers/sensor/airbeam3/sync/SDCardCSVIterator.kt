@@ -1,57 +1,44 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import com.opencsv.CSVReader
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
 import java.io.File
+import java.io.FileReader
+import java.io.IOException
 
 // needs to be divided into Mobile and Fixed
 // Fixed can read everything at once and return the CSVSession
 // Mobile will need to determine the averaging threshold based on Session.startTime and lastMeasurement.time from the file
 interface ISDCardCSVIterator {
-    fun run(file: File): CSVSession
+    fun read(file: File): CSVSession?
 }
 class SDCardCSVIteratorFixed(
     private val mErrorHandler: ErrorHandler
 ) : ISDCardCSVIterator {
-    override fun run(file: File): CSVSession {
-//        try {
-//            val reader = CSVReader(FileReader(file))
-//            var previousSessionUUID: String? = null
-//            var currentSession: CSVSession? = null
-//
-//            while (true) {
-//                val line: Array<String>? = reader.readNext()
-//
-//                if (line == null) {
-//                    if (currentSession != null) {
-//                        yield(currentSession)
-//                    }
-//                    break
-//                }
-//
-//                val currentSessionUUID = CSVSession.uuidFrom(line)
-//
-//                if (currentSessionUUID != previousSessionUUID) {
-//                    if (currentSession != null) {
-//                        yield(currentSession)
-//                    }
-//
-//                    currentSession = CSVSession(currentSessionUUID!!)
-//                    previousSessionUUID = currentSessionUUID
-//                }
-//
-//                currentSession?.addMeasurements(line)
-//            }
-//        } catch (e: IOException) {
-//            mErrorHandler.handle(SDCardMeasurementsParsingError(e))
-//        }
-        TODO("Not yet implemented")
+    override fun read(file: File): CSVSession? = try {
+        val reader = CSVReader(FileReader(file))
+        var line: Array<String>? = reader.readNext()
+        val sessionUUID = CSVSession.uuidFrom(line)
+        val session = CSVSession(sessionUUID)
+
+        while (line != null) {
+            session.addMeasurements(line)
+            line = reader.readNext()
+        }
+
+        session
+    } catch (e: IOException) {
+        mErrorHandler.handle(SDCardMeasurementsParsingError(e))
+
+        null
     }
 }
 
 class SDCardCSVIteratorMobile(
     private val mErrorHandler: ErrorHandler
 ) : ISDCardCSVIterator {
-    override fun run(file: File): CSVSession {
+    override fun read(file: File): CSVSession {
         TODO("Not yet implemented")
     }
 }

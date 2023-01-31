@@ -9,13 +9,13 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import java.io.File
 import java.io.FileWriter
 
 class SDCardFileService(mContext: Context) {
     companion object {
         private const val DOWNLOAD_TAG = "SYNC"
-        private const val AB_DELIMITER = ","
     }
 
     private val mCSVFileFactory = SDCardCSVFileFactory(mContext)

@@ -5,12 +5,14 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import java.util.*
 
-class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
+class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
 
-        fun uuidFrom(line: Array<String>): String? {
+        fun uuidFrom(line: Array<String>?): String? {
+            line ?: return null
+
             return line[SDCardCSVFileFactory.Header.UUID.value]
         }
     }
@@ -74,6 +76,7 @@ class CSVSession(val uuid: String, val streams: HashMap<Int, ArrayList<CSVMeasur
 
     fun toSession(deviceId: String): Session? {
         val startTime = startTime() ?: return null
+        uuid ?: return null
 
         val session = Session(
             uuid,
