@@ -51,6 +51,6 @@ class AirBeamSyncService: AirBeamService() {
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         val airBeamConnector = mAirBeamConnector ?: return
-        sdCardSyncService.run(airBeamConnector, deviceItem)
+        sdCardSyncService.start(airBeamConnector, deviceItem)
     }
 }

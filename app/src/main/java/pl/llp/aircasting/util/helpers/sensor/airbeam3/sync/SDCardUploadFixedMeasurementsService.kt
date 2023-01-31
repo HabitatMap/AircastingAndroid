@@ -13,7 +13,7 @@ class SDCardUploadFixedMeasurementsService(
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
 
-    fun run(file: File, deviceId: String) = runOnIOThread {
+    fun start(file: File, deviceId: String) = runOnIOThread {
         val csvSession = mSDCardCSVIterator.run(file)
         processSession(deviceId, csvSession)
     }

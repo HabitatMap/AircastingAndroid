@@ -43,7 +43,7 @@ class SDCardFileService(mContext: Context) {
         EventBus.getDefault().safeRegister(this)
     }
 
-    fun run(
+    fun start(
         onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
         onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
     ) {

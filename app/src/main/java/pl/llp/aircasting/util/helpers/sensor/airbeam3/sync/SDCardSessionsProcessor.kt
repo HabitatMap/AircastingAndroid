@@ -18,7 +18,7 @@ abstract class SDCardSessionsProcessor(
 ) {
     val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
-    fun run(
+    fun start(
         file: File,
         deviceId: String
     ) = coroutineScope.launch {

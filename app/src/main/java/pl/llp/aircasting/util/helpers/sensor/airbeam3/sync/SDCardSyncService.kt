@@ -52,7 +52,7 @@ class SDCardSyncService(
 
      */
 
-    fun run(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
+    fun start(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
         EventBus.getDefault().safeRegister(this)
@@ -61,7 +61,7 @@ class SDCardSyncService(
 
         airBeamConnector.triggerSDCardDownload()
 
-        mSDCardFileService.run(
+        mSDCardFileService.start(
             onLinesDownloaded = { step, linesCount ->
                 val event = SDCardLinesReadEvent(step, linesCount)
                 EventBus.getDefault().post(event)
@@ -124,7 +124,7 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing fixed sessions")
 
-        return mSDCardFixedSessionsProcessor.run(file, deviceItem.id)
+        return mSDCardFixedSessionsProcessor.start(file, deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
@@ -136,7 +136,7 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing mobile session from $file")
 
-        mSDCardMobileSessionsProcessor.run(
+        mSDCardMobileSessionsProcessor.start(
             file,
             deviceItem.id,
         )
@@ -185,7 +185,7 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Sending fixed measurements to backend")
-        uploadFixedMeasurementsService.run(
+        uploadFixedMeasurementsService.start(
             file,
             deviceItem.id,
         )
