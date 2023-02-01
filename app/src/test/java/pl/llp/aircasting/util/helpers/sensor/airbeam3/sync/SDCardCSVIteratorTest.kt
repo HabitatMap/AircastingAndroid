@@ -1,0 +1,98 @@
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
+import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.util.extensions.addHours
+import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.utilities.StubData
+import kotlin.test.assertEquals
+
+@OptIn(ExperimentalCoroutinesApi::class)
+internal class SDCardCSVIteratorTest {
+    private val file = StubData.getFile("SDCardMeasurementsFromSession.csv")
+    private val fileLines = file.readLines()
+    private val fileLinesCount = fileLines.count()
+    private val fileFirstMeasurementTime = CSVSession.timestampFrom(fileLines.first())
+    private val fileLastMeasurementTime = CSVSession.timestampFrom(fileLines.last())
+
+    @Test
+    fun fixed_read_returnsSessionWithCorrectCountOfMeasurements() = runTest {
+        val iterator = SDCardCSVIteratorFixed(mock())
+        val measurementsCountInFile = fileLinesCount * 5
+
+        val csvSession = iterator.read(file)
+
+        assertEquals(measurementsCountInFile, csvMeasurements(csvSession).count())
+    }
+
+    @Test
+    fun mobile_read_whenNoMeasurementsArePresentInDB_determinesThresholdBasedOnCSVMeasurementsOnly() =
+        runTest {
+            val averagingThreshold = AveragingService.getAveragingThreshold(
+                fileFirstMeasurementTime,
+                fileLastMeasurementTime
+            )
+            val iterator = SDCardCSVIteratorMobile(mock(), mock())
+            val measurementsAveragedCountInFile =
+                fileMeasurementsCountAfterAveraging(averagingThreshold)
+
+            val csvSession = iterator.read(file)
+
+            assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
+        }
+
+    @Test
+    fun mobile_read_averages2hoursOfMeasurementsCorrectly() =
+        runTest {
+            val threeHoursBefore = calendar().addHours(fileFirstMeasurementTime!!, -3)
+            val sessionsRepository = mock<SessionsRepository>()
+            whenever(sessionsRepository.getSessionStartTime(any())).thenReturn(threeHoursBefore)
+            val averagingThreshold = AveragingService.getAveragingThreshold(
+                threeHoursBefore,
+                fileLastMeasurementTime
+            )
+            val iterator = SDCardCSVIteratorMobile(mock(), sessionsRepository)
+            val measurementsAveragedCountInFile =
+                fileMeasurementsCountAfterAveraging(averagingThreshold)
+
+            val csvSession = iterator.read(file)
+
+            assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
+        }
+
+    @Test
+    fun mobile_read_averages10hoursOfMeasurementsCorrectly() =
+        runTest {
+            val tenHoursBefore = calendar().addHours(fileFirstMeasurementTime!!, -10)
+            val sessionsRepository = mock<SessionsRepository>()
+            whenever(sessionsRepository.getSessionStartTime(any())).thenReturn(tenHoursBefore)
+            val averagingThreshold = AveragingService.getAveragingThreshold(
+                tenHoursBefore,
+                fileLastMeasurementTime
+            )
+            val iterator = SDCardCSVIteratorMobile(mock(), sessionsRepository)
+            val measurementsAveragedCountInFile =
+                fileMeasurementsCountAfterAveraging(averagingThreshold)
+
+            val csvSession = iterator.read(file)
+
+            assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
+        }
+
+    private fun fileMeasurementsCountAfterAveraging(averagingThreshold: Int) =
+        fileLinesCount / averagingThreshold * 5
+
+    private fun csvMeasurements(csvSession: CSVSession?): List<CSVMeasurement> {
+        var measurements: List<CSVMeasurement> = arrayListOf()
+        csvSession?.streams?.values?.forEach {
+            measurements = measurements.plus(it)
+        }
+        return measurements
+    }
+}

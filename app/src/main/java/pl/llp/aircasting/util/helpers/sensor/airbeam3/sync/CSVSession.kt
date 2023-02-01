@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import java.util.*
 
 class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()) {
@@ -14,6 +15,22 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
             line ?: return null
 
             return line[SDCardCSVFileFactory.Header.UUID.value]
+        }
+        fun uuidFrom(line: String?): String? {
+            line ?: return null
+
+            return line.split(AB_DELIMITER)[SDCardCSVFileFactory.Header.UUID.value]
+        }
+
+        fun timestampFrom(line: String?): Date? {
+            line ?: return null
+
+            val lineSplit = line.split(AB_DELIMITER)
+            val dateString = "${lineSplit[SDCardCSVFileFactory.Header.DATE.value]} ${lineSplit[SDCardCSVFileFactory.Header.TIME.value]}"
+            return DateConverter.fromString(
+                dateString,
+                dateFormat = DATE_FORMAT
+            )
         }
     }
 

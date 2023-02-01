@@ -50,13 +50,14 @@ open class SensorsModule {
     @Provides
     @Singleton
     fun providesMobileSDCardCSVIterator(
-        errorHandler: ErrorHandler
-    ): SDCardCSVIteratorMobile = SDCardCSVIteratorMobile(errorHandler)
+        errorHandler: ErrorHandler,
+        sessionsRepository: SessionsRepository
+    ): SDCardCSVIteratorMobile =
+        SDCardCSVIteratorMobile(errorHandler, sessionsRepository)
 
     @Provides
     @Singleton
     fun providesSDCardUploadFixedMeasurementsService(
-        sdCardCSVFileFactory: SDCardCSVFileFactory,
         sdCardCSVIterator: SDCardCSVIteratorFixed,
         uploadFixedMeasurementsService: UploadFixedMeasurementsService?
     ): SDCardUploadFixedMeasurementsService =

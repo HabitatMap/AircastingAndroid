@@ -35,6 +35,12 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
+    suspend fun getSessionStartTime(uuid: String?): Date? {
+        uuid ?: return null
+
+        return mDatabase.sessions().getSessionStartTime(uuid)
+    }
+
     fun getSessionById(id: Long): SessionDBObject? {
         return mDatabase.sessions().loadSessionById(id)
     }
