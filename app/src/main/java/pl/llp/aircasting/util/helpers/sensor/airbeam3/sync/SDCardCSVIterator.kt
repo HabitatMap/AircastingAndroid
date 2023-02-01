@@ -1,15 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import com.opencsv.CSVReader
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.io.File
-import java.io.FileReader
 import java.io.IOException
 
 // needs to be divided into Mobile and Fixed
@@ -23,16 +18,12 @@ class SDCardCSVIteratorFixed(
     private val mErrorHandler: ErrorHandler
 ) : ISDCardCSVIterator {
     override suspend fun read(file: File): CSVSession? = try {
-        val reader = CSVReader(withContext(Dispatchers.IO) {
-            FileReader(file)
-        })
-        var line: Array<String>? = reader.readNext()
-        val sessionUUID = CSVSession.uuidFrom(line)
+        // change to use file.readLines()
+        val lines = file.readLines()
+        val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
-
-        while (line != null) {
+        lines.forEach { line ->
             csvSession.addMeasurements(line)
-            line = reader.readNext()
         }
 
         csvSession
@@ -48,11 +39,6 @@ class SDCardCSVIteratorMobile(
     private val sessionRepository: SessionsRepository
 ) : ISDCardCSVIterator {
     override suspend fun read(file: File): CSVSession? = try {
-        /*
-        * 1. open file
-        * 2. check averaging threshold
-        * 3. average on the go
-        * */
         val lines = file.readLines()
 
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
@@ -68,9 +54,8 @@ class SDCardCSVIteratorMobile(
             // We do not include leftover measurements
             if (chunk.size < averagingThreshold) return@chunked
 
-            val middleLine = chunk[chunk.size / 2]
-//                TODO()
-            csvSession.addMeasurements(middleLine.split(AB_DELIMITER).toTypedArray())
+            val averageMeasurement = middleMeasurement(chunk)
+            csvSession.addMeasurements(averageMeasurement)
         }
 
         csvSession
@@ -79,4 +64,6 @@ class SDCardCSVIteratorMobile(
 
         null
     }
+
+    private fun middleMeasurement(chunk: List<String>) = chunk[chunk.size / 2]
 }

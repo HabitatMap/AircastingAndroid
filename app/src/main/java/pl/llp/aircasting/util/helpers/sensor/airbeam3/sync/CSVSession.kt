@@ -19,19 +19,22 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return line.split(AB_DELIMITER)[SDCardCSVFileFactory.Header.UUID.value]
+            return lineParameters(line)[SDCardCSVFileFactory.Header.UUID.value]
         }
 
         fun timestampFrom(line: String?): Date? {
             line ?: return null
 
-            val lineSplit = line.split(AB_DELIMITER)
-            val dateString = "${lineSplit[SDCardCSVFileFactory.Header.DATE.value]} ${lineSplit[SDCardCSVFileFactory.Header.TIME.value]}"
+            val lineParameters = lineParameters(line)
+            val dateString = "${lineParameters[SDCardCSVFileFactory.Header.DATE.value]} ${lineParameters[SDCardCSVFileFactory.Header.TIME.value]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
             )
         }
+
+        private fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
+
     }
 
     fun startTime(): Date? {
@@ -52,10 +55,11 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
         return stream?.firstOrNull()
     }
 
-    fun addMeasurements(line: Array<String>) {
-        val latitude = getValueFor(line, SDCardCSVFileFactory.Header.LATITUDE)
-        val longitude = getValueFor(line, SDCardCSVFileFactory.Header.LONGITUDE)
-        val dateString = "${line[SDCardCSVFileFactory.Header.DATE.value]} ${line[SDCardCSVFileFactory.Header.TIME.value]}"
+    fun addMeasurements(line: String) {
+        val lineParameters = lineParameters(line)
+        val latitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LATITUDE)
+        val longitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LONGITUDE)
+        val dateString = "${lineParameters[SDCardCSVFileFactory.Header.DATE.value]} ${lineParameters[SDCardCSVFileFactory.Header.TIME.value]}"
         val time = DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -67,7 +71,7 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
                 streams[streamHeader.value] = ArrayList()
             }
 
-            val measurement = buildMeasurement(latitude, longitude, time, line, streamHeader)
+            val measurement = buildMeasurement(latitude, longitude, time, lineParameters, streamHeader)
             measurement?.let { streams[streamHeader.value]?.add(measurement) }
         }
     }
@@ -76,7 +80,7 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
         latitude: Double?,
         longitude: Double?,
         time: Date?,
-        line: Array<String>,
+        line: List<String>,
         streamHeader: SDCardCSVFileFactory.Header
     ): CSVMeasurement? {
         time ?: return null
@@ -120,7 +124,7 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
         return session
     }
 
-    private fun getValueFor(line: Array<String>, header: SDCardCSVFileFactory.Header): Double? {
+    private fun getValueFor(line: List<String>, header: SDCardCSVFileFactory.Header): Double? {
         return try {
             line[header.value].toDouble()
         } catch(e: NumberFormatException) {
