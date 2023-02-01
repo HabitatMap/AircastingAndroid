@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
-    private val mSDCardCSVIterator: ISDCardCSVIterator,
+    private val mSDCardCSVIterator: SDCardSessionFileReader,
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,

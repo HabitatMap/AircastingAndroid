@@ -45,20 +45,20 @@ open class SensorsModule {
     @Singleton
     fun providesFixedSDCardCSVIterator(
         errorHandler: ErrorHandler
-    ): SDCardCSVIteratorFixed = SDCardCSVIteratorFixed(errorHandler)
+    ): SDCardSessionFileReaderFixed = SDCardSessionFileReaderFixed(errorHandler)
 
     @Provides
     @Singleton
     fun providesMobileSDCardCSVIterator(
         errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository
-    ): SDCardCSVIteratorMobile =
-        SDCardCSVIteratorMobile(errorHandler, sessionsRepository)
+    ): SDCardSessionFileReaderMobile =
+        SDCardSessionFileReaderMobile(errorHandler, sessionsRepository)
 
     @Provides
     @Singleton
     fun providesSDCardUploadFixedMeasurementsService(
-        sdCardCSVIterator: SDCardCSVIteratorFixed,
+        sdCardCSVIterator: SDCardSessionFileReaderFixed,
         uploadFixedMeasurementsService: UploadFixedMeasurementsService?
     ): SDCardUploadFixedMeasurementsService =
         SDCardUploadFixedMeasurementsService(
@@ -70,7 +70,7 @@ open class SensorsModule {
     @Singleton
     fun providesSDCardMobileSessionsProcessor(
         csvFileFactory: SDCardCSVFileFactory,
-        csvIterator: SDCardCSVIteratorMobile,
+        csvIterator: SDCardSessionFileReaderMobile,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepositoryImpl
@@ -86,7 +86,7 @@ open class SensorsModule {
     @Singleton
     fun providesSDCardFixedSessionsProcessor(
         csvFileFactory: SDCardCSVFileFactory,
-        csvIterator: SDCardCSVIteratorFixed,
+        csvIterator: SDCardSessionFileReaderFixed,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepositoryImpl

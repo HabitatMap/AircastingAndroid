@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import java.io.File
 
 class SDCardUploadFixedMeasurementsService(
-    private val mSDCardCSVIterator: SDCardCSVIteratorFixed,
+    private val mSDCardCSVIterator: SDCardSessionFileReaderFixed,
     private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {

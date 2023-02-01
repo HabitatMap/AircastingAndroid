@@ -7,7 +7,7 @@ import pl.llp.aircasting.data.model.Session
 
 class SDCardMobileSessionsProcessor(
     mCSVFileFactory: SDCardCSVFileFactory,
-    mSDCardCSVIterator: ISDCardCSVIterator,
+    mSDCardCSVIterator: SDCardSessionFileReader,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl

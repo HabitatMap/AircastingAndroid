@@ -7,18 +7,14 @@ import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.io.File
 import java.io.IOException
 
-// needs to be divided into Mobile and Fixed
-// Fixed can read everything at once and return the CSVSession
-// Mobile will need to determine the averaging threshold based on Session.startTime and lastMeasurement.time from the file
-interface ISDCardCSVIterator {
+interface SDCardSessionFileReader {
     suspend fun read(file: File): CSVSession?
 }
 
-class SDCardCSVIteratorFixed(
+class SDCardSessionFileReaderFixed(
     private val mErrorHandler: ErrorHandler
-) : ISDCardCSVIterator {
+) : SDCardSessionFileReader {
     override suspend fun read(file: File): CSVSession? = try {
-        // change to use file.readLines()
         val lines = file.readLines()
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
@@ -34,10 +30,10 @@ class SDCardCSVIteratorFixed(
     }
 }
 
-class SDCardCSVIteratorMobile(
+class SDCardSessionFileReaderMobile(
     private val mErrorHandler: ErrorHandler,
     private val sessionRepository: SessionsRepository
-) : ISDCardCSVIterator {
+) : SDCardSessionFileReader {
     override suspend fun read(file: File): CSVSession? = try {
         val lines = file.readLines()
 

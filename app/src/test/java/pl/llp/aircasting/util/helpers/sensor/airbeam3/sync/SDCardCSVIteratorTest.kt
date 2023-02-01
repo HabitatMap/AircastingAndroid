@@ -25,7 +25,7 @@ internal class SDCardCSVIteratorTest {
 
     @Test
     fun fixed_read_returnsSessionWithCorrectCountOfMeasurements() = runTest {
-        val iterator = SDCardCSVIteratorFixed(mock())
+        val iterator = SDCardSessionFileReaderFixed(mock())
         val measurementsCountInFile = fileLinesCount * streamsCount
 
         val csvSession = iterator.read(file)
@@ -40,7 +40,7 @@ internal class SDCardCSVIteratorTest {
                 fileFirstMeasurementTime,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardCSVIteratorMobile(mock(), mock())
+            val iterator = SDCardSessionFileReaderMobile(mock(), mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -59,7 +59,7 @@ internal class SDCardCSVIteratorTest {
                 threeHoursBefore,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardCSVIteratorMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileReaderMobile(mock(), sessionsRepository)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -78,7 +78,7 @@ internal class SDCardCSVIteratorTest {
                 tenHoursBefore,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardCSVIteratorMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileReaderMobile(mock(), sessionsRepository)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
