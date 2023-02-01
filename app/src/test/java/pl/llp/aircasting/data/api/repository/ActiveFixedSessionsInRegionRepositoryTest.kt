@@ -19,8 +19,8 @@ import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.getEndOfTodayEpoch
 import pl.llp.aircasting.util.extensions.getStartOfTodayEpochFromYearAgo
 import pl.llp.aircasting.utilities.StubData
-import pl.llp.aircasting.utilities.StubData.Companion.mockGetSessionsInRegionResponseWithJson
-import pl.llp.aircasting.utilities.StubData.Companion.mockGetStreamOfGivenSessionResponseWithJson
+import pl.llp.aircasting.utilities.StubData.mockGetSessionsInRegionResponseWithJson
+import pl.llp.aircasting.utilities.StubData.mockGetStreamOfGivenSessionResponseWithJson
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue

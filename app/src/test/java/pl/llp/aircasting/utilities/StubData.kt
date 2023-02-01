@@ -10,47 +10,50 @@ import java.io.File
 import java.io.FileReader
 import java.util.*
 
-class StubData {
-    companion object {
-        fun measurementsFrom(file: File): MutableList<Measurement> {
-            val measurements = LinkedList<Measurement>()
+object StubData {
+    fun measurementsFrom(file: File): MutableList<Measurement> {
+        val measurements = LinkedList<Measurement>()
 
-            val reader = CSVReaderBuilder(FileReader(file))
-                .withCSVParser(
-                    CSVParserBuilder()
-                        .withSeparator(';')
-                        .build()
-                )
-                .build()
-            reader.readNext()
+        val reader = CSVReaderBuilder(FileReader(file))
+            .withCSVParser(
+                CSVParserBuilder()
+                    .withSeparator(';')
+                    .build()
+            )
+            .build()
+        reader.readNext()
 
-            var line = reader.readNext()
-            while (line != null) {
-                val value = line[2].toDouble()
-                val time = Date(line[3].toLong())
-                val latitude = line[4].toDouble()
-                val longitude = line[5].toDouble()
-                val averagingFrequency = line[6].toInt()
+        var line = reader.readNext()
+        while (line != null) {
+            val value = line[2].toDouble()
+            val time = Date(line[3].toLong())
+            val latitude = line[4].toDouble()
+            val longitude = line[5].toDouble()
+            val averagingFrequency = line[6].toInt()
 
-                measurements.add(Measurement(value, time, latitude, longitude, averagingFrequency))
+            measurements.add(Measurement(value, time, latitude, longitude, averagingFrequency))
 
-                line = reader.readNext()
-            }
-
-            return measurements
+            line = reader.readNext()
         }
 
-        fun getJson(path: String): String {
-            val uri = ClassLoader.getSystemResource(path)
-            return File(uri.path).readText()
-        }
+        return measurements
+    }
 
-        fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsResponse {
-            return Gson().fromJson(json, SessionsInRegionsResponse::class.java)
-        }
+    fun getJson(path: String): String {
+        val uri = ClassLoader.getSystemResource(path)
+        return File(uri.path).readText()
+    }
 
-        fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {
-            return Gson().fromJson(json, StreamOfGivenSessionResponse::class.java)
-        }
+    fun getFile(path: String): File {
+        val uri = ClassLoader.getSystemResource(path)
+        return File(uri.path)
+    }
+
+    fun mockGetSessionsInRegionResponseWithJson(json: String): SessionsInRegionsResponse {
+        return Gson().fromJson(json, SessionsInRegionsResponse::class.java)
+    }
+
+    fun mockGetStreamOfGivenSessionResponseWithJson(json: String): StreamOfGivenSessionResponse {
+        return Gson().fromJson(json, StreamOfGivenSessionResponse::class.java)
     }
 }

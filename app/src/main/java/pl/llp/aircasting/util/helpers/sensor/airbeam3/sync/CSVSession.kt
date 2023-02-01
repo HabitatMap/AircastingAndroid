@@ -104,10 +104,10 @@ class CSVSession(val uuid: String?, val streams: HashMap<Int, ArrayList<CSVMeasu
     }
 
     private fun getValueFor(line: Array<String>, header: SDCardCSVFileFactory.Header): Double? {
-        try {
-            return line[header.value].toDouble()
+        return try {
+            line[header.value].toDouble()
         } catch(e: NumberFormatException) {
-            return null
+            null
         }
     }
 }
