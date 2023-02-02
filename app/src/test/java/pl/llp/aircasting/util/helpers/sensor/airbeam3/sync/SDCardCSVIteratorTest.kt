@@ -4,8 +4,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.extensions.addHours
 import pl.llp.aircasting.util.extensions.calendar
@@ -36,7 +38,7 @@ internal class SDCardCSVIteratorTest {
     @Test
     fun mobile_read_whenNoMeasurementsArePresentInDB_determinesThresholdBasedOnCSVMeasurementsOnly() =
         runTest {
-            val averagingThreshold = AveragingService.getAveragingThreshold(
+            val averagingThreshold = AveragingService.getAveragingFrequency(
                 fileFirstMeasurementTime,
                 fileLastMeasurementTime
             )
@@ -54,8 +56,12 @@ internal class SDCardCSVIteratorTest {
         runTest {
             val threeHoursBefore = calendar().addHours(fileFirstMeasurementTime!!, -3)
             val sessionsRepository = mock<SessionsRepository>()
-            whenever(sessionsRepository.getSessionStartTime(any())).thenReturn(threeHoursBefore)
-            val averagingThreshold = AveragingService.getAveragingThreshold(
+            val dbSession = mock<SessionDBObject> {
+                on { startTime } doReturn threeHoursBefore
+                on { id } doReturn 1L
+            }
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
+            val averagingThreshold = AveragingService.getAveragingFrequency(
                 threeHoursBefore,
                 fileLastMeasurementTime
             )
@@ -73,8 +79,12 @@ internal class SDCardCSVIteratorTest {
         runTest {
             val tenHoursBefore = calendar().addHours(fileFirstMeasurementTime!!, -10)
             val sessionsRepository = mock<SessionsRepository>()
-            whenever(sessionsRepository.getSessionStartTime(any())).thenReturn(tenHoursBefore)
-            val averagingThreshold = AveragingService.getAveragingThreshold(
+            val dbSession = mock<SessionDBObject> {
+                on { startTime } doReturn tenHoursBefore
+                on { id } doReturn 1L
+            }
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
+            val averagingThreshold = AveragingService.getAveragingFrequency(
                 tenHoursBefore,
                 fileLastMeasurementTime
             )

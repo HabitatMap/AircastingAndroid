@@ -50,6 +50,8 @@ class AveragingService private constructor(private val sessionId: Long) {
     private var mStreamIds: List<Long>? = null
     private var mPreviousAveragingFrequency: Int? = null
 
+    private var finalAveragingThresholdIndex: Int? = null
+
     init {
         this.mDBSession = mSessionsRepository.getSessionById(sessionId)
         this.mStreamIds = getStreamIds()
@@ -84,7 +86,9 @@ class AveragingService private constructor(private val sessionId: Long) {
          */
         private var mSingletons: HashMap<Long, AveragingService?> = hashMapOf()
 
-        fun get(sessionId: Long): AveragingService? {
+        fun get(sessionId: Long?): AveragingService? {
+            sessionId ?: return null
+
             if (mSingletons[sessionId] == null) {
                 mSingletons[sessionId] = AveragingService(sessionId)
             }
@@ -98,7 +102,7 @@ class AveragingService private constructor(private val sessionId: Long) {
             }
         }
 
-        fun getAveragingThreshold(
+        fun getAveragingFrequency(
             firstMeasurement: Measurement?,
             lastMeasurement: Measurement?
         ): Int {
@@ -115,7 +119,7 @@ class AveragingService private constructor(private val sessionId: Long) {
             return 0
         }
 
-        fun getAveragingThreshold(firstMeasurementDate: Date?, lastMeasurementDate: Date?): Int {
+        fun getAveragingFrequency(firstMeasurementDate: Date?, lastMeasurementDate: Date?): Int {
             firstMeasurementDate ?: return 0
             lastMeasurementDate ?: return 0
 
@@ -157,7 +161,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         // When while checking we find out the threshold has changed since last time checked
         // we will 1) update session averaging frequency in DB
         // 2) set mNewAveragingThreshold to true so we can perform averaging previous measurements
-        checkAveragingFrequency()
+        checkDBAveragingFrequencyAndUpdateItIfNeeded()
 
         streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getCurrentMeasurementsToAverage(streamId)
@@ -199,13 +203,13 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun checkAveragingFrequency() {
+    private fun checkDBAveragingFrequencyAndUpdateItIfNeeded() {
         mDBSession = mSessionsRepository.getSessionById(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
             if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
                 mPreviousAveragingFrequency = dbAveragingFrequency
                 mNewAveragingThreshold.set(true)
-                updateCurrentAveragingFrequency()
+                updateDBAveragingFrequency()
             }
         }
     }
@@ -312,8 +316,16 @@ class AveragingService private constructor(private val sessionId: Long) {
         )
     }
 
-    fun averagePreviousMeasurements() {
-        checkAveragingFrequency()
+    fun performFinalAveragingAfterSDSync(averagingFrequencyIncludingSDCardMeasurements: Int) {
+        finalAveragingThresholdIndex = THRESHOLDS.indexOf(
+            THRESHOLDS.find { it.windowSize == averagingFrequencyIncludingSDCardMeasurements }
+        )
+        averagePreviousMeasurementsWithNewFrequency()
+        perform(true)
+    }
+
+    fun averagePreviousMeasurementsWithNewFrequency() {
+        checkDBAveragingFrequencyAndUpdateItIfNeeded()
         if (!mNewAveragingThreshold.get()) return
 
         var windowSize: Int? = null
@@ -359,7 +371,7 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
     }
 
-    private fun updateCurrentAveragingFrequency() {
+    private fun updateDBAveragingFrequency() {
         currentAveragingThreshold().let { averagingThreshold ->
             mSessionsRepository.updateSessionAveragingFrequency(
                 sessionId,
@@ -381,6 +393,10 @@ class AveragingService private constructor(private val sessionId: Long) {
     }
 
     private fun currentAveragingThresholdIndex(): Int {
+        val finalIndex = finalAveragingThresholdIndex
+        if (finalIndex != null && finalIndex != -1)
+            return finalIndex
+
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId) ?: Date()
         return when {
             lastMeasurementTime.time > mSecondThresholdTime -> 2

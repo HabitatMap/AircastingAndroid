@@ -31,7 +31,7 @@ class AveragingPreviousMeasurementsBackgroundService(val averagingService: Avera
         }
 
         private fun averageMeasurements() {
-            averagingService.averagePreviousMeasurements()
+            averagingService.averagePreviousMeasurementsWithNewFrequency()
         }
     }
 }

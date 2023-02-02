@@ -134,7 +134,7 @@ class GraphContainer(
             mMeasurementsSample,
             mNotes,
             visibleMeasurementsSize = mVisibleEntriesNumber,
-            averagingFrequency = AveragingService.getAveragingThreshold(
+            averagingFrequency = AveragingService.getAveragingFrequency(
                 mMeasurementsSample.firstOrNull(),
                 mMeasurementsSample.lastOrNull()
             ),

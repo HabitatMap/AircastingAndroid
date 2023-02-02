@@ -31,7 +31,9 @@ class SessionsRepository {
         return sessionDBObject?.id
     }
 
-    fun getSessionByUUID(uuid: String): SessionDBObject? {
+    fun getSessionByUUID(uuid: String?): SessionDBObject? {
+        uuid ?: return null
+
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
