@@ -16,7 +16,7 @@ import pl.llp.aircasting.utilities.StubData
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class SDCardCSVIteratorTest {
+internal class SDCardSessionFileHandlerTest {
     private val file = StubData.getFile("SDCardMeasurementsFromSession.csv")
     private val fileLines = file.readLines()
     private val fileLinesCount = fileLines.count()
@@ -27,10 +27,10 @@ internal class SDCardCSVIteratorTest {
 
     @Test
     fun fixed_read_returnsSessionWithCorrectCountOfMeasurements() = runTest {
-        val iterator = SDCardSessionFileReaderFixed(mock())
+        val iterator = SDCardSessionFileHandlerFixed(mock())
         val measurementsCountInFile = fileLinesCount * streamsCount
 
-        val csvSession = iterator.read(file)
+        val csvSession = iterator.handle(file)
 
         assertEquals(measurementsCountInFile, csvMeasurements(csvSession).count())
     }
@@ -42,11 +42,11 @@ internal class SDCardCSVIteratorTest {
                 fileFirstMeasurementTime,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardSessionFileReaderMobile(mock(), mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(), mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
-            val csvSession = iterator.read(file)
+            val csvSession = iterator.handle(file)
 
             assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
         }
@@ -65,11 +65,11 @@ internal class SDCardCSVIteratorTest {
                 threeHoursBefore,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardSessionFileReaderMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
-            val csvSession = iterator.read(file)
+            val csvSession = iterator.handle(file)
 
             assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
         }
@@ -88,11 +88,11 @@ internal class SDCardCSVIteratorTest {
                 tenHoursBefore,
                 fileLastMeasurementTime
             )
-            val iterator = SDCardSessionFileReaderMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
-            val csvSession = iterator.read(file)
+            val csvSession = iterator.handle(file)
 
             assertEquals(measurementsAveragedCountInFile, csvMeasurements(csvSession).count())
         }

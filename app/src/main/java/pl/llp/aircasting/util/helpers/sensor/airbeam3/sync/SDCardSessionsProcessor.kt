@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
-    private val mSDCardCSVIterator: SDCardSessionFileReader,
+    private val mSDCardSessionFileHandler: SDCardSessionFileHandler,
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,
@@ -22,14 +22,13 @@ abstract class SDCardSessionsProcessor(
         file: File,
         deviceId: String
     ) = coroutineScope.launch {
-        // Mobile iterator should return already averaged measurements
-        val csvSession = mSDCardCSVIterator.read(file)
+        val csvSession = mSDCardSessionFileHandler.handle(file)
         processSession(deviceId, csvSession)
     }
 
     abstract fun processSession(deviceId: String, csvSession: CSVSession?)
 
-    open fun processMeasurements(
+    fun processMeasurements(
         deviceId: String,
         sessionId: Long,
         streamHeaderValue: Int,

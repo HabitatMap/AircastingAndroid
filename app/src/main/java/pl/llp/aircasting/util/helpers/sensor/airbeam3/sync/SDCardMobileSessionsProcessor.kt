@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 
 class SDCardMobileSessionsProcessor(
-    mSDCardCSVIterator: SDCardSessionFileReader,
+    mSDCardCSVIterator: SDCardSessionFileHandler,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl
@@ -40,16 +40,6 @@ class SDCardMobileSessionsProcessor(
             finishSession(sessionId, session)
             mProcessedSessionsIds.add(sessionId)
         }
-    }
-
-    override fun processMeasurements(
-        deviceId: String,
-        sessionId: Long,
-        streamHeaderValue: Int,
-        csvMeasurements: List<CSVMeasurement>
-    ) {
-        // average previous measurements based on the calculated threshold window
-        super.processMeasurements(deviceId, sessionId, streamHeaderValue, csvMeasurements)
     }
 
     private fun finishSession(sessionId: Long, session: Session) {

@@ -10,7 +10,7 @@ import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import java.io.File
 
 class SDCardUploadFixedMeasurementsService(
-    private val mSDCardCSVIterator: SDCardSessionFileReaderFixed,
+    private val mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
     private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) {
@@ -18,7 +18,7 @@ class SDCardUploadFixedMeasurementsService(
     private val TAG = "SDCardUploadFixedMeasurements"
 
     fun start(file: File, deviceId: String) = CoroutineScope(dispatcher).launch {
-        val csvSession = mSDCardCSVIterator.read(file)
+        val csvSession = mSDCardCSVIterator.handle(file)
         processSession(deviceId, csvSession)
     }
 
