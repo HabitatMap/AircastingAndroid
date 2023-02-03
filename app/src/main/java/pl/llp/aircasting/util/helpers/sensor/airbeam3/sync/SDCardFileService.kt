@@ -24,10 +24,6 @@ class SDCardFileService(
     mContext: Context,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-    companion object {
-        private const val DOWNLOAD_TAG = "SYNC"
-    }
-
     private val mCSVFileFactory = SDCardCSVFileFactory(mContext)
 
     private var fileWriter: FileWriter? = null
@@ -45,24 +41,25 @@ class SDCardFileService(
     private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
 
     private val newLinesFlow = MutableSharedFlow<List<String>>()
-    private val writeToCorrespondingFileJob = newLinesFlow.onEach { lines ->
-        lines.forEach { line ->
-            Log.v(TAG, "Reading line: $line")
-
-            val lineParams = line.split(AB_DELIMITER)
-            val uuid = lineParams[1]
-
-            if (sessionHasChanged(uuid)) {
-                flashLinesInBufferAndCloseCurrentFile()
-                currentSessionUUID = uuid
-                createAndOpenNewFile()
-            }
-            fileWriter?.write("$line\n")
-        }
-    }.launchIn(scope)
 
     init {
         EventBus.getDefault().safeRegister(this)
+
+        newLinesFlow.onEach { lines ->
+            lines.forEach { line ->
+                Log.v(TAG, "Reading line: $line")
+
+                val lineParams = line.split(AB_DELIMITER)
+                val uuid = lineParams[1]
+
+                if (sessionHasChanged(uuid)) {
+                    flashLinesInBufferAndCloseCurrentFile()
+                    currentSessionUUID = uuid
+                    createAndOpenNewFile()
+                }
+                fileWriter?.write("$line\n")
+            }
+        }.launchIn(scope)
     }
 
     fun start(
@@ -92,6 +89,7 @@ class SDCardFileService(
     fun onEvent(event: SDCardReadStepStartedEvent) {
         counter = 0
         steps.add(event.step)
+        stepByFilePaths[currentStep] = mutableListOf()
     }
 
     @Subscribe
@@ -110,13 +108,11 @@ class SDCardFileService(
 
     @Subscribe
     fun onEvent(event: SDCardReadFinished) {
-        Log.d(DOWNLOAD_TAG, "Sync finished")
+        Log.d(TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
-        Log.v(TAG, stepByFilePaths.toString())
 
         mOnDownloadFinished?.invoke(stepByFilePaths)
-        writeToCorrespondingFileJob.cancel()
     }
 
     private fun sessionHasChanged(uuid: String) = uuid != currentSessionUUID
