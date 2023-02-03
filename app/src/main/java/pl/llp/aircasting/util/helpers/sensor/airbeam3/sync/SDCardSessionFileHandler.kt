@@ -1,6 +1,8 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import android.util.Log
 import kotlinx.coroutines.*
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -59,6 +61,7 @@ class SDCardSessionFileHandlerMobile(
                 if (chunk.size < averagingFrequency) return@chunked
 
                 val averageMeasurement = averageMeasurementFrom(chunk)
+                Log.v(TAG, "Average line: $averageMeasurement")
                 csvSession.addMeasurements(averageMeasurement)
             }
         }

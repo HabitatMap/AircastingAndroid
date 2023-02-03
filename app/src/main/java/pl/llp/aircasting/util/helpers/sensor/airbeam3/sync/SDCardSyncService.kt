@@ -193,7 +193,7 @@ class SDCardSyncService(
 
     private fun finish() {
         mSDCardFileService.deleteAllSyncFiles()
-
+        Log.d(TAG, "Sync finishing")
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
