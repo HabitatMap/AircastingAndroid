@@ -54,7 +54,7 @@ abstract class SDCardSessionsProcessor(
         val measurements =
             filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
 
-        Log.v(TAG, "Inserting measurements from ${measurementStream.sensorName} with count: ${measurements.count()}")
+        Log.v(TAG, "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}")
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 

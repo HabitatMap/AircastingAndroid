@@ -57,7 +57,11 @@ class SDCardFileService(
                     currentSessionUUID = uuid
                     createAndOpenNewFile()
                 }
-                fileWriter?.write("$line\n")
+                try {
+                    fileWriter?.write("$line\n")
+                } catch (e: Exception) {
+                    Log.e(TAG, e.stackTraceToString())
+                }
             }
         }.launchIn(scope)
     }
@@ -80,7 +84,7 @@ class SDCardFileService(
         dirs.forEach { dir ->
             if (dir?.exists() == true) {
                 val result = dir.deleteRecursively()
-                Log.v(TAG, "${dir.name.split("/").last()} was deleted: $result")
+                Log.v(TAG, "${dir.name.split("/").last()} files were deleted: $result")
             }
         }
     }
@@ -127,10 +131,14 @@ class SDCardFileService(
     }
 
     private fun createAndOpenNewFile() {
-        val file = File(currentFilePath)
-        Log.v(TAG, "Creating file: $file")
-        fileWriter = FileWriter(file)
+        try {
+            val file = File(currentFilePath)
+            Log.v(TAG, "Creating file: $file")
+            fileWriter = FileWriter(file)
 
-        stepByFilePaths[currentStep]?.add(currentFilePath)
+            stepByFilePaths[currentStep]?.add(currentFilePath)
+        } catch (e: Exception) {
+            Log.e(TAG, e.stackTraceToString())
+        }
     }
 }
