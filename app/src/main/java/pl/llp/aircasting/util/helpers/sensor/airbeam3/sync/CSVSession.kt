@@ -4,23 +4,15 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
-import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.DEFAULT_FREQUENCY
 import java.util.*
 
 class CSVSession(
     val uuid: String?,
-    val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap(),
-    val measurementsFrequency: Int = DEFAULT_FREQUENCY
+    val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()
 ) {
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
-
-        fun uuidFrom(line: Array<String>?): String? {
-            line ?: return null
-
-            return line[SDCardCSVFileFactory.Header.UUID.value]
-        }
 
         fun uuidFrom(line: String?): String? {
             line ?: return null

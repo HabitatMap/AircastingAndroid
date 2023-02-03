@@ -9,7 +9,7 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         private const val MOBILE_DIR_NAME = "mobile"
         private const val FIXED_DIR_NAME = "fixed"
         const val AB_DELIMITER = ","
-        val mobileFilesLocation get() = "$DIR_NAME/$MOBILE_DIR_NAME"
+        fun String.airBeamParams() = split(AB_DELIMITER)
     }
 
     enum class Header(val value: Int) {

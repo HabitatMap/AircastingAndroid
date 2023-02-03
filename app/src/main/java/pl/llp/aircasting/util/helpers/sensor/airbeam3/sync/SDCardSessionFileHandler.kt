@@ -5,6 +5,8 @@ import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.airBeamParams
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.io.File
 import java.io.IOException
@@ -56,7 +58,7 @@ class SDCardSessionFileHandlerMobile(
                 // We do not include leftover measurements
                 if (chunk.size < averagingFrequency) return@chunked
 
-                val averageMeasurement = middleMeasurement(chunk)
+                val averageMeasurement = averageMeasurementFrom(chunk)
                 csvSession.addMeasurements(averageMeasurement)
             }
         }
@@ -82,5 +84,25 @@ class SDCardSessionFileHandlerMobile(
         return AveragingService.getAveragingFrequency(firstMeasurementTime, lastMeasurementTime)
     }
 
-    private fun middleMeasurement(chunk: List<String>) = chunk[chunk.size / 2]
+    private fun averageMeasurementFrom(chunk: List<String>): String {
+        val middleMeasurement = chunk[chunk.size / 2]
+        val middleMeasurementParams = middleMeasurement.airBeamParams()
+        val lineWithAveragedValuesParameters = middleMeasurementParams.toMutableList()
+        CSVMeasurementStream.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
+            var sumOfHeaderValuesInChunk = 0.0
+            var countOfNonNullMeasurements = 0
+            chunk.forEach { line ->
+                val params = line.airBeamParams()
+                val streamValue = params[currentStreamHeader.value].toDoubleOrNull()
+                if (streamValue != null) {
+                    sumOfHeaderValuesInChunk += streamValue
+                    countOfNonNullMeasurements++
+                }
+            }
+            val averageStreamValue = sumOfHeaderValuesInChunk / countOfNonNullMeasurements
+            lineWithAveragedValuesParameters[currentStreamHeader.value] =
+                averageStreamValue.toString()
+        }
+        return lineWithAveragedValuesParameters.joinToString(AB_DELIMITER)
+    }
 }
