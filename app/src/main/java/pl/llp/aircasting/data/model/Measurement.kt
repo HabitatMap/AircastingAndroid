@@ -109,6 +109,10 @@ class Measurement(
         return result
     }
 
+    override fun toString(): String {
+        return "Measurement(value=$value, time=$time, latitude=$latitude, longitude=$longitude, averagingFrequency=$averagingFrequency)"
+    }
+
     companion object {
         fun getLevel(value: Double, sensorThreshold: SensorThreshold): Level {
             if (value < sensorThreshold.thresholdVeryLow) return Level.EXTREMELY_LOW

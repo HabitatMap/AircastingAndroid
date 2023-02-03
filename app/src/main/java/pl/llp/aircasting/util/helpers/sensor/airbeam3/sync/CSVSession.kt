@@ -132,4 +132,8 @@ class CSVSession(
             null
         }
     }
+
+    override fun toString(): String {
+        return "CSVSession(uuid=$uuid, streams=$streams)"
+    }
 }

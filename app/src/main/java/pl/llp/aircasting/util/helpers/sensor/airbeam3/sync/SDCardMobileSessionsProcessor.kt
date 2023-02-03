@@ -27,6 +27,7 @@ class SDCardMobileSessionsProcessor(
         val sessionId: Long
 
         if (dbSession == null) {
+            Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
             session = csvSession.toSession(deviceId) ?: return
             sessionId = mSessionsRepository.insert(session)
         } else {
@@ -38,6 +39,7 @@ class SDCardMobileSessionsProcessor(
         if (session.isDisconnected()) {
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
+                Log.v(TAG, "Processed stream: ${CSVMeasurementStream.SUPPORTED_STREAMS.keys.find { it.value == headerKey }}")
             }
 
             finishSession(sessionId, session)

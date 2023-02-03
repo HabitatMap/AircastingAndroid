@@ -48,6 +48,7 @@ class SDCardSessionFileHandlerMobile(
         val csvSession = CSVSession(sessionUUID)
 
         val dbSession = sessionRepository.getSessionByUUID(sessionUUID)
+        if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         val averagingFrequency = getFinalAveragingFrequency(dbSession, lines)
 
         val averageExistingMeasurementsJob = ioScope.launch {
@@ -61,7 +62,6 @@ class SDCardSessionFileHandlerMobile(
                 if (chunk.size < averagingFrequency) return@chunked
 
                 val averageMeasurement = averageMeasurementFrom(chunk)
-                Log.v(TAG, "Average line: $averageMeasurement")
                 csvSession.addMeasurements(averageMeasurement)
             }
         }
@@ -73,7 +73,7 @@ class SDCardSessionFileHandlerMobile(
         csvSession
     } catch (e: IOException) {
         mErrorHandler.handle(SDCardMeasurementsParsingError(e))
-
+        Log.v(TAG, e.stackTraceToString())
         null
     }
 

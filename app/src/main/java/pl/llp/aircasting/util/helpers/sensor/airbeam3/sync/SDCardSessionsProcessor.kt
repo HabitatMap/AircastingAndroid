@@ -1,8 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
@@ -23,6 +25,7 @@ abstract class SDCardSessionsProcessor(
         deviceId: String
     ) = coroutineScope.launch {
         val csvSession = mSDCardSessionFileHandler.handle(file)
+        Log.v(TAG, "Finished SDCardSessionFileHandler with resulting csvSession: $csvSession")
         processSession(deviceId, csvSession)
     }
 
@@ -51,6 +54,7 @@ abstract class SDCardSessionsProcessor(
         val measurements =
             filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
 
+        Log.v(TAG, "Inserting measurements from ${measurementStream.sensorName} with count: ${measurements.count()}")
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 
