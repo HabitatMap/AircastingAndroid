@@ -4,8 +4,14 @@ import java.io.File
 import java.io.FileReader
 
 class SDCardCSVFileChecker {
-    private val EXPECTED_FIELDS_COUNT = 13
-    private val ACCEPTANCE_THRESHOLD = 0.8
+    companion object {
+        private const val EXPECTED_FIELDS_COUNT = 13
+        private const val ACCEPTANCE_THRESHOLD = 0.8
+        fun lineIsCorrupted(line: String): Boolean {
+            val fields = line.split(",")
+            return line.isNotBlank() && fields.count() != EXPECTED_FIELDS_COUNT
+        }
+    }
 
     fun areFilesCorrupted(stepsByFilePaths: Map<SDCardReader.Step?, List<String>>): Boolean {
         stepsByFilePaths.forEach { stepByPath ->
@@ -37,11 +43,6 @@ class SDCardCSVFileChecker {
         }
 
         return corruptedCount
-    }
-
-    private fun lineIsCorrupted(line: String): Boolean {
-        val fields = line.split(",")
-        return line.isNotBlank() && fields.count() != EXPECTED_FIELDS_COUNT
     }
 
     private fun corruptionRateIsUnacceptable(

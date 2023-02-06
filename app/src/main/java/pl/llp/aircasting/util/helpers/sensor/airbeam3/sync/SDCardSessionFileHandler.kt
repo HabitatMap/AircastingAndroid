@@ -1,7 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -21,7 +24,9 @@ class SDCardSessionFileHandlerFixed(
     private val mErrorHandler: ErrorHandler
 ) : SDCardSessionFileHandler {
     override suspend fun handle(file: File): CSVSession? = try {
-        val lines = file.readLines()
+        val lines = file.readLines().filter {
+            !SDCardCSVFileChecker.lineIsCorrupted(it)
+        }
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
         lines.forEach { line ->
@@ -43,7 +48,9 @@ class SDCardSessionFileHandlerMobile(
     private val defaultScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : SDCardSessionFileHandler {
     override suspend fun handle(file: File): CSVSession? = try {
-        val lines = file.readLines()
+        val lines = file.readLines().filter {
+            !SDCardCSVFileChecker.lineIsCorrupted(it)
+        }
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
 
@@ -67,8 +74,6 @@ class SDCardSessionFileHandlerMobile(
         }
 
         joinAll(averageExistingMeasurementsJob, averageFileMeasurementsJob)
-        ioScope.cancel()
-        defaultScope.cancel()
 
         csvSession
     } catch (e: IOException) {
