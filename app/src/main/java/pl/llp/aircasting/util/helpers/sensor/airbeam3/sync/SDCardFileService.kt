@@ -31,7 +31,7 @@ class SDCardFileService(
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
-    private val stepByFilePaths = mutableMapOf<SDCardReader.Step?, MutableList<String>>()
+    private var stepByFilePaths = mutableMapOf<SDCardReader.Step?, MutableList<String>>()
 
     private var currentSessionUUID: String? = null
     private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
@@ -74,6 +74,8 @@ class SDCardFileService(
         mOnDownloadFinished = onDownloadFinished
 
         steps = ArrayList()
+        stepByFilePaths = mutableMapOf()
+        currentSessionUUID = null
     }
 
     fun deleteAllSyncFiles() {
