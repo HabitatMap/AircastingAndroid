@@ -14,26 +14,15 @@ open class AirBeamConnectorFactory(
     private val mErrorHandler: ErrorHandler,
     private val bluetoothManager: BluetoothManager
 ) {
-    private val ab2connector by lazy {
-        AirBeam2Connector(
-            mSettings,
-            mErrorHandler,
-            bluetoothManager
-        )
-    }
-    private val ab3connector by lazy {
-        AirBeam3Connector(
-            mContext,
-            mSettings,
-            mErrorHandler,
-            bluetoothManager
-        )
-    }
-
     open fun get(deviceItem: DeviceItem): AirBeamConnector? {
         return when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAM3 -> ab3connector
-            else -> ab2connector
+            DeviceItem.Type.AIRBEAM3 -> AirBeam3Connector(
+                mContext,
+                mSettings,
+                mErrorHandler,
+                bluetoothManager
+            )
+            else -> AirBeam2Connector(mSettings, mErrorHandler, bluetoothManager)
         }
     }
 }
