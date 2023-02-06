@@ -120,17 +120,17 @@ class AveragingService private constructor(private val sessionId: Long) {
         }
 
         fun getAveragingFrequency(firstMeasurementDate: Date?, lastMeasurementDate: Date?): Int {
-            firstMeasurementDate ?: return 0
-            lastMeasurementDate ?: return 0
+            firstMeasurementDate ?: return DEFAULT_FREQUENCY
+            lastMeasurementDate ?: return DEFAULT_FREQUENCY
 
             val sessionDuration = lastMeasurementDate.time.minus(firstMeasurementDate.time)
 
-            when {
+            return when {
                 sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
                 (sessionDuration > FIRST_TRESHOLD_TIME) && (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
                 sessionDuration > SECOND_TRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
+                else -> DEFAULT_FREQUENCY
             }
-            return 0
         }
     }
 
