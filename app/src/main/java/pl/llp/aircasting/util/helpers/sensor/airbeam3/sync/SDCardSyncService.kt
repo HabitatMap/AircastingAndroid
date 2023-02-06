@@ -1,7 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -211,6 +214,5 @@ class SDCardSyncService(
         EventBus.getDefault().unregister(this)
         mDeviceItem = null
         mAirBeamConnector = null
-        coroutineScope.cancel()
     }
 }

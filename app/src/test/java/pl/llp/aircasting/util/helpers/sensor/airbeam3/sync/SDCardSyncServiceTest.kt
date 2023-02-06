@@ -96,7 +96,6 @@ internal class SDCardSyncServiceTest {
             val fileChecker = mock<SDCardCSVFileChecker> {
                 on { areFilesCorrupted(any()) } doReturn true
             }
-            val scope = CoroutineScope(coroutineContext + Job(coroutineContext.job))
             val service = SDCardSyncService(
                 fileService,
                 fileChecker,
@@ -105,7 +104,7 @@ internal class SDCardSyncServiceTest {
                 mock(),
                 mock(),
                 mock(),
-                scope
+                this
             )
 
             service.start(abConnector, mock())
