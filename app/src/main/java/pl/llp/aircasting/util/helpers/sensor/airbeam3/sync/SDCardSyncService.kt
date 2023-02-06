@@ -42,17 +42,27 @@ class SDCardSyncService(
 
     private var mSessionsSyncStartedByThis = AtomicBoolean(false)
     /*
-
         High level sync flow:
 
         1. Refresh sessions list using SessionsSyncService so already deleted on the backend got deleted and so on (done in SyncController#refreshSessionList)
-        2. Download measurements from AirBeam3 SD card to files/sync/mobile.csv and files/sync/fixed.csv
-        3. Check downloaded files (checks if downloaded file has at least 80% of expected lines and if there is at most 20% of corrupted lines)
-        4. Save mobile measurements for disconnected sessions in the Android local db. Create sessions named "Imported from SD card" for every UUID that doesn't match with existing session.
-        5. Send mobile measurements to the backend using SessionsSyncService.
-        6. Save filtered fixed measurements in the Android local db.
-        7. Send fixed measurements to the backend
+        2. Download measurements from AirBeam3 SD card and save each session's measurements in
+            separate corresponding files in directories: files/sync/mobile<sessionUuid>.csv and files/sync/fixed<sessionUuid>.csv
+        3. Check downloaded files per step (MOBILE, FIXED, FIXED_CELLULAR)
+            If downloaded files in one step have more than 20% of lines corrupted - interrupt the sync with error
 
+        *** Next steps are done for each session file:
+        MOBILE SESSION FILE:
+        4. If measurements require averaging, signal SyncService to average measurements present in local DB,
+            and average measurements in the file on the go, while reading them as strings
+        5. Save mobile measurements for the disconnected session in the Android local db.
+            Create session named "Imported from SD card" for UUID that doesn't match with existing session.
+
+        FIXED SESSION FILE:
+        4. Save filtered fixed measurements in the Android local db.
+        5. Send fixed measurements from the file to the backend.
+        ***
+
+        6. After iterating through all the files, sync mobile measurements with backend.
      */
 
     fun start(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
