@@ -12,6 +12,14 @@ fun Calendar.addHours(date: Date, hours: Int): Date {
     return time
 }
 
+fun Calendar.addSeconds(date: Date?, seconds: Int): Date? {
+    date ?: return null
+
+    time = date
+    add(SECOND, seconds)
+    return time
+}
+
 fun Calendar.dayOfMonth(date: Date, isExternalSession: Boolean): Int {
     time = date
     if (isExternalSession)

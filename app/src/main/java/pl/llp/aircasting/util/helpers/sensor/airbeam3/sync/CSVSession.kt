@@ -54,13 +54,13 @@ class CSVSession(
         return stream?.firstOrNull()
     }
 
-    fun addMeasurements(line: String) {
+    fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
         val latitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LATITUDE)
         val longitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LONGITUDE)
         val dateString =
             "${lineParameters[SDCardCSVFileFactory.Header.DATE.value]} ${lineParameters[SDCardCSVFileFactory.Header.TIME.value]}"
-        val time = DateConverter.fromString(
+        val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
         )

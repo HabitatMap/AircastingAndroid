@@ -10,11 +10,14 @@ import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
+import pl.llp.aircasting.util.extensions.addSeconds
+import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.airBeamParams
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 interface SDCardSessionFileHandler {
     suspend fun handle(file: File): CSVSession?
@@ -44,9 +47,13 @@ class SDCardSessionFileHandlerFixed(
 class SDCardSessionFileHandlerMobile(
     private val mErrorHandler: ErrorHandler,
     private val sessionRepository: SessionsRepository,
+//    private val measurementsRepository: MeasurementsRepository,
     private val ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val defaultScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : SDCardSessionFileHandler {
+
+    private var currentChunkTime: Date? = null
+
     override suspend fun handle(file: File): CSVSession? = try {
         val lines = file.readLines().filter {
             !SDCardCSVFileChecker.lineIsCorrupted(it)
@@ -64,12 +71,15 @@ class SDCardSessionFileHandlerMobile(
         }
 
         val averageFileMeasurementsJob = defaultScope.launch {
+            currentChunkTime = dbSession?.startTime ?: CSVSession.timestampFrom(lines.firstOrNull())
             lines.chunked(averagingFrequency) { chunk ->
                 // We do not include leftover measurements
                 if (chunk.size < averagingFrequency) return@chunked
 
                 val averageMeasurement = averageMeasurementFrom(chunk)
-                csvSession.addMeasurements(averageMeasurement)
+                csvSession.addMeasurements(averageMeasurement, currentChunkTime)
+
+                currentChunkTime = calendar().addSeconds(currentChunkTime, averagingFrequency)
             }
         }
 
@@ -93,6 +103,21 @@ class SDCardSessionFileHandlerMobile(
     }
 
     private fun averageMeasurementFrom(chunk: List<String>): String {
+        /*
+        * As the AB keeps all the measurements on SD card, even the ones that we have in local DB,
+        * we could just average them all from the file values;
+        * set time based on Session Start Time and the Averaging Threshold;
+        * If there is a measurement in local DB with such time, we will grab it's location
+        * to preserve the geolocation accuracy from the phone
+        * (or use sql transaction to update all the measurement's data except for location,
+        * instead of filtering them during processing?)
+        * Questions:
+        * 1. If session has already averaged measurements in local db, how to connect them to files ones?
+        * It should just replace them with the averaged ones from file with their geo location
+        * 2. Unify averaging strategy code to not have it here and also in AveragingService that works with DB measurements,
+        * as the background averaging should still persist for incoming measurements when the AB is connected,
+        * in case the user will not sync the SD
+        * */
         val middleMeasurement = chunk[chunk.size / 2]
         val middleMeasurementParams = middleMeasurement.airBeamParams()
         val lineWithAveragedValuesParameters = middleMeasurementParams.toMutableList()
