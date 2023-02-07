@@ -18,7 +18,6 @@ class SDCardMobileSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    // driver method to process CSVSession derived from line
     override fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 

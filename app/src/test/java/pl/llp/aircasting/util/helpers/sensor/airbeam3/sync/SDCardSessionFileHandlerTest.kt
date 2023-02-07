@@ -23,7 +23,7 @@ internal class SDCardSessionFileHandlerTest {
     private val fileLinesCount = fileLines.count()
     private val fileFirstMeasurementTime = CSVSession.timestampFrom(fileLines.first())
     private val fileLastMeasurementTime = CSVSession.timestampFrom(fileLines.last())
-    
+
     private val streamsCount = 5
 
     @Test
@@ -160,7 +160,7 @@ internal class SDCardSessionFileHandlerTest {
         }
 
     @Test
-    fun mobile_read_buildsAveragedMeasurementCorrectlyWithFrequency60() =
+    fun mobile_read_whenFrequencyIs60_buildsAveragedMeasurementCorrectly() =
         runTest {
             val file = StubData.getFile("60SDCardMeasurementsFromSessionToAverage.csv")
             val fileStartTime = DateConverter.fromString(
@@ -198,6 +198,54 @@ internal class SDCardSessionFileHandlerTest {
             assertEquals(firstLatitude, firstResultRHAverage.latitude)
             assertEquals(firstLongitude, firstResultRHAverage.longitude)
             assertEquals(firstTime, firstResultRHAverage.time)
+        }
+
+    @Test
+    fun mobile_read_whenFrequencyIs5_keeps5SecondsMeasurementsDifference() =
+        runTest {
+            val fiveSeconds = 5 * 1000L
+            val file = StubData.getFile("5HoursOfMeasurementsSDCard.csv")
+            val sessionsRepository = mock<SessionsRepository>()
+            val dbSession = mock<SessionDBObject> {
+                on { id } doReturn 1L
+            }
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
+            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+
+            val csvSession = iterator.handle(file)
+
+            csvSession?.streams?.values?.forEach { measurements ->
+                for (i in 1 until measurements.size) {
+                    val difference = measurements[i].time.time - measurements[i - 1].time.time
+                    assertEquals(fiveSeconds, difference)
+                }
+            }
+        }
+
+    @Test
+    fun mobile_read_whenFrequencyIs60_keeps1MinuteMeasurementsDifference() =
+        runTest {
+            val oneMinute = 60 * 1000L
+            val file = StubData.getFile("10HoursOfMeasurementsSDCard.csv")
+            val sessionsRepository = mock<SessionsRepository>()
+            val dbSession = mock<SessionDBObject> {
+                on { id } doReturn 1L
+            }
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
+            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+
+            val csvSession = iterator.handle(file)
+
+            csvSession?.streams?.values?.forEach { measurements ->
+                for (i in 1 until measurements.size) {
+                    val difference = measurements[i].time.time - measurements[i - 1].time.time
+                    assertEquals(
+                        oneMinute,
+                        difference,
+                        "Failing time pair: ${measurements[i].time}, ${measurements[i - 1].time}"
+                    )
+                }
+            }
         }
 
     private fun fileMeasurementsCountAfterAveraging(averagingThreshold: Int) =

@@ -7,4 +7,8 @@ class CSVMeasurement(val value: Double, val latitude: Double?, val longitude: Do
     fun toMeasurement(): Measurement {
         return Measurement(value, time, latitude, longitude)
     }
+
+    override fun toString(): String {
+        return "CSVMeasurement(value=$value, latitude=$latitude, longitude=$longitude, time=$time)"
+    }
 }
