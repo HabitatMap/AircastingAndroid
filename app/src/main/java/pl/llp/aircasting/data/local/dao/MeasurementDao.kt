@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.dao
 
 import androidx.room.*
+import pl.llp.aircasting.data.local.entity.LocationTuple
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import java.util.*
 
@@ -72,4 +73,7 @@ interface MeasurementDao {
 
     @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
     fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
+
+    @Query("SELECT latitude, longitude FROM measurements WHERE session_id=:sessionId AND time=:time")
+    fun getLocationInGivenSessionAndTime(sessionId: Long, time: Date): LocationTuple?
 }

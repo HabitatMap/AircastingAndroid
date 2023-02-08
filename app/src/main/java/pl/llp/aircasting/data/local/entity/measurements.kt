@@ -32,3 +32,8 @@ data class MeasurementDBObject(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }
+
+data class LocationTuple(
+    @ColumnInfo(name = "latitude") val latitude: Double?,
+    @ColumnInfo(name = "longitude") val longitude: Double?
+)

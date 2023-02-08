@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
 import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.entity.LocationTuple
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
@@ -99,8 +100,10 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         return mDatabase.measurements().getByStreamId(streamId)
     }
 
-    fun getLastMeasurementsForStreamStartingFromHour(streamId: Long, limit: Int, time: Date): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastMeasurementsForStreamStartingFromHour(streamId, limit, time)
+    fun getMeasurementsLocationAtTime(sessionId: Long?, time: Date?): LocationTuple? {
+        if (sessionId == null || time == null) return null
+
+        return mDatabase.measurements().getLocationInGivenSessionAndTime(sessionId, time)
     }
 
 }
