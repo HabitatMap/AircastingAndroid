@@ -62,7 +62,7 @@ class SDCardSessionFileHandlerMobile(
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
 
-        dbSession = sessionRepository.getSessionByUUID(sessionUUID)
+        dbSession = sessionRepository.getSessionByUUIDSuspend(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         val averagingFrequency = getFinalAveragingFrequency(lines)
 

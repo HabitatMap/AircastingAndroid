@@ -2,22 +2,17 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.annotation.SuppressLint
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import java.io.File
 
 class SDCardUploadFixedMeasurementsService(
     private val mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
-    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
 
-    fun start(file: File, deviceId: String) = CoroutineScope(dispatcher).launch {
+    suspend fun start(file: File, deviceId: String) {
         val csvSession = mSDCardCSVIterator.handle(file)
         processSession(deviceId, csvSession)
     }

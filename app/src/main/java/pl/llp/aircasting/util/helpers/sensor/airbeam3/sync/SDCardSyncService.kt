@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.CoroutineContextProviderImpl
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
@@ -29,11 +28,7 @@ class SDCardSyncService(
     private val mSessionsSyncService: SessionsSyncService?,
     private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler,
-    private val coroutineScope: CoroutineScope = CoroutineScope(
-        CoroutineContextProviderImpl(
-            Dispatchers.IO
-        ).context()
-    )
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
     private val TAG = "SDCardSyncService"
 
@@ -94,9 +89,8 @@ class SDCardSyncService(
             terminateSync()
         } else {
             clearSDCard()
-            saveMeasurements(stepsByFilePaths).invokeOnCompletion {
-                syncMobileSessionWithBackendAndFinish()
-            }
+            saveMeasurements(stepsByFilePaths).join()
+            syncMobileSessionWithBackendAndFinish()
         }
     }
 
@@ -105,26 +99,27 @@ class SDCardSyncService(
         mAirBeamConnector?.clearSDCard()
     }
 
-    private fun CoroutineScope.saveMeasurements(
+    private suspend fun saveMeasurements(
         stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
-    ) = launch {
+    ) = coroutineScope.launch {
         Log.v(TAG, "Saving measurements locally")
         stepsByFilePaths.entries.forEach { entry ->
             Log.v(TAG, "Current stepByFilePath entry: $entry")
             when (entry.key?.type) {
                 SDCardReader.StepType.MOBILE -> launch {
                     entry.value.forEach { path ->
-                        performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
+                        // launches new coroutine for each mobile session to process
+                        launch { performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path)) }
                     }
                 }
                 SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI -> launch {
                     entry.value.forEach { path ->
+                        // fixed sessions are handled one by one
                         val file = File(path)
-                        saveFixedMeasurementsLocallyFrom(file)
+                        saveFixedMeasurementsLocallyFrom(file)?.join()
                         sendFixedMeasurementsToBackendFrom(file)
                     }
                 }
-                else -> terminateSync()
             }
         }
     }
@@ -139,14 +134,14 @@ class SDCardSyncService(
 
         Log.d(TAG, "Processing fixed sessions")
 
-        return mSDCardFixedSessionsProcessor.start(file, deviceItem.id)
+        return coroutineScope.launch { mSDCardFixedSessionsProcessor.start(file, deviceItem.id) }
     }
 
     private fun handleError(exception: BaseException) {
         EventBus.getDefault().post(SDCardSyncErrorEvent(exception))
     }
 
-    private fun performAveragingAndSaveMobileMeasurementsLocallyFrom(file: File) {
+    private suspend fun performAveragingAndSaveMobileMeasurementsLocallyFrom(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing mobile session from $file")
@@ -187,7 +182,7 @@ class SDCardSyncService(
         cleanup()
     }
 
-    private fun sendFixedMeasurementsToBackendFrom(file: File) {
+    private suspend fun sendFixedMeasurementsToBackendFrom(file: File) {
         val deviceItem = mDeviceItem ?: return
 
         val uploadFixedMeasurementsService = mSDCardUploadFixedMeasurementsService
