@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.util.TAG
-import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -54,31 +53,18 @@ abstract class SDCardSessionsProcessor(
         val measurements =
             filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
 
-        Log.v(TAG, "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}")
+        Log.v(
+            TAG,
+            "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}"
+        )
 
         // TODO: Change to coroutines;
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 
-    private fun filterMeasurements(
+    abstract fun filterMeasurements(
         sessionId: Long,
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>
-    ): List<CSVMeasurement> {
-        val measurementsInDB =
-            mMeasurementsRepository.getBySessionIdAndStreamId(sessionId, measurementStreamId)
-
-        return csvMeasurements.filter { csvMeasurement ->
-            isNotAlreadyInDB(csvMeasurement, measurementsInDB)
-        }
-        // TODO: Go back to original implementation without binary search?
-    }
-
-    private fun isNotAlreadyInDB(
-        csvMeasurement: CSVMeasurement,
-        measurementsInDB: List<MeasurementDBObject?>
-    ): Boolean {
-        val index = measurementsInDB.binarySearch { it?.time?.compareTo(csvMeasurement.time) ?: -1 }
-        return index < 0
-    }
+    ): List<CSVMeasurement>
 }

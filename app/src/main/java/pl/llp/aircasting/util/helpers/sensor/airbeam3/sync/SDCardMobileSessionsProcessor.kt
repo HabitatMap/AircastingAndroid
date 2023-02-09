@@ -51,4 +51,16 @@ class SDCardMobileSessionsProcessor(
         session.stopRecording(lastMeasurementTime)
         mSessionsRepository.update(session)
     }
+
+    override fun filterMeasurements(
+        sessionId: Long,
+        measurementStreamId: Long,
+        csvMeasurements: List<CSVMeasurement>
+    ): List<CSVMeasurement> {
+        val lastMeasurementTime =
+            mMeasurementsRepository.lastMeasurementTime(sessionId, measurementStreamId)
+                ?: return csvMeasurements
+
+        return csvMeasurements.filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
+    }
 }
