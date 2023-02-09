@@ -250,9 +250,15 @@ internal class SDCardSessionFileHandlerTest {
     fun mobile_read_whenFrequencyIs60_keeps1MinuteMeasurementsDifference() =
         runTest {
             val oneMinute = 60 * 1000L
-            val file = StubData.getFile("10HoursOfMeasurementsSDCard.csv")
+            val file = StubData.getFile("14HoursOfMeasurementsSDCard.csv")
             val sessionsRepository = mock<SessionsRepository>()
+            val sessionStartTime = DateConverter.fromString(
+                "02/08/2023 12:11:12",
+                dateFormat = CSVSession.DATE_FORMAT
+            )
             val dbSession = mock<SessionDBObject> {
+                // TODO: try setting session start date
+                on { startTime } doReturn sessionStartTime!!
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)

@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
@@ -101,8 +102,11 @@ class SDCardSessionFileHandlerMobile(
     private fun getFinalAveragingFrequency(
         lines: List<String>
     ): Int {
-        val firstMeasurementTime = dbSession?.startTime
-            ?: CSVSession.timestampFrom(lines.firstOrNull())
+        val firstMeasurementTime = try {
+            DateUtils.truncate(dbSession?.startTime, Calendar.SECOND)
+        } catch (e: Exception) {
+            CSVSession.timestampFrom(lines.firstOrNull())
+        }
         val lastMeasurementTime = CSVSession.timestampFrom(lines.lastOrNull())
         return AveragingService.getAveragingFrequency(firstMeasurementTime, lastMeasurementTime)
     }
