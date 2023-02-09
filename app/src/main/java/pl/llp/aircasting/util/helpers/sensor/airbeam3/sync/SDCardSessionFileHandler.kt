@@ -75,6 +75,8 @@ class SDCardSessionFileHandlerMobile(
 
         val averageFileMeasurementsJob = defaultScope.launch {
             currentChunkTime = dbSession?.startTime ?: CSVSession.timestampFrom(lines.firstOrNull())
+            incrementChunkTime(averagingFrequency)
+
             lines.chunked(averagingFrequency) { chunk ->
                 // We do not include leftover measurements
                 if (chunk.size < averagingFrequency) return@chunked

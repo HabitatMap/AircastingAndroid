@@ -135,6 +135,8 @@ internal class SDCardSessionFileHandlerTest {
                     firstMiddleMeasurementTime
                 )
             ).thenReturn(dbFirstMeasurementLocation)
+            val firstExpectedMeasurementTime =
+                calendar().addSeconds(sessionStartTime, AveragingService.FIRST_THRESHOLD_FREQUENCY)
             val firstFahrenheitAverage = 72.0
             val firstRHAverage = 64.0
             val firstLatitude = dbFirstMeasurementLocation.latitude
@@ -143,7 +145,7 @@ internal class SDCardSessionFileHandlerTest {
             val secondRHAverage = 43.0
             val secondLatitude = 38.0582475
             val secondLongitude = 18.9261414
-            val secondMeasurementExpectedTime = calendar().addSeconds(sessionStartTime, 5)
+            val secondMeasurementExpectedTime = calendar().addSeconds(firstExpectedMeasurementTime, 5)
             val iterator =
                 SDCardSessionFileHandlerMobile(mock(), sessionsRepository, measurementsRepository)
 
@@ -163,7 +165,7 @@ internal class SDCardSessionFileHandlerTest {
             assertEquals(secondLatitude, secondResultFahrenheitAverage.latitude)
             assertEquals(firstLongitude, firstResultFahrenheitAverage.longitude)
             assertEquals(secondLongitude, secondResultFahrenheitAverage.longitude)
-            assertEquals(sessionStartTime, firstResultFahrenheitAverage.time)
+            assertEquals(firstExpectedMeasurementTime, firstResultFahrenheitAverage.time)
             assertEquals(secondMeasurementExpectedTime, secondResultFahrenheitAverage.time)
             assertEquals(firstRHAverage, firstResultRHAverage.value)
             assertEquals(secondRHAverage, secondResultRHAverage.value)
@@ -171,7 +173,7 @@ internal class SDCardSessionFileHandlerTest {
             assertEquals(secondLatitude, secondResultRHAverage.latitude)
             assertEquals(firstLongitude, firstResultRHAverage.longitude)
             assertEquals(secondLongitude, secondResultRHAverage.longitude)
-            assertEquals(sessionStartTime, firstResultRHAverage.time)
+            assertEquals(firstExpectedMeasurementTime, firstResultRHAverage.time)
             assertEquals(secondMeasurementExpectedTime, secondResultRHAverage.time)
         }
 
@@ -201,6 +203,8 @@ internal class SDCardSessionFileHandlerTest {
                     middleMeasurementTime
                 )
             ).thenReturn(dbFirstMeasurementLocation)
+            val firstMeasurementTime =
+                calendar().addSeconds(sessionStartTime, AveragingService.SECOND_THRESHOLD_FREQUENCY)
             val firstFahrenheitAverage = 72.78333333333333
             val firstRHAverage = 49.5
             val firstLatitude = dbFirstMeasurementLocation.latitude
@@ -217,11 +221,11 @@ internal class SDCardSessionFileHandlerTest {
             assertEquals(firstFahrenheitAverage, firstResultFahrenheitAverage.value)
             assertEquals(firstLatitude, firstResultFahrenheitAverage.latitude)
             assertEquals(firstLongitude, firstResultFahrenheitAverage.longitude)
-            assertEquals(sessionStartTime, firstResultFahrenheitAverage.time)
+            assertEquals(firstMeasurementTime, firstResultFahrenheitAverage.time)
             assertEquals(firstRHAverage, firstResultRHAverage.value)
             assertEquals(firstLatitude, firstResultRHAverage.latitude)
             assertEquals(firstLongitude, firstResultRHAverage.longitude)
-            assertEquals(sessionStartTime, firstResultRHAverage.time)
+            assertEquals(firstMeasurementTime, firstResultRHAverage.time)
         }
 
     @Test

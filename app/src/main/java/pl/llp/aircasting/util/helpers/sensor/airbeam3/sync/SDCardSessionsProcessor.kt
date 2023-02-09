@@ -55,6 +55,8 @@ abstract class SDCardSessionsProcessor(
             filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
 
         Log.v(TAG, "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}")
+
+        // TODO: Change to coroutines;
         mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 
@@ -69,6 +71,7 @@ abstract class SDCardSessionsProcessor(
         return csvMeasurements.filter { csvMeasurement ->
             isNotAlreadyInDB(csvMeasurement, measurementsInDB)
         }
+        // TODO: Go back to original implementation without binary search?
     }
 
     private fun isNotAlreadyInDB(
