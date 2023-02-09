@@ -37,6 +37,12 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
+    suspend fun getSessionByUUIDSuspend(uuid: String?): SessionDBObject? {
+        uuid ?: return null
+
+        return mDatabase.sessions().loadSessionByUUIDSuspend(uuid)
+    }
+
     fun getSessionById(id: Long): SessionDBObject? {
         return mDatabase.sessions().loadSessionById(id)
     }
@@ -65,6 +71,15 @@ class SessionsRepository {
     fun update(session: Session) {
         session.endTime?.let {
             mDatabase.sessions().update(
+                session.uuid, session.name, session.tags,
+                it, session.status, session.version, session.urlLocation
+            )
+        }
+    }
+
+    suspend fun updateSuspend(session: Session) {
+        session.endTime?.let {
+            mDatabase.sessions().updateSuspend(
                 session.uuid, session.name, session.tags,
                 it, session.status, session.version, session.urlLocation
             )

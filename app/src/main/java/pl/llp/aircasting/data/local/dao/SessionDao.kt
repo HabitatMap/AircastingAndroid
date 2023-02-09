@@ -96,6 +96,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionByUUID(uuid: String): SessionDBObject?
 
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    suspend fun loadSessionByUUIDSuspend(uuid: String): SessionDBObject?
+
     @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
     fun loadSessionById(id: Long): SessionDBObject?
 
@@ -125,6 +128,17 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
     fun update(
+        uuid: String,
+        name: String,
+        tags: ArrayList<String>,
+        endTime: Date,
+        status: Session.Status,
+        version: Int,
+        urlLocation: String?
+    )
+
+    @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
+    suspend fun updateSuspend(
         uuid: String,
         name: String,
         tags: ArrayList<String>,

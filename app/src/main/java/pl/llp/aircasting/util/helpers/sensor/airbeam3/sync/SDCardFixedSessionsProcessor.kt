@@ -17,7 +17,7 @@ class SDCardFixedSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    override fun processSession(deviceId: String, csvSession: CSVSession?) {
+    override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
@@ -30,7 +30,7 @@ class SDCardFixedSessionsProcessor(
         }
     }
 
-    override fun filterMeasurements(
+    override suspend fun filterMeasurements(
         sessionId: Long,
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>

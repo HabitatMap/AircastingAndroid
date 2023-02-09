@@ -18,17 +18,17 @@ class SDCardMobileSessionsProcessor(
     mMeasurementStreamsRepository,
     mMeasurementsRepository
 ) {
-    override fun processSession(deviceId: String, csvSession: CSVSession?) {
+    override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
-        val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
+        val dbSession = mSessionsRepository.getSessionByUUIDSuspend(csvSession.uuid)
         val session: Session?
         val sessionId: Long
 
         if (dbSession == null) {
             Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
             session = csvSession.toSession(deviceId) ?: return
-            sessionId = mSessionsRepository.insert(session)
+            sessionId = mSessionsRepository.insertSuspend(session)
         } else {
             session = Session(dbSession)
             sessionId = dbSession.id
@@ -46,13 +46,13 @@ class SDCardMobileSessionsProcessor(
         }
     }
 
-    private fun finishSession(sessionId: Long, session: Session) {
-        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
+    private suspend fun finishSession(sessionId: Long, session: Session) {
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTimeSuspend(sessionId)
         session.stopRecording(lastMeasurementTime)
-        mSessionsRepository.update(session)
+        mSessionsRepository.updateSuspend(session)
     }
 
-    override fun filterMeasurements(
+    override suspend fun filterMeasurements(
         sessionId: Long,
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>

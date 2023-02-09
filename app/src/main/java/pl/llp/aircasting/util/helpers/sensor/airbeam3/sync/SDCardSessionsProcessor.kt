@@ -28,9 +28,9 @@ abstract class SDCardSessionsProcessor(
         processSession(deviceId, csvSession)
     }
 
-    abstract fun processSession(deviceId: String, csvSession: CSVSession?)
+    abstract suspend fun processSession(deviceId: String, csvSession: CSVSession?)
 
-    fun processMeasurements(
+    suspend fun processMeasurements(
         deviceId: String,
         sessionId: Long,
         streamHeaderValue: Int,
@@ -42,7 +42,7 @@ abstract class SDCardSessionsProcessor(
         ) ?: return
 
         val measurementStream = csvMeasurementStream.toMeasurementStream(deviceId)
-        val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsert(
+        val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsertSuspend(
             sessionId,
             measurementStream
         )
@@ -58,11 +58,10 @@ abstract class SDCardSessionsProcessor(
             "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}"
         )
 
-        // TODO: Change to coroutines;
-        mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
+        mMeasurementsRepository.insertAllSuspend(measurementStreamId, sessionId, measurements)
     }
 
-    abstract fun filterMeasurements(
+    abstract suspend fun filterMeasurements(
         sessionId: Long,
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>

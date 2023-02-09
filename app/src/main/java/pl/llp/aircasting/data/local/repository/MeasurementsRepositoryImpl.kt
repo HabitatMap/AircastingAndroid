@@ -1,5 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
+import android.util.Log
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
@@ -28,6 +30,23 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         mDatabase.measurements().insertAll(measurementDBObjects)
     }
 
+    suspend fun insertAllSuspend(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+        val measurementDBObjects = measurements.map { measurement ->
+            MeasurementDBObject(
+                measurementStreamId,
+                sessionId,
+                measurement.value,
+                measurement.time,
+                measurement.latitude,
+                measurement.longitude,
+                measurement.averagingFrequency
+            )
+        }
+        Log.v(TAG, "Inserting ${measurementDBObjects.size} measurements")
+        val insertedIds = mDatabase.measurements().insertAllSuspend(measurementDBObjects)
+        Log.v(TAG, "Inserted ${insertedIds.size} measurements")
+    }
+
     override suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val measurementDBObject = MeasurementDBObject(
             measurementStreamId,
@@ -47,7 +66,12 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         return measurement?.time
     }
 
-    fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
+    suspend fun lastMeasurementTimeSuspend(sessionId: Long): Date? {
+        val measurement = mDatabase.measurements().lastForSessionSuspend(sessionId)
+        return measurement?.time
+    }
+
+    suspend fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
         val measurement = mDatabase.measurements().lastForStream(sessionId, measurementStreamId)
         return measurement?.time
     }
@@ -60,7 +84,7 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
     }
 
-    fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
+    suspend fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
         return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
     }
 
