@@ -52,12 +52,10 @@ open class SensorsModule {
     fun providesMobileSDCardCSVIterator(
         errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository,
-        measurementsRepository: MeasurementsRepositoryImpl
     ): SDCardSessionFileHandlerMobile =
         SDCardSessionFileHandlerMobile(
             errorHandler,
             sessionsRepository,
-            measurementsRepository
         )
 
     @Provides

@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
-import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
@@ -49,7 +48,6 @@ class SDCardSessionFileHandlerFixed(
 class SDCardSessionFileHandlerMobile(
     private val mErrorHandler: ErrorHandler,
     private val sessionRepository: SessionsRepository,
-    private val measurementsRepository: MeasurementsRepositoryImpl,
     private val ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val defaultScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : SDCardSessionFileHandler {
@@ -132,8 +130,6 @@ class SDCardSessionFileHandlerMobile(
         val middleMeasurement = chunk[chunk.size / 2]
         val middleMeasurementParams = middleMeasurement.airBeamParams()
         val lineWithAveragedValuesParameters = middleMeasurementParams.toMutableList()
-        setLocationFromDBIfExists(middleMeasurement, lineWithAveragedValuesParameters)
-
         CSVMeasurementStream.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
             var sumOfHeaderValuesInChunk = 0.0
             var countOfNonNullMeasurements = 0
@@ -150,22 +146,5 @@ class SDCardSessionFileHandlerMobile(
                 averageStreamValue.toString()
         }
         return lineWithAveragedValuesParameters.joinToString(AB_DELIMITER)
-    }
-
-    private fun setLocationFromDBIfExists(
-        middleMeasurement: String,
-        lineWithAveragedValuesParameters: MutableList<String>
-    ) {
-        val date = CSVSession.timestampFrom(middleMeasurement)
-        val location = measurementsRepository.getMeasurementsLocationAtTime(
-            dbSession?.id,
-            date
-        )
-        if (location != null) {
-            lineWithAveragedValuesParameters[SDCardCSVFileFactory.Header.LATITUDE.value] =
-                location.latitude.toString()
-            lineWithAveragedValuesParameters[SDCardCSVFileFactory.Header.LONGITUDE.value] =
-                location.longitude.toString()
-        }
     }
 }
