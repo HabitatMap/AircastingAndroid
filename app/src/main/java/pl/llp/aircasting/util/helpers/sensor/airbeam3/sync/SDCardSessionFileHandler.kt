@@ -72,7 +72,11 @@ class SDCardSessionFileHandlerMobile(
         }
 
         val averageFileMeasurementsJob = defaultScope.launch {
-            currentChunkTime = dbSession?.startTime ?: CSVSession.timestampFrom(lines.firstOrNull())
+            currentChunkTime = try {
+                DateUtils.truncate(dbSession?.startTime, Calendar.SECOND)
+            } catch (e: Exception) {
+                CSVSession.timestampFrom(lines.firstOrNull())
+            }
             incrementChunkTime(averagingFrequency)
 
             lines.chunked(averagingFrequency) { chunk ->
@@ -102,31 +106,13 @@ class SDCardSessionFileHandlerMobile(
     private fun getFinalAveragingFrequency(
         lines: List<String>
     ): Int {
-        val firstMeasurementTime = try {
-            DateUtils.truncate(dbSession?.startTime, Calendar.SECOND)
-        } catch (e: Exception) {
-            CSVSession.timestampFrom(lines.firstOrNull())
-        }
+        val firstMeasurementTime = dbSession?.startTime
+            ?: CSVSession.timestampFrom(lines.firstOrNull())
         val lastMeasurementTime = CSVSession.timestampFrom(lines.lastOrNull())
         return AveragingService.getAveragingFrequency(firstMeasurementTime, lastMeasurementTime)
     }
 
     private fun averageMeasurementFrom(chunk: List<String>): String {
-        /*
-        * As the AB keeps all the measurements on SD card, even the ones that we have in local DB,
-        * we could just average them all from the file values;
-        * set time based on Session Start Time and the Averaging Threshold;
-        * If there is a measurement in local DB with such time, we will grab it's location
-        * to preserve the geolocation accuracy from the phone
-        * (or use sql transaction to update all the measurement's data except for location,
-        * instead of filtering them during processing?)
-        * Questions:
-        * 1. If session has already averaged measurements in local db, how to connect them to files ones?
-        * It should just replace them with the averaged ones from file with their geo location
-        * 2. Unify averaging strategy code to not have it here and also in AveragingService that works with DB measurements,
-        * as the background averaging should still persist for incoming measurements when the AB is connected,
-        * in case the user will not sync the SD
-        * */
         val middleMeasurement = chunk[chunk.size / 2]
         val middleMeasurementParams = middleMeasurement.airBeamParams()
         val lineWithAveragedValuesParameters = middleMeasurementParams.toMutableList()
