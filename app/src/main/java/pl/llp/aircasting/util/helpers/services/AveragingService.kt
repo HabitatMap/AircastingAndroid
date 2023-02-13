@@ -34,14 +34,15 @@ import java.util.concurrent.atomic.AtomicBoolean
  *
  */
 
-class AveragingService private constructor(private val sessionId: Long) {
+class AveragingService private constructor(
+    private val sessionId: Long,
+    private val mMeasurementsRepository: MeasurementsRepositoryImpl,
+    private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
+    private val mSessionsRepository: SessionsRepository,
+) {
     private val LOG_TAG = "AveragingService"
 
     private var mDBSession: SessionDBObject?
-
-    private val mMeasurementsRepository = MeasurementsRepositoryImpl()
-    private val mMeasurementStreamsRepository = MeasurementStreamsRepository()
-    private val mSessionsRepository = SessionsRepository()
 
     private val mFirstThresholdTime: Long
     private val mSecondThresholdTime: Long
@@ -52,19 +53,22 @@ class AveragingService private constructor(private val sessionId: Long) {
 
     private var finalAveragingThresholdIndex: Int? = null
 
+    private var currentChunkTime: Date?
+
     init {
         this.mDBSession = mSessionsRepository.getSessionById(sessionId)
+        currentChunkTime = mDBSession?.startTime
         this.mStreamIds = getStreamIds()
-        this.mFirstThresholdTime = (mDBSession?.startTime ?: Date()).time + FIRST_TRESHOLD_TIME
-        this.mSecondThresholdTime = (mDBSession?.startTime ?: Date()).time + SECOND_TRESHOLD_TIME
+        this.mFirstThresholdTime = (mDBSession?.startTime ?: Date()).time + FIRST_THRESHOLD_TIME
+        this.mSecondThresholdTime = (mDBSession?.startTime ?: Date()).time + SECOND_THRESHOLD_TIME
     }
 
     companion object {
-        val DEFAULT_FREQUENCY = 1
-        val FIRST_TRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
-        val FIRST_THRESHOLD_FREQUENCY = 5
-        val SECOND_TRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
-        val SECOND_THRESHOLD_FREQUENCY = 60
+        const val DEFAULT_FREQUENCY = 1
+        const val FIRST_THRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        const val FIRST_THRESHOLD_FREQUENCY = 5
+        const val SECOND_THRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
+        const val SECOND_THRESHOLD_FREQUENCY = 60
 
         private val THRESHOLDS = arrayOf(
             AveragingThreshold(
@@ -73,11 +77,11 @@ class AveragingService private constructor(private val sessionId: Long) {
             ),
             AveragingThreshold(
                 windowSize = FIRST_THRESHOLD_FREQUENCY,
-                time = FIRST_TRESHOLD_TIME
+                time = FIRST_THRESHOLD_TIME
             ),
             AveragingThreshold(
                 windowSize = SECOND_THRESHOLD_FREQUENCY,
-                time = SECOND_TRESHOLD_TIME
+                time = SECOND_THRESHOLD_TIME
             )
         )
 
@@ -86,11 +90,21 @@ class AveragingService private constructor(private val sessionId: Long) {
          */
         private var mSingletons: HashMap<Long, AveragingService?> = hashMapOf()
 
-        fun get(sessionId: Long?): AveragingService? {
+        fun get(
+            sessionId: Long?,
+            mMeasurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
+            mMeasurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
+            mSessionsRepository: SessionsRepository = SessionsRepository(),
+        ): AveragingService? {
             sessionId ?: return null
 
             if (mSingletons[sessionId] == null) {
-                mSingletons[sessionId] = AveragingService(sessionId)
+                mSingletons[sessionId] = AveragingService(
+                    sessionId,
+                    mMeasurementsRepository,
+                    mMeasurementStreamsRepository,
+                    mSessionsRepository,
+                )
             }
 
             return mSingletons[sessionId]
@@ -112,9 +126,9 @@ class AveragingService private constructor(private val sessionId: Long) {
             val sessionDuration = lastMeasurement.time.time.minus(firstMeasurement.time.time)
 
             when {
-                sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
-                (sessionDuration > FIRST_TRESHOLD_TIME) && (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
-                sessionDuration > SECOND_TRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
+                sessionDuration < FIRST_THRESHOLD_TIME -> return DEFAULT_FREQUENCY
+                (sessionDuration > FIRST_THRESHOLD_TIME) && (sessionDuration < SECOND_THRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
+                sessionDuration > SECOND_THRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
             }
             return 0
         }
@@ -126,9 +140,9 @@ class AveragingService private constructor(private val sessionId: Long) {
             val sessionDuration = lastMeasurementDate.time.minus(firstMeasurementDate.time)
 
             return when {
-                sessionDuration < FIRST_TRESHOLD_TIME -> return DEFAULT_FREQUENCY
-                (sessionDuration > FIRST_TRESHOLD_TIME) && (sessionDuration < SECOND_TRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
-                sessionDuration > SECOND_TRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
+                sessionDuration < FIRST_THRESHOLD_TIME -> return DEFAULT_FREQUENCY
+                (sessionDuration > FIRST_THRESHOLD_TIME) && (sessionDuration < SECOND_THRESHOLD_TIME) -> return FIRST_THRESHOLD_FREQUENCY
+                sessionDuration > SECOND_THRESHOLD_TIME -> return SECOND_THRESHOLD_FREQUENCY
                 else -> DEFAULT_FREQUENCY
             }
         }
@@ -233,18 +247,18 @@ class AveragingService private constructor(private val sessionId: Long) {
         isCurrent: Boolean,
         isFinal: Boolean = false
     ) {
-        var measurements: List<MeasurementDBObject>?
+        var measurementsInStreamToAverage: List<MeasurementDBObject>?
 
         streamIds()?.forEach { streamId ->
-            measurements = measurementsToAverage[streamId]
+            measurementsInStreamToAverage = measurementsToAverage[streamId]
 
-            if (measurements == null) {
+            if (measurementsInStreamToAverage == null) {
                 Log.d(LOG_TAG, "No measurements to average")
             } else {
-                if (measurements!!.size >= windowSize || isFinal) {
+                if (measurementsInStreamToAverage!!.size >= windowSize || isFinal) {
                     averageStreamMeasurements(
                         streamId,
-                        measurements!!,
+                        measurementsInStreamToAverage!!,
                         windowSize,
                         averagingFrequency,
                         isCurrent,
@@ -270,7 +284,6 @@ class AveragingService private constructor(private val sessionId: Long) {
             } else {
                 removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
-
         }
     }
 
@@ -314,6 +327,7 @@ class AveragingService private constructor(private val sessionId: Long) {
             streamId,
             measurementsToDeleteIds
         )
+        Unit
     }
 
     fun performFinalAveragingAfterSDSync(averagingFrequencyIncludingSDCardMeasurements: Int) {
