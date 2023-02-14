@@ -244,6 +244,10 @@ class AveragingService private constructor(
         var measurementsInStreamToAverage: List<MeasurementDBObject>?
         currentAveragedMeasurementTime =
             calendar().addSeconds(currentAveragedMeasurementTime, averagingFrequency)
+        Log.d(
+            TAG,
+            "Current averaged measurement time for ${mDBSession?.name}: $currentAveragedMeasurementTime"
+        )
 
         streamIds()?.forEach { streamId ->
             measurementsInStreamToAverage = measurementsToAverage[streamId]
@@ -320,6 +324,11 @@ class AveragingService private constructor(
         val average =
             measurementsInWindow.sumOf { it.value } / measurementsInWindow.size
         val averagedMeasurementId = middle.id
+        Log.v(TAG, "\"${mDBSession?.name}\" session averaged measurement:\n" +
+                "Averaged Time: $time\n" +
+                "Averaging frequency: $averagingFrequency\n" +
+                "Measurement count in window: ${measurementsInWindow.size}\n" +
+                "Stream ID: $streamId")
         mMeasurementsRepository.averageMeasurement(
             averagedMeasurementId,
             average,
