@@ -115,8 +115,12 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
     }
 
-    fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int) {
-        mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency)
+    fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int, time: Date?) {
+        if (time == null) {
+            Log.e(TAG, "time was null")
+            return
+        }
+        mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency, time)
     }
 
     fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {

@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.extensions.addHours
+import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.FIRST_THRESHOLD_FREQUENCY
 import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.SECOND_THRESHOLD_FREQUENCY
@@ -20,8 +21,8 @@ import kotlin.test.assertNotNull
 
 internal class AveragingServiceTest {
     private val sessionId = 210L
-    private val sessionStartTime = Date()
-    private val sessionAveragingFrequency = SECOND_THRESHOLD_FREQUENCY
+    private var sessionStartTime = Date(1649310342000L)
+    private var sessionAveragingFrequency = SECOND_THRESHOLD_FREQUENCY
     private lateinit var dbSession: SessionDBObject
     private lateinit var sessionsRepository: SessionsRepository
     private val streamId = 598L
@@ -52,10 +53,11 @@ internal class AveragingServiceTest {
                     any()
                 )
             } doReturn dbMeasurementsRH
-            on { averageMeasurement(any(), any(), any()) } doAnswer {
+            on { averageMeasurement(any(), any(), any(), any()) } doAnswer {
                 val id = it.getArgument(0) as Long
                 val average = it.getArgument(1) as Double
-                db[id] = db[id]!!.copy(value = average)
+                val time = it.getArgument(3) as Date
+                db[id] = db[id]!!.copy(value = average, time = time)
             }
             on { deleteMeasurements(any(), any()) } doAnswer { invocationOnMock ->
                 val ids = invocationOnMock.getArgument(1, List::class.java) as List<Long>
@@ -176,6 +178,9 @@ internal class AveragingServiceTest {
             streamsRepository,
             sessionsRepository
         )!!
+        val expectedAveragedSize = 900 / SECOND_THRESHOLD_FREQUENCY
+        val expectedFirstMeasurementTime =
+            calendar().addSeconds(sessionStartTime, SECOND_THRESHOLD_FREQUENCY)
 
         averagingService.perform()
 
@@ -188,6 +193,48 @@ internal class AveragingServiceTest {
                 "Conflicting pair:\n${averaged[i].time}\n${averaged[i - 1].time}\n"
             )
         }
+        assertEquals(expectedAveragedSize, averaged.size)
+        assertEquals(expectedFirstMeasurementTime, averaged.first().time)
+        averaged.forEach {
+            println(it.time)
+        }
+    }
+
+    @Test
+    fun perform_whenAveragingFrequencyIs5_keepsMeasurements5SecondsApartFromEachOther() {
+        val expectedDifference = 5 * 1000L
+        val dbMeasurementsRH =
+            StubData.dbMeasurementsFrom("HabitatHQ-RH-15-hours-of-measurements.csv")
+        db = dbMeasurementsRH.associateBy { it.id }.toMutableMap()
+        whenever(measurementsRepository.getNonAveragedCurrentMeasurements(any(), any(), any()))
+            .thenReturn(dbMeasurementsRH)
+        whenever(measurementsRepository.lastMeasurementTime(sessionId)).doReturn(calendar().addHours(sessionStartTime, 3))
+        val averagingService = AveragingService.get(
+            sessionId,
+            measurementsRepository,
+            streamsRepository,
+            sessionsRepository
+        )!!
+        val expectedAveragedSize = 900 / FIRST_THRESHOLD_FREQUENCY
+        val expectedFirstMeasurementTime =
+            calendar().addSeconds(sessionStartTime, FIRST_THRESHOLD_FREQUENCY)
+
+        averagingService.perform()
+
+        val averaged = db.values.toMutableList()
+        averaged.forEach {
+            println(it.time)
+        }
+        for (i in 1 until averaged.size) {
+            val timeDifference = averaged[i].time.time - averaged[i - 1].time.time
+            assertEquals(
+                expectedDifference,
+                timeDifference,
+                "Conflicting pair:\n${averaged[i].time}\n${averaged[i - 1].time}\n"
+            )
+        }
+        assertEquals(expectedAveragedSize, averaged.size)
+        assertEquals(expectedFirstMeasurementTime, averaged.first().time)
     }
 
     @Test

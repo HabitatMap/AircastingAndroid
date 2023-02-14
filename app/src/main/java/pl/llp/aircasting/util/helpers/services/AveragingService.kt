@@ -1,12 +1,15 @@
 package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.util.extensions.addSeconds
+import pl.llp.aircasting.util.extensions.calendar
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -40,28 +43,19 @@ class AveragingService private constructor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mSessionsRepository: SessionsRepository,
 ) {
-    private val LOG_TAG = "AveragingService"
-
-    private var mDBSession: SessionDBObject?
-
-    private val mFirstThresholdTime: Long
-    private val mSecondThresholdTime: Long
-
+    private var mDBSession: SessionDBObject? = mSessionsRepository.getSessionById(sessionId)
     private var mNewAveragingThreshold = AtomicBoolean(false)
-    private var mStreamIds: List<Long>? = null
+    private var mStreamIds: List<Long>? = getStreamIds()
     private var mPreviousAveragingFrequency: Int? = null
 
     private var finalAveragingThresholdIndex: Int? = null
 
-    private var currentChunkTime: Date?
+    private val mFirstThresholdTime: Long =
+        (mDBSession?.startTime ?: Date()).time + FIRST_THRESHOLD_TIME
+    private val mSecondThresholdTime: Long =
+        (mDBSession?.startTime ?: Date()).time + SECOND_THRESHOLD_TIME
 
-    init {
-        this.mDBSession = mSessionsRepository.getSessionById(sessionId)
-        currentChunkTime = mDBSession?.startTime
-        this.mStreamIds = getStreamIds()
-        this.mFirstThresholdTime = (mDBSession?.startTime ?: Date()).time + FIRST_THRESHOLD_TIME
-        this.mSecondThresholdTime = (mDBSession?.startTime ?: Date()).time + SECOND_THRESHOLD_TIME
-    }
+    private var currentAveragedMeasurementTime: Date? = mDBSession?.startTime
 
     companion object {
         const val DEFAULT_FREQUENCY = 1
@@ -248,12 +242,13 @@ class AveragingService private constructor(
         isFinal: Boolean = false
     ) {
         var measurementsInStreamToAverage: List<MeasurementDBObject>?
+        currentAveragedMeasurementTime =
+            calendar().addSeconds(currentAveragedMeasurementTime, averagingFrequency)
 
         streamIds()?.forEach { streamId ->
             measurementsInStreamToAverage = measurementsToAverage[streamId]
-
             if (measurementsInStreamToAverage == null) {
-                Log.d(LOG_TAG, "No measurements to average")
+                Log.d(TAG, "No measurements to average")
             } else {
                 if (measurementsInStreamToAverage!!.size >= windowSize || isFinal) {
                     averageStreamMeasurements(
@@ -277,10 +272,17 @@ class AveragingService private constructor(
         isCurrent: Boolean,
         isFinal: Boolean = false
     ) {
-
+        var currentChunkTimeInStream = currentAveragedMeasurementTime
         measurements.chunked(windowSize) { measurementsInWindow: List<MeasurementDBObject> ->
             if (measurementsInWindow.size == windowSize) {
-                averageMeasurementsInWindow(measurementsInWindow, averagingFrequency, streamId)
+                averageMeasurementsInWindow(
+                    measurementsInWindow,
+                    averagingFrequency,
+                    streamId,
+                    currentChunkTimeInStream
+                )
+                currentChunkTimeInStream =
+                    calendar().addSeconds(currentChunkTimeInStream, averagingFrequency)
             } else {
                 removeTrailingMeasurements(measurementsInWindow, streamId, isFinal, !isCurrent)
             }
@@ -307,7 +309,8 @@ class AveragingService private constructor(
     private fun averageMeasurementsInWindow(
         measurementsInWindow: List<MeasurementDBObject>,
         averagingFrequency: Int,
-        streamId: Long
+        streamId: Long,
+        time: Date?
     ) {
         val measurementsToDeleteIds: List<Long>
 
@@ -320,14 +323,14 @@ class AveragingService private constructor(
         mMeasurementsRepository.averageMeasurement(
             averagedMeasurementId,
             average,
-            averagingFrequency
+            averagingFrequency,
+            time
         )
         measurementsToDeleteIds = averagedMeasurements.map { it.id }
         mMeasurementsRepository.deleteMeasurements(
             streamId,
             measurementsToDeleteIds
         )
-        Unit
     }
 
     fun performFinalAveragingAfterSDSync(averagingFrequencyIncludingSDCardMeasurements: Int) {
@@ -371,7 +374,7 @@ class AveragingService private constructor(
 
 
         if (windowSize == null || thresholdTime == null || previousWindowSize == null || averagingFrequency == null) {
-            Log.d(LOG_TAG, "No measurements to average")
+            Log.d(TAG, "No measurements to average")
         } else {
             crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
                 averageMeasurements(

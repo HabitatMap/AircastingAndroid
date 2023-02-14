@@ -76,6 +76,6 @@ interface MeasurementDao {
         deleteMeasurements(streamId, measurementsIds)
     }
 
-    @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value WHERE id=:measurement_id")
-    fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int)
+    @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value, time=:time WHERE id=:measurement_id")
+    fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int, time: Date)
 }
