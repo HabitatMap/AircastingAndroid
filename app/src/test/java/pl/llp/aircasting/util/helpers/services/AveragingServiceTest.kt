@@ -263,6 +263,64 @@ internal class AveragingServiceTest {
         }
     }
 
+    // TODO: check averages time differences when performing final averaging after sync
+    @Test
+    fun performFinalAveragingAfterSDSync_calculatesAveragesAccordingToPassedFrequency() {
+        val frequency = FIRST_THRESHOLD_FREQUENCY
+        val expectedDifference = frequency * 1000L
+        setStreamMeasurementsFromFile("HabitatHQ-RH-15-hours-of-measurements.csv")
+        setDefaultAveragingFrequency()
+
+        val averagingService = AveragingService.get(
+            sessionId,
+            measurementsRepository,
+            streamsRepository,
+            sessionsRepository
+        )!!
+        val expectedAveragedSize = 900 / frequency
+        val expectedFirstMeasurementTime =
+            calendar().addSeconds(sessionStartTime, frequency)
+
+        averagingService.performFinalAveragingAfterSDSync(frequency)
+
+        val averaged = db.values.toMutableList()
+        for (i in 1 until averaged.size) {
+            val timeDifference = averaged[i].time.time - averaged[i - 1].time.time
+            assertEquals(
+                expectedDifference,
+                timeDifference,
+                "Conflicting pair:\n${averaged[i].time}\n${averaged[i - 1].time}\n"
+            )
+        }
+        assertEquals(expectedAveragedSize, averaged.size)
+        assertEquals(expectedFirstMeasurementTime, averaged.first().time)
+    }
+
+    @Test
+    fun performFinalAveragingAfterSDSync_removesTrailingMeasurements() {
+        val frequency = SECOND_THRESHOLD_FREQUENCY
+        setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
+        setupDbForAveragingPreviousMeasurements(DEFAULT_FREQUENCY)
+        setDefaultAveragingFrequency()
+        whenever(sessionsRepository.getSessionById(sessionId)).thenReturn(dbSession)
+        val averagingService = AveragingService.get(
+            sessionId,
+            measurementsRepository,
+            streamsRepository,
+            sessionsRepository
+        )!!
+        val expectedAverage = dbMeasurementsRH
+            .map { it.value }
+            .take(frequency)
+            .toTypedArray()
+            .average()
+
+        averagingService.performFinalAveragingAfterSDSync(frequency)
+
+        assertEquals(1, db.size, db.toString())
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+    }
+
     private fun setupDbForAveragingPreviousMeasurements(frequency: Int) {
         whenever(
             measurementsRepository.getNonAveragedPreviousMeasurementsCount(any(), any(), any())
@@ -292,5 +350,9 @@ internal class AveragingServiceTest {
                 3
             )
         )
+    }
+
+    private fun setDefaultAveragingFrequency() {
+        whenever(measurementsRepository.lastMeasurementTime(sessionId)).doReturn(sessionStartTime)
     }
 }
