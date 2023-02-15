@@ -18,6 +18,8 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.addSeconds
+import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.*
 import java.util.Calendar.SECOND
@@ -50,6 +52,7 @@ class NewMeasurementEventObserverImpl(
         numberOfStreams: Int
     ) = flow.onEach { event ->
         val deviceId = event.deviceId ?: return@onEach
+        timestamp = timestamp ?: currentTimeTruncatedToSeconds()
 
         val measurementStream = MeasurementStream(event)
 
@@ -75,10 +78,9 @@ class NewMeasurementEventObserverImpl(
     }
 
     private fun creationTime(numberOfStreams: Int): Date {
-        val currentTime = currentTimeTruncatedToSeconds()
         if (allMeasurementsFromSetReceived(numberOfStreams))
-            timestamp = currentTime
-        return timestamp ?: currentTime
+            timestamp = calendar().addSeconds(timestamp, 1)
+        return timestamp ?: currentTimeTruncatedToSeconds()
     }
 
     /*
