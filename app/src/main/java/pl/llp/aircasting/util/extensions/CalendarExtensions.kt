@@ -72,3 +72,5 @@ fun Calendar.getEndOfTodayEpoch(): Long {
 
     return timeInMillis / 1000
 }
+
+fun Date.truncateTo(field: Int): Date = DateUtils.truncate(this, field)
