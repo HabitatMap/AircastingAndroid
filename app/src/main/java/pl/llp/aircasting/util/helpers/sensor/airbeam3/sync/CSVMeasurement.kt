@@ -3,9 +3,9 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 
-class CSVMeasurement(val value: Double, val latitude: Double?, val longitude: Double?, val time: Date) {
+class CSVMeasurement(val value: Double, val latitude: Double?, val longitude: Double?, val time: Date, val averagingFrequency: Int) {
     fun toMeasurement(): Measurement {
-        return Measurement(value, time, latitude, longitude)
+        return Measurement(value, time, latitude, longitude, averagingFrequency)
     }
 
     override fun toString(): String {

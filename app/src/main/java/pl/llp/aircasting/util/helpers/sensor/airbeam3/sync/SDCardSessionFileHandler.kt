@@ -60,11 +60,11 @@ class SDCardSessionFileHandlerMobile(
             !SDCardCSVFileChecker.lineIsCorrupted(it)
         }
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
-        val csvSession = CSVSession(sessionUUID)
 
         dbSession = sessionRepository.getSessionByUUIDSuspend(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         val averagingFrequency = getFinalAveragingFrequency(lines)
+        val csvSession = CSVSession(sessionUUID, averagingFrequency)
 
         val averageExistingMeasurementsJob = ioScope.launch {
             AveragingService.get(dbSession?.id)

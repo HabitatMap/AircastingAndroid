@@ -17,7 +17,7 @@ import java.util.*
     indices = [
         Index("measurement_stream_id"),
         Index("session_id"),
-        Index(value = ["session_id", "measurement_stream_id", "time"], unique = true)
+//        Index(value = ["session_id", "measurement_stream_id", "time"], unique = true)
     ]
 )
 data class MeasurementDBObject(

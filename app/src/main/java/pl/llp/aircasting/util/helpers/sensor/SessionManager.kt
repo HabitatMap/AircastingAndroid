@@ -11,7 +11,6 @@ import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.repository.*
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.CoroutineContextProviderImpl
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -20,9 +19,6 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
-import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
-import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
-import pl.llp.aircasting.util.helpers.services.AveragingService
 
 class SessionManager(
     private val mContext: Context,
@@ -30,14 +26,13 @@ class SessionManager(
     private val settings: Settings,
     private val errorHandler: ErrorHandler = ErrorHandler(mContext),
     private val sessionsRepository: SessionsRepository = SessionsRepository(),
-    private val measurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
+    private val measurementStreamsRepository: MeasurementStreamsRepository
+    = MeasurementStreamsRepository(),
     private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
-    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository
+    = ActiveSessionMeasurementsRepository(),
     private val noteRepository: NoteRepository = NoteRepository(),
-
-    private val coroutineScope: CoroutineScope
-    = CoroutineScope(CoroutineContextProviderImpl(Dispatchers.IO).context()),
-
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val sessionsSyncService: SessionsSyncService
     = SessionsSyncService.get(apiService, errorHandler, settings),
     private val sessionUpdateService: UpdateSessionService
@@ -50,10 +45,8 @@ class SessionManager(
     = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler),
     private val periodicallySyncSessionsService: PeriodicallySyncSessionsService
     = PeriodicallySyncSessionsService(settings, sessionsSyncService),
-    private var averagingBackgroundService: AveragingBackgroundService? = null,
-
-    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? = null,
     private var mCallback: (() -> Unit)? = null,
+
     private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
         coroutineScope,
         settings,
@@ -79,7 +72,7 @@ class SessionManager(
 
     @Subscribe
     fun onMessageEvent(event: StandaloneModeEvent) {
-        startStandaloneMode(event.sessionUUID)
+        recordingHandler.startStandaloneMode(event.sessionUUID)
     }
 
     @Subscribe
@@ -184,15 +177,6 @@ class SessionManager(
         runOnIOThread {
             sessionsRepository.disconnectMobileBluetoothSessions()
             sessionsRepository.finishMobileMicSessions()
-        }
-    }
-
-    private fun startStandaloneMode(uuid: String) {
-        runOnIOThread {
-            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
-            averagingBackgroundService?.stop()
-            averagingPreviousMeasurementsBackgroundService?.stop()
-            AveragingService.destroy(sessionId)
         }
     }
 

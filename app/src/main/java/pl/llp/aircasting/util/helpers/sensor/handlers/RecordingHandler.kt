@@ -24,6 +24,7 @@ interface RecordingHandler {
     fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?)
     fun stopRecording(uuid: String)
     fun handle(event: NewMeasurementEvent)
+    fun startStandaloneMode(uuid: String)
 }
 
 class RecordingHandlerImpl(
@@ -119,6 +120,15 @@ class RecordingHandlerImpl(
                 AveragingService.destroy(sessionId)
                 stopObservingNewMeasurements(session.deviceId)
             }
+        }
+    }
+
+    override fun startStandaloneMode(uuid: String) {
+        coroutineScope.launch {
+            val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
+            averagingBackgroundService?.stop()
+            averagingPreviousMeasurementsBackgroundService?.stop()
+            AveragingService.destroy(sessionId)
         }
     }
 

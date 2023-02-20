@@ -8,7 +8,8 @@ import java.util.*
 
 class CSVSession(
     val uuid: String?,
-    val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap()
+    val averagingFrequency: Int = 1,
+    val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap(),
 ) {
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
@@ -92,7 +93,8 @@ class CSVSession(
             value,
             latitude,
             longitude,
-            time
+            time,
+            averagingFrequency
         )
     }
 

@@ -160,9 +160,9 @@ class AveragingService private constructor(
     /**
      * Will perform measurements averaging on new (current) measurements. It will average all measurements recorded AFTER
      * crossing last averaging threshold that are not averaged yet and fall exactly into averaging windows of current frequency
-     * e.g. if current averaging frequency is 5s and since last averagin we recorded 6 measrements, 5 measurements will be
+     * e.g. if current averaging frequency is 5s and since last averaging we recorded 6 measurements, 5 measurements will be
      * averaged to 1 and 1 measurements will be left unaveraged. Measurements recorded BEFORE crossing last averaging threshold
-     * will be averaged separately by averagePreviousMeasurements()
+     * will be averaged separately by [averagePreviousMeasurementsWithNewFrequency]
      *
      * @param isFinal False by default. If true, if will delete the remaining measurements not falling into exact window
      */
@@ -231,8 +231,8 @@ class AveragingService private constructor(
 
     /**
      * Performs averaging in chunks of size given. It gets non averaged (or averaged with smaller frequency) measurements,
-     * iterates through them in chinks and takes locatiom from the middle one and average from all of the values
-     * after averaging it deletes the rest of the measuemrenst, leaving only the ones with averaged values
+     * iterates through them in chinks and takes location from the middle one and average from all of the values
+     * after averaging it deletes the rest of the measurements, leaving only the ones with averaged values
      *
      * @param averagingFrequency actual averaging frequency that we want to save to DB. It will be *current* frequency
      * @param windowSize actual window size we want to average. For second threshold, when reaveraging previously averaged
