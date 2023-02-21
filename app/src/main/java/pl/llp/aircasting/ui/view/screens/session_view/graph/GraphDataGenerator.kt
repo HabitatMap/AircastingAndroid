@@ -19,7 +19,7 @@ class GraphDataGenerator(
     private var cumulativeValue = 0.0
     private var cumulativeTime: Long = 0
     private var count = 0
-    private lateinit var startTime: Date
+    private var startTime: Date = Date()
     private var hasNote = false
     private var averagingGeneratorFrequency = 0
 
