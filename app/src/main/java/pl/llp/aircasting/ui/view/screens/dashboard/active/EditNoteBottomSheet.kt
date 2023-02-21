@@ -18,10 +18,11 @@ import pl.llp.aircasting.util.extensions.stopAnimation
 import pl.llp.aircasting.util.extensions.visible
 
 class EditNoteBottomSheet(
-    private val mListener: Listener,
+    private val mListener: Listener?,
     private var mSession: Session?,
-    private val noteNumber: Int
+    private val noteNumber: Int?
 ) : BottomSheet() {
+    constructor(): this(null, null, null)
     interface Listener {
         fun saveChangesNotePressed(note: Note?, session: Session?)
         fun deleteNotePressed(note: Note?, session: Session?)
@@ -86,11 +87,11 @@ class EditNoteBottomSheet(
 
         val noteText = noteInput?.text.toString().trim()
         mNote?.text = noteText
-        mListener.saveChangesNotePressed(mNote, mSession)
+        mListener?.saveChangesNotePressed(mNote, mSession)
     }
 
     private fun deleteNote() {
-        mListener.deleteNotePressed(mNote, mSession)
+        mListener?.deleteNotePressed(mNote, mSession)
     }
 
     override fun layoutId(): Int {
