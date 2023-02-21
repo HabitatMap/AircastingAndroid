@@ -39,6 +39,8 @@
     <color name="aircasting_blue_400_transparent">#5000B2EF</color>
     <color name="did_you_know_box_color">#F4F9FF</color>
 
+    <color name="bottomsheet_close_button_color">@color/aircasting_blue_400</color>
+
     <color name="add_picture_grey">#FAFBFB</color>
 
     <color name="places_autocomplete_search_hint">@color/aircasting_grey_700</color>

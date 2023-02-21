@@ -38,9 +38,11 @@
                     android:paddingEnd="@dimen/keyline_4"
                     android:paddingBottom="@dimen/keyline_4"
                     android:src="@drawable/ic_x"
+                    app:tint="@color/bottomsheet_close_button_color"
                     app:layout_constraintBottom_toTopOf="@+id/txtTitle"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    />
 
                 <TextView
                     android:id="@+id/txtDate"
@@ -118,7 +120,8 @@
                     android:layout_marginTop="@dimen/keyline_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/measurements_table" />
+                    app:layout_constraintTop_toBottomOf="@+id/measurements_table"
+                    tools:layout="@android:layout/simple_list_item_activated_1" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/chart_container"
