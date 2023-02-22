@@ -16,7 +16,6 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.disconnected_view.view.*
 import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.AircastingApplication
@@ -82,7 +81,7 @@ class DisconnectedView(
         lifecycleScope = mDisconnectedView?.findViewTreeLifecycleOwner()?.lifecycleScope
         session = sessionPresenter?.session ?: return
 
-        EventBus.getDefault().safeRegister(this)
+        eventbus.safeRegister(this)
 
         if (session.isAirBeam3())
             bindAirBeam3(session)
@@ -94,8 +93,8 @@ class DisconnectedView(
 
     fun hide() {
         mDisconnectedView?.gone()
-        if (EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().unregister(this)
+        if (eventbus.isRegistered(this))
+            eventbus.unregister(this)
     }
 
     private fun bindBluetoothDevice(session: Session) {

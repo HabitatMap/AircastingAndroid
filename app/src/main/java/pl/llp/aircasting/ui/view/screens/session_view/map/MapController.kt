@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.session_view.map
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -13,7 +12,6 @@ import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
-import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
@@ -79,7 +77,6 @@ open class MapController(
     }
 
     override fun onSessionDisconnectClicked(session: Session) {
-        EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
         airBeamReconnector.disconnect(session)
         mRootActivity.finish()
     }

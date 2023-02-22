@@ -2,7 +2,6 @@ package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active
 
 import android.view.View
 import kotlinx.android.synthetic.main.active_session_actions.view.*
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BottomSheet
@@ -12,7 +11,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
-import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
@@ -55,7 +53,6 @@ open class MobileActiveSessionActionsBottomSheet(
                     SyncUnavailableDialog(parentFragmentManager)
                         .show()
                 } else {
-                    EventBus.getDefault().post(StandaloneModeEvent(session.uuid))
                     airBeamReconnector.disconnect(session)
                 }
                 MainActivity.navigate(context, MOBILE_ACTIVE_TAB_INDEX)

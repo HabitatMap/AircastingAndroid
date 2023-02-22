@@ -2,7 +2,6 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.content.Context
 import android.util.Log
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -32,6 +31,7 @@ class AirBeamReconnector(
         mStandaloneMode.set(true)
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
+        eventbus.post(StandaloneModeEvent(session.uuid))
     }
 
     fun reconnect(
@@ -40,7 +40,7 @@ class AirBeamReconnector(
         errorCallback: (() -> Unit)? = null,
         finallyCallback: (() -> Unit)? = null,
     ) {
-        EventBus.getDefault().safeRegister(this)
+        eventbus.safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
@@ -104,7 +104,7 @@ class AirBeamReconnector(
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
         deviceId?.let {
-            EventBus.getDefault().post(SensorDisconnectedEvent(deviceId, null, session.uuid))
+            eventbus.post(SensorDisconnectedEvent(deviceId, null, session.uuid))
         }
     }
 
@@ -168,7 +168,7 @@ class AirBeamReconnector(
     }
 
     private fun unregisterFromEventBus() {
-        EventBus.getDefault().unregister(this)
+        eventbus.unregister(this)
     }
 
     class ReconnectionEvent(val sessionUuid: String?, val inProgress: Boolean = false)
