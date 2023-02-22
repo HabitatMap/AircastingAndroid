@@ -33,6 +33,8 @@ fun EventBus.safeRegister(subscriber: Any) {
     }
 }
 
+val eventbus: EventBus get() = EventBus.getDefault()
+
 fun found(position: Int) = position != -1
 
 fun labelFormat(value: Float?): String {

@@ -69,9 +69,13 @@ class DisconnectedView(
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: AirBeamReconnector.FinalizedEvent) {
-        if (event.sessionUuid == session.uuid)
-            hideReconnectingLoader()
+    fun onMessageEvent(event: AirBeamReconnector.ReconnectionEvent) {
+        if (event.sessionUuid == session.uuid) {
+            if (event.inProgress)
+                showReconnectingLoader()
+            else
+                hideReconnectingLoader()
+        }
     }
 
     fun show(sessionPresenter: SessionPresenter?) {
@@ -143,8 +147,12 @@ class DisconnectedView(
                 session
             ).show()
         }
+
+        moveLoaderToTopLeft()
+    }
+
+    private fun moveLoaderToTopLeft() {
         mReconnectingLoader?.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            showReconnectingLoader()
             mReconnectingLoader.imageTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(
                     mContext,

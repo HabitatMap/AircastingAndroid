@@ -9,6 +9,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.extensions.eventbus
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
@@ -82,6 +83,7 @@ class AirBeamReconnector(
                 deviceItem,
                 mSession?.uuid
             )
+            eventbus.postSticky(ReconnectionEvent(mSession?.uuid, true))
         } catch (e: Exception) {
             Log.d(bluetoothReconnection, e.stackTraceToString())
         }
@@ -156,7 +158,7 @@ class AirBeamReconnector(
         mAirBeamDiscoveryService.reset()
         mReconnectionTriesNumber = null
         mFinallyCallback?.invoke()
-        EventBus.getDefault().postSticky(FinalizedEvent(mSession?.uuid))
+        eventbus.postSticky(ReconnectionEvent(mSession?.uuid, false))
         unregisterFromEventBus()
     }
 
@@ -169,5 +171,5 @@ class AirBeamReconnector(
         EventBus.getDefault().unregister(this)
     }
 
-    class FinalizedEvent(val sessionUuid: String?)
+    class ReconnectionEvent(val sessionUuid: String?, val inProgress: Boolean = false)
 }
