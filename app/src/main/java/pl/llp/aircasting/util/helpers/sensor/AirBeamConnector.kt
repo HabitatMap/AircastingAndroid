@@ -5,15 +5,18 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
 
 abstract class AirBeamConnector(
-    private val bluetoothManager: BluetoothManager? = null
+    private val bluetoothManager: BluetoothManager? = null,
+    private val deviceAddressByDeviceItem: MutableMap<String, DeviceItem> = ConcurrentHashMap()
 ) {
     interface Listener {
         fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?)
@@ -87,6 +90,7 @@ abstract class AirBeamConnector(
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
         mDeviceItem = deviceItem
+        deviceAddressByDeviceItem[deviceItem.address] = deviceItem
         connectionEstablished.set(true)
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
@@ -99,8 +103,13 @@ abstract class AirBeamConnector(
     }
 
     fun onDisconnected(device: DeviceItem, postDisconnectedEvent: Boolean = true) {
-        if (postDisconnectedEvent) EventBus.getDefault().post(SensorDisconnectedEvent(device.id, device, mSessionUUID))
-        mListener?.onDisconnect(device.id)
+        val deviceItem = if (device.name == UNKNOWN_DEVICE_NAME)
+            deviceAddressByDeviceItem[device.address] ?: device
+        else device
+
+        if (postDisconnectedEvent)
+            EventBus.getDefault().post(SensorDisconnectedEvent(deviceItem.id, deviceItem, mSessionUUID))
+        mListener?.onDisconnect(deviceItem.id)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

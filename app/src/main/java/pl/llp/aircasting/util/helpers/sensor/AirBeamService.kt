@@ -7,6 +7,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
@@ -17,7 +18,7 @@ import pl.llp.aircasting.util.extensions.runOnIOThread
 import javax.inject.Inject
 
 
-abstract class AirBeamService: SensorService(),
+abstract class AirBeamService : SensorService(),
     AirBeamConnector.Listener {
 
     protected var mAirBeamConnector: AirBeamConnector? = null
