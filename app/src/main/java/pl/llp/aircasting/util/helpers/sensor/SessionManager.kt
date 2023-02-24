@@ -77,7 +77,7 @@ class SessionManager(
 
     @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        disconnectSession(event.sessionDeviceId)
+        recordingHandler.disconnectSession(event.sessionDeviceId)
     }
 
     @Subscribe
@@ -177,12 +177,6 @@ class SessionManager(
         runOnIOThread {
             sessionsRepository.disconnectMobileBluetoothSessions()
             sessionsRepository.finishMobileMicSessions()
-        }
-    }
-
-    private fun disconnectSession(deviceId: String) {
-        runOnIOThread {
-            sessionsRepository.disconnectSession(deviceId)
         }
     }
 

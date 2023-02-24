@@ -135,7 +135,7 @@ class SessionsRepository {
         )
     }
 
-    fun disconnectSession(deviceId: String) {
+    suspend fun disconnectSession(deviceId: String) {
         mDatabase.sessions()
             .disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }

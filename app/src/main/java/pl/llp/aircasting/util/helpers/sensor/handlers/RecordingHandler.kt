@@ -25,6 +25,7 @@ interface RecordingHandler {
     fun stopRecording(uuid: String)
     fun handle(event: NewMeasurementEvent)
     fun startStandaloneMode(uuid: String)
+    fun disconnectSession(deviceId: String)
 }
 
 class RecordingHandlerImpl(
@@ -40,8 +41,8 @@ class RecordingHandlerImpl(
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf(),
     private val observers: MutableMap<String, Job> = mutableMapOf(),
 ) : RecordingHandler {
-    private var averagingPreviousMeasurementsBackgroundService: AveragingPreviousMeasurementsBackgroundService? =
-        null
+    private var averagingPreviousMeasurementsBackgroundService
+    : AveragingPreviousMeasurementsBackgroundService? = null
     private var averagingBackgroundService: AveragingBackgroundService? = null
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
@@ -129,6 +130,12 @@ class RecordingHandlerImpl(
             averagingBackgroundService?.stop()
             averagingPreviousMeasurementsBackgroundService?.stop()
             AveragingService.destroy(sessionId)
+        }
+    }
+
+    override fun disconnectSession(deviceId: String) {
+        coroutineScope.launch {
+            sessionsRepository.disconnectSession(deviceId)
         }
     }
 
