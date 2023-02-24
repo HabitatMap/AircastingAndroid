@@ -11,24 +11,25 @@ import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.eventbus
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 
 class AirBeamReconnector(
     private val mContext: Context,
     private val mSessionsRepository: SessionsRepository,
-    private val mAirBeamDiscoveryService: AirBeamDiscoveryService
+    private val mAirBeamDiscoveryService: AirBeamDiscoveryService,
+    private val sessionUuidByStandaloneMode: MutableMap<String, Boolean> = ConcurrentHashMap(),
 ) {
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
 
-    private var mStandaloneMode = AtomicBoolean(false)
     var mReconnectionTriesNumber: Int? = null
     private val RECONNECTION_TRIES_MAX = 50
     private val RECONNECTION_TRIES_INTERVAL = 2000L // 2s between reconnection tries
 
     fun disconnect(session: Session) {
-        mStandaloneMode.set(true)
+        sessionUuidByStandaloneMode[session.uuid] = true
         sendDisconnectedEvent(session)
         updateSessionStatus(session, Session.Status.DISCONNECTED)
         eventbus.post(StandaloneModeEvent(session.uuid))
@@ -69,7 +70,7 @@ class AirBeamReconnector(
     }
 
     fun tryToReconnectPeriodically(session: Session, deviceItem: DeviceItem?) {
-        if (mStandaloneMode.get()) return
+        if (sessionUuidByStandaloneMode[session.uuid] == true) return
         if (mReconnectionTriesNumber != null) return
 
         mReconnectionTriesNumber = 1
