@@ -94,7 +94,8 @@ class RecordingHandlerImpl(
             sessionsRepository,
             measurementStreamsRepository,
             measurementsRepository,
-            activeSessionMeasurementsRepository
+            activeSessionMeasurementsRepository,
+            session.startTime
         )
 
         val flow = MutableSharedFlow<NewMeasurementEvent>()
@@ -103,7 +104,7 @@ class RecordingHandlerImpl(
         observers[session.deviceId] = handler.observe(
             flow,
             coroutineScope,
-            session.defaultNumberOfStreams()
+            session.defaultNumberOfStreams(),
         )
     }
 

@@ -29,7 +29,7 @@ interface NewMeasurementEventObserver {
     fun observe(
         flow: SharedFlow<NewMeasurementEvent>,
         coroutineScope: CoroutineScope,
-        numberOfStreams: Int = 5
+        numberOfStreams: Int = 5,
     ): Job
 }
 
@@ -40,19 +40,22 @@ class NewMeasurementEventObserverImpl(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    startTime: Date
 ) : NewMeasurementEventObserver {
 
+    private var timestamp = startTime
     private val counter = AtomicInteger(0)
-    private var timestamp: Date? = null
-    private var location: Session.Location? = null
+    private var location = Session.Location.get(
+        LocationHelper.lastLocation(),
+        settings.areMapsDisabled()
+    )
 
     override fun observe(
         flow: SharedFlow<NewMeasurementEvent>,
         coroutineScope: CoroutineScope,
-        numberOfStreams: Int
+        numberOfStreams: Int,
     ) = flow.onEach { event ->
         val deviceId = event.deviceId ?: return@onEach
-        timestamp = timestamp ?: currentTimeTruncatedToSeconds()
 
         val measurementStream = MeasurementStream(event)
 
@@ -67,20 +70,18 @@ class NewMeasurementEventObserverImpl(
     }.launchIn(coroutineScope)
 
     private fun creationLocation(numberOfStreams: Int): Session.Location {
-        val currentLocation = Session.Location.get(
-            LocationHelper.lastLocation(),
-            settings.areMapsDisabled()
-        )
-
         if (allMeasurementsFromSetReceived(numberOfStreams))
-            location = currentLocation
-        return location ?: currentLocation
+            location = Session.Location.get(
+                LocationHelper.lastLocation(),
+                settings.areMapsDisabled()
+            )
+        return location
     }
 
     private fun creationTime(numberOfStreams: Int): Date {
         if (allMeasurementsFromSetReceived(numberOfStreams))
-            timestamp = calendar().addSeconds(timestamp, 1)
-        return timestamp ?: currentTimeTruncatedToSeconds()
+            timestamp = calendar().addSeconds(timestamp, 1) ?: timestamp
+        return timestamp
     }
 
     /*
@@ -90,8 +91,6 @@ class NewMeasurementEventObserverImpl(
     */
     private fun allMeasurementsFromSetReceived(numberOfStreams: Int) =
         counter.get().mod(numberOfStreams) == 0
-
-    private fun currentTimeTruncatedToSeconds() = DateUtils.truncate(Date(), SECOND)
 
     private suspend fun saveToDB(
         deviceId: String,
