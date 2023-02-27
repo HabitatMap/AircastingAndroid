@@ -19,6 +19,7 @@ import pl.llp.aircasting.util.helpers.services.AveragingService
 import java.io.File
 import java.io.IOException
 import java.util.*
+import kotlin.math.round
 
 interface SDCardSessionFileHandler {
     suspend fun handle(file: File): CSVSession?
@@ -127,7 +128,7 @@ class SDCardSessionFileHandlerMobile(
                     countOfNonNullMeasurements++
                 }
             }
-            val averageStreamValue = sumOfHeaderValuesInChunk / countOfNonNullMeasurements
+            val averageStreamValue = round(sumOfHeaderValuesInChunk / countOfNonNullMeasurements)
             lineWithAveragedValuesParameters[currentStreamHeader.value] =
                 averageStreamValue.toString()
         }

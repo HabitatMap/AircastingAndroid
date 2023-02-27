@@ -14,6 +14,8 @@ import pl.llp.aircasting.util.extensions.truncateTo
 import java.util.*
 import java.util.Calendar.SECOND
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 /**
  * Averaging for long mobile sessions
@@ -340,7 +342,7 @@ class AveragingService private constructor(
         val middleIndex = measurementsInWindow.size / 2
         val middle = averagedMeasurements.removeAt(middleIndex)
         val average =
-            measurementsInWindow.sumOf { it.value } / measurementsInWindow.size
+            round(measurementsInWindow.sumOf { it.value } / measurementsInWindow.size)
         val averagedMeasurementId = middle.id
 //        Log.v(
 //            TAG, "\"${mDBSession?.name}\" session averaged measurement:\n" +
