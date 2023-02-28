@@ -1,37 +1,30 @@
 package pl.llp.aircasting.util.helpers.services
 
+import kotlinx.coroutines.*
 
-class AveragingPreviousMeasurementsBackgroundService(val averagingService: AveragingService) {
-    private val DEFAULT_INTERVAL = 60 * 1000L // we run it every minute but perform averaging only when needed
-    private val thread = AveragingPreviousMeasurementsThread()
+
+class AveragingPreviousMeasurementsBackgroundService(
+    val averagingService: AveragingService,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+) {
+    private val DEFAULT_INTERVAL =
+        60 * 1000L // we run it every minute but perform averaging only when needed
+    private lateinit var job: Job
 
     fun start() {
-        thread.start()
+//        job = coroutineScope.launch {
+//            while (true) {
+//                averageMeasurements()
+//                delay(DEFAULT_INTERVAL)
+//            }
+//        }
     }
 
     fun stop() {
-        thread.cancel()
+//        thread.cancel()
     }
 
-    private inner class AveragingPreviousMeasurementsThread : Thread() {
-
-        override fun run() {
-            try {
-                while (!isInterrupted) {
-                    averageMeasurements()
-                    sleep(DEFAULT_INTERVAL)
-                }
-            } catch (e: InterruptedException) {
-                return
-            }
-        }
-
-        fun cancel() {
-            interrupt()
-        }
-
-        private fun averageMeasurements() {
-            averagingService.averagePreviousMeasurementsWithNewFrequency()
-        }
+    private fun averageMeasurements() {
+//        averagingService.averagePreviousMeasurementsWithNewFrequency()
     }
 }

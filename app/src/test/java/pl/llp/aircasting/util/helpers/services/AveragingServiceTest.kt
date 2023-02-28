@@ -42,7 +42,7 @@ internal class AveragingServiceTest {
             on { averaging_frequency } doReturn sessionAveragingFrequency
         }
         sessionsRepository = mock {
-            on { getSessionById(sessionId) } doReturn dbSession
+            on { getSessionByIdSuspend(sessionId) } doReturn dbSession
         }
         streamsRepository = mock {
             on { getStreamsIdsBySessionIds(listOf(sessionId)) } doReturn listOf(streamId)
@@ -219,7 +219,7 @@ internal class AveragingServiceTest {
     fun averagePreviousMeasurementsWithNewFrequency_removesTrailingMeasurements() {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
         setupDbForAveragingPreviousMeasurements(DEFAULT_FREQUENCY)
-        whenever(sessionsRepository.getSessionById(sessionId)).thenReturn(dbSession)
+        whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
         val averagingService = AveragingService.get(
             sessionId,
             measurementsRepository,
@@ -302,7 +302,7 @@ internal class AveragingServiceTest {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
         setupDbForAveragingPreviousMeasurements(DEFAULT_FREQUENCY)
         setDefaultAveragingFrequency()
-        whenever(sessionsRepository.getSessionById(sessionId)).thenReturn(dbSession)
+        whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
         val averagingService = AveragingService.get(
             sessionId,
             measurementsRepository,
@@ -332,7 +332,7 @@ internal class AveragingServiceTest {
             on { startTime } doReturn sessionStartTime
             on { averaging_frequency } doReturn frequency
         }
-        whenever(sessionsRepository.getSessionById(sessionId)).thenReturn(dbSession)
+        whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
     }
 
     private fun setStreamMeasurementsFromFile(fileName: String) {

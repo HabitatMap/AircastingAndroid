@@ -43,6 +43,10 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUIDSuspend(uuid)
     }
 
+    suspend fun getSessionByIdSuspend(id: Long): SessionDBObject? {
+        return mDatabase.sessions().loadSessionByIdSuspend(id)
+    }
+
     fun getSessionById(id: Long): SessionDBObject? {
         return mDatabase.sessions().loadSessionById(id)
     }
@@ -189,7 +193,7 @@ class SessionsRepository {
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
     }
 
-    fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
+    suspend fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
         mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
 

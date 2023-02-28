@@ -1,6 +1,9 @@
 package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
@@ -15,7 +18,6 @@ import java.util.*
 import java.util.Calendar.SECOND
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.round
-import kotlin.math.roundToInt
 
 /**
  * Averaging for long mobile sessions
@@ -46,6 +48,7 @@ class AveragingService private constructor(
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mSessionsRepository: SessionsRepository,
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) {
     private var mDBSession: SessionDBObject? = mSessionsRepository.getSessionById(sessionId)
     private var mNewAveragingThreshold = AtomicBoolean(false)
@@ -64,7 +67,7 @@ class AveragingService private constructor(
 
     companion object {
         const val DEFAULT_FREQUENCY = 1
-        const val FIRST_THRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
+        const val FIRST_THRESHOLD_TIME = 5 * 60 * 1000 // 2 hours
         const val FIRST_THRESHOLD_FREQUENCY = 5
         const val SECOND_THRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
         const val SECOND_THRESHOLD_FREQUENCY = 60
@@ -168,7 +171,7 @@ class AveragingService private constructor(
      *
      * @param isFinal False by default. If true, if will delete the remaining measurements not falling into exact window
      */
-    fun perform(isFinal: Boolean = false) {
+    suspend fun perform(isFinal: Boolean = false) {
         val measurementsToAverage: HashMap<Long, List<MeasurementDBObject>?> = hashMapOf()
 
         // When while checking we find out the threshold has changed since last time checked
@@ -180,20 +183,20 @@ class AveragingService private constructor(
             measurementsToAverage[streamId] = getCurrentMeasurementsToAverage(streamId)
         }
 
-        if (currentAveragingThreshold().windowSize > 1) {
+        if (currentAveragingThresholdSuspend().windowSize > 1) {
             averageMeasurements(
                 measurementsToAverage,
-                currentAveragingThreshold().windowSize,
-                currentAveragingThreshold().windowSize,
+                currentAveragingThresholdSuspend().windowSize,
+                currentAveragingThresholdSuspend().windowSize,
                 true,
                 isFinal
             )
         }
     }
 
-    private fun getCurrentMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
+    private suspend fun getCurrentMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-            currentAveragingThreshold().let { currentAveragingThreshold ->
+            currentAveragingThresholdSuspend().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedCurrentMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
@@ -203,9 +206,9 @@ class AveragingService private constructor(
         }
     }
 
-    private fun getPreviousMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
+    private suspend fun getPreviousMeasurementsToAverage(streamId: Long): List<MeasurementDBObject>? {
         return crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-            currentAveragingThreshold().let { currentAveragingThreshold ->
+            currentAveragingThresholdSuspend().let { currentAveragingThreshold ->
                 mMeasurementsRepository.getNonAveragedPreviousMeasurements(
                     streamId,
                     currentAveragingThreshold.windowSize,
@@ -215,19 +218,19 @@ class AveragingService private constructor(
         }
     }
 
-    private fun checkDBAveragingFrequencyAndUpdateItIfNeeded() {
-        mDBSession = mSessionsRepository.getSessionById(sessionId)
+    private suspend fun checkDBAveragingFrequencyAndUpdateItIfNeeded() {
+        mDBSession = mSessionsRepository.getSessionByIdSuspend(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
-            if (currentAveragingThreshold().windowSize > dbAveragingFrequency) {
+            if (currentAveragingThresholdSuspend().windowSize > dbAveragingFrequency) {
                 mPreviousAveragingFrequency = dbAveragingFrequency
-                mNewAveragingThreshold.set(true)
                 updateDBAveragingFrequency()
                 refreshCurrentMeasurementsChunkTime()
+                averagePreviousMeasurementsWithNewFrequency()
             }
         }
     }
 
-    private fun refreshCurrentMeasurementsChunkTime() {
+    private suspend fun refreshCurrentMeasurementsChunkTime() {
         currentMeasurementsChunkTime = crossingLastThresholdDate()?.truncateTo(SECOND)
     }
 
@@ -250,6 +253,10 @@ class AveragingService private constructor(
         isCurrent: Boolean,
         isFinal: Boolean = false,
     ) {
+        measurementsToAverage.forEach {
+            Log.d(TAG, "Averaging measurements: ${it.value}")
+        }
+
         var measurementsInStreamToAverage: List<MeasurementDBObject>?
 
         val startingTime = getStartingTime(isCurrent, averagingFrequency)
@@ -378,18 +385,16 @@ class AveragingService private constructor(
 //        )
     }
 
-    fun performFinalAveragingAfterSDSync(averagingFrequencyIncludingSDCardMeasurements: Int) {
+    suspend fun performFinalAveragingAfterSDSync(averagingFrequencyIncludingSDCardMeasurements: Int) {
         finalAveragingThresholdIndex = THRESHOLDS.indexOf(
             THRESHOLDS.find { it.windowSize == averagingFrequencyIncludingSDCardMeasurements }
         )
+        Log.d(TAG, "Performing final averaging with frequency index: $finalAveragingThresholdIndex")
+        checkDBAveragingFrequencyAndUpdateItIfNeeded()
         averagePreviousMeasurementsWithNewFrequency()
-        perform(true)
     }
 
-    fun averagePreviousMeasurementsWithNewFrequency() {
-        checkDBAveragingFrequencyAndUpdateItIfNeeded()
-        if (!mNewAveragingThreshold.get()) return
-
+    private suspend fun averagePreviousMeasurementsWithNewFrequency() {
         var windowSize: Int? = null
         var previousWindowSize: Int? = null
         var averagingFrequency: Int? = 1
@@ -402,18 +407,20 @@ class AveragingService private constructor(
 
         val nonAveragedMeasurementsCount =
             crossingLastThresholdTime()?.let { crossingLastThresholdTime ->
-                mMeasurementsRepository.getNonAveragedPreviousMeasurementsCount(
-                    sessionId,
-                    Date(crossingLastThresholdTime),
-                    currentAveragingThreshold().windowSize
-                )
+                withContext(Dispatchers.IO) {
+                    mMeasurementsRepository.getNonAveragedPreviousMeasurementsCount(
+                        sessionId,
+                        Date(crossingLastThresholdTime),
+                        currentAveragingThresholdSuspend().windowSize
+                    )
+                }
             }
 
         if ((nonAveragedMeasurementsCount ?: 0) > 0) {
-            thresholdTime = currentAveragingThreshold().time
+            thresholdTime = currentAveragingThresholdSuspend().time
             previousWindowSize = mPreviousAveragingFrequency
-                ?: THRESHOLDS[currentAveragingThresholdIndex() - 1].windowSize
-            averagingFrequency = currentAveragingThreshold().windowSize
+                ?: THRESHOLDS[currentAveragingThresholdIndexSuspend() - 1].windowSize
+            averagingFrequency = currentAveragingThresholdSuspend().windowSize
             windowSize = averagingFrequency / previousWindowSize
         }
 
@@ -438,8 +445,8 @@ class AveragingService private constructor(
         previousMeasurementsChunkTime = mDBSession?.startTime?.truncateTo(SECOND)
     }
 
-    private fun updateDBAveragingFrequency() {
-        currentAveragingThreshold().let { averagingThreshold ->
+    private suspend fun updateDBAveragingFrequency() {
+        currentAveragingThresholdSuspend().let { averagingThreshold ->
             mSessionsRepository.updateSessionAveragingFrequency(
                 sessionId,
                 averagingThreshold.windowSize
@@ -447,16 +454,16 @@ class AveragingService private constructor(
         }
     }
 
-    private fun crossingLastThresholdTime(): Long? {
-        return when (currentAveragingThresholdIndex()) {
+    private suspend fun crossingLastThresholdTime(): Long? {
+        return when (currentAveragingThresholdIndexSuspend()) {
             2 -> mSecondThresholdTime
             1 -> mFirstThresholdTime
             else -> null
         }
     }
 
-    private fun crossingLastThresholdDate(): Date? {
-        return when (currentAveragingThresholdIndex()) {
+    private suspend fun crossingLastThresholdDate(): Date? {
+        return when (currentAveragingThresholdIndexSuspend()) {
             2 -> Date(mSecondThresholdTime)
             1 -> Date(mFirstThresholdTime)
             else -> null
@@ -467,12 +474,30 @@ class AveragingService private constructor(
         return THRESHOLDS[currentAveragingThresholdIndex()]
     }
 
+    suspend fun currentAveragingThresholdSuspend(): AveragingThreshold {
+        return THRESHOLDS[currentAveragingThresholdIndexSuspend()]
+    }
+
     private fun currentAveragingThresholdIndex(): Int {
         val finalIndex = finalAveragingThresholdIndex
         if (finalIndex != null && finalIndex != -1)
             return finalIndex
 
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId) ?: Date()
+        return when {
+            lastMeasurementTime.time > mSecondThresholdTime -> 2
+            lastMeasurementTime.time > mFirstThresholdTime -> 1
+            else -> 0
+        }
+    }
+
+    private suspend fun currentAveragingThresholdIndexSuspend(): Int {
+        val finalIndex = finalAveragingThresholdIndex
+        if (finalIndex != null && finalIndex != -1)
+            return finalIndex
+
+        val lastMeasurementTime =
+            mMeasurementsRepository.lastMeasurementTimeSuspend(sessionId) ?: Date()
         return when {
             lastMeasurementTime.time > mSecondThresholdTime -> 2
             lastMeasurementTime.time > mFirstThresholdTime -> 1

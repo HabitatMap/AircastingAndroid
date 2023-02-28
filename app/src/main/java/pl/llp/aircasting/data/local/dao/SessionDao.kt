@@ -100,6 +100,9 @@ interface SessionDao {
     suspend fun loadSessionByUUIDSuspend(uuid: String): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
+    suspend fun loadSessionByIdSuspend(id: Long): SessionDBObject?
+
+    @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
     fun loadSessionById(id: Long): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND deleted=0")
@@ -203,6 +206,6 @@ interface SessionDao {
     fun loadSessionUuidsByType(type: Session.Type): List<Long>
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
-    fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
+    suspend fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
 
 }
