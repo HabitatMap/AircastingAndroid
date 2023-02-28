@@ -65,6 +65,7 @@ class SDCardSessionFileHandlerMobile(
         dbSession = sessionRepository.getSessionByUUIDSuspend(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         val averagingFrequency = getFinalAveragingFrequency(lines)
+        Log.d(TAG, "${dbSession?.name} final averaging frequency: $averagingFrequency")
         val csvSession = CSVSession(sessionUUID, averagingFrequency)
 
         val averageExistingMeasurementsJob = ioScope.launch {
@@ -110,6 +111,8 @@ class SDCardSessionFileHandlerMobile(
         val firstMeasurementTime = dbSession?.startTime
             ?: CSVSession.timestampFrom(lines.firstOrNull())
         val lastMeasurementTime = CSVSession.timestampFrom(lines.lastOrNull())
+        Log.d(TAG, "First measurement time: $firstMeasurementTime")
+        Log.d(TAG, "Last measurement time: $lastMeasurementTime")
         return AveragingService.getAveragingFrequency(firstMeasurementTime, lastMeasurementTime)
     }
 

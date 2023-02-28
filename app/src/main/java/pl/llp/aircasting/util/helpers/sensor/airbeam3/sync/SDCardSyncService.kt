@@ -104,7 +104,6 @@ class SDCardSyncService(
     ) = coroutineScope.launch {
         Log.v(TAG, "Saving measurements locally")
         stepsByFilePaths.entries.forEach { entry ->
-            Log.v(TAG, "Current stepByFilePath entry: $entry")
             when (entry.key?.type) {
                 SDCardReader.StepType.MOBILE -> launch {
                     entry.value.forEach { path ->

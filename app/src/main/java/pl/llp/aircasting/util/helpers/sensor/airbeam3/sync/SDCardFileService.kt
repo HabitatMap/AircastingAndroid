@@ -47,8 +47,6 @@ class SDCardFileService(
 
         newLinesFlow.onEach { lines ->
             lines.forEach { line ->
-                Log.v(TAG, "Reading line: $line")
-
                 val lineParams = line.split(AB_DELIMITER)
                 val uuid = lineParams[1]
 

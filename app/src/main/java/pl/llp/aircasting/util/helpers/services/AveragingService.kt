@@ -67,7 +67,7 @@ class AveragingService private constructor(
 
     companion object {
         const val DEFAULT_FREQUENCY = 1
-        const val FIRST_THRESHOLD_TIME = 5 * 60 * 1000 // 2 hours
+        const val FIRST_THRESHOLD_TIME = 2 * 60 * 60 * 1000 // 2 hours
         const val FIRST_THRESHOLD_FREQUENCY = 5
         const val SECOND_THRESHOLD_TIME = 9 * 60 * 60 * 1000 // 9 hours
         const val SECOND_THRESHOLD_FREQUENCY = 60
@@ -177,7 +177,7 @@ class AveragingService private constructor(
         // When while checking we find out the threshold has changed since last time checked
         // we will 1) update session averaging frequency in DB
         // 2) set mNewAveragingThreshold to true so we can perform averaging previous measurements
-        checkDBAveragingFrequencyAndUpdateItIfNeeded()
+        updateDBAveragingFrequencyIfNeededAndAveragePreviousMeasurements()
 
         streamIds()?.forEach { streamId ->
             measurementsToAverage[streamId] = getCurrentMeasurementsToAverage(streamId)
@@ -218,12 +218,14 @@ class AveragingService private constructor(
         }
     }
 
-    private suspend fun checkDBAveragingFrequencyAndUpdateItIfNeeded() {
+    private suspend fun updateDBAveragingFrequencyIfNeededAndAveragePreviousMeasurements() {
         mDBSession = mSessionsRepository.getSessionByIdSuspend(sessionId)
         mDBSession?.averaging_frequency?.let { dbAveragingFrequency ->
+            Log.d(TAG, "Session averaging frequency: ${mDBSession?.averaging_frequency}")
             if (currentAveragingThresholdSuspend().windowSize > dbAveragingFrequency) {
                 mPreviousAveragingFrequency = dbAveragingFrequency
                 updateDBAveragingFrequency()
+                Log.d(TAG, "New? Session averaging frequency: ${mDBSession?.averaging_frequency}")
                 refreshCurrentMeasurementsChunkTime()
                 averagePreviousMeasurementsWithNewFrequency()
             }
@@ -390,11 +392,14 @@ class AveragingService private constructor(
             THRESHOLDS.find { it.windowSize == averagingFrequencyIncludingSDCardMeasurements }
         )
         Log.d(TAG, "Performing final averaging with frequency index: $finalAveragingThresholdIndex")
-        checkDBAveragingFrequencyAndUpdateItIfNeeded()
-        averagePreviousMeasurementsWithNewFrequency()
+        updateDBAveragingFrequencyIfNeededAndAveragePreviousMeasurements()
+//        averagePreviousMeasurementsWithNewFrequency()
     }
 
     private suspend fun averagePreviousMeasurementsWithNewFrequency() {
+        Log.d(TAG, "Averaging previous measurements\n" +
+                "Previous averaging frequency: $mPreviousAveragingFrequency\n" +
+                "Current averaging frequency: ${currentAveragingThreshold().windowSize}")
         var windowSize: Int? = null
         var previousWindowSize: Int? = null
         var averagingFrequency: Int? = 1

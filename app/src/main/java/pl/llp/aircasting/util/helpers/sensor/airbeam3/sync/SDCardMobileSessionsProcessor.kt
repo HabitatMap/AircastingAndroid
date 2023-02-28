@@ -38,7 +38,6 @@ class SDCardMobileSessionsProcessor(
         if (session.isDisconnected()) {
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
-                Log.v(TAG, "Processed stream: ${CSVMeasurementStream.SUPPORTED_STREAMS.keys.find { it.value == headerKey }}")
             }
 
             finishSession(sessionId, session)
