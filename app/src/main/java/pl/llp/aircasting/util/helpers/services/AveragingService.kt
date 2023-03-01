@@ -1,9 +1,7 @@
 package pl.llp.aircasting.util.helpers.services
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
@@ -11,11 +9,13 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.truncateTo
 import java.util.*
 import java.util.Calendar.SECOND
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.round
 
@@ -48,7 +48,8 @@ class AveragingService private constructor(
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mSessionsRepository: SessionsRepository,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
+    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.Default),
+    private val helper: MeasurementsAveragingHelper = DefaultMeasurementsAveragingHelper()
 ) {
     private var mDBSession: SessionDBObject? = mSessionsRepository.getSessionById(sessionId)
     private var mNewAveragingThreshold = AtomicBoolean(false)
@@ -91,6 +92,7 @@ class AveragingService private constructor(
          * We keep separate singleton objects for each session in case someone is recording multiple mobile sessions
          */
         private var mSingletons: HashMap<Long, AveragingService?> = hashMapOf()
+        private val sessionUuidByAveragingJob: MutableMap<String, Job> = ConcurrentHashMap()
 
         fun get(
             sessionId: Long?,
@@ -161,6 +163,57 @@ class AveragingService private constructor(
     private fun getStreamIds(): List<Long> {
         return mMeasurementStreamsRepository.getStreamsIdsBySessionIds(listOf(sessionId))
     }
+
+    fun scheduleAveraging(sessionId: Long?) {
+        sessionId ?: return
+
+        coroutineScope.launch {
+            val session = mSessionsRepository.getSessionByIdSuspend(sessionId)
+            val sessionStart = session?.startTime ?: return@launch
+
+            val fromSessionStartToFirstThreshold =
+                (sessionStart.time + TimeThreshold.FIRST.value) - Date().time + 1000
+            Log.d(
+                TAG, "Scheduling periodic averaging for ${session.name} ${session.uuid}\n" +
+                        "At: $sessionStart"
+            )
+
+            sessionUuidByAveragingJob[session.uuid] = launch {
+                delay(fromSessionStartToFirstThreshold)
+                startPeriodicAveraging(session.uuid, AveragingWindow.FIRST)
+            }
+        }
+    }
+
+    private fun CoroutineScope.startPeriodicAveraging(uuid: String, window: AveragingWindow) {
+        if (!isActive) return
+        Log.d(
+            TAG, "Starting periodic averaging for $uuid\n" +
+                    "Window value: ${window.value}"
+        )
+
+        sessionUuidByAveragingJob[uuid] = launch {
+            while (true) {
+                val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return@launch
+                Log.d(TAG, "Periodic averaging fired for ${session.name}")
+                val lastMeasurementTime =
+                    mMeasurementsRepository.lastMeasurementTime(sessionId) ?: return@launch
+                val currentWindow = helper.calculateAveragingWindow(
+                    session.startTime.time,
+                    lastMeasurementTime.time
+                )
+                if (currentWindow != window) {
+                    // not sure
+                    startPeriodicAveraging(uuid, currentWindow)
+                }
+                perform(session, currentWindow)
+
+                delay(window.seconds)
+            }
+        }
+    }
+
+    private fun perform(session: SessionDBObject, averagingWindow: AveragingWindow) {}
 
     /**
      * Will perform measurements averaging on new (current) measurements. It will average all measurements recorded AFTER
@@ -397,9 +450,11 @@ class AveragingService private constructor(
     }
 
     private suspend fun averagePreviousMeasurementsWithNewFrequency() {
-        Log.d(TAG, "Averaging previous measurements\n" +
-                "Previous averaging frequency: $mPreviousAveragingFrequency\n" +
-                "Current averaging frequency: ${currentAveragingThreshold().windowSize}")
+        Log.d(
+            TAG, "Averaging previous measurements\n" +
+                    "Previous averaging frequency: $mPreviousAveragingFrequency\n" +
+                    "Current averaging frequency: ${currentAveragingThreshold().windowSize}"
+        )
         var windowSize: Int? = null
         var previousWindowSize: Int? = null
         var averagingFrequency: Int? = 1
