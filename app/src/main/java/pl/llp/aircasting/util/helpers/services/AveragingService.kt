@@ -77,8 +77,10 @@ class AveragingService @Inject constructor(
         }
     }
 
-    fun stop(sessionId: Long?) {
-
+    fun stop(uuid: String?) {
+        Log.d(TAG, "Stopping averaging. Cancelling job: ${sessionUuidByAveragingJob[uuid]}")
+        sessionUuidByAveragingJob[uuid]?.cancel()
+        sessionUuidByAveragingJob.remove(uuid)
     }
 
     fun scheduleAveraging(sessionId: Long?) {
@@ -92,7 +94,7 @@ class AveragingService @Inject constructor(
                 (sessionStart.time + TimeThreshold.FIRST.value) - Date().time + 1000
             Log.d(
                 TAG, "Scheduling periodic averaging for ${session.name} ${session.uuid}\n" +
-                        "At: $sessionStart"
+                        "At: $fromSessionStartToFirstThreshold"
             )
 
             sessionUuidByAveragingJob[session.uuid] = launch {
@@ -112,17 +114,23 @@ class AveragingService @Inject constructor(
         sessionUuidByAveragingJob[uuid] = launch {
             while (true) {
                 val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return@launch
-                Log.d(TAG, "Periodic averaging fired for ${session.name}")
+                Log.d(TAG, "Periodic averaging fired for ${session.name}\nIn job: ${coroutineContext.job}")
                 val lastMeasurementTime =
                     mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return@launch
                 val currentWindow = helper.calculateAveragingWindow(
                     session.startTime.time,
                     lastMeasurementTime.time
                 )
-                if (currentWindow != window) {
-                    startPeriodicAveraging(uuid, currentWindow)
-                }
                 perform(session, currentWindow)
+
+                if (currentWindow != window) {
+                    coroutineScope {
+                        Log.d(TAG, "Starting new periodic averaging in job: ${coroutineContext.job}")
+                        startPeriodicAveraging(uuid, currentWindow)
+                    }
+                    Log.d(TAG, "Cancelling job: ${coroutineContext.job}")
+                    cancel()
+                }
 
                 delay(window.seconds)
             }
@@ -155,6 +163,9 @@ class AveragingService @Inject constructor(
                     .slice(0 until lastMeasurementIndex)
                     .map { it.id }
                 mMeasurementsRepository.deleteMeasurements(streamId, idsToDelete)
+                averagedMeasurement.apply {
+                    mMeasurementsRepository.averageMeasurement(id, value, averagingFrequency, time)
+                }
             }
         }
     }
