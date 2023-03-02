@@ -21,7 +21,7 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import java.util.concurrent.atomic.AtomicBoolean
 
 class DownloadMeasurementsService(
@@ -136,13 +136,16 @@ class DownloadMeasurementsService(
         session: Session,
         sessionId: Long
     ) {
-        val averagingService = AveragingService.get(sessionId)
         val stream = MeasurementStream(streamResponse)
         val streamId = measurementStreamsRepository.getIdOrInsert(
             sessionId,
             stream
         )
-        val averagingFrequency = averagingService?.currentAveragingThreshold()?.windowSize ?: 1
+        val averagingFrequency = MeasurementsAveragingHelperDefault().calculateAveragingWindow(
+            session.startTime.time,
+            measurementsRepository.lastMeasurementTime(sessionId)?.time
+                ?: session.startTime.time
+        ).value
         val measurements = MeasurementsFactory.get(
             streamResponse.measurements,
             averagingFrequency,

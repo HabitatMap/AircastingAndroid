@@ -69,8 +69,8 @@ class SDCardSessionFileHandlerMobile(
         val csvSession = CSVSession(sessionUUID, averagingFrequency)
 
         val averageExistingMeasurementsJob = ioScope.launch {
-            AveragingService.get(dbSession?.id)
-                ?.performFinalAveragingAfterSDSync(averagingFrequency)
+//            AveragingService.get(dbSession?.id)
+//                ?.performFinalAveragingAfterSDSync(averagingFrequency)
         }
 
         val averageFileMeasurementsJob = defaultScope.launch {

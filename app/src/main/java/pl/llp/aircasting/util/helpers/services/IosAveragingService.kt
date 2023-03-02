@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.services
 import pl.llp.aircasting.util.extensions.truncateTo
 import java.util.*
 import java.util.Calendar.SECOND
+import javax.inject.Inject
 import kotlin.math.abs
 
 class AvgMeasurement(
@@ -18,7 +19,7 @@ enum class AveragingWindow(val value: Int) {
     val seconds: Long = value * 1000L
 }
 
-enum class TimeThreshold(val value: Int) {
+enum class TimeThreshold(val value: Long) {
     // Two hours
     FIRST(2 * 60 * 60 * 1000),
 
@@ -49,7 +50,7 @@ interface MeasurementsAveragingHelper {
     fun calculateAveragingWindow(startTime: Long, lastMeasurement: Long): AveragingWindow
 }
 
-class DefaultMeasurementsAveragingHelper : MeasurementsAveragingHelper {
+class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAveragingHelper {
     private var intervalStart: Long = 0L
     private var intervalEnd: Long = 0L
 

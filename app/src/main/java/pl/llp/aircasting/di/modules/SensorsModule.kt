@@ -18,6 +18,9 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.*
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneReader
+import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import javax.inject.Singleton
 
 @Module
@@ -164,4 +167,10 @@ open class SensorsModule {
     @Provides
     @Singleton
     open fun providesAudioReader(): AudioReader = AudioReader()
+
+    @Provides
+    @Singleton
+    fun providesMeasurementsAveragingHelper(
+        helper: MeasurementsAveragingHelperDefault
+    ): MeasurementsAveragingHelper = helper
 }

@@ -116,7 +116,7 @@ internal class SDCardSessionFileHandlerTest {
             }
             whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
             val firstExpectedMeasurementTime =
-                calendar().addSeconds(sessionStartTime, AveragingService.FIRST_THRESHOLD_FREQUENCY)
+                calendar().addSeconds(sessionStartTime, AveragingWindow.FIRST.value)
             val firstFahrenheitAverage = 72.0
             val firstRHAverage = 64.0
             val firstLatitude = 50.0582475
@@ -173,7 +173,7 @@ internal class SDCardSessionFileHandlerTest {
             }
             whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
             val firstMeasurementTime =
-                calendar().addSeconds(sessionStartTime, AveragingService.SECOND_THRESHOLD_FREQUENCY)
+                calendar().addSeconds(sessionStartTime, AveragingWindow.SECOND.value)
             val firstFahrenheitAverage = 72.78333333333333
             val firstRHAverage = 49.5
             val firstLatitude = 78.0582475

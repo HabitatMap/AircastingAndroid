@@ -11,6 +11,7 @@ import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.dayOfMonth
 import pl.llp.aircasting.util.extensions.truncateToMidnight
 import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.*
 
 class GraphDataGenerator(
@@ -145,22 +146,22 @@ class GraphDataGenerator(
         if (!hasNote && notes != null) {
             for (note in notes) {
                 when (averagingGeneratorFrequency) {
-                    AveragingService.DEFAULT_FREQUENCY -> if (isSameDate(
+                    AveragingWindow.ZERO.value -> if (isSameDate(
                             note,
                             measurementDate
                         )
                     ) hasNote = true
-                    AveragingService.FIRST_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(
+                    AveragingWindow.FIRST.value -> if (isSameDateAveraging(
                             note,
                             measurementDate,
-                            AveragingService.FIRST_THRESHOLD_FREQUENCY
-                        ) && measurement.averagingFrequency == AveragingService.FIRST_THRESHOLD_FREQUENCY
+                            AveragingWindow.FIRST.value
+                        ) && measurement.averagingFrequency == AveragingWindow.FIRST.value
                     ) hasNote = true
-                    AveragingService.SECOND_THRESHOLD_FREQUENCY -> if (isSameDateAveraging(
+                    AveragingWindow.SECOND.value -> if (isSameDateAveraging(
                             note,
                             measurementDate,
-                            AveragingService.SECOND_THRESHOLD_FREQUENCY
-                        ) && measurement.averagingFrequency == AveragingService.SECOND_THRESHOLD_FREQUENCY
+                            AveragingWindow.SECOND.value
+                        ) && measurement.averagingFrequency == AveragingWindow.SECOND.value
                     ) hasNote = true
                 }
             }

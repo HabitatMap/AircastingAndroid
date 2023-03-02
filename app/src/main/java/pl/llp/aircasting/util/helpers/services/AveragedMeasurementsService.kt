@@ -9,7 +9,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartAveragesCreator
 import pl.llp.aircasting.util.extensions.runOnIOThread
 
 class AveragedMeasurementsService(sessionUUID: String) {
-        var averagingService: AveragingService? = null
         val sessionsRepository = SessionsRepository()
         var sessionId : Long? = 0
         val measurementsRepository = MeasurementsRepositoryImpl()
@@ -18,7 +17,6 @@ class AveragedMeasurementsService(sessionUUID: String) {
     init {
         runOnIOThread {
             sessionId = sessionsRepository.getSessionIdByUUID(sessionUUID)
-            if (sessionId != null) averagingService = AveragingService.get(sessionId!!)
         }
     }
 
@@ -32,7 +30,7 @@ class AveragedMeasurementsService(sessionUUID: String) {
                     val measurementsDbObject = measurementsRepository.getLastMeasurementsWithGivenAveragingFrequency(
                         streamId,
                         ChartAveragesCreator.MAX_AVERAGES_AMOUNT,
-                        AveragingService.SECOND_THRESHOLD_FREQUENCY)
+                        AveragingWindow.SECOND.value)
                     measurements = measurementsDbObject.map { measurementDbObject ->
                         Measurement(measurementDbObject!!)
                     }

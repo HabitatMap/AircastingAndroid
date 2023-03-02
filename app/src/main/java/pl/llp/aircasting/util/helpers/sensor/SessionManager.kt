@@ -19,6 +19,8 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
+import pl.llp.aircasting.util.helpers.services.AveragingService
 
 class SessionManager(
     private val mContext: Context,
@@ -57,6 +59,12 @@ class SessionManager(
         errorHandler,
         measurementStreamsRepository,
         measurementsRepository,
+        averagingService = AveragingService(
+            measurementsRepository,
+            measurementStreamsRepository,
+            sessionsRepository,
+            MeasurementsAveragingHelperDefault()
+        )
     )
 ) {
 

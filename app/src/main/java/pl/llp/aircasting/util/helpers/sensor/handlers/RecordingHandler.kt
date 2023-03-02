@@ -16,8 +16,6 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.services.AveragingBackgroundService
-import pl.llp.aircasting.util.helpers.services.AveragingPreviousMeasurementsBackgroundService
 import pl.llp.aircasting.util.helpers.services.AveragingService
 
 interface RecordingHandler {
@@ -38,12 +36,10 @@ class RecordingHandlerImpl(
     private val errorHandler: ErrorHandler,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepositoryImpl,
+    private val averagingService: AveragingService,
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf(),
     private val observers: MutableMap<String, Job> = mutableMapOf(),
 ) : RecordingHandler {
-    private var averagingPreviousMeasurementsBackgroundService
-    : AveragingPreviousMeasurementsBackgroundService? = null
-    private var averagingBackgroundService: AveragingBackgroundService? = null
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         coroutineScope.launch {
@@ -71,13 +67,7 @@ class RecordingHandlerImpl(
     private fun startAveragingServices(id: Long?) {
         id ?: return
 
-        AveragingService.get(id)?.let { averagingService ->
-            averagingBackgroundService = AveragingBackgroundService(averagingService)
-            averagingBackgroundService?.start()
-            averagingPreviousMeasurementsBackgroundService =
-                AveragingPreviousMeasurementsBackgroundService(averagingService)
-            averagingPreviousMeasurementsBackgroundService?.start()
-        }
+        averagingService.scheduleAveraging(id)
     }
 
     override fun handle(event: NewMeasurementEvent) {
@@ -117,9 +107,7 @@ class RecordingHandlerImpl(
                 sessionsRepository.update(session)
                 activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
                 sessionsSyncService.sync()
-                averagingBackgroundService?.stop()
-                averagingPreviousMeasurementsBackgroundService?.stop()
-                AveragingService.destroy(sessionId)
+                averagingService.stop(sessionId)
                 stopObservingNewMeasurements(session.deviceId)
             }
         }
@@ -128,9 +116,7 @@ class RecordingHandlerImpl(
     override fun startStandaloneMode(uuid: String) {
         coroutineScope.launch {
             val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
-            averagingBackgroundService?.stop()
-            averagingPreviousMeasurementsBackgroundService?.stop()
-            AveragingService.destroy(sessionId)
+            averagingService.stop(sessionId)
         }
     }
 
