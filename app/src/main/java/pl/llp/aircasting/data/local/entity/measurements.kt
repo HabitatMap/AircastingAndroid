@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
+import pl.llp.aircasting.util.helpers.services.AverageableMeasurement
 import java.util.*
 
 @Entity(
@@ -22,12 +22,12 @@ import java.util.*
 data class MeasurementDBObject(
     @ColumnInfo(name = "measurement_stream_id") val measurementStreamId: Long,
     @ColumnInfo(name = "session_id") val sessionId: Long,
-    @ColumnInfo(name = "value") val value: Double,
-    @ColumnInfo(name = "time") val time: Date,
-    @ColumnInfo(name = "latitude") val latitude: Double?,
-    @ColumnInfo(name = "longitude") val longitude: Double?,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1
-) {
+    @ColumnInfo(name = "value") override var value: Double,
+    @ColumnInfo(name = "time") override var time: Date,
+    @ColumnInfo(name = "latitude") override var latitude: Double?,
+    @ColumnInfo(name = "longitude") override var longitude: Double?,
+    @ColumnInfo(name = "averaging_frequency") var averagingFrequency: Int = 1
+) : AverageableMeasurement {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }

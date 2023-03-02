@@ -67,4 +67,8 @@ class MeasurementStreamsRepository {
     fun getStreamsIdsBySessionIds(sessionsIds: List<Long>): List<Long> {
         return mDatabase.measurementStreams().getStreamsIdsBySessionIds(sessionsIds)
     }
+
+    suspend fun getStreamsIdsBySessionId(sessionId: Long): List<Long> {
+        return mDatabase.measurementStreams().getStreamsIdsBySessionId(sessionId)
+    }
 }

@@ -84,12 +84,12 @@ internal class AveragingServiceTest {
             streamsRepository,
             sessionsRepository
         )!!
-        val expectedAverage = dbMeasurementsRH.map { it.value }.toTypedArray().average()
+        val expectedAverage = dbMeasurementsRH.map { it.mValue }.toTypedArray().average()
 
         averagingService.perform()
 
         assertEquals(1, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
     }
 
     @Test
@@ -102,7 +102,7 @@ internal class AveragingServiceTest {
             sessionsRepository
         )!!
         val expectedAverage = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
@@ -110,7 +110,7 @@ internal class AveragingServiceTest {
         averagingService.perform(isFinal = true)
 
         assertEquals(1, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
     }
 
     @Test
@@ -123,7 +123,7 @@ internal class AveragingServiceTest {
             sessionsRepository
         )!!
         val expectedAverage = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
@@ -131,7 +131,7 @@ internal class AveragingServiceTest {
         averagingService.perform(isFinal = false)
 
         assertEquals(60, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
     }
 
     @Test
@@ -144,7 +144,7 @@ internal class AveragingServiceTest {
             sessionsRepository
         )!!
         val expectedAverages = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .chunked(FIRST_THRESHOLD_FREQUENCY)
             .map { it.toTypedArray().average() }
 
@@ -152,7 +152,7 @@ internal class AveragingServiceTest {
 
         assertEquals(expectedAverages.size, db.size)
         expectedAverages.forEach { averageValue ->
-            assertNotNull(db.values.find { it.value == averageValue })
+            assertNotNull(db.values.find { it.mValue == averageValue })
         }
     }
 
@@ -227,7 +227,7 @@ internal class AveragingServiceTest {
             sessionsRepository
         )!!
         val expectedAverage = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
@@ -235,7 +235,7 @@ internal class AveragingServiceTest {
         averagingService.averagePreviousMeasurementsWithNewFrequency()
 
         assertEquals(1, db.size, db.toString())
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
     }
 
     @Test
@@ -250,7 +250,7 @@ internal class AveragingServiceTest {
         )!!
         val newAveragingFrequency = SECOND_THRESHOLD_FREQUENCY / FIRST_THRESHOLD_FREQUENCY
         val expectedAverages = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .chunked(newAveragingFrequency)
             .map { it.toTypedArray().average() }
         val expectedAveragedDBSize = db.size / newAveragingFrequency
@@ -259,7 +259,7 @@ internal class AveragingServiceTest {
 
         assertEquals(expectedAveragedDBSize, db.size, db.toString())
         expectedAverages.forEach { averageValue ->
-            assertNotNull(db.values.find { it.value == averageValue })
+            assertNotNull(db.values.find { it.mValue == averageValue })
         }
     }
 
@@ -310,7 +310,7 @@ internal class AveragingServiceTest {
             sessionsRepository
         )!!
         val expectedAverage = dbMeasurementsRH
-            .map { it.value }
+            .map { it.mValue }
             .take(frequency)
             .toTypedArray()
             .average()
@@ -318,7 +318,7 @@ internal class AveragingServiceTest {
         averagingService.performFinalAveragingAfterSDSync(frequency)
 
         assertEquals(1, db.size, db.toString())
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
     }
 
     private fun setupDbForAveragingPreviousMeasurements(frequency: Int) {

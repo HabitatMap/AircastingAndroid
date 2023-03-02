@@ -5,6 +5,7 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.*
 
 interface MeasurementsRepository {
@@ -109,6 +110,10 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
 
     fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
         return mDatabase.measurements().getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
+    }
+
+    suspend fun getMeasurementsToAverage(streamId: Long, averagingWindow: AveragingWindow): List<MeasurementDBObject> {
+        return mDatabase.measurements().getMeasurementsToAverage(streamId, averagingWindow.value)
     }
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {

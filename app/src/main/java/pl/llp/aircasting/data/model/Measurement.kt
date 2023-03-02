@@ -15,7 +15,6 @@ class Measurement(
     val longitude: Double? = null,
     var averagingFrequency: Int = 1
 ) {
-
     constructor(
         event: NewMeasurementEvent,
         location: Session.Location?,
@@ -27,7 +26,7 @@ class Measurement(
         measurementDBObject.time,
         measurementDBObject.latitude,
         measurementDBObject.longitude,
-        measurementDBObject.averaging_frequency
+        measurementDBObject.averagingFrequency
     )
 
     constructor(activeSessionMeasurementDBObject: ActiveSessionMeasurementDBObject) : this(

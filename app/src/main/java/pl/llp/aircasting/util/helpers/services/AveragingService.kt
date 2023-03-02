@@ -9,7 +9,6 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.truncateTo
@@ -213,7 +212,35 @@ class AveragingService private constructor(
         }
     }
 
-    private fun perform(session: SessionDBObject, averagingWindow: AveragingWindow) {}
+    private suspend fun perform(session: SessionDBObject, averagingWindow: AveragingWindow) {
+        val streamIds = mMeasurementStreamsRepository.getStreamsIdsBySessionId(session.id)
+        streamIds.forEach { streamId ->
+            val measurements =
+                mMeasurementsRepository.getMeasurementsToAverage(streamId, averagingWindow)
+            if (measurements.isEmpty()) return@forEach
+
+            val intervalStart = session.startTime
+
+            helper.averageMeasurements(
+                measurements = measurements,
+                startTime = intervalStart,
+                averagingWindow = averagingWindow
+            ) { averagedMeasurement, sourceMeasurements ->
+                if (sourceMeasurements.isEmpty()) return@averageMeasurements
+
+                val lastMeasurementIndex = sourceMeasurements.lastIndex
+                sourceMeasurements[lastMeasurementIndex].value = averagedMeasurement.value
+                sourceMeasurements[lastMeasurementIndex].time = averagedMeasurement.time
+                sourceMeasurements[lastMeasurementIndex].averagingFrequency = averagingWindow.value
+
+                if (sourceMeasurements.size <= 1) return@averageMeasurements
+                val idsToDelete = sourceMeasurements
+                    .slice(0 until lastMeasurementIndex)
+                    .map { it.id }
+                mMeasurementsRepository.deleteMeasurements(streamId, idsToDelete)
+            }
+        }
+    }
 
     /**
      * Will perform measurements averaging on new (current) measurements. It will average all measurements recorded AFTER

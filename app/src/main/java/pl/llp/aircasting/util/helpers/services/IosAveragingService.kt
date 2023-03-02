@@ -1,6 +1,5 @@
 package pl.llp.aircasting.util.helpers.services
 
-import com.google.android.gms.maps.model.LatLng
 import pl.llp.aircasting.util.extensions.truncateTo
 import java.util.*
 import java.util.Calendar.SECOND
@@ -22,14 +21,21 @@ enum class AveragingWindow(val value: Int) {
 enum class TimeThreshold(val value: Int) {
     // Two hours
     FIRST(2 * 60 * 60 * 1000),
+
     // Nine hours
     SECOND(9 * 60 * 60 * 1000)
 }
 
 interface AverageableMeasurement {
-    var measuredAt: Long
+    var time: Date
+    var measuredAt
+        get() = time.time
+        set(value) {
+            time = Date(value)
+        }
     var value: Double
-    var location: LatLng
+    var latitude: Double?
+    var longitude: Double?
 }
 
 interface MeasurementsAveragingHelper {
