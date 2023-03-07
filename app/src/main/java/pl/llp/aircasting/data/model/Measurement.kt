@@ -7,6 +7,7 @@ import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import java.util.*
+import kotlin.math.round
 
 class Measurement(
     var value: Double = 0.0,
@@ -19,7 +20,7 @@ class Measurement(
         event: NewMeasurementEvent,
         location: Session.Location?,
         creationTime: Date = Date()
-    ) : this(event.measuredValue, creationTime, location?.latitude, location?.longitude)
+    ) : this(round(event.measuredValue), creationTime, location?.latitude, location?.longitude)
 
     constructor(measurementDBObject: MeasurementDBObject) : this(
         measurementDBObject.value,
