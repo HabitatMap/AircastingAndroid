@@ -5,11 +5,12 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 class CSVSession(
     val uuid: String?,
     val averagingFrequency: Int = 1,
-    val streams: HashMap<Int, ArrayList<CSVMeasurement>> = HashMap(),
+    val streams: MutableMap<Int, ArrayList<CSVMeasurement>> = ConcurrentHashMap(),
 ) {
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
@@ -76,6 +77,16 @@ class CSVSession(
                 buildMeasurement(latitude, longitude, time, lineParameters, streamHeader)
             measurement?.let { streams[streamHeader.value]?.add(measurement) }
         }
+    }
+
+    fun addMeasurement(
+        measurement: CSVMeasurement,
+        streamHeader: SDCardCSVFileFactory.Header
+    ) {
+        if (!streams.containsKey(streamHeader.value)) {
+            streams[streamHeader.value] = ArrayList()
+        }
+        streams[streamHeader.value]?.add(measurement)
     }
 
     private fun buildMeasurement(

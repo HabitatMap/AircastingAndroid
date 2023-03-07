@@ -104,10 +104,10 @@ class RecordingHandlerImpl(
 
             sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)?.let { session ->
                 stopObservingNewMeasurements(session.deviceId)
-                session.stopRecording()
-                sessionsRepository.update(session)
                 activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
-                averagingService.stop(uuid)
+                averagingService.stopAndPerformFinalAveraging(uuid)
+                session.stopRecording(measurementsRepository.lastMeasurementTime(sessionId))
+                sessionsRepository.update(session)
                 sessionsSyncService.sync()
             }
         }
@@ -115,7 +115,7 @@ class RecordingHandlerImpl(
 
     override fun startStandaloneMode(uuid: String) {
         coroutineScope.launch {
-            averagingService.stop(uuid)
+            averagingService.stopAndPerformFinalAveraging(uuid)
         }
     }
 

@@ -1,15 +1,13 @@
 package pl.llp.aircasting.util.helpers.services
 
+import android.util.Log
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.extensions.truncateTo
 import java.util.*
 import java.util.Calendar.SECOND
 import javax.inject.Inject
 import kotlin.math.abs
-
-class AvgMeasurement(
-    val window: AveragingWindow = AveragingWindow.ZERO,
-    val threshold: TimeThreshold
-)
+import kotlin.math.round
 
 enum class AveragingWindow(val value: Int) {
     ZERO(1),
@@ -62,6 +60,8 @@ class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAve
     ): List<T> {
         intervalStart = startTime.truncateTo(SECOND).time
         intervalEnd = intervalStart + averagingWindow.seconds
+        Log.w(TAG, "Initial Interval start: ${Date(intervalStart)}")
+        Log.w(TAG, "Initial Interval end: ${Date(intervalEnd)}")
 
         var measurementsBuffer = mutableListOf<T>()
 
@@ -70,7 +70,9 @@ class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAve
 
             if (measurement.measuredAt >= intervalEnd) {
                 // If there are any measurements in the buffer we should average them
-                measurementsBuffer.averageMeasurements(intervalEnd - 1)?.let {
+                Log.d(TAG, "${Date(measurement.measuredAt)} > ${Date(intervalEnd)}")
+                Log.d(TAG, "Measurements buffer: ${measurementsBuffer.map { it.time }}")
+                measurementsBuffer.averageMeasurements(intervalEnd - 1000)?.let {
                     callback(it, measurementsBuffer)
                 }
 
@@ -84,8 +86,9 @@ class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAve
         }
 
         // If the last interval was full then we should average measurements contained in it as well
-        if (measurementsBuffer.lastOrNull()?.measuredAt == intervalEnd - 1) {
-            measurementsBuffer.averageMeasurements(intervalEnd - 1)?.let {
+        if (measurementsBuffer.lastOrNull()?.measuredAt == intervalEnd - 1000) {
+            Log.d(TAG, "Buffer is full")
+            measurementsBuffer.averageMeasurements(intervalEnd - 1000)?.let {
                 callback(it, measurementsBuffer)
             }
             measurementsBuffer.clear()
@@ -108,18 +111,22 @@ class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAve
         averagingWindow: AveragingWindow
     ) {
         if (measurement.measuredAt >= intervalEnd) {
+            Log.d(TAG, "Measurement ${measurement.time} > ${Date(intervalEnd)}")
             val timeSinceIntervalStart = measurement.measuredAt - intervalStart
-            val remainingSeconds =
-                (timeSinceIntervalStart / averagingWindow.seconds) % averagingWindow.seconds
+            Log.d(TAG, "Seconds since intervalStart: ${timeSinceIntervalStart / 1000}")
+            val remainingSeconds = timeSinceIntervalStart % averagingWindow.seconds
+            Log.d(TAG, "remainingSeconds: ${remainingSeconds / 1000}")
             intervalStart = measurement.measuredAt - remainingSeconds
             intervalEnd = intervalStart + averagingWindow.seconds
+            Log.w(TAG, "Modified Interval start: ${Date(intervalStart)}")
+            Log.w(TAG, "Modified Interval end: ${Date(intervalEnd)}")
         }
     }
 
     private fun <T : AverageableMeasurement> List<T>.averageMeasurements(time: Long): T? {
         if (isEmpty()) return null
 
-        val average = map { it.value }.average()
+        val average = round(map { it.value }.average())
         val middleIndex = size / 2
         val middleMeasurement = get(middleIndex)
         middleMeasurement.measuredAt = time

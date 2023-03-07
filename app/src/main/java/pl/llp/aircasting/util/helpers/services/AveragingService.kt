@@ -10,7 +10,6 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import javax.inject.Inject
 
 /**
  * Averaging for long mobile sessions
@@ -36,7 +35,7 @@ import javax.inject.Inject
  *
  */
 
-class AveragingService @Inject constructor(
+class AveragingService(
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     private val mSessionsRepository: SessionsRepository,
@@ -61,36 +60,41 @@ class AveragingService @Inject constructor(
             }
             return 0
         }
-
-        fun getAveragingFrequency(firstMeasurementDate: Date?, lastMeasurementDate: Date?): Int {
-            firstMeasurementDate ?: return AveragingWindow.ZERO.value
-            lastMeasurementDate ?: return AveragingWindow.ZERO.value
-
-            val sessionDuration = lastMeasurementDate.time.minus(firstMeasurementDate.time)
-
-            return when {
-                sessionDuration < TimeThreshold.FIRST.value -> return AveragingWindow.ZERO.value
-                (sessionDuration > TimeThreshold.FIRST.value) && (sessionDuration < TimeThreshold.SECOND.value) -> return AveragingWindow.FIRST.value
-                sessionDuration > TimeThreshold.SECOND.value -> return AveragingWindow.SECOND.value
-                else -> AveragingWindow.ZERO.value
-            }
-        }
     }
 
-    suspend fun stop(uuid: String?) {
+    suspend fun stopAndPerformFinalAveraging(uuid: String?, window: AveragingWindow? = null) {
         Log.d(TAG, "Stopping averaging. Cancelling job: ${sessionUuidByAveragingJob[uuid]}")
         sessionUuidByAveragingJob[uuid]?.cancel()
         sessionUuidByAveragingJob.remove(uuid)
 
         val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return
-        val lastMeasurementTime =
-            mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return
-        val currentWindow = helper.calculateAveragingWindow(
-            session.startTime.time,
-            lastMeasurementTime.time
-        )
+
+        val currentWindow = if (window != null)
+            window
+        else {
+            val lastMeasurementTime =
+                mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return
+            helper.calculateAveragingWindow(
+                session.startTime.time,
+                lastMeasurementTime.time
+            )
+        }
         Log.d(TAG, "Calculated current window: $currentWindow")
         perform(session, currentWindow)
+        deleteLeftoverMeasurements(session, currentWindow)
+    }
+
+    private suspend fun deleteLeftoverMeasurements(
+        session: SessionDBObject,
+        currentWindow: AveragingWindow
+    ) {
+        val streamIds = mMeasurementStreamsRepository.getStreamsIdsBySessionId(session.id)
+        streamIds.forEach { streamId ->
+            val leftoverMeasurements =
+                mMeasurementsRepository.getMeasurementsToAverage(streamId, currentWindow)
+                    .map { it.id }
+            mMeasurementsRepository.deleteMeasurementsSuspend(streamId, leftoverMeasurements)
+        }
     }
 
     fun scheduleAveraging(sessionId: Long?) {

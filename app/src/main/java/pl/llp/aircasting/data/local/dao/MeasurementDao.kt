@@ -42,6 +42,9 @@ interface MeasurementDao {
     @Query("DELETE FROM measurements WHERE measurement_stream_id=:streamId AND id IN (:measurementsIds)")
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
 
+    @Query("DELETE FROM measurements WHERE measurement_stream_id=:streamId AND id IN (:measurementsIds)")
+    suspend fun deleteMeasurementsSuspend(streamId: Long, measurementsIds: List<Long>)
+
     @Query("SELECT * FROM measurements WHERE measurement_stream_id=:streamId ORDER BY time DESC LIMIT :limit")
     fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 

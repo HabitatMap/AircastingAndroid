@@ -55,10 +55,14 @@ open class SensorsModule {
     fun providesMobileSDCardCSVIterator(
         errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository,
+        helper: MeasurementsAveragingHelper,
+        averagingService: AveragingService
     ): SDCardSessionFileHandlerMobile =
         SDCardSessionFileHandlerMobile(
             errorHandler,
             sessionsRepository,
+            helper,
+            averagingService
         )
 
     @Provides
@@ -173,4 +177,18 @@ open class SensorsModule {
     fun providesMeasurementsAveragingHelper(
         helper: MeasurementsAveragingHelperDefault
     ): MeasurementsAveragingHelper = helper
+
+    @Provides
+    @Singleton
+    fun providesAveragingService(
+        mMeasurementsRepository: MeasurementsRepositoryImpl,
+        mMeasurementStreamsRepository: MeasurementStreamsRepository,
+        mSessionsRepository: SessionsRepository,
+        helper: MeasurementsAveragingHelper,
+    ): AveragingService = AveragingService(
+        mMeasurementsRepository,
+        mMeasurementStreamsRepository,
+        mSessionsRepository,
+        helper
+    )
 }

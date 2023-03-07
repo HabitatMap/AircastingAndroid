@@ -62,7 +62,9 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         return mDatabase.measurements().insert(measurementDBObject)
     }
 
-    fun lastMeasurementTime(sessionId: Long): Date? {
+    fun lastMeasurementTime(sessionId: Long?): Date? {
+        sessionId ?: return null
+
         val measurement = mDatabase.measurements().lastForSession(sessionId)
         return measurement?.time
     }
@@ -118,6 +120,10 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
 
     fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
+    }
+
+    suspend fun deleteMeasurementsSuspend(streamId: Long, measurementsIds: List<Long>) {
+        mDatabase.measurements().deleteMeasurementsSuspend(streamId, measurementsIds)
     }
 
     fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int, time: Date?) {
