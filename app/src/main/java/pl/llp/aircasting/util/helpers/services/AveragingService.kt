@@ -77,10 +77,20 @@ class AveragingService @Inject constructor(
         }
     }
 
-    fun stop(uuid: String?) {
+    suspend fun stop(uuid: String?) {
         Log.d(TAG, "Stopping averaging. Cancelling job: ${sessionUuidByAveragingJob[uuid]}")
         sessionUuidByAveragingJob[uuid]?.cancel()
         sessionUuidByAveragingJob.remove(uuid)
+
+        val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return
+        val lastMeasurementTime =
+            mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return
+        val currentWindow = helper.calculateAveragingWindow(
+            session.startTime.time,
+            lastMeasurementTime.time
+        )
+        Log.d(TAG, "Calculated current window: $currentWindow")
+        perform(session, currentWindow)
     }
 
     fun scheduleAveraging(sessionId: Long?) {
@@ -125,7 +135,6 @@ class AveragingService @Inject constructor(
                     lastMeasurementTime.time
                 )
                 Log.d(TAG, "Calculated current window: $currentWindow")
-                perform(session, currentWindow)
 
                 if (currentWindow > window) {
                     coroutineScope.launch {
@@ -135,6 +144,7 @@ class AveragingService @Inject constructor(
                     }
                 }
 
+                perform(session, currentWindow)
                 delay(window.seconds)
             }
         }
@@ -146,7 +156,18 @@ class AveragingService @Inject constructor(
         streamIds.forEach { streamId ->
             val measurements =
                 mMeasurementsRepository.getMeasurementsToAverage(streamId, averagingWindow)
-            Log.d(TAG, "Measurements to average: ${measurements.map { Triple(it.id, it.time, it.averagingFrequency) }}")
+            Log.d(
+                TAG,
+                "Measurements to average: ${
+                    measurements.map {
+                        Triple(
+                            it.id,
+                            it.time,
+                            it.averagingFrequency
+                        )
+                    }
+                }"
+            )
             if (measurements.isEmpty()) return@forEach
 
             val intervalStart = session.startTime

@@ -103,18 +103,20 @@ class RecordingHandlerImpl(
             val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
 
             sessionsRepository.loadSessionAndMeasurementsByUUID(uuid)?.let { session ->
+                stopObservingNewMeasurements(session.deviceId)
                 session.stopRecording()
                 sessionsRepository.update(session)
                 activeSessionMeasurementsRepository.deleteBySessionId(sessionId)
-                sessionsSyncService.sync()
                 averagingService.stop(uuid)
-                stopObservingNewMeasurements(session.deviceId)
+                sessionsSyncService.sync()
             }
         }
     }
 
     override fun startStandaloneMode(uuid: String) {
-        averagingService.stop(uuid)
+        coroutineScope.launch {
+            averagingService.stop(uuid)
+        }
     }
 
     override fun disconnectSession(deviceId: String) {
