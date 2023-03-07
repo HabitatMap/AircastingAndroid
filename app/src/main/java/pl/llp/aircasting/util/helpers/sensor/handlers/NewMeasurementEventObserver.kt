@@ -20,6 +20,7 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.extensions.truncateTo
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.*
 import java.util.Calendar.SECOND
@@ -43,7 +44,7 @@ class NewMeasurementEventObserverImpl(
     startTime: Date
 ) : NewMeasurementEventObserver {
 
-    private var timestamp = startTime
+    private var timestamp = startTime.truncateTo(SECOND)
     private val counter = AtomicInteger(0)
     private var location = Session.Location.get(
         LocationHelper.lastLocation(),

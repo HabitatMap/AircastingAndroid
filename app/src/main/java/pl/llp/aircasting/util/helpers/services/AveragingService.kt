@@ -94,7 +94,7 @@ class AveragingService @Inject constructor(
                 (sessionStart.time + TimeThreshold.FIRST.value) - Date().time + 1000
             Log.d(
                 TAG, "Scheduling periodic averaging for ${session.name} ${session.uuid}\n" +
-                        "At: $fromSessionStartToFirstThreshold"
+                        "In ${fromSessionStartToFirstThreshold / 1000} seconds"
             )
 
             sessionUuidByAveragingJob[session.uuid] = launch {
