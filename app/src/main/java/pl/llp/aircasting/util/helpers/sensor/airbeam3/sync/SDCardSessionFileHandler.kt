@@ -5,15 +5,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
-import pl.llp.aircasting.util.extensions.addSeconds
-import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.airBeamParams
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
@@ -56,7 +53,6 @@ class SDCardSessionFileHandlerMobile(
     private val defaultScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : SDCardSessionFileHandler {
 
-    private var currentChunkTime: Date? = null
     private var dbSession: SessionDBObject? = null
     private lateinit var finalAveragingWindow: AveragingWindow
     private var startTime: Long? = null
@@ -82,21 +78,11 @@ class SDCardSessionFileHandlerMobile(
         }
 
         val averageFileMeasurementsJob = defaultScope.launch {
-            currentChunkTime = try {
-                DateUtils.truncate(dbSession?.startTime, Calendar.SECOND)
-            } catch (e: Exception) {
-                CSVSession.timestampFrom(lines.firstOrNull())
-            }
-            currentChunkTime = calendar().addSeconds(currentChunkTime, -1)
-            incrementChunkTime(averagingFrequency)
-
             lines.chunked(averagingFrequency) { chunk ->
                 // We do not include leftover measurements
                 if (chunk.size < averagingFrequency) return@chunked
 
                 averageMeasurementAndAddToSession(chunk)
-
-                incrementChunkTime(averagingFrequency)
             }
         }
 
@@ -107,10 +93,6 @@ class SDCardSessionFileHandlerMobile(
         mErrorHandler.handle(SDCardMeasurementsParsingError(e))
         Log.v(TAG, e.stackTraceToString())
         null
-    }
-
-    private fun incrementChunkTime(averagingFrequency: Int) {
-        currentChunkTime = calendar().addSeconds(currentChunkTime, averagingFrequency)
     }
 
     private fun getFinalAveragingWindow(
@@ -159,9 +141,7 @@ class SDCardSessionFileHandlerMobile(
             dateFormat = CSVSession.DATE_FORMAT
         ) ?: return null
 
-        return CSVMeasurement(
-            value, latitude, longitude, time, finalAveragingWindow.value
-        )
+        return CSVMeasurement(value, latitude, longitude, time, finalAveragingWindow.value)
     }
 
 
@@ -173,25 +153,3 @@ class SDCardSessionFileHandlerMobile(
         }
     }
 }
-
-//class LineMeasurement(
-//    private val streamHeader: SDCardCSVFileFactory.Header,
-//    private val line: String
-//) : AverageableMeasurement {
-//    private val lineParams get() = line.airBeamParams()
-//    override var time: Date
-//        get() = timestampFrom(line) ?: Date()
-//        set(value) {
-//            lineParams[SDCardCSVFileFactory.Header.DATE.value] = value
-//        }
-//    override var value: Double
-//        get() = TODO("Not yet implemented")
-//        set(value) {}
-//    override var latitude: Double?
-//        get() = TODO("Not yet implemented")
-//        set(value) {}
-//    override var longitude: Double?
-//        get() = TODO("Not yet implemented")
-//        set(value) {}
-//
-//}

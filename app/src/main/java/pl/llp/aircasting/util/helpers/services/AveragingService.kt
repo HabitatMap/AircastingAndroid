@@ -24,16 +24,13 @@ import java.util.concurrent.ConcurrentHashMap
  * - all of the data from the prior 2 hours is transformed into 5-second averages and the map and graph and stats are updated accordingly.
  *
  * Notes:
- * - averages should be attached to the middle value geocoordinates and timestamps,
+ * - averages should be attached to the middle value geocoordinates, and timestamp should be set to the interval end
  * i.e. if its a 5-second avg spanning the time frame 10:00:00 to 10:00:05,
- * the avg value gets pegged to the geocoordinates and timestamp from 10:00:03.
+ * the avg value gets pegged to the geocoordinates of middle measurement and timestamp from 10:00:05.
  * - thresholds are calculated based on ellapsed time of session, not based on actual measurements records
  * (pauses in sessions are not taken into account)
- * - if there are any final, unaveraged measurements on 2h+ or 9h+ session which would not fall into full averaging window
- * (5s or 60s) they should be deleted
- * - on threshold crossing (at 2h and at 9h into session) we also trim measurements that not fit into given window size
  *
- */
+ **/
 
 class AveragingService(
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
@@ -119,11 +116,6 @@ class AveragingService(
     }
 
     private fun CoroutineScope.startPeriodicAveraging(uuid: String, window: AveragingWindow) {
-        Log.d(
-            TAG, "Starting periodic averaging for $uuid\n" +
-                    "Window value: ${window.value}"
-        )
-
         sessionUuidByAveragingJob[uuid] = launch {
             Log.d(TAG, "Starting new periodic averaging in job: ${coroutineContext.job}")
             while (isActive) {
@@ -160,18 +152,6 @@ class AveragingService(
         streamIds.forEach { streamId ->
             val measurements =
                 mMeasurementsRepository.getMeasurementsToAverage(streamId, averagingWindow)
-            Log.d(
-                TAG,
-                "Measurements to average: ${
-                    measurements.map {
-                        Triple(
-                            it.id,
-                            it.time,
-                            it.averagingFrequency
-                        )
-                    }
-                }"
-            )
             if (measurements.isEmpty()) return@forEach
 
             val intervalStart = session.startTime
@@ -192,10 +172,6 @@ class AveragingService(
                 val idsToDelete = sourceMeasurements
                     .slice(0 until lastMeasurementIndex)
                     .map { it.id }
-                val timesToDelete = sourceMeasurements
-                    .slice(0 until lastMeasurementIndex)
-                    .map { Triple(it.id, it.time, it.averagingFrequency) }
-                Log.d(TAG, "Deleting measurements: $timesToDelete")
                 mMeasurementsRepository.deleteMeasurements(streamId, idsToDelete)
                 sourceMeasurements[lastMeasurementIndex].apply {
                     Log.d(TAG, "Averaged measurement: ${Triple(id, time, averagingFrequency)}")
@@ -203,6 +179,5 @@ class AveragingService(
                 }
             }
         }
-        Log.d(TAG, "Performed averaging")
     }
 }
