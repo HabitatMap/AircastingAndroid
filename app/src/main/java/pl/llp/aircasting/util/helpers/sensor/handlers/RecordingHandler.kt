@@ -84,8 +84,7 @@ class RecordingHandlerImpl(
             sessionsRepository,
             measurementStreamsRepository,
             measurementsRepository,
-            activeSessionMeasurementsRepository,
-            session.startTime
+            activeSessionMeasurementsRepository
         )
 
         val flow = MutableSharedFlow<NewMeasurementEvent>()

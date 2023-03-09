@@ -6,7 +6,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
@@ -40,11 +39,10 @@ class NewMeasurementEventObserverImpl(
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
-    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
-    startTime: Date
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository
 ) : NewMeasurementEventObserver {
 
-    private var timestamp = startTime.truncateTo(SECOND)
+    private var timestamp = Date().truncateTo(SECOND)
     private val counter = AtomicInteger(0)
     private var location = Session.Location.get(
         LocationHelper.lastLocation(),
