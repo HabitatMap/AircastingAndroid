@@ -1,10 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -49,8 +45,6 @@ class SDCardSessionFileHandlerMobile(
     private val sessionRepository: SessionsRepository,
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
-    private val ioScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val defaultScope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : SDCardSessionFileHandler {
 
     private var dbSession: SessionDBObject? = null
@@ -73,20 +67,14 @@ class SDCardSessionFileHandlerMobile(
         Log.d(TAG, "${dbSession?.name} final averaging frequency: $averagingFrequency")
         csvSession = CSVSession(sessionUUID, averagingFrequency)
 
-        val averageExistingMeasurementsJob = ioScope.launch {
-            averagingService.stopAndPerformFinalAveraging(sessionUUID, finalAveragingWindow)
+        averagingService.stopAndPerformFinalAveraging(sessionUUID, finalAveragingWindow)
+
+        lines.chunked(averagingFrequency) { chunk ->
+            // We do not include leftover measurements
+            if (chunk.size < averagingFrequency) return@chunked
+
+            averageMeasurementAndAddToSession(chunk)
         }
-
-        val averageFileMeasurementsJob = defaultScope.launch {
-            lines.chunked(averagingFrequency) { chunk ->
-                // We do not include leftover measurements
-                if (chunk.size < averagingFrequency) return@chunked
-
-                averageMeasurementAndAddToSession(chunk)
-            }
-        }
-
-        joinAll(averageExistingMeasurementsJob, averageFileMeasurementsJob)
 
         csvSession
     } catch (e: IOException) {
@@ -120,6 +108,7 @@ class SDCardSessionFileHandlerMobile(
                 firstMeasurementTime,
                 finalAveragingWindow
             ) { averagedMeasurement, _ ->
+                Log.d(TAG, "SD Averaged measurement: $averagedMeasurement")
                 csvSession.addMeasurement(averagedMeasurement, currentStreamHeader)
             }
         }
