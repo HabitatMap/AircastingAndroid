@@ -3,7 +3,6 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -89,7 +88,7 @@ class SDCardSyncService(
             terminateSync()
         } else {
             clearSDCard()
-            saveMeasurements(stepsByFilePaths).join()
+            saveMeasurements(stepsByFilePaths)
             syncMobileSessionWithBackendAndFinish()
         }
     }
@@ -101,24 +100,24 @@ class SDCardSyncService(
 
     private suspend fun saveMeasurements(
         stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
-    ) = coroutineScope.launch {
+    ) {
         Log.v(TAG, "Saving measurements locally")
         stepsByFilePaths.entries.forEach { entry ->
             when (entry.key?.type) {
-                SDCardReader.StepType.MOBILE -> launch {
+                SDCardReader.StepType.MOBILE -> {
                     entry.value.forEach { path ->
                         // launches new coroutine for each mobile session to process
-                        launch { performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path)) }
+                        performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
                     }
                 }
-                SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI -> launch {
+                SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI ->
                     entry.value.forEach { path ->
                         // fixed sessions are handled one by one
                         val file = File(path)
-                        saveFixedMeasurementsLocallyFrom(file)?.join()
+                        saveFixedMeasurementsLocallyFrom(file)
                         sendFixedMeasurementsToBackendFrom(file)
                     }
-                }
+
             }
         }
     }
@@ -128,12 +127,12 @@ class SDCardSyncService(
         cleanup()
     }
 
-    private fun saveFixedMeasurementsLocallyFrom(file: File): Job? {
-        val deviceItem = mDeviceItem ?: return null
+    private suspend fun saveFixedMeasurementsLocallyFrom(file: File) {
+        val deviceItem = mDeviceItem ?: return
 
         Log.d(TAG, "Processing fixed sessions")
 
-        return coroutineScope.launch { mSDCardFixedSessionsProcessor.start(file, deviceItem.id) }
+        return mSDCardFixedSessionsProcessor.start(file, deviceItem.id)
     }
 
     private fun handleError(exception: BaseException) {
