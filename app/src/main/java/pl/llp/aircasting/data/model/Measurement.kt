@@ -115,11 +115,20 @@ class Measurement(
 
     companion object {
         fun getLevel(value: Double, sensorThreshold: SensorThreshold): Level {
-            if (value < sensorThreshold.thresholdVeryLow) return Level.EXTREMELY_LOW
-            if (value >= sensorThreshold.thresholdVeryHigh) return Level.EXTREMELY_HIGH
-
-            val index = sensorThreshold.levels.indexOfLast { level -> value >= level }
-            return Level.values().first { it.value == index }
+            val roundedValue = round(value)
+            return when {
+                roundedValue > sensorThreshold.thresholdVeryHigh
+                -> Level.EXTREMELY_HIGH
+                roundedValue > sensorThreshold.thresholdHigh && roundedValue <= sensorThreshold.thresholdVeryHigh
+                -> Level.VERY_HIGH
+                roundedValue > sensorThreshold.thresholdMedium && roundedValue <= sensorThreshold.thresholdHigh
+                -> Level.HIGH
+                roundedValue > sensorThreshold.thresholdLow && roundedValue <= sensorThreshold.thresholdMedium
+                -> Level.MEDIUM
+                roundedValue >= sensorThreshold.thresholdVeryLow && roundedValue <= sensorThreshold.thresholdLow
+                -> Level.LOW
+                else -> Level.EXTREMELY_LOW
+            }
         }
 
         fun formatValue(value: Double?): String {
