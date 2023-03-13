@@ -12,10 +12,12 @@ import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToO
-import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.isSDKLessThanN
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
@@ -106,6 +108,13 @@ abstract class SensorService : Service() {
     fun onMessageEvent(event: StopRecordingEvent) {
         stoppedRecording.set(true)
         stopSelf()
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: StandaloneModeEvent) {
+        if (!isSDKLessThanN()) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        }
     }
 
     private fun registerToEventBus() {
