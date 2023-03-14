@@ -28,11 +28,14 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         super.onConnectionSuccessful(deviceItem, sessionUUID)
         Log.v(TAG, "Reconnecting mobile session")
+        if (mAirBeamConnector == null)
+            mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
         mAirBeamConnector?.reconnectMobileSession()
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamDiscoveryFailedEvent) {
+        Log.d(TAG, "Stopping service after AirBeamDiscoveryFailedEvent")
         stopSelf()
     }
 }

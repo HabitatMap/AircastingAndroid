@@ -1,9 +1,11 @@
 package pl.llp.aircasting.util.helpers.sensor
 
+import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -34,6 +36,7 @@ abstract class AirBeamService : SensorService(),
     protected val mSessionRepository = SessionsRepository()
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
+        Log.d(TAG, "Creating AirBeamConnector")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector?.registerListener(this)
@@ -47,6 +50,7 @@ abstract class AirBeamService : SensorService(),
     }
 
     override fun onStopService() {
+        Log.d(TAG, "Service stopping")
         mAirBeamConnector = null
     }
 
@@ -61,6 +65,7 @@ abstract class AirBeamService : SensorService(),
     }
 
     override fun onDisconnect(deviceId: String) {
+        Log.d(TAG, "Disconnecting and stopping service")
         stopSelf()
     }
 
