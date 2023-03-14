@@ -50,9 +50,8 @@ class MyAccountActivity : BaseActivity() {
         rootView = layoutInflater.inflate(R.layout.activity_myaccount, null, false)
 
         setupLayout()
-        setupAppBar(this, topAppBar)
-
         setContentView(rootView)
+        setupAppBar(this, topAppBar)
     }
 
     private fun setupLayout() {
