@@ -28,10 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 class MapContainer(rootView: View?, context: Context, supportFragmentManager: FragmentManager?) :
     OnMapReadyCallback {
-    companion object {
-        private const val DEFAULT_ZOOM = 16f
-    }
-
+    private val DEFAULT_ZOOM = 16f
     private var currentZoom: Float? = null
 
     private var mContext: Context? = context
@@ -247,6 +244,23 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     private fun animateCameraToSession() {
+        if (mSessionPresenter?.isFixed() == true) {
+            animateCameraToFixedSession()
+        } else {
+            animateCameraToMobileSession()
+        }
+    }
+
+    private fun animateCameraToMobileSession() {
+        if (mMeasurements.isEmpty()) return
+        val boundingBox = SessionBoundingBox.get(mMeasurements)
+        val padding = 100 // meters
+
+        boundingBox?: return
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+    }
+
+    private fun animateCameraToFixedSession() {
         if (mMeasurements.isEmpty()) return
         val session = mSessionPresenter?.session
         val location = session?.location
@@ -267,8 +281,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     }
 
     private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
-        val initialZoom = if (zoom > DEFAULT_ZOOM) DEFAULT_ZOOM else zoom
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, initialZoom))
+        mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 
     fun addMobileMeasurement(measurement: Measurement) {
