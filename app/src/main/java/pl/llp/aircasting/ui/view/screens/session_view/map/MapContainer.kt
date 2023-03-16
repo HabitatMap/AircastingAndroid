@@ -256,8 +256,11 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         val boundingBox = SessionBoundingBox.get(mMeasurements)
         val padding = 100 // meters
 
-        boundingBox?: return
         mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+
+        val zoomLevel = mMap?.cameraPosition?.zoom ?: return
+        if (zoomLevel > DEFAULT_ZOOM)
+            centerMap(mMap?.cameraPosition?.target)
     }
 
     private fun animateCameraToFixedSession() {
@@ -280,7 +283,9 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         centerMap(position)
     }
 
-    private fun centerMap(position: LatLng, zoom: Float = DEFAULT_ZOOM) {
+    private fun centerMap(position: LatLng?, zoom: Float = DEFAULT_ZOOM) {
+        position ?: return
+
         mMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom))
     }
 

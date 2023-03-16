@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.model.Measurement
 
 class SessionBoundingBox {
     companion object {
-        fun get(measurements: List<Measurement>): LatLngBounds? {
+        fun get(measurements: List<Measurement>): LatLngBounds {
             var north = -90.0
             var south = 90.0
             var east = -180.0
