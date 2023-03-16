@@ -30,7 +30,6 @@ class LoginService(
                         response.isSuccessful -> {
                             val body = response.body()
                             body?.let {
-                                // TODO: Unit test after converting to coroutines
                                 mSettings.login(
                                     body.username,
                                     body.email,
@@ -52,5 +51,20 @@ class LoginService(
                 mErrorHandler.handleAndDisplay(UnexpectedAPIError(t))
             }
         })
+    }
+
+    suspend fun getUser(): UserResponse? {
+        return try {
+            val response = mApiServiceFactory.get(mSettings.getAuthToken()).loginSuspend()
+            if (!response.isSuccessful) {
+                mErrorHandler.handleAndDisplay(InternalAPIError())
+                return null
+            }
+
+            response.body()
+        } catch (e: Exception) {
+            mErrorHandler.handleAndDisplay(UnexpectedAPIError())
+            null
+        }
     }
 }

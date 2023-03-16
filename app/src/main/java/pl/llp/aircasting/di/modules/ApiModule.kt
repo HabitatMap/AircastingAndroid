@@ -1,11 +1,14 @@
 package pl.llp.aircasting.di.modules
 
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.local.LogoutService
+import pl.llp.aircasting.ui.view.screens.login.LoginService
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.annotation.Nullable
@@ -65,4 +68,20 @@ open class ApiModule {
         val apiService = apiServiceFactory.get(authToken)
         return SessionDownloadService(apiService, errorHandler)
     }
+
+    @Provides
+    @Singleton
+    open fun providesLogoutService(
+        settings: Settings,
+        appContext: Context,
+        apiServiceFactory: ApiServiceFactory
+    ): LogoutService = LogoutService(settings, appContext, apiServiceFactory)
+
+    @Provides
+    @Singleton
+    open fun providesLoginService(
+        settings: Settings,
+        errorHandler: ErrorHandler,
+        apiServiceFactory: ApiServiceFactory
+    ): LoginService = LoginService(settings, errorHandler, apiServiceFactory)
 }

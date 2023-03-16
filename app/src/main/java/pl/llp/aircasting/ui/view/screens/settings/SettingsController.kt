@@ -19,6 +19,7 @@ import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDescriptionDialog
+import pl.llp.aircasting.ui.view.screens.login.LoginService
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.util.Settings
@@ -31,6 +32,7 @@ class SettingsController(
     var viewMvc: SettingsViewMvcImpl?,
     private val mSettings: Settings,
     private val fragmentManager: FragmentManager,
+    private val loginService: LoginService,
     private val logoutService: LogoutService,
     private val apiService: ApiService,
     private val coroutineScope: CoroutineScope? = mRootActivity?.lifecycleScope,
@@ -46,6 +48,10 @@ class SettingsController(
 
     fun onStop() {
         viewMvc?.unregisterListener(this)
+    }
+
+    suspend fun getUserDormantStreamAlertState(): Boolean? {
+        return loginService.getUser()?.sessionStoppedAlert
     }
 
     override fun onMyAccountClicked() {
@@ -101,6 +107,10 @@ class SettingsController(
             apiService.updateUserSettings(UserSettingsBody(UserSettingsData(enabled)))
         }
 
+        saveDormantStreamAlertState(enabled)
+    }
+
+    fun saveDormantStreamAlertState(enabled: Boolean) {
         mSettings.toggleDormantStreamAlert(enabled)
     }
 

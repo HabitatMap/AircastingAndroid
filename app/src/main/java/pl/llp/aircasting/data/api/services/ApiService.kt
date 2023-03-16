@@ -45,6 +45,9 @@ interface ApiService {
     @GET(urlUser)
     fun login(): Call<UserResponse>
 
+    @GET(urlUser)
+    suspend fun loginSuspend(): Response<UserResponse>
+
     @GET(urlExportSession)
     fun exportSession(
         @Query("email") email: String,
