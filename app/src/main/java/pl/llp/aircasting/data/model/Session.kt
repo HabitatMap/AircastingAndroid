@@ -215,6 +215,10 @@ open class Session(
             result = 31 * result + longitude.hashCode()
             return result
         }
+
+        override fun toString(): String {
+            return "Location(latitude=$latitude, longitude=$longitude)"
+        }
     }
 
     val type get() = mType

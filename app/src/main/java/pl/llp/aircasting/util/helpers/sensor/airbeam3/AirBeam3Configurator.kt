@@ -14,6 +14,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.AirBeam3ConfiguringFailed
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import java.util.*
@@ -22,7 +23,7 @@ class AirBeam3Configurator(
     private val mContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings
-): BleManager(mContext) {
+) : BleManager(mContext) {
     companion object {
         val SERVICE_UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
         val MAX_MTU = 517
@@ -30,7 +31,8 @@ class AirBeam3Configurator(
     }
 
     // used for sending hex codes to the AirBeam
-    private val CONFIGURATION_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+    private val CONFIGURATION_CHARACTERISTIC_UUID =
+        UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
 
     // have notifications about new measurements
     private val MEASUREMENTS_CHARACTERISTIC_UUIDS = arrayListOf(
@@ -40,10 +42,14 @@ class AirBeam3Configurator(
         UUID.fromString("0000ffe5-0000-1000-8000-00805f9b34fb"),    // PM2.5
         UUID.fromString("0000ffe6-0000-1000-8000-00805f9b34fb")     // PM10
     )
+
     // has notifications about measurements count in particular csv file on SD card
-    private val DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID = UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+    private val DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID =
+        UUID.fromString("0000ffde-0000-1000-8000-00805f9b34fb")
+
     // has notifications for reading measurements stored in csv files on SD card
-    private val DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID = UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
+    private val DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID =
+        UUID.fromString("0000ffdf-0000-1000-8000-00805f9b34fb")
 
     private var measurementsCharacteristics: List<BluetoothGattCharacteristic>? = null
     private var configurationCharacteristic: BluetoothGattCharacteristic? = null
@@ -70,13 +76,18 @@ class AirBeam3Configurator(
         session: Session,
         wifiSSID: String?,
         wifiPassword: String?
-    ){
+    ) {
         val location = session.sharableLocation() ?: return
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
 
         if (session.isFixed()) {
             when (session.streamingMethod) {
-                Session.StreamingMethod.WIFI -> configureFixedWifi(location, dateString, wifiSSID, wifiPassword)
+                Session.StreamingMethod.WIFI -> configureFixedWifi(
+                    location,
+                    dateString,
+                    wifiSSID,
+                    wifiPassword
+                )
                 Session.StreamingMethod.CELLULAR -> configureFixedCellular(location, dateString)
             }
         } else {
@@ -85,13 +96,14 @@ class AirBeam3Configurator(
     }
 
     fun reconnectMobileSession() {
-        configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
-
-        beginAtomicRequestQueue()
-            .add(requestMtu(MAX_MTU))
-            .add(sleep(500))
-            .add(mobileModeRequest())
-            .enqueue()
+        val location = Session.Location.get(LocationHelper.lastLocation())
+        val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
+        Log.d(
+            TAG, "Reconnect mobile session with:\n" +
+                    "Location: $location\n" +
+                    "Time: $dateString"
+        )
+        configureMobileSession(location, dateString)
     }
 
     fun triggerSDCardDownload(deviceId: String) {
@@ -115,7 +127,11 @@ class AirBeam3Configurator(
 
     private fun configureMobileSession(location: Session.Location, dateString: String) {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
-
+        Log.d(
+            TAG, "Configure mobile session with:\n" +
+                    "Location: $location\n" +
+                    "Time: $dateString"
+        )
         beginAtomicRequestQueue()
             .add(sendLocationConfiguration(location))
             .add(sleep(500))
@@ -127,7 +143,12 @@ class AirBeam3Configurator(
             .enqueue()
     }
 
-    private fun configureFixedWifi(location: Session.Location, dateString: String, wifiSSID: String?, wifiPassword: String?) {
+    private fun configureFixedWifi(
+        location: Session.Location,
+        dateString: String,
+        wifiSSID: String?,
+        wifiPassword: String?
+    ) {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
         wifiSSID ?: return
@@ -178,15 +199,23 @@ class AirBeam3Configurator(
 
         service ?: return false
 
-        measurementsCharacteristics = MEASUREMENTS_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
+        measurementsCharacteristics =
+            MEASUREMENTS_CHARACTERISTIC_UUIDS.mapNotNull { uuid -> service.getCharacteristic(uuid) }
 
         measurementsCharacteristics?.isEmpty() ?: return false
 
         configurationCharacteristic = service.getCharacteristic(CONFIGURATION_CHARACTERISTIC_UUID)
-        downloadFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID)
-        downloadMetaDataFromSDCardCharacteristic = service.getCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID)
+        downloadFromSDCardCharacteristic =
+            service.getCharacteristic(DOWNLOAD_FROM_SD_CARD_CHARACTERISTIC_UUID)
+        downloadMetaDataFromSDCardCharacteristic =
+            service.getCharacteristic(DOWNLOAD_META_DATA_FROM_SD_CARD_CHARACTERISTIC_UUID)
 
-        val characteristics = measurementsCharacteristics!!.union(arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic))
+        val characteristics = measurementsCharacteristics!!.union(
+            arrayListOf(
+                downloadFromSDCardCharacteristic,
+                downloadMetaDataFromSDCardCharacteristic
+            )
+        )
         if (characteristics.any { characteristic -> !validateReadCharacteristic(characteristic) }) {
             return false
         }
@@ -204,7 +233,8 @@ class AirBeam3Configurator(
 
     private fun enableDownloadFromSDCardNotifications(queue: RequestQueue) {
         val downloadFromSDCardCharacteristic = downloadFromSDCardCharacteristic ?: return
-        val downloadMetaDataFromSDCardCharacteristic = downloadMetaDataFromSDCardCharacteristic ?: return
+        val downloadMetaDataFromSDCardCharacteristic =
+            downloadMetaDataFromSDCardCharacteristic ?: return
 
         var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
         metaDatacallback.with { _, data ->
@@ -216,7 +246,10 @@ class AirBeam3Configurator(
             sdCardReader.onMeasurementsDownloaded(data.value)
         }
 
-        arrayListOf(downloadFromSDCardCharacteristic, downloadMetaDataFromSDCardCharacteristic).forEach { characteristic ->
+        arrayListOf(
+            downloadFromSDCardCharacteristic,
+            downloadMetaDataFromSDCardCharacteristic
+        ).forEach { characteristic ->
             queue.add(
                 enableNotifications(characteristic)
                     .fail { _, status -> onNotificationEnableFailure(characteristic, status) }
@@ -243,8 +276,16 @@ class AirBeam3Configurator(
         queue.enqueue()
     }
 
-    private fun onNotificationEnableFailure(characteristic: BluetoothGattCharacteristic, status: Int) {
-        mErrorHandler.handle(AirBeam3ConfiguringFailed("notification " + characteristic.uuid, status))
+    private fun onNotificationEnableFailure(
+        characteristic: BluetoothGattCharacteristic,
+        status: Int
+    ) {
+        mErrorHandler.handle(
+            AirBeam3ConfiguringFailed(
+                "notification " + characteristic.uuid,
+                status
+            )
+        )
     }
 
     fun reset() {
@@ -255,47 +296,132 @@ class AirBeam3Configurator(
     }
 
     private fun uuidRequest(uuid: String): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.uuidMessage(uuid), WRITE_TYPE_DEFAULT)
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.uuidMessage(uuid),
+            WRITE_TYPE_DEFAULT
+        )
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("uuid", status)) }
     }
 
     private fun authRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!), WRITE_TYPE_DEFAULT)
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.authTokenMessage(mSettings.getAuthToken()!!),
+            WRITE_TYPE_DEFAULT
+        )
             .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("token", status)) }
     }
 
     private fun mobileModeRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.bluetoothConfigurationMessage, WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("mobile mode", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.bluetoothConfigurationMessage,
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "mobile mode",
+                        status
+                    )
+                )
+            }
     }
 
     private fun sendCurrentTimeConfiguration(dateString: String): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.currentTimeMessage(dateString), WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("current time", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.currentTimeMessage(dateString),
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "current time",
+                        status
+                    )
+                )
+            }
     }
 
     private fun sendLocationConfiguration(location: Session.Location): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.locationMessage(location.latitude, location.longitude), WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("location", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.locationMessage(location.latitude, location.longitude),
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "location",
+                        status
+                    )
+                )
+            }
     }
 
     private fun sendWifiConfiguration(wifiSSID: String, wifiPassword: String): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword), WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("wifi credentials", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.wifiConfigurationMessage(wifiSSID, wifiPassword),
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "wifi credentials",
+                        status
+                    )
+                )
+            }
     }
 
     private fun cellularModeRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.cellularConfigurationMessage, WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("cellular mode", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.cellularConfigurationMessage,
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "cellular mode",
+                        status
+                    )
+                )
+            }
     }
 
     private fun downloadFromSDCardModeRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.downloadFromSDCardConfigurationMessage, WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("download from SD card mode", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.downloadFromSDCardConfigurationMessage,
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "download from SD card mode",
+                        status
+                    )
+                )
+            }
     }
 
     private fun clearSDCardModeRequest(): WriteRequest {
-        return writeCharacteristic(configurationCharacteristic, hexMessagesBuilder.clearSDCardConfigurationMessage, WRITE_TYPE_DEFAULT)
-            .fail { _, status -> mErrorHandler.handle(AirBeam3ConfiguringFailed("clear SD card mode", status)) }
+        return writeCharacteristic(
+            configurationCharacteristic,
+            hexMessagesBuilder.clearSDCardConfigurationMessage,
+            WRITE_TYPE_DEFAULT
+        )
+            .fail { _, status ->
+                mErrorHandler.handle(
+                    AirBeam3ConfiguringFailed(
+                        "clear SD card mode",
+                        status
+                    )
+                )
+            }
     }
 }
