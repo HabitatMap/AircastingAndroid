@@ -91,7 +91,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     fun setup() {
         clearMap()
 
-        mMap?.isBuildingsEnabled = false
+        mMap?.isBuildingsEnabled = true
 
         drawSession()
         animateCameraToSession()

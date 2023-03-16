@@ -50,7 +50,7 @@ object Versions {
     const val orchestrator = "1.4.1"
 
     const val playServicesLocation = "19.0.1"
-    const val playServicesMaps = "18.0.2"
+    const val playServicesMaps = "18.1.0"
     const val places = "2.6.0"
     const val playServicesGCM = "17.0.0"
     const val autoAnnotations = "1.9"
