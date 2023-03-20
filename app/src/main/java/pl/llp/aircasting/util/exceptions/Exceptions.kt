@@ -19,6 +19,9 @@ class AudioReaderError(errorCode: Int) :
 class UnknownError(cause: Exception) :
     BaseException(cause, "Something went wrong, please contact our support")
 
+class NullError(something: String) :
+        BaseException(null, "$something was null")
+
 class AirBeamConnectionOpenFailed(cause: Exception) :
     BaseException(cause)
 

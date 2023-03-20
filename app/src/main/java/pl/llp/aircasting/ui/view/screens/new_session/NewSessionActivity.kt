@@ -2,14 +2,18 @@ package pl.llp.aircasting.ui.view.screens.new_session
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.NullError
 import pl.llp.aircasting.util.extensions.goToFollowingTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.setupAppBar
@@ -29,6 +33,9 @@ class NewSessionActivity : BaseActivity() {
 
     @Inject
     lateinit var sessionBuilder: SessionBuilder
+
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     companion object {
         const val SESSION_TYPE_KEY = "sessionType"
@@ -69,7 +76,13 @@ class NewSessionActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as Session.Type
+        val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as? Session.Type
+        if (sessionType == null) {
+            Log.e(TAG, "Session type was null")
+            errorHandler.handle(NullError("Session type"))
+            finish()
+            return
+        }
 
         val app = application as AircastingApplication
         val appComponent = app.appComponent
