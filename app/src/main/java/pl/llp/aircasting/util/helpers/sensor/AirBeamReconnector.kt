@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -12,7 +13,6 @@ import pl.llp.aircasting.util.extensions.eventbus
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicBoolean
 
 class AirBeamReconnector(
     private val mContext: Context,
@@ -70,8 +70,14 @@ class AirBeamReconnector(
     }
 
     fun tryToReconnectPeriodically(session: Session, deviceItem: DeviceItem?) {
-        if (sessionUuidByStandaloneMode[session.uuid] == true) return
-        if (mReconnectionTriesNumber != null) return
+        if (sessionUuidByStandaloneMode[session.uuid] == true) {
+            Log.e(TAG, "Will not reconnect: Session is in standalone mode")
+            return
+        }
+        if (mReconnectionTriesNumber != null) {
+            Log.e(TAG, "Will not reconnect: Reconnection is already in progress")
+            return
+        }
 
         mReconnectionTriesNumber = 1
         reconnect(session, deviceItem)
@@ -79,6 +85,7 @@ class AirBeamReconnector(
 
     private fun reconnect(deviceItem: DeviceItem? = null) {
         try {
+            Log.d(TAG, "Starting AirBeamReconnectSessionService")
             AirBeamReconnectSessionService.startService(
                 mContext,
                 deviceItem,
@@ -86,7 +93,10 @@ class AirBeamReconnector(
             )
             eventbus.postSticky(ReconnectionEvent(mSession?.uuid, true))
         } catch (e: Exception) {
-            Log.d(bluetoothReconnection, e.stackTraceToString())
+            Log.e(
+                bluetoothReconnection, "Attempt to start reconnection service failed\n" +
+                        e.stackTraceToString()
+            )
         }
     }
 
@@ -105,11 +115,13 @@ class AirBeamReconnector(
     private fun sendDisconnectedEvent(session: Session) {
         val deviceId = session.deviceId
         deviceId?.let {
+            Log.d(TAG, "Posting SensorDisconnectedEvent")
             eventbus.post(SensorDisconnectedEvent(deviceId, null, session.uuid))
         }
     }
 
     private fun updateSessionStatus(session: Session?, status: Session.Status) {
+        Log.v(TAG, "Updating session status")
         session?.let { session ->
             runOnIOThread {
                 mSessionsRepository.updateSessionStatus(session, status)
@@ -143,7 +155,10 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnectionWithError() {
-        Log.e(bluetoothReconnection, "Finalized with error. Reconnection tries: $mReconnectionTriesNumber")
+        Log.e(
+            bluetoothReconnection,
+            "Finalized with error. Reconnection tries: $mReconnectionTriesNumber"
+        )
         mErrorCallback?.invoke()
         finalizeReconnection()
     }
@@ -154,6 +169,7 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnection() {
+        Log.d(TAG, "Finalizing reconnection")
         mAirBeamDiscoveryService.reset()
         mReconnectionTriesNumber = null
         mFinallyCallback?.invoke()

@@ -1,8 +1,10 @@
 package pl.llp.aircasting.util.helpers.sensor
 
+import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
@@ -47,9 +49,11 @@ abstract class AirBeamConnector(
         connectionTimedOut.set(false)
 
         // Cancel discovery because it otherwise slows down the connection.
+        Log.d(TAG, "Cancelling discovery with bluetooth manager: $bluetoothManager")
         bluetoothManager?.cancelDiscovery()
 
         if (!connectionStarted.get()) {
+            Log.d(TAG, "Connection started")
             failAfterTimeout(deviceItem)
             connectionStarted.set(true)
             registerToEventBus()
@@ -107,8 +111,11 @@ abstract class AirBeamConnector(
             deviceAddressByDeviceItem[device.address] ?: device
         else device
 
-        if (postDisconnectedEvent)
-            EventBus.getDefault().post(SensorDisconnectedEvent(deviceItem.id, deviceItem, mSessionUUID))
+        if (postDisconnectedEvent) {
+            Log.d(TAG, "Posting SensorDisconnectedEvent")
+            EventBus.getDefault()
+                .post(SensorDisconnectedEvent(deviceItem.id, deviceItem, mSessionUUID))
+        }
         mListener?.onDisconnect(deviceItem.id)
     }
 

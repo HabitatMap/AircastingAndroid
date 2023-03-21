@@ -289,6 +289,7 @@ class AirBeam3Configurator(
     }
 
     fun reset() {
+        Log.d(TAG, "Resetting")
         measurementsCharacteristics = null
         configurationCharacteristic = null
         downloadFromSDCardCharacteristic = null

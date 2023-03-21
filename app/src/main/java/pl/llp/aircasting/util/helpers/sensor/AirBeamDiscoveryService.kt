@@ -46,6 +46,7 @@ open class AirBeamDiscoveryService(
     }
 
     fun reset() {
+        Log.d(TAG, "Resetting discovery service")
         mDeviceSelector = null
         mOnDiscoverySuccessful = null
         mOnDiscoveryFailed = null
@@ -90,7 +91,7 @@ open class AirBeamDiscoveryService(
         if (mDeviceSelector?.invoke(deviceItem) == true) {
             mDeviceItem = deviceItem
             unRegisterBluetoothDeviceFoundReceiver()
-
+            Log.d(TAG, "Device found: $deviceItem")
             mOnDiscoverySuccessful?.invoke(deviceItem)
         }
     }

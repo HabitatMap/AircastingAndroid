@@ -3,8 +3,10 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import android.util.Log.VERBOSE
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
@@ -84,15 +86,21 @@ open class AirBeam3Connector(
         airBeam3Configurator.clearSDCard()
     }
 
-    override fun onDeviceConnecting(device: BluetoothDevice) {}
-    override fun onDeviceConnected(device: BluetoothDevice) {}
+    override fun onDeviceConnecting(device: BluetoothDevice) {
+        Log.v(TAG, "Device connecting: $device")
+    }
+    override fun onDeviceConnected(device: BluetoothDevice) {
+        Log.v(TAG, "Device connected: $device")
+    }
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceFailedToConnect"))
         val deviceItem = DeviceItem(device)
         onConnectionFailed(deviceItem)
     }
 
-    override fun onDeviceReady(device: BluetoothDevice) {}
+    override fun onDeviceReady(device: BluetoothDevice) {
+        Log.v(TAG, "Device ready: $device")
+    }
     override fun onDeviceDisconnecting(device: BluetoothDevice) {
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnecting"))
     }

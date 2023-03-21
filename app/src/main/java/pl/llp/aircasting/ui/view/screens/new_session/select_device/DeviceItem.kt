@@ -59,4 +59,8 @@ open class DeviceItem(
     fun isSyncable(): Boolean {
         return arrayOf(Type.AIRBEAM3).contains(type)
     }
+
+    override fun toString(): String {
+        return "$mBluetoothDevice"
+    }
 }
