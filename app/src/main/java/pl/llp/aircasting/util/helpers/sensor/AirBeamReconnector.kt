@@ -119,8 +119,6 @@ class AirBeamReconnector(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
-        mAirBeamDiscoveryService.reset()
-
         updateSessionStatus(mSession, Session.Status.RECORDING)
 
         finalizeReconnection()
