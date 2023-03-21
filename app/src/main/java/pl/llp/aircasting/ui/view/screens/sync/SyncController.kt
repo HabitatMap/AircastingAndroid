@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.sync
 
 import android.app.Activity
 import android.content.Intent
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -25,9 +26,9 @@ import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
+import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.extensions.areLocationServicesOn
@@ -191,6 +192,7 @@ class SyncController(
     }
 
     private fun syncAirbeam(deviceItem: DeviceItem) {
+        mRootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         AirBeamSyncService.startService(mRootActivity, deviceItem)
         mWizardNavigator.goToAirbeamSyncing(this)
     }
@@ -256,6 +258,7 @@ class SyncController(
     }
 
     override fun syncFinished() {
+        mRootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         mErrorHandler.handle(SDCardSyncError("syncFinished in syncController"))
         mWizardNavigator.goToAirbeamSynced(this)
     }
