@@ -1,7 +1,9 @@
 package pl.llp.aircasting.data.api.services
 
-import pl.llp.aircasting.util.Settings
+import android.util.Log
 import pl.llp.aircasting.data.api.response.SyncResponse
+import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.util.Settings
 import retrofit2.Call
 
 // We need this service to handle deleting sessions in quick succession.
@@ -37,6 +39,7 @@ class PeriodicallySyncSessionsService(
         override fun run() {
             try {
                 while (!isInterrupted && settings.thereAreSessionsToRemove()) {
+                    Log.d(TAG, "Starting periodic sessions sync")
                     syncSessions()
                     sleep(POLL_INTERVAL)
 

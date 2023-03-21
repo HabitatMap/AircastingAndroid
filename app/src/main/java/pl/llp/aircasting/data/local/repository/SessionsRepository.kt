@@ -1,5 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
+import android.util.Log
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
@@ -167,8 +169,14 @@ class SessionsRepository {
         mDatabase.sessions().delete(uuid)
     }
 
-    fun markForRemoval(uuids: List<String>) {
+    suspend fun markForRemoval(uuids: List<String>) {
+        Log.d(TAG, "Marking $uuids for deletion")
         mDatabase.sessions().markForRemoval(uuids)
+    }
+
+    suspend fun markForRemoval(uuid: String) {
+        Log.d(TAG, "Marking $uuid for deletion")
+        mDatabase.sessions().markForRemoval(uuid)
     }
 
     fun deleteMarkedForRemoval() {

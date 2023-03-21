@@ -4,6 +4,8 @@ import android.content.Context
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
@@ -19,8 +21,8 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
-import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 
 class SessionManager(
     private val mContext: Context,
@@ -211,11 +213,11 @@ class SessionManager(
     }
 
     private fun deleteSession(sessionUUID: String) {
-        runOnIOThread {
-            settings.setDeletingSessionsInProgress(true)
-            sessionsRepository.markForRemoval(listOf(sessionUUID))
-            settings.setSessionsToRemove(true)
-            settings.setDeletingSessionsInProgress(false)
+        CoroutineScope(Dispatchers.IO).launch {
+            sessionsRepository.markForRemoval(sessionUUID)
+            withContext(Dispatchers.Main) {
+                sessionsSyncService.deleteSessionAndSync()
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import android.database.sqlite.SQLiteConstraintException
+import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.MainScope
@@ -11,6 +12,7 @@ import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.response.SyncResponse
 import pl.llp.aircasting.data.api.response.UploadSessionResponse
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -73,8 +75,10 @@ class SessionsSyncService private constructor(
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
     private val gson = Gson()
-    private val syncStarted = AtomicBoolean(false)
+    private val _syncInProgress = AtomicBoolean(false)
+    val syncInProgress get() = _syncInProgress.get()
     private var syncInBackground = AtomicBoolean(false)
+    private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
     private var mCall: Call<SyncResponse>? = null
 
@@ -88,6 +92,14 @@ class SessionsSyncService private constructor(
         mCall?.cancel()
     }
 
+    fun deleteSessionAndSync() {
+        if (_syncInProgress.get()) {
+            syncAfterDeletion.set(true)
+        } else {
+            sync()
+        }
+    }
+
     fun sync(
         shouldDisplayErrors: Boolean = true
     ) {
@@ -97,15 +109,20 @@ class SessionsSyncService private constructor(
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
-        if (syncStarted.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
+        if (_syncInProgress.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
+            Log.d(TAG, "Not performing sync:\n" +
+                    "syncInProgress = ${_syncInProgress.get()}\n" +
+                    "syncInBackground = ${syncInBackground.get()}\n" +
+                    "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}")
             return
         }
 
-        syncStarted.set(true)
+        _syncInProgress.set(true)
         EventBus.getDefault().postSticky(SessionsSyncEvent())
 
         runOnIOThread {
             val sessions = sessionRepository.allSessionsExceptRecording()
+            val sessionsUuidsToDelete = sessions.filter { it.deleted }.map { it.uuid }
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
 
@@ -119,7 +136,7 @@ class SessionsSyncService private constructor(
                         val body = response.body()
                         body?.let {
                             runOnIOThread {
-                                deleteMarkedForRemoval()
+                                deleteMarkedForRemoval(sessionsUuidsToDelete)
                                 delete(body.deleted)
                                 removeOldMeasurements()
 
@@ -145,8 +162,8 @@ class SessionsSyncService private constructor(
         removeOldMeasurementsService.removeMeasurementsFromSessions()
     }
 
-    private fun deleteMarkedForRemoval() {
-        sessionRepository.deleteMarkedForRemoval()
+    private fun deleteMarkedForRemoval(uuids: List<String>) {
+        sessionRepository.delete(uuids)
     }
 
     private fun delete(uuids: List<String>) {
@@ -253,8 +270,13 @@ class SessionsSyncService private constructor(
     }
 
     private fun setSyncStateToFinished() {
-        syncStarted.set(false)
+        _syncInProgress.set(false)
         EventBus.getDefault().postSticky(SessionsSyncEvent(false))
+
+        if (syncAfterDeletion.get()) {
+            syncAfterDeletion.set(false)
+            sync()
+        }
     }
 
     fun resume() {

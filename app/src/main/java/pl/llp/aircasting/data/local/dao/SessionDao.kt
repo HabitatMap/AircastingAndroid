@@ -191,7 +191,13 @@ interface SessionDao {
     fun deleteAll()
 
     @Query("UPDATE sessions SET deleted=1 WHERE uuid in (:uuids)")
-    fun markForRemoval(uuids: List<String>)
+    suspend fun markForRemoval(uuids: List<String>)
+
+    @Query("UPDATE sessions SET deleted=1 WHERE uuid =:uuid")
+    suspend fun markForRemoval(uuid: String)
+
+    @Query("SELECT uuid FROM sessions WHERE deleted=1")
+    suspend fun getMarkedForRemoval(): List<String>
 
     @Query("DELETE FROM sessions WHERE deleted=1")
     fun deleteMarkedForRemoval()
