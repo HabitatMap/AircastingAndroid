@@ -14,7 +14,7 @@ open class AirBeamConnectorFactory(
     private val mErrorHandler: ErrorHandler,
     private val bluetoothManager: BluetoothManager
 ) {
-    open fun get(deviceItem: DeviceItem): AirBeamConnector? {
+    open fun get(deviceItem: DeviceItem): AirBeamConnector {
         return when (deviceItem.type) {
             DeviceItem.Type.AIRBEAM3 -> AirBeam3Connector(
                 mContext,

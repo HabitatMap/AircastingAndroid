@@ -22,7 +22,7 @@ import javax.inject.Inject
 abstract class AirBeamService : SensorService(),
     AirBeamConnector.Listener {
 
-    protected var mAirBeamConnector: AirBeamConnector? = null
+    protected lateinit var mAirBeamConnector: AirBeamConnector
 
     @Inject
     lateinit var airbeamConnectorFactory: AirBeamConnectorFactory
@@ -33,16 +33,17 @@ abstract class AirBeamService : SensorService(),
     @Inject
     lateinit var airbeamReconnector: AirBeamReconnector
 
-    protected val mSessionRepository = SessionsRepository()
+    @Inject
+    lateinit var mSessionRepository: SessionsRepository
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         Log.d(TAG, "Creating AirBeamConnector")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
-        mAirBeamConnector?.registerListener(this)
+        mAirBeamConnector.registerListener(this)
 
         try {
-            mAirBeamConnector?.connect(deviceItem, sessionUUID)
+            mAirBeamConnector.connect(deviceItem, sessionUUID)
         } catch (e: BLENotSupported) {
             errorHandler.handleAndDisplay(e)
             onConnectionFailed(deviceItem)
@@ -51,7 +52,6 @@ abstract class AirBeamService : SensorService(),
 
     override fun onStopService() {
         Log.d(TAG, "Service stopping")
-        mAirBeamConnector = null
     }
 
     override fun notificationMessage(): String {

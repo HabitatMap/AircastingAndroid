@@ -28,9 +28,7 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         super.onConnectionSuccessful(deviceItem, sessionUUID)
         Log.v(TAG, "Reconnecting mobile session")
-        if (mAirBeamConnector == null)
-            mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
-        mAirBeamConnector?.reconnectMobileSession()
+        mAirBeamConnector.reconnectMobileSession()
     }
 
     @Subscribe
