@@ -36,4 +36,8 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
         Log.d(TAG, "Stopping service after AirBeamDiscoveryFailedEvent")
         stopSelf()
     }
+
+    override fun onDisconnect(deviceId: String) {
+        Log.d(TAG, "Sensor disconnected: $deviceId")
+    }
 }
