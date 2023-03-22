@@ -140,7 +140,9 @@ class SessionsSyncService private constructor(
 
                         upload(body.upload)
                         download(body.download)
-                        _syncState.emit(SessionsSyncSuccessEvent())
+                        val successEvent = SessionsSyncSuccessEvent()
+                        Log.d(TAG, "Emitting success event: $successEvent")
+                        _syncState.emit(successEvent)
                         // TODO: for backward compatibility, remove later
                         EventBus.getDefault().post(SessionsSyncSuccessEvent())
                     }
@@ -160,20 +162,30 @@ class SessionsSyncService private constructor(
     ) {
         if (_syncInProgress.get()) {
             // Wait for the current sync to finish
+            Log.d(TAG, "Waiting for current sync to finish")
             syncState.first { !it.inProgress }
         }
-
         // Start a new sync
+        Log.d(TAG, "Starting new sync")
         sync(shouldDisplayErrors)
 
         // Observe the new sync
         syncState.collect { syncEvent ->
             // Wait for the new sync to finish
-            syncState.first { !it.inProgress }
-
+            Log.d(TAG, "Waiting for new sync to finish")
+            syncState.first {
+                Log.d(TAG, "Collected $it while waiting for new sync to finish")
+                !it.inProgress
+            }
+            Log.d(
+                TAG, "New sync finished with:\n" +
+                        "$syncEvent"
+            )
             if (syncEvent is SessionsSyncSuccessEvent) {
+                Log.d(TAG, "Triggering onSuccess")
                 onSuccess()
             } else if (syncEvent is SessionsSyncErrorEvent) {
+                Log.d(TAG, "Triggering onError")
                 onError(syncEvent.error)
             }
         }
@@ -285,10 +297,9 @@ class SessionsSyncService private constructor(
 
     }
 
-    private suspend fun setSyncStateToFinished() {
+    private fun setSyncStateToFinished() {
         _syncInProgress.set(false)
-        _syncState.emit(SessionsSyncEvent(false))
-        // TODO: for backward compatibility, remove later
+//        // TODO: for backward compatibility, remove later
         EventBus.getDefault().postSticky(SessionsSyncEvent(false))
 
         if (syncAfterDeletion.get()) {
