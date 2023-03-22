@@ -5,6 +5,9 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
@@ -69,6 +72,10 @@ class SessionsSyncService private constructor(
     private val noteRepository = NoteRepository()
     private val gson = Gson()
     private val _syncInProgress = AtomicBoolean(false)
+
+    private val _syncState = MutableStateFlow(SessionsSyncEvent(false))
+    val syncState: StateFlow<SessionsSyncEvent> = _syncState
+
     private var syncInBackground = AtomicBoolean(false)
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
@@ -112,9 +119,12 @@ class SessionsSyncService private constructor(
         }
 
         _syncInProgress.set(true)
-        EventBus.getDefault().postSticky(SessionsSyncEvent())
 
         syncJob = CoroutineScope(Dispatchers.IO).launch {
+            // TODO: for backward compatibility, remove later
+            EventBus.getDefault().postSticky(SessionsSyncEvent())
+
+            _syncState.emit(SessionsSyncEvent())
             val sessions = sessionRepository.allSessionsExceptRecording()
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
@@ -130,7 +140,8 @@ class SessionsSyncService private constructor(
 
                         upload(body.upload)
                         download(body.download)
-
+                        _syncState.emit(SessionsSyncSuccessEvent())
+                        // TODO: for backward compatibility, remove later
                         EventBus.getDefault().post(SessionsSyncSuccessEvent())
                     }
                 } else handleSyncError(shouldDisplayErrors)
@@ -142,6 +153,31 @@ class SessionsSyncService private constructor(
         }
     }
 
+    suspend fun syncAndObserve(
+        shouldDisplayErrors: Boolean = true,
+        onSuccess: () -> Unit,
+        onError: (Throwable?) -> Unit
+    ) {
+        if (_syncInProgress.get()) {
+            // Wait for the current sync to finish
+            syncState.first { !it.inProgress }
+        }
+
+        // Start a new sync
+        sync(shouldDisplayErrors)
+
+        // Observe the new sync
+        syncState.collect { syncEvent ->
+            // Wait for the new sync to finish
+            syncState.first { !it.inProgress }
+
+            if (syncEvent is SessionsSyncSuccessEvent) {
+                onSuccess()
+            } else if (syncEvent is SessionsSyncErrorEvent) {
+                onError(syncEvent.error)
+            }
+        }
+    }
 
     private suspend fun removeOldMeasurements() {
         removeOldMeasurementsService.removeMeasurementsFromSessions()
@@ -235,12 +271,15 @@ class SessionsSyncService private constructor(
         return !(session.locationless && session.isMobile() || session.isExternal)
     }
 
-    private fun handleSyncError(
+    private suspend fun handleSyncError(
         shouldDisplayErrors: Boolean,
         t: Throwable? = null
     ) {
         if (syncJob?.isCancelled != true && !syncInBackground.get()) {
-            EventBus.getDefault().post(SessionsSyncErrorEvent())
+            // TODO: for backward compatibility, remove later
+            EventBus.getDefault().post(SessionsSyncErrorEvent(t))
+
+            _syncState.emit(SessionsSyncErrorEvent(t))
             setSyncStateToFinished()
             if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
                 SyncError(t)
@@ -249,8 +288,10 @@ class SessionsSyncService private constructor(
 
     }
 
-    private fun setSyncStateToFinished() {
+    private suspend fun setSyncStateToFinished() {
         _syncInProgress.set(false)
+        _syncState.emit(SessionsSyncEvent(false))
+        // TODO: for backward compatibility, remove later
         EventBus.getDefault().postSticky(SessionsSyncEvent(false))
 
         if (syncAfterDeletion.get()) {

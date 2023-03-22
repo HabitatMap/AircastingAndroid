@@ -2,15 +2,19 @@ package pl.llp.aircasting.ui.view.screens.sync
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
@@ -26,8 +30,6 @@ import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
@@ -103,23 +105,34 @@ class SyncController(
     }
 
     private fun refreshSessionList() {
-        mSessionsSyncStarted.set(true)
-        mSessionsSyncService.sync(false)
-    }
+//        mSessionsSyncStarted.set(true)
+//        mSessionsSyncService.sync(false)
+        mRootActivity.lifecycleScope.launch {
+            mSessionsSyncService.syncAndObserve(false,
+                onSuccess = {
+                    mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
+                }, onError = {
+                    mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
 
-    @Subscribe
-    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        if (mSessionsSyncStarted.get()) {
-            mSessionsSyncStarted.set(false)
-            mWizardNavigator.goToRefreshingSessionsSuccess(this)
+                    it ?: return@syncAndObserve
+                    Log.e(TAG, it.stackTraceToString())
+                }
+            )
         }
-
     }
 
-    @Subscribe
-    fun onMessageEvent(event: SessionsSyncErrorEvent) {
-        mWizardNavigator.goToRefreshingSessionsError(this)
-    }
+//    @Subscribe
+//    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
+//        if (mSessionsSyncStarted.get()) {
+//            mSessionsSyncStarted.set(false)
+//            mWizardNavigator.goToRefreshingSessionsSuccess(this)
+//        }
+//    }
+
+//    @Subscribe
+//    fun onMessageEvent(event: SessionsSyncErrorEvent) {
+//        mWizardNavigator.goToRefreshingSessionsError(this)
+//    }
 
     override fun refreshedSessionsContinueClicked() {
         checkLocationServicesSettings()
