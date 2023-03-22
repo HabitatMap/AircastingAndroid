@@ -169,18 +169,9 @@ class SessionsRepository {
         mDatabase.sessions().delete(uuid)
     }
 
-    suspend fun markForRemoval(uuids: List<String>) {
-        Log.d(TAG, "Marking $uuids for deletion")
-        mDatabase.sessions().markForRemoval(uuids)
-    }
-
     suspend fun markForRemoval(uuid: String) {
         Log.d(TAG, "Marking $uuid for deletion")
         mDatabase.sessions().markForRemoval(uuid)
-    }
-
-    fun deleteMarkedForRemoval() {
-        mDatabase.sessions().deleteMarkedForRemoval()
     }
 
     fun updateOrCreate(session: Session): Long? {

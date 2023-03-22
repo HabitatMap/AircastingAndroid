@@ -92,7 +92,7 @@ class SessionsSyncService private constructor(
         mCall?.cancel()
     }
 
-    fun deleteSessionAndSync() {
+    fun syncAfterDeletion() {
         if (_syncInProgress.get()) {
             syncAfterDeletion.set(true)
         } else {

@@ -5,7 +5,6 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
@@ -213,11 +212,9 @@ class SessionManager(
     }
 
     private fun deleteSession(sessionUUID: String) {
-        CoroutineScope(Dispatchers.IO).launch {
+        coroutineScope.launch {
             sessionsRepository.markForRemoval(sessionUUID)
-            withContext(Dispatchers.Main) {
-                sessionsSyncService.deleteSessionAndSync()
-            }
+            sessionsSyncService.syncAfterDeletion()
         }
     }
 
