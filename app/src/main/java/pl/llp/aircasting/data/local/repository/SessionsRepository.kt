@@ -198,7 +198,7 @@ class SessionsRepository {
         mDatabase.sessions().updateStatus(session.uuid, status)
     }
 
-    fun updateUrlLocation(session: Session, urlLocation: String?) {
+    suspend fun updateUrlLocation(session: Session, urlLocation: String?) {
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
     }
 

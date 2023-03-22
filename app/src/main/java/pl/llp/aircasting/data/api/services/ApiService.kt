@@ -75,7 +75,7 @@ interface ApiService {
 
     /* POST Requests */
     @POST(urlCreateMobileSession)
-    fun createMobileSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+    suspend fun createMobileSession(@Body body: CreateSessionBody): Response<UploadSessionResponse>
 
     @POST(urlCreateFixedSession)
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>

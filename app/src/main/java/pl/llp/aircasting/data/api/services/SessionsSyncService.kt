@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
-import pl.llp.aircasting.data.api.response.UploadSessionResponse
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
@@ -25,9 +24,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
-import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SessionsSyncService private constructor(
@@ -61,7 +58,7 @@ class SessionsSyncService private constructor(
     }
 
     private val uploadService: MobileSessionUploadService =
-        MobileSessionUploadService(apiService, errorHandler)
+        MobileSessionUploadService(apiService)
     private val downloadService: SessionDownloadService =
         SessionDownloadService(apiService, errorHandler)
     private val removeOldMeasurementsService: RemoveOldMeasurementsService =
@@ -72,7 +69,6 @@ class SessionsSyncService private constructor(
     private val noteRepository = NoteRepository()
     private val gson = Gson()
     private val _syncInProgress = AtomicBoolean(false)
-    val syncInProgress get() = _syncInProgress.get()
     private var syncInBackground = AtomicBoolean(false)
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
@@ -178,14 +174,18 @@ class SessionsSyncService private constructor(
         return encodedPhotos
     }
 
-    private fun uploadSession(session: Session, encodedPhotos: List<String?>) {
-        val onUploadSuccessCallback = { response: Response<UploadSessionResponse> ->
-            runOnIOThread {
+    private suspend fun uploadSession(session: Session, encodedPhotos: List<String?>) {
+        runCatching {
+            uploadService.upload(session, encodedPhotos)
+        }.onSuccess { response ->
+            if (response.isSuccessful) {
                 sessionRepository.updateUrlLocation(session, response.body()?.location)
+            } else {
+                errorHandler.handle(UnexpectedAPIError())
             }
+        }.onFailure { exception ->
+            errorHandler.handle(UnexpectedAPIError(exception))
         }
-
-        uploadService.upload(session, encodedPhotos, onUploadSuccessCallback)
     }
 
     private suspend fun download(uuids: List<String>) {
