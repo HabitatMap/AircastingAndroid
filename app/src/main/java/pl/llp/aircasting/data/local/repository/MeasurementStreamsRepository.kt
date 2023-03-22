@@ -64,7 +64,7 @@ class MeasurementStreamsRepository {
         mDatabase.measurementStreams().deleteMarkedForRemoval()
     }
 
-    fun getStreamsIdsBySessionIds(sessionsIds: List<Long>): List<Long> {
+    suspend fun getStreamsIdsBySessionIds(sessionsIds: List<Long>): List<Long> {
         return mDatabase.measurementStreams().getStreamsIdsBySessionIds(sessionsIds)
     }
 

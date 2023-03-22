@@ -24,7 +24,7 @@ class NoteRepository {
         mDatabase.notes().deleteAllNotesForSessionWithId(sessionId)
     }
 
-    fun getNotesForSessionWithId(sessionId: Long): List<NoteDBObject?> {
+    suspend fun getNotesForSessionWithId(sessionId: Long): List<NoteDBObject?> {
         return mDatabase.notes().loadNotesBySessionId(sessionId)
     }
 }

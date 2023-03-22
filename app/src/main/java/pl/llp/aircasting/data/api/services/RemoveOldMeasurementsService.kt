@@ -12,7 +12,7 @@ class RemoveOldMeasurementsService {
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60
 
-    fun removeMeasurementsFromSessions() {
+    suspend fun removeMeasurementsFromSessions() {
         // For next generations:
         // We want to remove measurements older than 24h,
         // but we treat 24 not like a date, but as a sum of measurements.

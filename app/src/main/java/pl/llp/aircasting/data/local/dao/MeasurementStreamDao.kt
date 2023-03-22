@@ -24,7 +24,7 @@ interface MeasurementStreamDao {
     suspend fun loadStreamBySessionIdAndSensorNameSuspend(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
 
     @Query("SELECT id FROM measurement_streams WHERE session_id in (:sessionIds)")
-    fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>
+    suspend fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>
 
     @Query("SELECT id FROM measurement_streams WHERE session_id=:sessionId")
     suspend fun getStreamsIdsBySessionId(sessionId: Long): List<Long>

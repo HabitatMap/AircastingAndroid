@@ -61,7 +61,7 @@ interface SessionDao {
     fun byType(type: Session.Type): List<SessionDBObject>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
-    fun byStatus(status: Session.Status): List<SessionDBObject>
+    suspend fun byStatus(status: Session.Status): List<SessionDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(session: SessionDBObject): Long
@@ -89,6 +89,9 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    suspend fun loadSessionForUploadByUUIDSuspend(uuid: String): CompleteSessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
@@ -197,13 +200,13 @@ interface SessionDao {
     suspend fun markForRemoval(uuid: String)
 
     @Query("DELETE FROM sessions WHERE uuid in (:uuids)")
-    fun delete(uuids: List<String>)
+    suspend fun delete(uuids: List<String>)
 
     @Query("DELETE FROM sessions WHERE uuid =:uuid")
     fun delete(uuid: String)
 
     @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
-    fun loadSessionUuidsByType(type: Session.Type): List<Long>
+    suspend fun loadSessionUuidsByType(type: Session.Type): List<Long>
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     suspend fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)

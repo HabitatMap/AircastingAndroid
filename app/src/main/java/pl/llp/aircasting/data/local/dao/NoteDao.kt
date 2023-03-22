@@ -13,7 +13,7 @@ interface NoteDao {
     fun insert(note: NoteDBObject): Long
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
-    fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
+    suspend fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
 
     @Query("UPDATE notes SET text=:text WHERE session_id=:sessionId AND number=:number")
     fun update(sessionId: Long, number: Int, text: String)

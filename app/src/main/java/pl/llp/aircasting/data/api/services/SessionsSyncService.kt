@@ -120,7 +120,6 @@ class SessionsSyncService private constructor(
 
         syncJob = CoroutineScope(Dispatchers.IO).launch {
             val sessions = sessionRepository.allSessionsExceptRecording()
-            val sessionsUuidsToDelete = sessions.filter { it.deleted }.map { it.uuid }
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
 
@@ -130,7 +129,6 @@ class SessionsSyncService private constructor(
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        deleteMarkedForRemoval(sessionsUuidsToDelete)
                         delete(body.deleted)
                         removeOldMeasurements()
 
@@ -149,36 +147,29 @@ class SessionsSyncService private constructor(
     }
 
 
-    private fun removeOldMeasurements() {
+    private suspend fun removeOldMeasurements() {
         removeOldMeasurementsService.removeMeasurementsFromSessions()
     }
 
-    private fun deleteMarkedForRemoval(uuids: List<String>) {
+    private suspend fun delete(uuids: List<String>) {
         sessionRepository.delete(uuids)
     }
 
-    private fun delete(uuids: List<String>) {
-        sessionRepository.delete(uuids)
-    }
-
-    private fun upload(uuids: List<String>) {
+    private suspend fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
+            val session = sessionRepository.loadSessionForUploadSuspend(uuid)
+            val encodedPhotos = getPhotosFromSessionNotes(uuid)
 
-            runOnIOThread {
-                val session = sessionRepository.loadSessionForUpload(uuid)
-                val encodedPhotos = getPhotosFromSessionNotes(uuid)
+            session ?: return
 
-                session ?: return@runOnIOThread
-
-                if (isUploadable(session) && encodedPhotos != null) {
-                    uploadSession(session, encodedPhotos)
-                }
+            if (isUploadable(session) && encodedPhotos != null) {
+                uploadSession(session, encodedPhotos)
             }
         }
     }
 
-    private fun getPhotosFromSessionNotes(uuid: String): List<String?>? {
-        val sessionID = sessionRepository.getSessionIdByUUID(uuid)
+    private suspend fun getPhotosFromSessionNotes(uuid: String): List<String?>? {
+        val sessionID = sessionRepository.getSessionIdByUUIDSuspend(uuid)
         val mNotes = sessionID?.let { noteRepository.getNotesForSessionWithId(it) }
 
         val encodedPhotos = mNotes?.filterNotNull()?.map { note ->

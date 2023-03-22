@@ -61,6 +61,10 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
+    suspend fun getSessionIdByUUIDSuspend(uuid: String): Long? {
+        return mDatabase.sessions().loadSessionByUUIDSuspend(uuid)?.id
+    }
+
     fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 
@@ -70,6 +74,12 @@ class SessionsRepository {
 
     fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
+
+        return sessionForUploadDBObject?.let { Session(it) }
+    }
+
+    suspend fun loadSessionForUploadSuspend(uuid: String): Session? {
+        val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUIDSuspend(uuid)
 
         return sessionForUploadDBObject?.let { Session(it) }
     }
@@ -146,7 +156,7 @@ class SessionsRepository {
             .disconnectSession(Session.Status.DISCONNECTED, deviceId, Session.Status.RECORDING)
     }
 
-    fun allSessionsExceptRecording(): List<Session> {
+    suspend fun allSessionsExceptRecording(): List<Session> {
         return mDatabase.sessions().byStatus(Session.Status.FINISHED)
             .map { dbObject -> Session(dbObject) }
     }
@@ -155,11 +165,11 @@ class SessionsRepository {
         return mDatabase.sessions().byType(Session.Type.FIXED)
     }
 
-    fun sessionsIdsByType(type: Session.Type): List<Long> {
+    suspend fun sessionsIdsByType(type: Session.Type): List<Long> {
         return mDatabase.sessions().loadSessionUuidsByType(type)
     }
 
-    fun delete(uuids: List<String>) {
+    suspend fun delete(uuids: List<String>) {
         if (uuids.isNotEmpty()) {
             mDatabase.sessions().delete(uuids)
         }
