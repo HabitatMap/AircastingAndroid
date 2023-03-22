@@ -226,33 +226,6 @@ class SessionsSyncService private constructor(
 
     private suspend fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val onDownloadSuccess = { session: Session? ->
-                if (syncJob?.isCancelled != true) {
-                    try {
-                        session?.let {
-                            val sessionId = sessionRepository.updateOrCreate(session)
-                            sessionId?.let {
-                                measurementStreamsRepository.insert(
-                                    sessionId,
-                                    session.streams
-                                )
-                            }
-
-                            session.notes.forEach { note ->
-                                sessionId?.let { sessionId ->
-                                    noteRepository.insert(
-                                        sessionId,
-                                        note
-                                    )
-                                }
-                            }
-                        }
-                    } catch (e: SQLiteConstraintException) {
-                        errorHandler.handle(DBInsertException(e))
-                    }
-                }
-            }
-
             if (syncJob?.isCancelled != true) {
                 MainScope().launch {
                     downloadService.download(uuid)
@@ -261,10 +234,34 @@ class SessionsSyncService private constructor(
                                 UnexpectedAPIError(it)
                             )
                         }
-                        .onSuccess(onDownloadSuccess)
+                        .onSuccess { session ->
+                            if (syncJob?.isCancelled != true) {
+                                try {
+                                    val sessionId = sessionRepository.updateOrCreate(session)
+                                    sessionId?.let {
+                                        measurementStreamsRepository.insert(
+                                            sessionId,
+                                            session.streams
+                                        )
+                                    }
+
+                                    session.notes.forEach { note ->
+                                        sessionId?.let { sessionId ->
+                                            noteRepository.insert(
+                                                sessionId,
+                                                note
+                                            )
+                                        }
+                                    }
+                                } catch (e: SQLiteConstraintException) {
+                                    errorHandler.handle(DBInsertException(e))
+                                }
+                            }
+                        }
                 }
             }
         }
+
     }
 
     private fun isUploadable(session: Session): Boolean {

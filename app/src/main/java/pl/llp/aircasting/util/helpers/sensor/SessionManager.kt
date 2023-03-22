@@ -255,8 +255,8 @@ class SessionManager(
     }
 
     private fun addNote(event: NoteCreatedEvent) {
-        runOnIOThread {
-            val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
+        coroutineScope.launch {
+            val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(event.session.uuid)
             sessionId?.let {
                 noteRepository.insert(sessionId, event.note)
             }
@@ -264,9 +264,9 @@ class SessionManager(
     }
 
     private fun editNote(event: NoteEditedEvent) {
-        runOnIOThread {
+        coroutineScope.launch {
             event.session?.let {
-                val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
+                val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(event.session.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.update(sessionId, event.note)
                 }

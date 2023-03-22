@@ -28,7 +28,7 @@ class SDCardMobileSessionsProcessor(
         if (dbSession == null) {
             Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
             session = csvSession.toSession(deviceId) ?: return
-            sessionId = mSessionsRepository.insertSuspend(session)
+            sessionId = mSessionsRepository.insert(session)
         } else {
             session = Session(dbSession)
             sessionId = dbSession.id

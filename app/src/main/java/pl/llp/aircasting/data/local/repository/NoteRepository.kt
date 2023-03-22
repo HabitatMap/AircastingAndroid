@@ -7,12 +7,12 @@ import pl.llp.aircasting.data.model.Note
 class NoteRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun insert(sessionId: Long, note: Note) {
+    suspend fun insert(sessionId: Long, note: Note) {
         val noteDBObject = NoteDBObject(sessionId, note)
         mDatabase.notes().insert(noteDBObject)
     }
 
-    fun update(sessionId: Long, note: Note) {
+    suspend fun update(sessionId: Long, note: Note) {
         mDatabase.notes().update(sessionId, note.number, note.text)
     }
 

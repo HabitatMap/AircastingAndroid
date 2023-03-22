@@ -108,7 +108,7 @@ class RecordingHandlerImplTest {
         recordingHandler.startRecording(fixedSession, wifiSSID, wifiPassword)
         yield()
 
-        verify(sessionsRepository).insertSuspend(fixedSession)
+        verify(sessionsRepository).insert(fixedSession)
     }
 
     @Test

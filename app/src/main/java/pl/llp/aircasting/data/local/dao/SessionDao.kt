@@ -64,10 +64,7 @@ interface SessionDao {
     suspend fun byStatus(status: Session.Status): List<SessionDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(session: SessionDBObject): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSuspend(session: SessionDBObject): Long
+    suspend fun insert(session: SessionDBObject): Long
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?

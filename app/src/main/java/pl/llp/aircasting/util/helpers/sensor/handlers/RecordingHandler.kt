@@ -48,7 +48,7 @@ class RecordingHandlerImpl(
             EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
             session.startRecording()
-            databaseSessionId = sessionsRepository.insertSuspend(session)
+            databaseSessionId = sessionsRepository.insert(session)
 
             when (session.type) {
                 Session.Type.FIXED -> {

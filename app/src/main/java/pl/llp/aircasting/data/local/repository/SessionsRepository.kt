@@ -12,16 +12,10 @@ import java.util.*
 class SessionsRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun insert(session: Session): Long {
+    suspend fun insert(session: Session): Long {
         val sessionDBObject =
             SessionDBObject(session)
         return mDatabase.sessions().insert(sessionDBObject)
-    }
-
-    suspend fun insertSuspend(session: Session): Long {
-        val sessionDBObject =
-            SessionDBObject(session)
-        return mDatabase.sessions().insertSuspend(sessionDBObject)
     }
 
     suspend fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
@@ -184,12 +178,12 @@ class SessionsRepository {
         mDatabase.sessions().markForRemoval(uuid)
     }
 
-    fun updateOrCreate(session: Session): Long? {
-        val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
+    suspend fun updateOrCreate(session: Session): Long? {
+        val sessionDbObject = mDatabase.sessions().loadSessionByUUIDSuspend(session.uuid)
         return if (sessionDbObject == null) {
             insert(session)
         } else {
-            update(session)
+            updateSuspend(session)
             null
         }
     }

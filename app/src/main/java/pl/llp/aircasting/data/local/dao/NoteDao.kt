@@ -10,13 +10,13 @@ import pl.llp.aircasting.data.local.entity.NoteDBObject
 interface NoteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(note: NoteDBObject): Long
+    suspend fun insert(note: NoteDBObject): Long
 
     @Query("SELECT * FROM notes WHERE session_id=:sessionId")
     suspend fun loadNotesBySessionId(sessionId: Long): List<NoteDBObject?>
 
     @Query("UPDATE notes SET text=:text WHERE session_id=:sessionId AND number=:number")
-    fun update(sessionId: Long, number: Int, text: String)
+    suspend fun update(sessionId: Long, number: Int, text: String)
 
     @Query("DELETE FROM notes WHERE session_id=:sessionId AND number=:number")
     fun delete(sessionId: Long, number: Int)
