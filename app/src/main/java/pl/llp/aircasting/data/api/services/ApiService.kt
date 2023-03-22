@@ -81,7 +81,7 @@ interface ApiService {
     fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
 
     @POST(urlSync)
-    fun sync(@Body body: SyncSessionBody): Call<SyncResponse>
+    suspend fun sync(@Body body: SyncSessionBody): Response<SyncResponse>
 
     @POST(urlCreateAccount)
     suspend fun createAccount(@Body body: CreateAccountBody): Response<UserResponse>

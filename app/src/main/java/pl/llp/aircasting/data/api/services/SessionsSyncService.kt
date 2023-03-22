@@ -4,13 +4,11 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
-import pl.llp.aircasting.data.api.response.SyncResponse
 import pl.llp.aircasting.data.api.response.UploadSessionResponse
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -29,8 +27,6 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
-import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -80,7 +76,7 @@ class SessionsSyncService private constructor(
     private var syncInBackground = AtomicBoolean(false)
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
-    private var mCall: Call<SyncResponse>? = null
+    private var syncJob: Job? = null
 
     @Subscribe
     fun onMessageEvent(logout: LogoutEvent) {
@@ -89,7 +85,7 @@ class SessionsSyncService private constructor(
     }
 
     fun destroy() {
-        mCall?.cancel()
+        syncJob?.cancel()
     }
 
     fun syncAfterDeletion() {
@@ -110,53 +106,48 @@ class SessionsSyncService private constructor(
             triedToSyncBackground.set(true)
         }
         if (_syncInProgress.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
-            Log.d(TAG, "Not performing sync:\n" +
-                    "syncInProgress = ${_syncInProgress.get()}\n" +
-                    "syncInBackground = ${syncInBackground.get()}\n" +
-                    "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}")
+            Log.d(
+                TAG, "Not performing sync:\n" +
+                        "syncInProgress = ${_syncInProgress.get()}\n" +
+                        "syncInBackground = ${syncInBackground.get()}\n" +
+                        "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}"
+            )
             return
         }
 
         _syncInProgress.set(true)
         EventBus.getDefault().postSticky(SessionsSyncEvent())
 
-        runOnIOThread {
+        syncJob = CoroutineScope(Dispatchers.IO).launch {
             val sessions = sessionRepository.allSessionsExceptRecording()
             val sessionsUuidsToDelete = sessions.filter { it.deleted }.map { it.uuid }
             val syncParams = sessions.map { session -> SyncSessionParams(session) }
             val jsonData = gson.toJson(syncParams)
 
-            mCall = apiService.sync(SyncSessionBody(jsonData))
-            mCall?.enqueue(object : Callback<SyncResponse> {
-                override fun onResponse(
-                    call: Call<SyncResponse>,
-                    response: Response<SyncResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        body?.let {
-                            runOnIOThread {
-                                deleteMarkedForRemoval(sessionsUuidsToDelete)
-                                delete(body.deleted)
-                                removeOldMeasurements()
+            try {
+                val response = apiService.sync(SyncSessionBody(jsonData))
 
-                                upload(body.upload)
-                                download(body.download)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    body?.let {
+                        deleteMarkedForRemoval(sessionsUuidsToDelete)
+                        delete(body.deleted)
+                        removeOldMeasurements()
 
-                                EventBus.getDefault().post(SessionsSyncSuccessEvent())
-                                setSyncStateToFinished()
-                            }
-                        }
-                    } else handleSyncError(shouldDisplayErrors, call)
-                }
+                        upload(body.upload)
+                        download(body.download)
 
-                override fun onFailure(call: Call<SyncResponse>, t: Throwable) {
-                    setSyncStateToFinished()
-                    handleSyncError(shouldDisplayErrors, call, t)
-                }
-            })
+                        EventBus.getDefault().post(SessionsSyncSuccessEvent())
+                    }
+                } else handleSyncError(shouldDisplayErrors)
+
+            } catch (t: Throwable) {
+                handleSyncError(shouldDisplayErrors, t)
+            }
+            setSyncStateToFinished()
         }
     }
+
 
     private fun removeOldMeasurements() {
         removeOldMeasurementsService.removeMeasurementsFromSessions()
@@ -206,37 +197,36 @@ class SessionsSyncService private constructor(
         uploadService.upload(session, encodedPhotos, onUploadSuccessCallback)
     }
 
-    private fun download(uuids: List<String>) {
+    private suspend fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
             val onDownloadSuccess = { session: Session? ->
-                runOnIOThread {
-                    if (mCall?.isCanceled != true) {
-                        try {
-                            session?.let {
-                                val sessionId = sessionRepository.updateOrCreate(session)
-                                sessionId?.let {
-                                    measurementStreamsRepository.insert(
+                if (syncJob?.isCancelled != true) {
+                    try {
+                        session?.let {
+                            val sessionId = sessionRepository.updateOrCreate(session)
+                            sessionId?.let {
+                                measurementStreamsRepository.insert(
+                                    sessionId,
+                                    session.streams
+                                )
+                            }
+
+                            session.notes.forEach { note ->
+                                sessionId?.let { sessionId ->
+                                    noteRepository.insert(
                                         sessionId,
-                                        session.streams
+                                        note
                                     )
                                 }
-
-                                session.notes.forEach { note ->
-                                    sessionId?.let { sessionId ->
-                                        noteRepository.insert(
-                                            sessionId,
-                                            note
-                                        )
-                                    }
-                                }
                             }
-                        } catch (e: SQLiteConstraintException) {
-                            errorHandler.handle(DBInsertException(e))
                         }
+                    } catch (e: SQLiteConstraintException) {
+                        errorHandler.handle(DBInsertException(e))
                     }
                 }
             }
-            if (mCall?.isCanceled != true) {
+
+            if (syncJob?.isCancelled != true) {
                 MainScope().launch {
                     downloadService.download(uuid)
                         .onFailure {
@@ -256,10 +246,9 @@ class SessionsSyncService private constructor(
 
     private fun handleSyncError(
         shouldDisplayErrors: Boolean,
-        call: Call<SyncResponse>,
         t: Throwable? = null
     ) {
-        if (!call.isCanceled && !syncInBackground.get()) {
+        if (syncJob?.isCancelled != true && !syncInBackground.get()) {
             EventBus.getDefault().post(SessionsSyncErrorEvent())
             setSyncStateToFinished()
             if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
