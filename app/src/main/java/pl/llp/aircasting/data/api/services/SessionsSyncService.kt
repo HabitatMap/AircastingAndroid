@@ -5,10 +5,9 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -164,94 +163,25 @@ class SessionsSyncService private constructor(
     ) {
         val currentSyncResult = syncState.value
         if (currentSyncResult.inProgress) {
-            // Wait for the current sync to finish
             Log.d(TAG, "Waiting for current sync to finish")
             syncState.first { !it.inProgress }
         }
-        // Start a new sync
         Log.d(TAG, "Starting new sync")
         sync(shouldDisplayErrors)
 
         // Observe the new sync
-//        syncState.collect { syncEvent ->
-//            Log.d(TAG, "Collected $syncEvent")
-//            if (syncEvent == currentSyncResult) return@collect
-//            Log.d(
-//                TAG, "New sync finished with:\n" +
-//                        "$syncEvent"
-//            )
-//            if (syncEvent is SessionsSyncSuccessEvent) {
-//                Log.d(TAG, "Triggering onSuccess")
-//                onSuccess()
-//            } else if (syncEvent is SessionsSyncErrorEvent) {
-//                Log.d(TAG, "Triggering onError")
-//                onError(syncEvent.error)
-//            }
-//        }
-
-
-//        syncState.collect { syncEvent ->
-//            if (!syncEvent.inProgress) {
-//                Log.d(
-//                    TAG, "New sync finished with:\n" +
-//                            "$syncEvent"
-//                )
-//                if (syncEvent is SessionsSyncSuccessEvent) {
-//                    Log.d(TAG, "Triggering onSuccess")
-//                    onSuccess()
-//
-//                } else if (syncEvent is SessionsSyncErrorEvent) {
-//                    Log.d(TAG, "Triggering onError")
-//                    onError(syncEvent.error)
-//
-//                }
-//            }
-//        }
-
-
-//        while (true) {
-//            val syncEvent = syncState.firstOrNull { !it.inProgress }
-//
-//            if (syncEvent != null) {
-//                Log.d(
-//                    TAG, "New sync finished with:\n" +
-//                            "$syncEvent"
-//                )
-//                if (syncEvent is SessionsSyncSuccessEvent) {
-//                    Log.d(TAG, "Triggering onSuccess")
-//                    onSuccess()
-//                    break
-//                } else if (syncEvent is SessionsSyncErrorEvent) {
-//                    Log.d(TAG, "Triggering onError")
-//                    onError(syncEvent.error)
-//                    break
-//                }
-//            }
-//        }
-
-        callbackFlow {
-            val job = launch {
-                syncState.collect { syncEvent ->
-                    // Filter
-                    if (!syncEvent.inProgress) {
-                        trySend(syncEvent)
-                    }
+        syncState
+            .filter { syncEvent -> !syncEvent.inProgress }
+            .collect { syncEvent ->
+                Log.d(TAG, "New sync finished with: $syncEvent")
+                if (syncEvent is SessionsSyncSuccessEvent) {
+                    Log.d(TAG, "Triggering onSuccess")
+                    onSuccess()
+                } else if (syncEvent is SessionsSyncErrorEvent) {
+                    Log.d(TAG, "Triggering onError")
+                    onError(syncEvent.error)
                 }
             }
-            awaitClose { job.cancel() }
-        }.collect { syncEvent ->
-            Log.d(
-                TAG, "New sync finished with:\n" +
-                        "$syncEvent"
-            )
-            if (syncEvent is SessionsSyncSuccessEvent) {
-                Log.d(TAG, "Triggering onSuccess")
-                onSuccess()
-            } else if (syncEvent is SessionsSyncErrorEvent) {
-                Log.d(TAG, "Triggering onError")
-                onError(syncEvent.error)
-            }
-        }
     }
 
     private suspend fun removeOldMeasurements() {
