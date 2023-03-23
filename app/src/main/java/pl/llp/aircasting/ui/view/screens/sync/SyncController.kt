@@ -105,21 +105,26 @@ class SyncController(
     }
 
     private fun refreshSessionList() {
-//        mSessionsSyncStarted.set(true)
-//        mSessionsSyncService.sync(false)
         mRootActivity.lifecycleScope.launch {
-            mSessionsSyncService.syncAndObserve(false,
-                onSuccess = {
-                    mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
-                }, onError = {
-                    mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
+            mSessionsSyncService.syncAndObserve().collect { syncResult ->
+                when (syncResult) {
+                    is SessionsSyncService.SyncResult.Success -> {
+                        Log.d(this@SyncController.TAG, "Acting on success sync result")
+                        mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
+                    }
+                    is SessionsSyncService.SyncResult.Error -> {
+                        mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
 
-                    it ?: return@syncAndObserve
-                    Log.e(TAG, it.stackTraceToString())
+                        syncResult.throwable?.let {
+                            Log.e(TAG, it.stackTraceToString())
+                        }
+                    }
+                    else -> { /* Ignore SyncResult.InProgress */ }
                 }
-            )
+            }
         }
     }
+
 
 //    @Subscribe
 //    fun onMessageEvent(event: SessionsSyncSuccessEvent) {

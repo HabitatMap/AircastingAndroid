@@ -1,8 +1,12 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
+import android.util.Log
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.ui.view.screens.dashboard.reordering_dashboard.BaseDashboardController
 import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.extensions.safeRegister
@@ -19,7 +23,11 @@ class DashboardController(
     }
 
     override fun onRefreshTriggered() {
-        sessionsSyncService.sync()
+        MainScope().launch {
+            sessionsSyncService.syncAndObserve().collect {
+                Log.d(this@DashboardController.TAG, "Collected result: ${it.TAG}")
+            }
+        }
     }
 
     @Subscribe(sticky = true)

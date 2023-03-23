@@ -7,8 +7,8 @@ import com.google.gson.Gson
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
@@ -72,11 +72,10 @@ class SessionsSyncService private constructor(
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
     private val gson = Gson()
-    private val _syncInProgress = AtomicBoolean(false)
 
-    private val _syncState = MutableStateFlow(SessionsSyncEvent(false))
-    val syncState: StateFlow<SessionsSyncEvent> = _syncState
-
+    private val _syncState = MutableStateFlow<SyncResult>(SyncResult.Success)
+    val syncState: StateFlow<SyncResult> = _syncState
+    private suspend fun getCurrentSyncState() = _syncState.first()
     private var syncInBackground = AtomicBoolean(false)
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
@@ -93,96 +92,133 @@ class SessionsSyncService private constructor(
     }
 
     fun syncAfterDeletion() {
-        if (_syncInProgress.get()) {
-            syncAfterDeletion.set(true)
-        } else {
-            sync()
+        CoroutineScope(Dispatchers.IO).launch {
+            if (getCurrentSyncState() is SyncResult.InProgress) {
+                syncAfterDeletion.set(true)
+            } else {
+                sync()
+            }
         }
     }
 
-    fun sync(
-        shouldDisplayErrors: Boolean = true
-    ) {
+
+    // Define a sealed class to represent the result of the sync operation
+    sealed class SyncResult {
+        object InProgress : SyncResult()
+        object Success : SyncResult()
+        data class Error(val throwable: Throwable?) : SyncResult()
+    }
+
+    fun syncAndObserve() = flow {
+        Log.d(this@SessionsSyncService.TAG, "Emitting SyncResult.InProgress")
+        emit(SyncResult.InProgress)
+        Log.d(this@SessionsSyncService.TAG, "Starting sync")
+        val result = withContext(Dispatchers.IO) { syncSuspend() }
+        Log.d(this@SessionsSyncService.TAG, "Emitting result: ${result.TAG}")
+        emit(result)
+    }
+
+    private suspend fun syncSuspend(shouldDisplayErrors: Boolean = true): SyncResult {
 
         // This will happen if we regain connectivity when app is in background.
         // When in foreground again, it should sync
         if (syncInBackground.get()) {
             triedToSyncBackground.set(true)
         }
-        if (_syncInProgress.get() || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
+        Log.d(TAG, "SyncSuspend in progress")
+        if (syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
             Log.d(
                 TAG, "Not performing sync:\n" +
-                        "syncInProgress = ${_syncInProgress.get()}\n" +
+                        "syncInProgress = ${getCurrentSyncState() is SyncResult.InProgress}\n" +
                         "syncInBackground = ${syncInBackground.get()}\n" +
                         "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}"
             )
-            return
+            return SyncResult.InProgress
         }
 
-        _syncInProgress.set(true)
+        val sessions = sessionRepository.allSessionsExceptRecording()
+        val syncParams = sessions.map { session -> SyncSessionParams(session) }
+        val jsonData = gson.toJson(syncParams)
 
-        syncJob = CoroutineScope(Dispatchers.IO).launch {
-            // TODO: for backward compatibility, remove later
-            EventBus.getDefault().postSticky(SessionsSyncEvent())
+        return try {
+            val response = apiService.sync(SyncSessionBody(jsonData))
 
-            _syncState.emit(SessionsSyncEvent())
-            val sessions = sessionRepository.allSessionsExceptRecording()
-            val syncParams = sessions.map { session -> SyncSessionParams(session) }
-            val jsonData = gson.toJson(syncParams)
+            return if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    Log.d(TAG, "Updating local sessions from SyncSuspend")
+                    delete(body.deleted)
+                    removeOldMeasurements()
 
-            try {
-                val response = apiService.sync(SyncSessionBody(jsonData))
-
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    body?.let {
-                        delete(body.deleted)
-                        removeOldMeasurements()
-
-                        upload(body.upload)
-                        download(body.download)
-                        val successEvent = SessionsSyncSuccessEvent()
-                        Log.d(TAG, "Emitting success event: $successEvent")
-                        _syncState.emit(successEvent)
-                        // TODO: for backward compatibility, remove later
-                        EventBus.getDefault().post(SessionsSyncSuccessEvent())
-                    }
-                } else handleSyncError(shouldDisplayErrors)
-
-            } catch (t: Throwable) {
-                handleSyncError(shouldDisplayErrors, t)
+                    upload(body.upload)
+                    download(body.download)
+                }
+                SyncResult.Success
+            } else {
+                handleSyncError(shouldDisplayErrors)
+                SyncResult.Error(null)
             }
+        } catch (t: Throwable) {
+            handleSyncError(shouldDisplayErrors, t)
+
+            SyncResult.Error(t)
+        } finally {
             setSyncStateToFinished()
         }
     }
 
-    suspend fun syncAndObserve(
-        shouldDisplayErrors: Boolean = true,
-        onSuccess: () -> Unit,
-        onError: (Throwable?) -> Unit
-    ) {
-        val currentSyncResult = syncState.value
-        if (currentSyncResult.inProgress) {
-            Log.d(TAG, "Waiting for current sync to finish")
-            syncState.first { !it.inProgress }
-        }
-        Log.d(TAG, "Starting new sync")
-        sync(shouldDisplayErrors)
-
-        // Observe the new sync
-        syncState
-            .filter { syncEvent -> !syncEvent.inProgress }
-            .collect { syncEvent ->
-                Log.d(TAG, "New sync finished with: $syncEvent")
-                if (syncEvent is SessionsSyncSuccessEvent) {
-                    Log.d(TAG, "Triggering onSuccess")
-                    onSuccess()
-                } else if (syncEvent is SessionsSyncErrorEvent) {
-                    Log.d(TAG, "Triggering onError")
-                    onError(syncEvent.error)
-                }
+    fun sync(shouldDisplayErrors: Boolean = true) {
+        CoroutineScope(Dispatchers.IO).launch {
+            // This will happen if we regain connectivity when app is in background.
+            // When in foreground again, it should sync
+            if (syncInBackground.get()) {
+                triedToSyncBackground.set(true)
             }
+
+            if (getCurrentSyncState() is SyncResult.InProgress || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
+                Log.d(
+                    TAG, "Not performing sync:\n" +
+                            "syncInProgress = ${getCurrentSyncState() is SyncResult.InProgress}\n" +
+                            "syncInBackground = ${syncInBackground.get()}\n" +
+                            "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}"
+                )
+                return@launch
+            }
+
+            syncJob = CoroutineScope(Dispatchers.IO).launch {
+                // TODO: for backward compatibility, remove later
+                EventBus.getDefault().postSticky(SessionsSyncEvent())
+
+                _syncState.emit(SyncResult.InProgress)
+                val sessions = sessionRepository.allSessionsExceptRecording()
+                val syncParams = sessions.map { session -> SyncSessionParams(session) }
+                val jsonData = gson.toJson(syncParams)
+
+                try {
+                    val response = apiService.sync(SyncSessionBody(jsonData))
+
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        body?.let {
+                            delete(body.deleted)
+                            removeOldMeasurements()
+
+                            upload(body.upload)
+                            download(body.download)
+                            _syncState.emit(SyncResult.Success)
+                            // TODO: for backward compatibility, remove later
+                            EventBus.getDefault().post(SessionsSyncSuccessEvent())
+                        }
+                    } else handleSyncError(shouldDisplayErrors)
+
+                } catch (t: Throwable) {
+                    handleSyncError(shouldDisplayErrors, t)
+                }
+                setSyncStateToFinished()
+            }
+        }
     }
+
 
     private suspend fun removeOldMeasurements() {
         removeOldMeasurementsService.removeMeasurementsFromSessions()
@@ -281,8 +317,7 @@ class SessionsSyncService private constructor(
             // TODO: for backward compatibility, remove later
             EventBus.getDefault().post(SessionsSyncErrorEvent(t))
 
-            _syncState.emit(SessionsSyncErrorEvent(t))
-            setSyncStateToFinished()
+            _syncState.emit(SyncResult.Error(t))
             if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
                 SyncError(t)
             )
@@ -291,8 +326,7 @@ class SessionsSyncService private constructor(
     }
 
     private fun setSyncStateToFinished() {
-        _syncInProgress.set(false)
-//        // TODO: for backward compatibility, remove later
+        // TODO: for backward compatibility, remove later
         EventBus.getDefault().postSticky(SessionsSyncEvent(false))
 
         if (syncAfterDeletion.get()) {
