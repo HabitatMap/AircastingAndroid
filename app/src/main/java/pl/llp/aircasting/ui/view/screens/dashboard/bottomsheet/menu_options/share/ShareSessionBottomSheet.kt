@@ -2,8 +2,6 @@ package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.sha
 
 import android.content.Intent
 import android.graphics.Color
-import android.os.Handler
-import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -17,18 +15,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.CSVGenerationService
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.CSVHelper
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.ShareHelper
 import pl.llp.aircasting.util.events.ExportSessionEvent
-import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
 import pl.llp.aircasting.util.extensions.*
@@ -57,13 +56,23 @@ class ShareSessionBottomSheet(
     @Inject
     lateinit var mErrorHandler: ErrorHandler
 
+    @Inject
+    lateinit var apiServiceFactory: ApiServiceFactory
+
+    @Inject
+    lateinit var settings: Settings
+
+    lateinit var sessionsSyncService: SessionsSyncService
+
     override fun layoutId(): Int {
         return R.layout.share_session_bottom_sheet
     }
 
     override fun setup() {
         (requireActivity().application as AircastingApplication).appComponent.inject(this)
-        EventBus.getDefault().safeRegister(this)
+
+        sessionsSyncService =
+            SessionsSyncService.get(apiServiceFactory.get(settings.getAuthToken()), mErrorHandler)
 
         expandBottomSheet()
 
@@ -116,24 +125,26 @@ class ShareSessionBottomSheet(
                     shareLinkPressed()
                 }
             }
-        }
-    }
 
-    @Subscribe(sticky = true)
-    fun onMessageEvent(sync: SessionsSyncEvent) = Handler(Looper.getMainLooper()).post {
-        if (sync.inProgress) {
-            shareFileButton?.isEnabled = false
-            shareFileButton?.text = context?.getString(R.string.sync_in_progress)
-            loader?.apply {
-                startAnimation()
-                visible()
-            }
-        } else {
-            shareFileButton?.isEnabled = true
-            shareFileButton?.text = context?.getString(R.string.share_file)
-            loader?.apply {
-                stopAnimation()
-                inVisible()
+            sessionsSyncService.syncStatus.collect { syncStatus ->
+                when(syncStatus) {
+                    SessionsSyncService.Status.InProgress -> {
+                        shareFileButton?.isEnabled = false
+                        shareFileButton?.text = context?.getString(R.string.sync_in_progress)
+                        loader?.apply {
+                            startAnimation()
+                            visible()
+                        }
+                    }
+                    SessionsSyncService.Status.Idle -> {
+                        shareFileButton?.isEnabled = true
+                        shareFileButton?.text = context?.getString(R.string.share_file)
+                        loader?.apply {
+                            stopAnimation()
+                            inVisible()
+                        }
+                    }
+                }
             }
         }
     }
