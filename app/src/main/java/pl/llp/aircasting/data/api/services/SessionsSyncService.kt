@@ -118,31 +118,13 @@ class SessionsSyncService private constructor(
         emit(result)
     }
 
-    private suspend fun syncSuspend(shouldDisplayErrors: Boolean = true): SyncResult {
-
-        // This will happen if we regain connectivity when app is in background.
-        // When in foreground again, it should sync
-        if (syncInBackground.get()) {
-            triedToSyncBackground.set(true)
-        }
-        Log.d(TAG, "SyncSuspend in progress")
-        if (syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
-            Log.d(
-                TAG, "Not performing sync:\n" +
-                        "syncInProgress = ${getCurrentSyncState() is SyncResult.InProgress}\n" +
-                        "syncInBackground = ${syncInBackground.get()}\n" +
-                        "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}"
-            )
-            return SyncResult.InProgress
-        }
-
+    suspend fun syncSuspend(shouldDisplayErrors: Boolean = true): SyncResult {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }
         val jsonData = gson.toJson(syncParams)
 
         return try {
             val response = apiService.sync(SyncSessionBody(jsonData))
-
             return if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
@@ -155,19 +137,51 @@ class SessionsSyncService private constructor(
                 }
                 SyncResult.Success
             } else {
-                handleSyncError(shouldDisplayErrors)
+                handleSyncError()
                 SyncResult.Error(null)
             }
         } catch (t: Throwable) {
-            handleSyncError(shouldDisplayErrors, t)
+            handleSyncError(t)
 
             SyncResult.Error(t)
-        } finally {
-            setSyncStateToFinished()
         }
     }
 
-    fun sync(shouldDisplayErrors: Boolean = true) {
+    suspend fun syncSuspendNoFlow(): Result<SyncResult> = withContext(Dispatchers.IO) {
+        val sessions = sessionRepository.allSessionsExceptRecording()
+        val syncParams = sessions.map { session -> SyncSessionParams(session) }
+        val jsonData = gson.toJson(syncParams)
+
+        val syncResult = runCatching {
+            val response = apiService.sync(SyncSessionBody(jsonData))
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                body?.let {
+                    Log.d(TAG, "Updating local sessions from SyncSuspend")
+                    delete(body.deleted)
+                    removeOldMeasurements()
+
+                    upload(body.upload)
+                    download(body.download)
+                }
+                SyncResult.Success
+            } else {
+                val exception = Exception("Sync failed with response code ${response.code()}")
+                handleSyncError(exception)
+
+                SyncResult.Error(exception)
+            }
+        }
+
+        syncResult.onFailure { exception ->
+            handleSyncError(exception)
+        }
+
+        syncResult
+    }
+
+    fun sync() {
         CoroutineScope(Dispatchers.IO).launch {
             // This will happen if we regain connectivity when app is in background.
             // When in foreground again, it should sync
@@ -209,10 +223,10 @@ class SessionsSyncService private constructor(
                             // TODO: for backward compatibility, remove later
                             EventBus.getDefault().post(SessionsSyncSuccessEvent())
                         }
-                    } else handleSyncError(shouldDisplayErrors)
+                    } else handleSyncError()
 
                 } catch (t: Throwable) {
-                    handleSyncError(shouldDisplayErrors, t)
+                    handleSyncError(t)
                 }
                 setSyncStateToFinished()
             }
@@ -310,7 +324,6 @@ class SessionsSyncService private constructor(
     }
 
     private suspend fun handleSyncError(
-        shouldDisplayErrors: Boolean,
         t: Throwable? = null
     ) {
         if (syncJob?.isCancelled != true && !syncInBackground.get()) {
@@ -318,9 +331,7 @@ class SessionsSyncService private constructor(
             EventBus.getDefault().post(SessionsSyncErrorEvent(t))
 
             _syncState.emit(SyncResult.Error(t))
-            if (shouldDisplayErrors) errorHandler.handleAndDisplay(SyncError(t)) else errorHandler.handle(
-                SyncError(t)
-            )
+            errorHandler.handle(SyncError(t))
         }
 
     }

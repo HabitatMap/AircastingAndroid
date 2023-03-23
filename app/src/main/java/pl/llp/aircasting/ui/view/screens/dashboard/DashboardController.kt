@@ -24,9 +24,10 @@ class DashboardController(
 
     override fun onRefreshTriggered() {
         MainScope().launch {
-            sessionsSyncService.syncAndObserve().collect {
-                Log.d(this@DashboardController.TAG, "Collected result: ${it.TAG}")
-            }
+            sessionsSyncService.syncSuspendNoFlow()
+                .onSuccess {
+                    Log.d(this@DashboardController.TAG, "Acting on success sync result")
+                }
         }
     }
 
