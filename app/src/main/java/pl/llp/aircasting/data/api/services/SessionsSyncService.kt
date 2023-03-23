@@ -4,9 +4,12 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.util.TAG
@@ -55,7 +58,6 @@ class SessionsSyncService private constructor(
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
     private val gson = Gson()
-    private var syncJob: Job? = null
 
     // Define a sealed class to represent the result of the sync operation
     sealed class Result {
@@ -151,42 +153,27 @@ class SessionsSyncService private constructor(
 
     private suspend fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
-            if (syncJob?.isCancelled != true) {
-                MainScope().launch {
-                    downloadService.download(uuid)
-                        .onFailure {
-                            errorHandler.handle(
-                                UnexpectedAPIError(it)
-                            )
-                        }
-                        .onSuccess { session ->
-                            if (syncJob?.isCancelled != true) {
-                                try {
-                                    val sessionId = sessionRepository.updateOrCreate(session)
-                                    sessionId?.let {
-                                        measurementStreamsRepository.insert(
-                                            sessionId,
-                                            session.streams
-                                        )
-                                    }
+            MainScope().launch {
+                downloadService.download(uuid)
+                    .onSuccess { session ->
+                        try {
+                            val sessionId = sessionRepository.updateOrCreate(session)
+                                ?: return@onSuccess
 
-                                    session.notes.forEach { note ->
-                                        sessionId?.let { sessionId ->
-                                            noteRepository.insert(
-                                                sessionId,
-                                                note
-                                            )
-                                        }
-                                    }
-                                } catch (e: SQLiteConstraintException) {
-                                    errorHandler.handle(DBInsertException(e))
-                                }
+                            measurementStreamsRepository.insert(sessionId, session.streams)
+
+                            session.notes.forEach { note ->
+                                noteRepository.insert(sessionId, note)
                             }
+                        } catch (e: SQLiteConstraintException) {
+                            errorHandler.handle(DBInsertException(e))
                         }
-                }
+                    }
+                    .onFailure {
+                        errorHandler.handle(UnexpectedAPIError(it))
+                    }
             }
         }
-
     }
 
     private fun isUploadable(session: Session): Boolean {
