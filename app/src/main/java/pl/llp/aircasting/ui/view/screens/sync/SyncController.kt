@@ -106,36 +106,17 @@ class SyncController(
 
     private fun refreshSessionList() {
         mRootActivity.lifecycleScope.launch {
-//            mSessionsSyncService.syncAndObserve().collect { syncResult ->
-//                when (syncResult) {
-//                    is SessionsSyncService.SyncResult.Success -> {
-//                        Log.d(this@SyncController.TAG, "Acting on success sync result")
-//                        mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
-//                    }
-//                    is SessionsSyncService.SyncResult.Error -> {
-//                        mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
-//
-//                        syncResult.throwable?.let {
-//                            Log.e(TAG, it.stackTraceToString())
-//                        }
-//                    }
-//                    else -> { /* Ignore SyncResult.InProgress */ }
-//                }
-//            }
-
             mSessionsSyncService.sync()
                 .onSuccess { syncResult ->
                     when (syncResult) {
-                        is SessionsSyncService.SyncResult.Success -> {
+                        is SessionsSyncService.Result.Success -> {
                             Log.d(this@SyncController.TAG, "Acting on success sync result")
                             mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
                         }
-                        is SessionsSyncService.SyncResult.Error -> {
+                        is SessionsSyncService.Result.Error -> {
                             Log.d(this@SyncController.TAG, "Acting on error sync result: ${syncResult.throwable?.stackTraceToString()}")
                             mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
                         }
-
-                        else -> {}
                     }
                 }
                 .onFailure {
@@ -143,20 +124,6 @@ class SyncController(
                 }
         }
     }
-
-
-//    @Subscribe
-//    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-//        if (mSessionsSyncStarted.get()) {
-//            mSessionsSyncStarted.set(false)
-//            mWizardNavigator.goToRefreshingSessionsSuccess(this)
-//        }
-//    }
-
-//    @Subscribe
-//    fun onMessageEvent(event: SessionsSyncErrorEvent) {
-//        mWizardNavigator.goToRefreshingSessionsError(this)
-//    }
 
     override fun refreshedSessionsContinueClicked() {
         checkLocationServicesSettings()

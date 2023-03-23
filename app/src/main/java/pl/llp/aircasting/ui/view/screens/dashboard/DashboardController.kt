@@ -13,13 +13,19 @@ class DashboardController(
     override fun onCreate(tabId: Int?) {
         super.onCreate(tabId)
         viewMvc?.registerListener(this)
+        MainScope().launch {
+            sessionsSyncService.syncStatus.collect { syncStatus ->
+                when(syncStatus) {
+                    SessionsSyncService.Status.InProgress -> mViewMvc?.showLoader()
+                    SessionsSyncService.Status.Idle -> mViewMvc?.hideLoader()
+                }
+            }
+        }
     }
 
     override fun onRefreshTriggered() {
         MainScope().launch {
-            mViewMvc?.showLoader()
             sessionsSyncService.sync()
-            mViewMvc?.hideLoader()
         }
     }
 }

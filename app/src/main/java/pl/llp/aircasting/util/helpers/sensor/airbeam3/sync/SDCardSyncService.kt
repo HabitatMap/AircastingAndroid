@@ -157,8 +157,8 @@ class SDCardSyncService(
         sessionsSyncService.sync()
             .onSuccess { syncResult ->
                 when(syncResult) {
-                    is SessionsSyncService.SyncResult.Success -> finish()
-                    is SessionsSyncService.SyncResult.Error -> {
+                    is SessionsSyncService.Result.Success -> finish()
+                    is SessionsSyncService.Result.Error -> {
                         mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
                         cleanup()
                     }

@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.util.TAG
@@ -47,7 +49,8 @@ class SessionsSyncService private constructor(
         SessionDownloadService(apiService, errorHandler)
     private val removeOldMeasurementsService: RemoveOldMeasurementsService =
         RemoveOldMeasurementsService()
-
+    private val _syncStatus = MutableStateFlow<Status>(Status.Idle)
+    val syncStatus get(): StateFlow<Status> = _syncStatus
     private val sessionRepository = SessionsRepository()
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
@@ -55,17 +58,23 @@ class SessionsSyncService private constructor(
     private var syncJob: Job? = null
 
     // Define a sealed class to represent the result of the sync operation
-    sealed class SyncResult {
-        object Success : SyncResult()
-        data class Error(val throwable: Throwable?) : SyncResult()
+    sealed class Result {
+        object Success : Result()
+        data class Error(val throwable: Throwable?) : Result()
     }
 
-    suspend fun sync(): Result<SyncResult> = withContext(Dispatchers.IO) {
+    sealed class Status {
+        object InProgress : Status()
+        object Idle : Status()
+    }
+
+    suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }
         val jsonData = gson.toJson(syncParams)
 
         val syncResult = runCatching {
+            _syncStatus.emit(Status.InProgress)
             val response = apiService.sync(SyncSessionBody(jsonData))
 
             if (response.isSuccessful) {
@@ -78,18 +87,19 @@ class SessionsSyncService private constructor(
                     upload(body.upload)
                     download(body.download)
                 }
-                SyncResult.Success
+                Result.Success
             } else {
                 val exception = Exception("Sync failed with response code ${response.code()}")
                 errorHandler.handle(SyncError(exception))
 
-                SyncResult.Error(exception)
+                Result.Error(exception)
             }
         }
 
         syncResult.onFailure { exception ->
             errorHandler.handle(SyncError(exception))
         }
+        _syncStatus.emit(Status.Idle)
 
         syncResult
     }
