@@ -6,7 +6,6 @@ import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.util.TAG
@@ -15,7 +14,6 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
@@ -24,7 +22,6 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
-import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.atomic.AtomicBoolean
 
 class SessionsSyncService private constructor(
@@ -32,10 +29,6 @@ class SessionsSyncService private constructor(
     private val errorHandler: ErrorHandler,
     private val settings: Settings
 ) {
-    init {
-        EventBus.getDefault().safeRegister(this)
-    }
-
     companion object {
         private var mSingleton: SessionsSyncService? = null
 
@@ -72,12 +65,6 @@ class SessionsSyncService private constructor(
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
     private var syncJob: Job? = null
-
-    @Subscribe
-    fun onMessageEvent(logout: LogoutEvent) {
-        if (logout.inProgress && !logout.afterAccountDeletion)
-            sync()
-    }
 
     fun destroy() {
         syncJob?.cancel()

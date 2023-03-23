@@ -34,7 +34,6 @@ class DownloadMeasurementsService(
     private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
     private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
 ) {
-
     init {
         EventBus.getDefault().safeRegister(this)
     }

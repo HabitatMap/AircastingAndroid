@@ -74,8 +74,9 @@ open class ApiModule {
     open fun providesLogoutService(
         settings: Settings,
         appContext: Context,
-        apiServiceFactory: ApiServiceFactory
-    ): LogoutService = LogoutService(settings, appContext, apiServiceFactory)
+        apiServiceFactory: ApiServiceFactory,
+        errorHandler: ErrorHandler
+    ): LogoutService = LogoutService(settings, appContext, apiServiceFactory, errorHandler)
 
     @Provides
     @Singleton
