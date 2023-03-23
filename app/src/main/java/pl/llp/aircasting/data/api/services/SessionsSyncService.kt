@@ -5,10 +5,6 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.params.SyncSessionBody
@@ -72,10 +68,6 @@ class SessionsSyncService private constructor(
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
     private val gson = Gson()
-
-    private val _syncState = MutableStateFlow<SyncResult>(SyncResult.Success)
-    val syncState: StateFlow<SyncResult> = _syncState
-    private suspend fun getCurrentSyncState() = _syncState.first()
     private var syncInBackground = AtomicBoolean(false)
     private val syncAfterDeletion = AtomicBoolean(false)
     private var triedToSyncBackground = AtomicBoolean(false)
@@ -91,60 +83,10 @@ class SessionsSyncService private constructor(
         syncJob?.cancel()
     }
 
-    fun syncAfterDeletion() {
-        CoroutineScope(Dispatchers.IO).launch {
-            if (getCurrentSyncState() is SyncResult.InProgress) {
-                syncAfterDeletion.set(true)
-            } else {
-                sync()
-            }
-        }
-    }
-
-
     // Define a sealed class to represent the result of the sync operation
     sealed class SyncResult {
-        object InProgress : SyncResult()
         object Success : SyncResult()
         data class Error(val throwable: Throwable?) : SyncResult()
-    }
-
-    fun syncAndObserve() = flow {
-        Log.d(this@SessionsSyncService.TAG, "Emitting SyncResult.InProgress")
-        emit(SyncResult.InProgress)
-        Log.d(this@SessionsSyncService.TAG, "Starting sync")
-        val result = withContext(Dispatchers.IO) { syncSuspend() }
-        Log.d(this@SessionsSyncService.TAG, "Emitting result: ${result.TAG}")
-        emit(result)
-    }
-
-    suspend fun syncSuspend(shouldDisplayErrors: Boolean = true): SyncResult {
-        val sessions = sessionRepository.allSessionsExceptRecording()
-        val syncParams = sessions.map { session -> SyncSessionParams(session) }
-        val jsonData = gson.toJson(syncParams)
-
-        return try {
-            val response = apiService.sync(SyncSessionBody(jsonData))
-            return if (response.isSuccessful) {
-                val body = response.body()
-                body?.let {
-                    Log.d(TAG, "Updating local sessions from SyncSuspend")
-                    delete(body.deleted)
-                    removeOldMeasurements()
-
-                    upload(body.upload)
-                    download(body.download)
-                }
-                SyncResult.Success
-            } else {
-                handleSyncError()
-                SyncResult.Error(null)
-            }
-        } catch (t: Throwable) {
-            handleSyncError(t)
-
-            SyncResult.Error(t)
-        }
     }
 
     suspend fun syncSuspendNoFlow(): Result<SyncResult> = withContext(Dispatchers.IO) {
@@ -189,12 +131,9 @@ class SessionsSyncService private constructor(
                 triedToSyncBackground.set(true)
             }
 
-            if (getCurrentSyncState() is SyncResult.InProgress || syncInBackground.get() || settings.getIsDeleteSessionInProgress()) {
+            if (syncInBackground.get()) {
                 Log.d(
-                    TAG, "Not performing sync:\n" +
-                            "syncInProgress = ${getCurrentSyncState() is SyncResult.InProgress}\n" +
-                            "syncInBackground = ${syncInBackground.get()}\n" +
-                            "deleteIsInProgress = ${settings.getIsDeleteSessionInProgress()}"
+                    TAG, "Not performing sync:\nsyncInBackground = ${syncInBackground.get()}"
                 )
                 return@launch
             }
@@ -203,7 +142,6 @@ class SessionsSyncService private constructor(
                 // TODO: for backward compatibility, remove later
                 EventBus.getDefault().postSticky(SessionsSyncEvent())
 
-                _syncState.emit(SyncResult.InProgress)
                 val sessions = sessionRepository.allSessionsExceptRecording()
                 val syncParams = sessions.map { session -> SyncSessionParams(session) }
                 val jsonData = gson.toJson(syncParams)
@@ -219,7 +157,6 @@ class SessionsSyncService private constructor(
 
                             upload(body.upload)
                             download(body.download)
-                            _syncState.emit(SyncResult.Success)
                             // TODO: for backward compatibility, remove later
                             EventBus.getDefault().post(SessionsSyncSuccessEvent())
                         }
@@ -330,7 +267,6 @@ class SessionsSyncService private constructor(
             // TODO: for backward compatibility, remove later
             EventBus.getDefault().post(SessionsSyncErrorEvent(t))
 
-            _syncState.emit(SyncResult.Error(t))
             errorHandler.handle(SyncError(t))
         }
 

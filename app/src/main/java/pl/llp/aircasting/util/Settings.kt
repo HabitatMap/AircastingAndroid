@@ -109,19 +109,8 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         return getStringFromSettings(BACKEND_PORT_KEY, DEFAULT_BACKEND_PORT)
     }
 
-    fun getIsDeleteSessionInProgress(): Boolean {
-        return getBooleanFromSettings(
-            DELETE_SESSION_IN_PROGRESS_KEY,
-            DEFAULT_DELETE_SESSION_IN_PROGRESS
-        )
-    }
-
     fun isKeepScreenOnEnabled(): Boolean {
         return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
-    }
-
-    fun thereAreSessionsToRemove(): Boolean {
-        return getBooleanFromSettings(SESSIONS_TO_REMOVE_KEY, DEFAULT_SESSIONS_TO_REMOVE)
     }
 
     fun followedSessionsCount(): Int {
@@ -237,14 +226,6 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
 
     fun setAppNotRestarted() {
         saveToSettings(APP_RESTARTED, false)
-    }
-
-    fun setSessionsToRemove(toRemove: Boolean) {
-        saveToSettings(SESSIONS_TO_REMOVE_KEY, toRemove)
-    }
-
-    fun setDeletingSessionsInProgress(deleteInProgress: Boolean) {
-        saveToSettings(DELETE_SESSION_IN_PROGRESS_KEY, deleteInProgress)
     }
 
     fun login(

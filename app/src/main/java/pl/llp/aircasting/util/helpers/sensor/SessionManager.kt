@@ -46,8 +46,6 @@ class SessionManager(
     = FixedSessionUploadService(apiService, errorHandler),
     private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService
     = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler),
-    private val periodicallySyncSessionsService: PeriodicallySyncSessionsService
-    = PeriodicallySyncSessionsService(settings, sessionsSyncService),
     private var mCallback: (() -> Unit)? = null,
 
     private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
@@ -127,7 +125,6 @@ class SessionManager(
     @Subscribe
     fun onMessageEvent(event: LogoutEvent) {
         fixedSessionDownloadMeasurementsService.stop()
-        periodicallySyncSessionsService.stop()
     }
 
     @Subscribe
@@ -154,7 +151,6 @@ class SessionManager(
             updateMobileSessions()
             settings.setAppNotRestarted()
         }
-        periodicallySyncSessionsService.start()
         fixedSessionDownloadMeasurementsService.start()
     }
 
@@ -165,13 +161,11 @@ class SessionManager(
     private fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
         sessionsSyncService.resume()
-        periodicallySyncSessionsService.resume()
     }
 
     private fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
         sessionsSyncService.pause()
-        periodicallySyncSessionsService.pause()
     }
 
     private fun registerToEventBus() {
@@ -214,7 +208,7 @@ class SessionManager(
     private fun deleteSession(sessionUUID: String) {
         coroutineScope.launch {
             sessionsRepository.markForRemoval(sessionUUID)
-            sessionsSyncService.syncAfterDeletion()
+            sessionsSyncService.syncSuspendNoFlow()
         }
     }
 
