@@ -5,19 +5,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.exceptions.*
-import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import java.io.File
-import java.util.concurrent.atomic.AtomicBoolean
 
 class SDCardSyncService(
     private val mSDCardFileService: SDCardFileService,
@@ -34,7 +29,6 @@ class SDCardSyncService(
     private var mAirBeamConnector: AirBeamConnector? = null
     private var mDeviceItem: DeviceItem? = null
 
-    private var mSessionsSyncStartedByThis = AtomicBoolean(false)
     /*
         High level sync flow:
 
@@ -62,7 +56,6 @@ class SDCardSyncService(
     fun start(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
 
-        EventBus.getDefault().safeRegister(this)
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
 
@@ -150,7 +143,7 @@ class SDCardSyncService(
         )
     }
 
-    private fun syncMobileSessionWithBackendAndFinish() {
+    private suspend fun syncMobileSessionWithBackendAndFinish() {
         val sessionsSyncService = mSessionsSyncService
 
         if (sessionsSyncService == null) {
@@ -161,23 +154,20 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Syncing mobile sessions with backend")
-        // TODO: Refactor sessions sync service to use suspend call
-        mSessionsSyncStartedByThis.set(true)
-        sessionsSyncService.sync()
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: SessionsSyncSuccessEvent) {
-        if (mSessionsSyncStartedByThis.get()) {
-            mSessionsSyncStartedByThis.set(false)
-            finish()
-        }
-    }
-
-    @Subscribe
-    fun onMessageEvent(event: SessionsSyncErrorEvent) {
-        mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
-        cleanup()
+        sessionsSyncService.syncSuspendNoFlow()
+            .onSuccess { syncResult ->
+                when(syncResult) {
+                    is SessionsSyncService.SyncResult.Success -> finish()
+                    is SessionsSyncService.SyncResult.Error -> {
+                        mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+                        cleanup()
+                    }
+                }
+            }
+            .onFailure {
+                mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+                cleanup()
+            }
     }
 
     private suspend fun sendFixedMeasurementsToBackendFrom(file: File) {
