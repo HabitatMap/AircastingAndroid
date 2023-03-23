@@ -36,5 +36,5 @@ interface MeasurementStreamDao {
     fun markForRemoval(sessionId: Long, sensorName: String)
 
     @Query("DELETE FROM measurement_streams WHERE deleted=1")
-    fun deleteMarkedForRemoval()
+    suspend fun deleteMarkedForRemoval()
 }

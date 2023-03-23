@@ -32,7 +32,7 @@ class ConnectivityManager(
     override fun onReceive(context: Context?, intent: Intent?) {
         if (!isInitialStickyBroadcast && isConnected(context)) {
             coroutineScope.launch {
-                sessionSyncService.syncSuspendNoFlow()
+                sessionSyncService.sync()
             }
         }
     }

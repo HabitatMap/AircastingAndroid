@@ -123,7 +123,7 @@ class SyncController(
 //                }
 //            }
 
-            mSessionsSyncService.syncSuspendNoFlow()
+            mSessionsSyncService.sync()
                 .onSuccess { syncResult ->
                     when (syncResult) {
                         is SessionsSyncService.SyncResult.Success -> {

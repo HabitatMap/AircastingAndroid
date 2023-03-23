@@ -60,7 +60,7 @@ class MeasurementStreamsRepository {
         }
     }
 
-    fun deleteMarkedForRemoval() {
+    suspend fun deleteMarkedForRemoval() {
         mDatabase.measurementStreams().deleteMarkedForRemoval()
     }
 

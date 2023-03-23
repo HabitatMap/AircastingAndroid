@@ -154,7 +154,7 @@ class SDCardSyncService(
         }
 
         Log.d(TAG, "Syncing mobile sessions with backend")
-        sessionsSyncService.syncSuspendNoFlow()
+        sessionsSyncService.sync()
             .onSuccess { syncResult ->
                 when(syncResult) {
                     is SessionsSyncService.SyncResult.Success -> finish()

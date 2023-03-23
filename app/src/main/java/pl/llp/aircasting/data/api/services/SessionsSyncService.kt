@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.*
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
 import pl.llp.aircasting.data.api.util.TAG
@@ -13,9 +12,6 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
-import pl.llp.aircasting.util.events.SessionsSyncEvent
-import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
@@ -64,7 +60,7 @@ class SessionsSyncService private constructor(
         data class Error(val throwable: Throwable?) : SyncResult()
     }
 
-    suspend fun syncSuspendNoFlow(): Result<SyncResult> = withContext(Dispatchers.IO) {
+    suspend fun sync(): Result<SyncResult> = withContext(Dispatchers.IO) {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }
         val jsonData = gson.toJson(syncParams)
@@ -85,56 +81,18 @@ class SessionsSyncService private constructor(
                 SyncResult.Success
             } else {
                 val exception = Exception("Sync failed with response code ${response.code()}")
-                handleSyncError(exception)
+                errorHandler.handle(SyncError(exception))
 
                 SyncResult.Error(exception)
             }
         }
 
         syncResult.onFailure { exception ->
-            handleSyncError(exception)
+            errorHandler.handle(SyncError(exception))
         }
 
         syncResult
     }
-
-    fun sync() {
-        CoroutineScope(Dispatchers.IO).launch {
-            // This will happen if we regain connectivity when app is in background.
-            // When in foreground again, it should sync
-
-            syncJob = CoroutineScope(Dispatchers.IO).launch {
-                // TODO: for backward compatibility, remove later
-                EventBus.getDefault().postSticky(SessionsSyncEvent())
-
-                val sessions = sessionRepository.allSessionsExceptRecording()
-                val syncParams = sessions.map { session -> SyncSessionParams(session) }
-                val jsonData = gson.toJson(syncParams)
-
-                try {
-                    val response = apiService.sync(SyncSessionBody(jsonData))
-
-                    if (response.isSuccessful) {
-                        val body = response.body()
-                        body?.let {
-                            delete(body.deleted)
-                            removeOldMeasurements()
-
-                            upload(body.upload)
-                            download(body.download)
-                            // TODO: for backward compatibility, remove later
-                            EventBus.getDefault().post(SessionsSyncSuccessEvent())
-                        }
-                    } else handleSyncError()
-
-                } catch (t: Throwable) {
-                    handleSyncError(t)
-                }
-                setSyncStateToFinished()
-            }
-        }
-    }
-
 
     private suspend fun removeOldMeasurements() {
         removeOldMeasurementsService.removeMeasurementsFromSessions()
@@ -223,19 +181,5 @@ class SessionsSyncService private constructor(
 
     private fun isUploadable(session: Session): Boolean {
         return !(session.locationless && session.isMobile() || session.isExternal)
-    }
-
-    private suspend fun handleSyncError(
-        t: Throwable? = null
-    ) {
-        // TODO: for backward compatibility, remove later
-        EventBus.getDefault().post(SessionsSyncErrorEvent(t))
-
-        errorHandler.handle(SyncError(t))
-    }
-
-    private fun setSyncStateToFinished() {
-        // TODO: for backward compatibility, remove later
-        EventBus.getDefault().postSticky(SessionsSyncEvent(false))
     }
 }

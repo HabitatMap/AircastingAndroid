@@ -6,14 +6,3 @@ open class SessionsSyncEvent(private val isInProgress: Boolean = true) {
         return "SessionsSyncEvent(isInProgress=$isInProgress)"
     }
 }
-class SessionsSyncErrorEvent(val error: Throwable?): SessionsSyncEvent(false) {
-    override fun toString(): String {
-        return "SessionsSyncErrorEvent"
-    }
-}
-
-class SessionsSyncSuccessEvent: SessionsSyncEvent(false) {
-    override fun toString(): String {
-        return "SessionsSyncSuccessEvent"
-    }
-}

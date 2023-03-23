@@ -5,6 +5,8 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.ApiService
@@ -20,8 +22,8 @@ import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
+import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
 
@@ -96,7 +98,9 @@ class MainController(
         val syncService =
             SessionsSyncService.get(apiService, mErrorHandler)
 
-        syncService.sync()
+        rootActivity.lifecycleScope.launch {
+            syncService.sync()
+        }
     }
 
     fun onRequestPermissionsResult(requestCode: Int, grantResults: IntArray) {

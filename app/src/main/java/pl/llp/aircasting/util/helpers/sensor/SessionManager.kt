@@ -206,7 +206,7 @@ class SessionManager(
     private fun deleteSession(sessionUUID: String) {
         coroutineScope.launch {
             sessionsRepository.markForRemoval(sessionUUID)
-            sessionsSyncService.syncSuspendNoFlow()
+            sessionsSyncService.sync()
         }
     }
 
@@ -240,7 +240,7 @@ class SessionManager(
     }
 
     private fun deleteMarkedForRemoval() {
-        runOnIOThread {
+        coroutineScope.launch {
             measurementStreamsRepository.deleteMarkedForRemoval()
             sessionsSyncService.sync()
         }

@@ -37,7 +37,7 @@ class LogoutService @Inject constructor(
         EventBus.getDefault().postSticky(LogoutEvent())
         coroutineScope.launch {
             if (!afterAccountDeletion) {
-                sessionsSyncService.syncSuspendNoFlow()
+                sessionsSyncService.sync()
             }
             finaliseLogout()
         }
