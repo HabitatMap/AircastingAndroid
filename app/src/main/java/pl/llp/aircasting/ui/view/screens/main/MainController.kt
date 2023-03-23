@@ -94,7 +94,7 @@ class MainController(
 
     private fun sync(apiService: ApiService) {
         val syncService =
-            SessionsSyncService.get(apiService, mErrorHandler, mSettings)
+            SessionsSyncService.get(apiService, mErrorHandler)
 
         syncService.sync()
     }

@@ -37,7 +37,7 @@ class SessionManager(
     private val noteRepository: NoteRepository = NoteRepository(),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     private val sessionsSyncService: SessionsSyncService
-    = SessionsSyncService.get(apiService, errorHandler, settings),
+    = SessionsSyncService.get(apiService, errorHandler),
     private val sessionUpdateService: UpdateSessionService
     = UpdateSessionService(apiService, errorHandler, mContext),
     private val exportSessionService: ExportSessionService
@@ -160,12 +160,10 @@ class SessionManager(
 
     private fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
-        sessionsSyncService.resume()
     }
 
     private fun onAppToBackground() {
         fixedSessionDownloadMeasurementsService.pause()
-        sessionsSyncService.pause()
     }
 
     private fun registerToEventBus() {

@@ -19,7 +19,7 @@ class ConnectivityManager(
 ) :
     BroadcastReceiver() {
     private val sessionSyncService =
-        SessionsSyncService.get(apiService, ErrorHandler(context), settings)
+        SessionsSyncService.get(apiService, ErrorHandler(context))
 
     companion object {
         const val ACTION = ConnectivityManager.CONNECTIVITY_ACTION

@@ -62,7 +62,7 @@ class SyncController(
 
     private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
     private val mSessionsSyncService =
-        SessionsSyncService.get(mApiService, mErrorHandler, mSettings)
+        SessionsSyncService.get(mApiService, mErrorHandler)
     private val mWizardNavigator =
         SyncWizardNavigator(mRootActivity, mSettings, mViewMvc, mFragmentManager)
     private var mSessionsSyncStarted = AtomicBoolean(false)

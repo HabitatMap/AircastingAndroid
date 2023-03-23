@@ -26,7 +26,7 @@ class LogoutService @Inject constructor(
     private val sessionsSyncService: SessionsSyncService = SessionsSyncService.get(
         apiServiceFactory.get(
             mSettings.getAuthToken()
-        ), errorHandler, mSettings
+        ), errorHandler
     ),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {

@@ -52,7 +52,7 @@ open class ApiModule {
         val authToken = settings.getAuthToken() ?: return null
 
         val apiService = apiServiceFactory.get(authToken)
-        return SessionsSyncService.get(apiService, errorHandler, settings)
+        return SessionsSyncService.get(apiService, errorHandler)
     }
 
     @Provides

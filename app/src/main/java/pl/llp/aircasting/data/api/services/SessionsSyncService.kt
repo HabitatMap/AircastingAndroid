@@ -13,7 +13,6 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.SessionsSyncErrorEvent
 import pl.llp.aircasting.util.events.SessionsSyncEvent
 import pl.llp.aircasting.util.events.SessionsSyncSuccessEvent
@@ -22,12 +21,10 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
-import java.util.concurrent.atomic.AtomicBoolean
 
 class SessionsSyncService private constructor(
     private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
-    private val settings: Settings
 ) {
     companion object {
         private var mSingleton: SessionsSyncService? = null
@@ -35,17 +32,15 @@ class SessionsSyncService private constructor(
         fun get(
             apiService: ApiService,
             errorHandler: ErrorHandler,
-            settings: Settings
         ): SessionsSyncService {
             if (mSingleton == null) {
-                mSingleton = SessionsSyncService(apiService, errorHandler, settings)
+                mSingleton = SessionsSyncService(apiService, errorHandler)
             }
 
             return mSingleton!!
         }
 
         fun destroy() {
-            mSingleton?.destroy()
             mSingleton = null
         }
     }
@@ -61,14 +56,7 @@ class SessionsSyncService private constructor(
     private val measurementStreamsRepository = MeasurementStreamsRepository()
     private val noteRepository = NoteRepository()
     private val gson = Gson()
-    private var syncInBackground = AtomicBoolean(false)
-    private val syncAfterDeletion = AtomicBoolean(false)
-    private var triedToSyncBackground = AtomicBoolean(false)
     private var syncJob: Job? = null
-
-    fun destroy() {
-        syncJob?.cancel()
-    }
 
     // Define a sealed class to represent the result of the sync operation
     sealed class SyncResult {
@@ -114,16 +102,6 @@ class SessionsSyncService private constructor(
         CoroutineScope(Dispatchers.IO).launch {
             // This will happen if we regain connectivity when app is in background.
             // When in foreground again, it should sync
-            if (syncInBackground.get()) {
-                triedToSyncBackground.set(true)
-            }
-
-            if (syncInBackground.get()) {
-                Log.d(
-                    TAG, "Not performing sync:\nsyncInBackground = ${syncInBackground.get()}"
-                )
-                return@launch
-            }
 
             syncJob = CoroutineScope(Dispatchers.IO).launch {
                 // TODO: for backward compatibility, remove later
@@ -250,34 +228,14 @@ class SessionsSyncService private constructor(
     private suspend fun handleSyncError(
         t: Throwable? = null
     ) {
-        if (syncJob?.isCancelled != true && !syncInBackground.get()) {
-            // TODO: for backward compatibility, remove later
-            EventBus.getDefault().post(SessionsSyncErrorEvent(t))
+        // TODO: for backward compatibility, remove later
+        EventBus.getDefault().post(SessionsSyncErrorEvent(t))
 
-            errorHandler.handle(SyncError(t))
-        }
-
+        errorHandler.handle(SyncError(t))
     }
 
     private fun setSyncStateToFinished() {
         // TODO: for backward compatibility, remove later
         EventBus.getDefault().postSticky(SessionsSyncEvent(false))
-
-        if (syncAfterDeletion.get()) {
-            syncAfterDeletion.set(false)
-            sync()
-        }
-    }
-
-    fun resume() {
-        syncInBackground.set(false)
-        if (triedToSyncBackground.get()) {
-            triedToSyncBackground.set(false)
-            sync()
-        }
-    }
-
-    fun pause() {
-        syncInBackground.set(true)
     }
 }
