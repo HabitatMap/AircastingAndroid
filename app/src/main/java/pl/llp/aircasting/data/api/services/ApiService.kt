@@ -90,7 +90,7 @@ interface ApiService {
     suspend fun updateSession(@Body body: UpdateSessionBody): Response<UpdateSessionResponse>
 
     @POST(urlResetPassword)
-    fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
+    suspend fun resetPassword(@Body body: ForgotPasswordBody): Response<ForgotPasswordResponse>
 
     @POST(urlUploadFixedMeasurements)
     suspend fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Response<Unit>

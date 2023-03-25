@@ -1,48 +1,24 @@
 package pl.llp.aircasting.data.api.services
 
-import android.content.Context
-import android.widget.Toast
-import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.params.ForgotPasswordBody
 import pl.llp.aircasting.data.api.params.ForgotPasswordParams
-import pl.llp.aircasting.data.api.response.ForgotPasswordResponse
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.util.extensions.showToast
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ForgotPasswordService(
-    private val mContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mApiServiceFactory: ApiServiceFactory
 ) {
-    fun resetPassword(login: String) {
-
+    suspend fun resetPassword(login: String): Result<Unit> = runCatching {
         val apiService = mApiServiceFactory.get(emptyList())
         val forgotPasswordParams = ForgotPasswordParams(login)
         val forgotPasswordBody = ForgotPasswordBody(forgotPasswordParams)
+        val response = apiService.resetPassword(forgotPasswordBody)
 
-        val call = apiService.resetPassword(forgotPasswordBody)
-
-        call.enqueue(object : Callback<ForgotPasswordResponse> {
-            override fun onResponse(
-                call: Call<ForgotPasswordResponse>,
-                response: Response<ForgotPasswordResponse>
-            ) {
-                if (response.isSuccessful) mContext.showToast(
-                    mContext.getString(R.string.reset_email_sent),
-                    Toast.LENGTH_LONG
-                ) else mContext.showToast(
-                    mContext.getString(R.string.errors_network_forgot_password),
-                    Toast.LENGTH_LONG
-                )
-            }
-
-            override fun onFailure(call: Call<ForgotPasswordResponse>, t: Throwable) {
-                mErrorHandler.handleAndDisplay(UnexpectedAPIError(t))
-            }
-        })
+        if (!response.isSuccessful) {
+            throw UnexpectedAPIError()
+        }
+    }.onFailure { throwable ->
+        mErrorHandler.handleAndDisplay(UnexpectedAPIError(throwable))
     }
 }

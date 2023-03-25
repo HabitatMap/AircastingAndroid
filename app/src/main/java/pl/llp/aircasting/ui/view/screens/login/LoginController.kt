@@ -5,6 +5,8 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
@@ -29,7 +31,7 @@ class LoginController(
     private val mErrorHandler = ErrorHandler(mContextActivity)
     private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
     private val mForgotPasswordService =
-        ForgotPasswordService(mContextActivity, mErrorHandler, mApiServiceFactory)
+        ForgotPasswordService(mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -67,7 +69,21 @@ class LoginController(
     }
 
     override fun confirmClicked(emailValue: String) {
-        mForgotPasswordService.resetPassword(emailValue)
+        mContextActivity.lifecycleScope.launch {
+            mForgotPasswordService.resetPassword(emailValue)
+                .onSuccess {
+                    mContextActivity.showToast(
+                        mContextActivity.getString(R.string.reset_email_sent),
+                        Toast.LENGTH_LONG
+                    )
+                }
+                .onFailure {
+                    mContextActivity.showToast(
+                        mContextActivity.getString(R.string.errors_network_forgot_password),
+                        Toast.LENGTH_LONG
+                    )
+                }
+        }
     }
 
     override val infoView: View?
