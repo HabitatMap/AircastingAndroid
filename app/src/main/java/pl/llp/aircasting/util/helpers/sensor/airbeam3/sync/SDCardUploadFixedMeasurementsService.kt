@@ -17,7 +17,7 @@ class SDCardUploadFixedMeasurementsService(
         processSession(deviceId, csvSession)
     }
 
-    private fun processSession(deviceId: String, csvSession: CSVSession?) {
+    private suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession ?: return
 
         val measurementChunks = chunkSession(csvSession)
@@ -45,7 +45,7 @@ class SDCardUploadFixedMeasurementsService(
     }
 
     @SuppressLint("LongLogTag")
-    private fun uploadSession(
+    private suspend fun uploadSession(
         deviceId: String,
         sessionUUID: String?,
         allChunks: Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>
@@ -81,7 +81,7 @@ class SDCardUploadFixedMeasurementsService(
     }
 
     @SuppressLint("LongLogTag")
-    private fun uploadMeasurementsChunk(
+    private suspend fun uploadMeasurementsChunk(
         deviceId: String,
         sessionUUID: String,
         csvMeasurementStream: CSVMeasurementStream,
@@ -90,13 +90,16 @@ class SDCardUploadFixedMeasurementsService(
         if (csvMeasurementsChunk.isEmpty()) return
 
         Log.d(TAG, "Now processing ${csvMeasurementStream.sensorName}...")
+
         mUploadFixedMeasurementsService?.upload(
             sessionUUID,
             deviceId,
             csvMeasurementStream,
-            csvMeasurementsChunk,
-            { Log.d(TAG,"Successfully finished chunk upload for ${csvMeasurementStream.sensorName}.") },
-            { Log.d(TAG, "Error while uploading chunk for ${csvMeasurementStream.sensorName}.") }
-        )
+            csvMeasurementsChunk
+        )?.onSuccess {
+            Log.d(TAG, "Successfully finished chunk upload for ${csvMeasurementStream.sensorName}.")
+        }?.onFailure {
+            Log.d(TAG, "Error while uploading chunk for ${csvMeasurementStream.sensorName}.")
+        }
     }
 }

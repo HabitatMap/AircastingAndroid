@@ -93,7 +93,7 @@ interface ApiService {
     fun resetPassword(@Body body: ForgotPasswordBody): Call<ForgotPasswordResponse>
 
     @POST(urlUploadFixedMeasurements)
-    fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Call<Unit>
+    suspend fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Response<Unit>
 
     @POST(urlUpdateUserSettings)
     suspend fun updateUserSettings(@Body body: UserSettingsBody): Response<UserSettingsResponse>

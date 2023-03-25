@@ -7,39 +7,32 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurementStream
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class UploadFixedMeasurementsService(private val apiService: ApiService, private val errorHandler: ErrorHandler) {
-    fun upload(
+class UploadFixedMeasurementsService(
+    private val apiService: ApiService,
+    private val errorHandler: ErrorHandler
+) {
+    suspend fun upload(
         sessionUUID: String,
         deviceId: String,
         csvMeasurementStream: CSVMeasurementStream,
-        csvMeasurements: List<CSVMeasurement>,
-        successCallback: (() -> Unit),
-        errorCallback: (() -> Unit)
-    ) {
-        val params = UploadFixedMeasurementsParams(sessionUUID, deviceId, csvMeasurementStream, csvMeasurements)
+        csvMeasurements: List<CSVMeasurement>
+    ): Result<Unit> = runCatching {
+        val params = UploadFixedMeasurementsParams(
+            sessionUUID,
+            deviceId,
+            csvMeasurementStream,
+            csvMeasurements
+        )
         val gzippedParams = GzippedParams.get(params, UploadFixedMeasurementsParams::class.java)
 
-        val call = apiService.uploadFixedMeasurements(UploadFixedMeasurementsBody(gzippedParams))
+        val response =
+            apiService.uploadFixedMeasurements(UploadFixedMeasurementsBody(gzippedParams))
 
-        call.enqueue(object : Callback<Unit> {
-            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                if (response.isSuccessful) {
-                    successCallback.invoke()
-                } else {
-                    errorHandler.handle(UnexpectedAPIError())
-                    errorCallback.invoke()
-                }
-            }
-
-            override fun onFailure(call: Call<Unit>, t: Throwable) {
-                errorHandler.handle(UnexpectedAPIError(t))
-                errorCallback.invoke()
-            }
-        })
+        if (!response.isSuccessful) {
+            throw UnexpectedAPIError()
+        }
+    }.onFailure { throwable ->
+        errorHandler.handle(UnexpectedAPIError(throwable))
     }
-
 }
