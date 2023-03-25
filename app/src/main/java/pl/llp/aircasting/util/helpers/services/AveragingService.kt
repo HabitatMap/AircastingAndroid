@@ -64,7 +64,7 @@ class AveragingService(
         sessionUuidByAveragingJob[uuid]?.cancel()
         sessionUuidByAveragingJob.remove(uuid)
 
-        val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return
+        val session = mSessionsRepository.getSessionByUUID(uuid) ?: return
 
         val currentWindow = if (window != null)
             window
@@ -119,7 +119,7 @@ class AveragingService(
         sessionUuidByAveragingJob[uuid] = launch {
             Log.d(TAG, "Starting new periodic averaging in job: ${coroutineContext.job}")
             while (isActive) {
-                val session = mSessionsRepository.getSessionByUUIDSuspend(uuid) ?: return@launch
+                val session = mSessionsRepository.getSessionByUUID(uuid) ?: return@launch
                 Log.d(
                     TAG,
                     "Periodic averaging fired for ${session.name}\nIn job: ${coroutineContext.job}"

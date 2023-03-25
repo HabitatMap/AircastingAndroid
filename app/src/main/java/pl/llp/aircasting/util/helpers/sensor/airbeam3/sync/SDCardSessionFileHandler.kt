@@ -58,7 +58,7 @@ class SDCardSessionFileHandlerMobile(
         }
         val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
 
-        dbSession = sessionRepository.getSessionByUUIDSuspend(sessionUUID)
+        dbSession = sessionRepository.getSessionByUUID(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         startTime = dbSession?.startTime?.time
             ?: CSVSession.timestampFrom(lines.firstOrNull())?.time

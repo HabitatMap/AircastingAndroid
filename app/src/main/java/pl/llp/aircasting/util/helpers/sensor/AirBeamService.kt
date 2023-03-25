@@ -1,6 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -15,7 +18,6 @@ import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import javax.inject.Inject
 
 
@@ -80,7 +82,7 @@ abstract class AirBeamService : SensorService(),
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
 
         event.sessionUUID?.let { sessionUUID ->
-            runOnIOThread {
+            CoroutineScope(Dispatchers.IO).launch {
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
                     val session = Session(sessionDBObject)

@@ -27,32 +27,26 @@ class SessionsRepository {
         return sessionDBObject?.id
     }
 
-    fun getSessionByUUID(uuid: String?): SessionDBObject? {
+    suspend fun getSessionByUUID(uuid: String?): SessionDBObject? {
         uuid ?: return null
 
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
-    suspend fun getSessionByUUIDSuspend(uuid: String?): SessionDBObject? {
-        uuid ?: return null
-
-        return mDatabase.sessions().loadSessionByUUIDSuspend(uuid)
-    }
-
     suspend fun getSessionByIdSuspend(id: Long): SessionDBObject? {
-        return mDatabase.sessions().loadSessionByIdSuspend(id)
+        return mDatabase.sessions().loadSessionById(id)
     }
 
     suspend fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         return mDatabase.sessions().loadSessionAndMeasurementsByUUIDSuspend(uuid)
     }
 
-    fun getSessionIdByUUID(uuid: String): Long? {
+    suspend fun getSessionIdByUUID(uuid: String): Long? {
         return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
     suspend fun getSessionIdByUUIDSuspend(uuid: String): Long? {
-        return mDatabase.sessions().loadSessionByUUIDSuspend(uuid)?.id
+        return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
     fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
@@ -160,7 +154,7 @@ class SessionsRepository {
     }
 
     suspend fun updateOrCreate(session: Session): Long? {
-        val sessionDbObject = mDatabase.sessions().loadSessionByUUIDSuspend(session.uuid)
+        val sessionDbObject = mDatabase.sessions().loadSessionByUUID(session.uuid)
         return if (sessionDbObject == null) {
             insert(session)
         } else {

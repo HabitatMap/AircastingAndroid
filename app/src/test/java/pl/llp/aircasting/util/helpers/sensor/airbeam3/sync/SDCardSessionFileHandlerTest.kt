@@ -14,6 +14,7 @@ import pl.llp.aircasting.util.extensions.addHours
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import pl.llp.aircasting.utilities.StubData
 import kotlin.test.assertEquals
 
@@ -63,7 +64,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { startTime } doReturn threeHoursBefore
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val averagingThreshold = AveragingService.getAveragingFrequency(
                 threeHoursBefore,
                 fileLastMeasurementTime
@@ -86,7 +87,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { startTime } doReturn tenHoursBefore
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val averagingThreshold = AveragingService.getAveragingFrequency(
                 tenHoursBefore,
                 fileLastMeasurementTime
@@ -114,7 +115,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { startTime } doReturn sessionStartTime
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val firstExpectedMeasurementTime =
                 calendar().addSeconds(sessionStartTime, AveragingWindow.FIRST.value)
             val firstFahrenheitAverage = 72.0
@@ -171,7 +172,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { startTime } doReturn sessionStartTime
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val firstMeasurementTime =
                 calendar().addSeconds(sessionStartTime, AveragingWindow.SECOND.value)
             val firstFahrenheitAverage = 72.78333333333333
@@ -205,7 +206,7 @@ internal class SDCardSessionFileHandlerTest {
             val dbSession = mock<SessionDBObject> {
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
 
             val csvSession = iterator.handle(file)
@@ -232,7 +233,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { startTime } doReturn sessionStartTime!!
                 on { id } doReturn sessionId
             }
-            whenever(sessionsRepository.getSessionByUUIDSuspend(any())).thenReturn(dbSession)
+            whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
 
             val csvSession = iterator.handle(file)

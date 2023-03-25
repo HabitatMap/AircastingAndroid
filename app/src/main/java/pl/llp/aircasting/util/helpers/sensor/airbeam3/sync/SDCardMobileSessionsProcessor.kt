@@ -21,7 +21,7 @@ class SDCardMobileSessionsProcessor(
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
-        val dbSession = mSessionsRepository.getSessionByUUIDSuspend(csvSession.uuid)
+        val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
         val session: Session?
         val sessionId: Long
 
