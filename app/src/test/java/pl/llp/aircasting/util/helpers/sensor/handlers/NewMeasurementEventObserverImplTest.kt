@@ -71,7 +71,7 @@ class NewMeasurementEventObserverImplTest {
         whenever(sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId))
             .thenReturn(sessionId)
         val streamId = 1L
-        whenever(measurementStreamsRepository.getIdOrInsertSuspend(any(), any()))
+        whenever(measurementStreamsRepository.getIdOrInsert(any(), any()))
             .thenReturn(streamId)
         val event = newMeasurementEvent(deviceId = deviceId)
         val stream = MeasurementStream(event)
@@ -82,7 +82,7 @@ class NewMeasurementEventObserverImplTest {
         flow.emit(event)
         yield()
 
-        verify(measurementStreamsRepository).getIdOrInsertSuspend(eq(sessionId), eq(stream))
+        verify(measurementStreamsRepository).getIdOrInsert(eq(sessionId), eq(stream))
         verify(measurementsRepository).insert(
             eq(streamId),
             eq(sessionId),
@@ -105,7 +105,7 @@ class NewMeasurementEventObserverImplTest {
         whenever(sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId))
             .thenReturn(sessionId)
         val streamId = 1L
-        whenever(measurementStreamsRepository.getIdOrInsertSuspend(any(), any()))
+        whenever(measurementStreamsRepository.getIdOrInsert(any(), any()))
             .thenReturn(streamId)
         val db = mutableListOf<Measurement>()
         measurementsRepository = object : MeasurementsRepository {

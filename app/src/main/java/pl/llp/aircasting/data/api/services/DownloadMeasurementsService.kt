@@ -155,7 +155,7 @@ class DownloadMeasurementsService(
         measurementStreamsRepository.delete(deletedStreams)
     }
 
-    private fun saveStreamData(
+    private suspend fun saveStreamData(
         streamResponse: SessionStreamWithMeasurementsResponse,
         session: Session,
         sessionId: Long

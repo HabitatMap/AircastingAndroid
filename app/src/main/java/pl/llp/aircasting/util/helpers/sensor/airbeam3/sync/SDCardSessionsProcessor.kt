@@ -38,7 +38,7 @@ abstract class SDCardSessionsProcessor(
         ) ?: return
 
         val measurementStream = csvMeasurementStream.toMeasurementStream(deviceId)
-        val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsertSuspend(
+        val measurementStreamId = mMeasurementStreamsRepository.getIdOrInsert(
             sessionId,
             measurementStream
         )

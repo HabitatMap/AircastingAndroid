@@ -20,20 +20,7 @@ class MeasurementStreamsRepository {
     suspend fun delete(streams: List<MeasurementStreamDBObject>) =
         mDatabase.measurementStreams().delete(streams)
 
-    fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
-        var streamDBObject = mDatabase.measurementStreams()
-            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
-
-        if (streamDBObject != null) return streamDBObject.id
-
-        streamDBObject = MeasurementStreamDBObject(
-            sessionId,
-            measurementStream
-        )
-        return mDatabase.measurementStreams().insert(streamDBObject)
-    }
-
-    suspend fun getIdOrInsertSuspend(sessionId: Long, measurementStream: MeasurementStream): Long {
+    suspend fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
         var streamDBObject = mDatabase.measurementStreams()
             .loadStreamBySessionIdAndSensorNameSuspend(sessionId, measurementStream.sensorName)
 

@@ -100,7 +100,7 @@ class NewMeasurementEventObserverImpl(
         sessionId?.let {
             try {
                 val measurementStreamId =
-                    measurementStreamsRepository.getIdOrInsertSuspend(sessionId, measurementStream)
+                    measurementStreamsRepository.getIdOrInsert(sessionId, measurementStream)
                 measurementsRepository.insert(measurementStreamId, sessionId, measurement)
                 activeSessionMeasurementsRepository.createOrReplace(
                     sessionId,
