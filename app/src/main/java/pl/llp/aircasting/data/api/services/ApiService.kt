@@ -78,7 +78,7 @@ interface ApiService {
     suspend fun createMobileSession(@Body body: CreateSessionBody): Response<UploadSessionResponse>
 
     @POST(urlCreateFixedSession)
-    fun createFixedSession(@Body body: CreateSessionBody): Call<UploadSessionResponse>
+    suspend fun createFixedSession(@Body body: CreateSessionBody): Response<UploadSessionResponse>
 
     @POST(urlSync)
     suspend fun sync(@Body body: SyncSessionBody): Response<SyncResponse>
