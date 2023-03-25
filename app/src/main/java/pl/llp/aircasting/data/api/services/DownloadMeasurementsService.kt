@@ -67,10 +67,6 @@ class DownloadMeasurementsService(
         session: Session,
         dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) = withContext(dispatcher) {
-        if (hasMeasurements(dbSessionWithMeasurements)) {
-            return@withContext
-        }
-
         val sessionId = dbSessionWithMeasurements.session.id
 
         runCatching {
@@ -80,10 +76,6 @@ class DownloadMeasurementsService(
         }.onFailure {
             errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
         }
-    }
-
-    private fun hasMeasurements(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject): Boolean {
-        return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
     suspend fun downloadMeasurementsForFixed(
