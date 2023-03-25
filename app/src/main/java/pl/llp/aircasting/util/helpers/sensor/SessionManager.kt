@@ -182,13 +182,14 @@ class SessionManager(
     }
 
     private fun updateSession(event: UpdateSessionEvent) {
-        val session = event.session.copy()
-        session.name = event.name
-        session.tags = event.tags
-        sessionUpdateService.update(session) {
-            runOnIOThread {
-                sessionsRepository.update(session)
-            }
+        coroutineScope.launch {
+            val session = event.session.copy()
+            session.name = event.name
+            session.tags = event.tags
+            sessionUpdateService.update(session)
+                .onSuccess {
+                    sessionsRepository.update(session)
+                }
         }
     }
 
@@ -212,7 +213,9 @@ class SessionManager(
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
         markForRemoval(session, streamsToDelete) {
-            updateSession(session)
+            coroutineScope.launch {
+                updateSession(session)
+            }
         }
     }
 
@@ -229,14 +232,16 @@ class SessionManager(
         }
     }
 
-    private fun updateSession(session: Session) {
+    private suspend fun updateSession(session: Session) {
         val reloadedSession = sessionsRepository.loadSessionForUpload(session.uuid)
 
         if (reloadedSession != null) {
-            sessionUpdateService.update(reloadedSession) {
-                deleteMarkedForRemoval()
-            }
+            sessionUpdateService.update(reloadedSession)
+                .onSuccess {
+                    deleteMarkedForRemoval()
+                }
         }
+
     }
 
     private fun deleteMarkedForRemoval() {
@@ -269,7 +274,7 @@ class SessionManager(
     }
 
     private fun deleteNote(event: NoteDeletedEvent) {
-        runOnIOThread {
+        coroutineScope.launch {
             event.session?.let {
                 val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
