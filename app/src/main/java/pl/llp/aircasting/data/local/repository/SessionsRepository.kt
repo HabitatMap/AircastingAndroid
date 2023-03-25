@@ -38,7 +38,7 @@ class SessionsRepository {
     }
 
     suspend fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
-        return mDatabase.sessions().loadSessionAndMeasurementsByUUIDSuspend(uuid)
+        return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }
 
     suspend fun getSessionIdByUUID(uuid: String): Long? {
@@ -49,7 +49,7 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
-    fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
+    suspend fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 
         sessionDBObject ?: return null
@@ -62,18 +62,9 @@ class SessionsRepository {
         return sessionForUploadDBObject?.let { Session(it) }
     }
 
-    fun update(session: Session) {
+    suspend fun update(session: Session) {
         session.endTime?.let {
             mDatabase.sessions().update(
-                session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation
-            )
-        }
-    }
-
-    suspend fun updateSuspend(session: Session) {
-        session.endTime?.let {
-            mDatabase.sessions().updateSuspend(
                 session.uuid, session.name, session.tags,
                 it, session.status, session.version, session.urlLocation
             )
@@ -158,7 +149,7 @@ class SessionsRepository {
         return if (sessionDbObject == null) {
             insert(session)
         } else {
-            updateSuspend(session)
+            update(session)
             null
         }
     }

@@ -190,7 +190,7 @@ class DownloadMeasurementsService(
         }
     }
 
-    private fun updateSessionEndTime(session: Session, endTimeString: String?) {
+    private suspend fun updateSessionEndTime(session: Session, endTimeString: String?) {
         if (endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
         sessionsRepository.update(session)
     }

@@ -67,10 +67,7 @@ interface SessionDao {
     suspend fun insert(session: SessionDBObject): Long
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    suspend fun loadSessionAndMeasurementsByUUIDSuspend(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
+    suspend fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadLiveDataSessionAndMeasurementsByUUID(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?>
@@ -121,18 +118,7 @@ interface SessionDao {
     ): SessionDBObject?
 
     @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
-    fun update(
-        uuid: String,
-        name: String,
-        tags: ArrayList<String>,
-        endTime: Date,
-        status: Session.Status,
-        version: Int,
-        urlLocation: String?
-    )
-
-    @Query("UPDATE sessions SET name=:name, tags=:tags, end_time=:endTime, status=:status, version=:version, url_location=:urlLocation WHERE uuid=:uuid")
-    suspend fun updateSuspend(
+    suspend fun update(
         uuid: String,
         name: String,
         tags: ArrayList<String>,
