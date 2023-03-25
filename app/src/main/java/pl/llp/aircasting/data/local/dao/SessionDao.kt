@@ -15,41 +15,17 @@ interface SessionDao {
     @Query("SELECT * FROM sessions")
     fun getAll(): List<SessionDBObject>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(
-        type: Session.Type,
-        status: Session.Status
-    ): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
-
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusWithMeasurements(
-        type: Session.Type,
-        statuses: List<Int>
-    ): LiveData<List<SessionWithStreamsAndMeasurementsDBObject>>
-
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithLastMeasurements(
         type: Session.Type,
         statuses: List<Int>
     ): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
 
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status IN (:statuses) ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatusForComplete(
-        type: Session.Type,
-        statuses: List<Int>
-    ): LiveData<List<CompleteSessionDBObject>>
-
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
     fun loadAllByTypeAndStatusWithNotes(
         type: Session.Type,
         status: Session.Status
     ): LiveData<List<SessionWithStreamsAndNotesDBObject>>
-
-    @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type AND status=:status ORDER BY start_time DESC")
-    fun loadAllByTypeAndStatus(
-        type: Session.Type,
-        status: Session.Status
-    ): LiveData<List<SessionWithStreamsDBObject>>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun loadAllByType(type: Session.Type): LiveData<List<SessionWithStreamsDBObject>>
@@ -68,9 +44,6 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadLiveDataSessionAndMeasurementsByUUID(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
@@ -92,9 +65,6 @@ interface SessionDao {
 
     @Query("SELECT * FROM sessions WHERE id=:id AND deleted=0")
     suspend fun loadSessionById(id: Long): SessionDBObject?
-
-    @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND deleted=0")
-    fun loadSessionByStatusAndType(status: Session.Status, type: Session.Type): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
     suspend fun loadSessionByDeviceIdStatusAndType(
@@ -157,9 +127,6 @@ interface SessionDao {
         existingStatus: Session.Status
     )
 
-    @Query("DELETE FROM sessions")
-    fun deleteAll()
-
     @Query("UPDATE sessions SET deleted=1 WHERE uuid in (:uuids)")
     suspend fun markForRemoval(uuids: List<String>)
 
@@ -177,5 +144,4 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     suspend fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
-
 }

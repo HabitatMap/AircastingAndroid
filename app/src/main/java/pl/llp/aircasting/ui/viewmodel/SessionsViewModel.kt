@@ -19,10 +19,6 @@ class SessionsViewModel : ViewModel() {
     private val thresholdsRepository = ThresholdsRepository()
     private val sessionsRepository = SessionsRepository()
 
-    fun loadSessionWithMeasurements(uuid: String): LiveData<SessionWithStreamsAndMeasurementsDBObject?> {
-        return mDatabase.sessions().loadLiveDataSessionAndMeasurementsByUUID(uuid)
-    }
-
     fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
     }
@@ -35,26 +31,12 @@ class SessionsViewModel : ViewModel() {
         return mDatabase.sessions().loadFollowingWithMeasurements()
     }
 
-    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
-            Session.Type.MOBILE,
-            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
-        )
-    }
-
     fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
         return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
     }
 
     fun loadSessionWithNotesAndStreamsByUUID(sessionUUID: String): LiveData<SessionWithStreamsAndNotesDBObject?> {
         return mDatabase.sessions().loadSessionWithNotesByUUID(sessionUUID)
-    }
-
-    fun loadMobileDormantSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatus(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
     }
 
     fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
@@ -87,12 +69,10 @@ class SessionsViewModel : ViewModel() {
         sessionsRepository.updateFollowedAt(session)
     }
 
-
-    fun updateOrder(
-        sessionUUID: String,
-        order: Int,
-        ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    ) = viewModelScope.launch(ioDispatcher) {
-        sessionsRepository.updateOrder(sessionUUID, order)
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
+            Session.Type.MOBILE,
+            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
+        )
     }
 }
