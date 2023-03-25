@@ -30,17 +30,17 @@ class MeasurementStreamsRepository {
             sessionId,
             measurementStream
         )
-        return mDatabase.measurementStreams().insertSuspend(streamDBObject)
+        return mDatabase.measurementStreams().insert(streamDBObject)
     }
 
     suspend fun insert(sessionId: Long, streams: List<MeasurementStream>) {
         streams.forEach { stream ->
             val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
-            mDatabase.measurementStreams().insertSuspend(streamDBObject)
+            mDatabase.measurementStreams().insert(streamDBObject)
         }
     }
 
-    fun insert(sessionId: Long, stream: MeasurementStream): Long {
+    suspend fun insert(sessionId: Long, stream: MeasurementStream): Long {
         val streamDBObject = MeasurementStreamDBObject(sessionId, stream)
         return mDatabase.measurementStreams().insert(streamDBObject)
     }

@@ -12,13 +12,7 @@ interface MeasurementStreamDao {
     suspend fun getSessionStreams(sessionId: Long): List<MeasurementStreamDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(measurementStream: MeasurementStreamDBObject): Long
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertSuspend(measurementStream: MeasurementStreamDBObject): Long
-
-    @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
-    fun loadStreamBySessionIdAndSensorName(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
+    suspend fun insert(measurementStream: MeasurementStreamDBObject): Long
 
     @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
     suspend fun loadStreamBySessionIdAndSensorNameSuspend(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
@@ -31,9 +25,6 @@ interface MeasurementStreamDao {
 
     @Delete
     suspend fun delete(streams: List<MeasurementStreamDBObject>)
-
-    @Query("DELETE FROM measurement_streams")
-    fun deleteAll()
 
     @Query("UPDATE measurement_streams SET deleted=1 WHERE session_id=:sessionId AND sensor_name=:sensorName")
     suspend fun markForRemoval(sessionId: Long, sensorName: String)
