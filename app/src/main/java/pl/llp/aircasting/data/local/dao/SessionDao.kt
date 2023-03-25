@@ -97,21 +97,14 @@ interface SessionDao {
     fun loadSessionByStatusAndType(status: Session.Status, type: Session.Type): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
-    fun loadSessionByDeviceIdStatusAndType(
-        deviceId: String,
-        status: Session.Status,
-        type: Session.Type
-    ): SessionDBObject?
-
-    @Query("SELECT * FROM sessions WHERE device_id=:deviceId AND status=:status AND type=:type AND deleted=0")
-    suspend fun loadSessionByDeviceIdStatusAndTypeSuspend(
+    suspend fun loadSessionByDeviceIdStatusAndType(
         deviceId: String,
         status: Session.Status,
         type: Session.Type
     ): SessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE status=:status AND type=:type AND device_type=:deviceType AND deleted=0")
-    fun loadSessionByStatusTypeAndDeviceType(
+    suspend fun loadSessionByStatusTypeAndDeviceType(
         status: Session.Status,
         type: Session.Type,
         deviceType: DeviceItem.Type
@@ -135,7 +128,7 @@ interface SessionDao {
     suspend fun updateOrder(uuid: String, sessionOrder: Int?)
 
     @Query("UPDATE sessions SET status=:status WHERE uuid=:uuid")
-    fun updateStatus(uuid: String, status: Session.Status)
+    suspend fun updateStatus(uuid: String, status: Session.Status)
 
     @Query("UPDATE sessions SET url_location=:urlLocation WHERE uuid=:uuid")
     suspend fun updateUrlLocation(uuid: String, urlLocation: String?)
@@ -177,7 +170,7 @@ interface SessionDao {
     suspend fun delete(uuids: List<String>)
 
     @Query("DELETE FROM sessions WHERE uuid =:uuid")
-    fun delete(uuid: String)
+    suspend fun delete(uuid: String)
 
     @Query("SELECT id FROM sessions WHERE type=:type AND deleted=0")
     suspend fun loadSessionUuidsByType(type: Session.Type): List<Long>

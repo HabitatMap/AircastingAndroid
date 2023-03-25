@@ -2,6 +2,9 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.api.util.TAG
@@ -10,7 +13,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.eventbus
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import java.util.concurrent.ConcurrentHashMap
 
@@ -123,7 +125,7 @@ class AirBeamReconnector(
     private fun updateSessionStatus(session: Session?, status: Session.Status) {
         Log.v(TAG, "Updating session status")
         session?.let { session ->
-            runOnIOThread {
+            CoroutineScope(Dispatchers.IO).launch {
                 mSessionsRepository.updateSessionStatus(session, status)
             }
         }

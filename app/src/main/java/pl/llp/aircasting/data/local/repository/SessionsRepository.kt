@@ -19,7 +19,7 @@ class SessionsRepository {
     }
 
     suspend fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
-        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndTypeSuspend(
+        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
             deviceId,
             Session.Status.RECORDING, Session.Type.MOBILE
         )
@@ -71,7 +71,7 @@ class SessionsRepository {
         }
     }
 
-    fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
+    suspend fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
         return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
             deviceId,
             Session.Status.RECORDING,
@@ -84,7 +84,7 @@ class SessionsRepository {
                 ) != null
     }
 
-    fun isMicrophoneSessionAlreadyRecording(): Boolean {
+    suspend fun isMicrophoneSessionAlreadyRecording(): Boolean {
         return mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(
             Session.Status.RECORDING,
             Session.Type.MOBILE,
@@ -135,7 +135,7 @@ class SessionsRepository {
         }
     }
 
-    fun delete(uuid: String) {
+    suspend fun delete(uuid: String) {
         mDatabase.sessions().delete(uuid)
     }
 
@@ -154,7 +154,7 @@ class SessionsRepository {
         }
     }
 
-    fun updateSessionStatus(session: Session, status: Session.Status) {
+    suspend fun updateSessionStatus(session: Session, status: Session.Status) {
         mDatabase.sessions().updateStatus(session.uuid, status)
     }
 
