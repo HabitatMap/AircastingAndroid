@@ -14,6 +14,12 @@ class MeasurementStreamsRepository {
         return streamDBObject?.id
     }
 
+    suspend fun getSessionStreams(sessionId: Long) =
+        mDatabase.measurementStreams().getSessionStreams(sessionId)
+
+    suspend fun delete(streams: List<MeasurementStreamDBObject>) =
+        mDatabase.measurementStreams().delete(streams)
+
     fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
         var streamDBObject = mDatabase.measurementStreams()
             .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)

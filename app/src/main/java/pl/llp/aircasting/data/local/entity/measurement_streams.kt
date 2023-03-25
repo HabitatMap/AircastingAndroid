@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.entity
 
 import androidx.room.*
+import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.model.MeasurementStream
 
 @Entity(
@@ -49,5 +50,21 @@ data class MeasurementStreamDBObject(
         measurementStream.thresholdHigh,
         measurementStream.thresholdVeryHigh,
         measurementStream.deleted
+    )
+
+    constructor(sessionId: Long, streamResponse: SessionStreamResponse) : this(
+        sessionId,
+        streamResponse.sensorPackageName,
+        streamResponse.sensorName,
+        streamResponse.measurementType,
+        streamResponse.measurementShortType,
+        streamResponse.unitName,
+        streamResponse.unitSymbol,
+        streamResponse.thresholdVeryLow,
+        streamResponse.thresholdLow,
+        streamResponse.thresholdMedium,
+        streamResponse.thresholdHigh,
+        streamResponse.thresholdVeryHigh,
+        streamResponse.deleted
     )
 }

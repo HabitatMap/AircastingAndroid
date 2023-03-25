@@ -1,16 +1,30 @@
 package pl.llp.aircasting.data.api.response
 
+import com.google.gson.annotations.SerializedName
+
 open class SessionStreamResponse(
-    val sensor_name: String,
-    val sensor_package_name: String,
-    val unit_name: String,
-    val measurement_type: String,
-    val measurement_short_type: String,
-    val unit_symbol: String,
-    val threshold_very_low: Int,
-    val threshold_low: Int,
-    val threshold_medium: Int,
-    val threshold_high: Int,
-    val threshold_very_high: Int,
+    @SerializedName("sensor_name")
+    val sensorName: String,
+    @SerializedName("sensor_package_name")
+    val sensorPackageName: String,
+    @SerializedName("unit_name")
+    val unitName: String,
+    @SerializedName("measurement_type")
+    val measurementType: String,
+    @SerializedName("measurement_short_type")
+    val measurementShortType: String,
+    @SerializedName("unit_symbol")
+    val unitSymbol: String,
+    @SerializedName("threshold_very_low")
+    val thresholdVeryLow: Int,
+    @SerializedName("threshold_low")
+    val thresholdLow: Int,
+    @SerializedName("threshold_medium")
+    val thresholdMedium: Int,
+    @SerializedName("threshold_high")
+    val thresholdHigh: Int,
+    @SerializedName("threshold_very_high")
+    val thresholdVeryHigh: Int,
+    @SerializedName("results")
     val deleted: Boolean
 )

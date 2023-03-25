@@ -6,8 +6,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -110,7 +112,7 @@ class DownloadMeasurementsService(
         return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, session.isExternal)
     }
 
-    private fun saveSessionData(
+    private suspend fun saveSessionData(
         response: SessionWithMeasurementsResponse,
         session: Session,
         sessionId: Long
@@ -119,6 +121,8 @@ class DownloadMeasurementsService(
             val streamResponses = streams.values
             if (!callCanceled.get()) {
                 try {
+                    deleteLocalStreamsNotPresentInResponse(sessionId, streams)
+
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse, session, sessionId)
                     }
@@ -128,6 +132,21 @@ class DownloadMeasurementsService(
                 }
             }
         }
+    }
+
+    private suspend fun deleteLocalStreamsNotPresentInResponse(
+        sessionId: Long,
+        streams: HashMap<String, SessionStreamWithMeasurementsResponse>
+    ) {
+        val localStreams = measurementStreamsRepository.getSessionStreams(sessionId)
+        val backendStreams = streams.values.map {
+            MeasurementStreamDBObject(
+                sessionId,
+                it as SessionStreamResponse
+            )
+        }
+        val deletedStreams = localStreams.filterNot { it in backendStreams }
+        measurementStreamsRepository.delete(deletedStreams)
     }
 
     private fun saveStreamData(

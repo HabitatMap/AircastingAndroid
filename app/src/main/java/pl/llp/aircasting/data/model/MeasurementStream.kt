@@ -120,17 +120,17 @@ open class MeasurementStream(
     }
 
     constructor(sessionStreamResponse: SessionStreamResponse) : this(
-        sessionStreamResponse.sensor_package_name,
-        sessionStreamResponse.sensor_name,
-        sessionStreamResponse.measurement_type,
-        sessionStreamResponse.measurement_short_type,
-        sessionStreamResponse.unit_name,
-        sessionStreamResponse.unit_symbol,
-        sessionStreamResponse.threshold_very_low,
-        sessionStreamResponse.threshold_low,
-        sessionStreamResponse.threshold_medium,
-        sessionStreamResponse.threshold_high,
-        sessionStreamResponse.threshold_very_high,
+        sessionStreamResponse.sensorPackageName,
+        sessionStreamResponse.sensorName,
+        sessionStreamResponse.measurementType,
+        sessionStreamResponse.measurementShortType,
+        sessionStreamResponse.unitName,
+        sessionStreamResponse.unitSymbol,
+        sessionStreamResponse.thresholdVeryLow,
+        sessionStreamResponse.thresholdLow,
+        sessionStreamResponse.thresholdMedium,
+        sessionStreamResponse.thresholdHigh,
+        sessionStreamResponse.thresholdVeryHigh,
         sessionStreamResponse.deleted
     )
 

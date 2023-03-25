@@ -1,15 +1,15 @@
 package pl.llp.aircasting.data.local.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 
 @Dao
 interface MeasurementStreamDao {
     @Query("SELECT * FROM measurement_streams")
     fun getAll(): List<MeasurementStreamDBObject>
+
+    @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId")
+    suspend fun getSessionStreams(sessionId: Long): List<MeasurementStreamDBObject>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(measurementStream: MeasurementStreamDBObject): Long
@@ -28,6 +28,9 @@ interface MeasurementStreamDao {
 
     @Query("SELECT id FROM measurement_streams WHERE session_id=:sessionId")
     suspend fun getStreamsIdsBySessionId(sessionId: Long): List<Long>
+
+    @Delete
+    suspend fun delete(streams: List<MeasurementStreamDBObject>)
 
     @Query("DELETE FROM measurement_streams")
     fun deleteAll()
