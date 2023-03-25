@@ -195,4 +195,8 @@ class SessionsRepository {
             Session.Status.FINISHED
         )
     }
+
+    suspend fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+        return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
+    }
 }

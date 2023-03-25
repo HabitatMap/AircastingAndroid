@@ -5,14 +5,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
@@ -22,14 +20,9 @@ import pl.llp.aircasting.ui.view.screens.session_view.graph.GraphActivity
 import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.ShareHelper
-import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.events.StreamSelectedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.extensions.backToUIThread
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.extensions.showToast
 
 abstract class SessionsController(
     private var mRootActivity: FragmentActivity?,
@@ -106,13 +99,12 @@ abstract class SessionsController(
     }
 
     private suspend fun reloadSession(session: Session) {
-        val dbSessionWithMeasurements =
-            mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
-
-        dbSessionWithMeasurements?.let {
-            val reloadedSession = Session(it)
-            mViewMvc?.hideLoaderFor(session)
-            mViewMvc?.reloadSession(reloadedSession)
+        mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).collect { dbSession ->
+            dbSession?.let {
+                val reloadedSession = Session(it)
+                mViewMvc?.hideLoaderFor(session)
+                mViewMvc?.reloadSession(reloadedSession)
+            }
         }
     }
 

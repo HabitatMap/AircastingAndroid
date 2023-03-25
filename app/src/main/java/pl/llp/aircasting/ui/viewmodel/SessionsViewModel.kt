@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
@@ -19,8 +20,8 @@ class SessionsViewModel : ViewModel() {
     private val thresholdsRepository = ThresholdsRepository()
     private val sessionsRepository = SessionsRepository()
 
-    fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
-        return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
+    fun reloadSessionWithMeasurements(uuid: String) = flow {
+        emit(sessionsRepository.reloadSessionWithMeasurements(uuid))
     }
 
     suspend fun reloadSessionWithMeasurementsSuspend(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {

@@ -11,9 +11,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -103,31 +101,32 @@ class ShareSessionBottomSheet(
 
         lifecycleScope.launch {
             mSession?.let { session ->
-                val dbSession = withContext(Dispatchers.IO) {
-                    mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)
-                }
-                mSession = dbSession?.let { Session(it) }
-            }
-            if (mSession?.locationless == true) {
-                radioGroup?.visibility = View.GONE
-                shareLinkButton?.visibility = View.GONE
-                selectStreamTextView?.visibility = View.GONE
-                emailInput?.visibility = View.GONE
-                emailCsvTextView?.text = getString(R.string.generate_csv_file_without_share_link)
-            } else {
-                setRadioButtonsForChosenSession()
+                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).collect { dbSession ->
+                    mSession = dbSession?.let { Session(it) }
 
-                radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-                    chosenSensor = fieldValues[checkedId]?.sensorName.toString()
-                }
+                    if (mSession?.locationless == true) {
+                        radioGroup?.visibility = View.GONE
+                        shareLinkButton?.visibility = View.GONE
+                        selectStreamTextView?.visibility = View.GONE
+                        emailInput?.visibility = View.GONE
+                        emailCsvTextView?.text =
+                            getString(R.string.generate_csv_file_without_share_link)
+                    } else {
+                        setRadioButtonsForChosenSession()
 
-                shareLinkButton?.setOnClickListener {
-                    shareLinkPressed()
+                        radioGroup?.setOnCheckedChangeListener { group, checkedId ->
+                            chosenSensor = fieldValues[checkedId]?.sensorName.toString()
+                        }
+
+                        shareLinkButton?.setOnClickListener {
+                            shareLinkPressed()
+                        }
+                    }
                 }
             }
 
             sessionsSyncService.syncStatus.collect { syncStatus ->
-                when(syncStatus) {
+                when (syncStatus) {
                     SessionsSyncService.Status.InProgress -> {
                         shareFileButton?.isEnabled = false
                         shareFileButton?.text = context?.getString(R.string.sync_in_progress)
