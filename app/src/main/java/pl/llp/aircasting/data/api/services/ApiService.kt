@@ -49,10 +49,10 @@ interface ApiService {
     suspend fun loginSuspend(): Response<UserResponse>
 
     @GET(urlExportSession)
-    fun exportSession(
+    suspend fun exportSession(
         @Query("email") email: String,
         @Query("uuid") uuid: String
-    ): Call<ExportSessionResponse>
+    ): Response<ExportSessionResponse>
 
     @GET(urlSessionInGivenLocation)
     suspend fun getSessionsInRegion(@Query("q") query: String): SessionsInRegionsResponse

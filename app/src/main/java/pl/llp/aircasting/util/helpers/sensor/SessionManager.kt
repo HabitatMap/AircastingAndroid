@@ -5,6 +5,7 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
@@ -40,7 +41,7 @@ class SessionManager(
     private val sessionUpdateService: UpdateSessionService
     = UpdateSessionService(apiService, errorHandler, mContext),
     private val exportSessionService: ExportSessionService
-    = ExportSessionService(apiService, errorHandler, mContext),
+    = ExportSessionService(apiService, errorHandler),
     private val fixedSessionUploadService: FixedSessionUploadService
     = FixedSessionUploadService(apiService, errorHandler),
     private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService
@@ -190,15 +191,18 @@ class SessionManager(
         }
     }
 
-    private fun exportSession(event: ExportSessionEvent) {
-        exportSessionService.export(event.email, event.session.uuid) {
-            mContext.apply {
-                showToast(
-                    getString(R.string.exported_session_service_success),
-                    Toast.LENGTH_LONG
-                )
+    private fun exportSession(event: ExportSessionEvent) = coroutineScope.launch {
+        exportSessionService.export(event.email, event.session.uuid)
+            .onSuccess {
+                withContext(Dispatchers.Main) {
+                    mContext.apply {
+                        showToast(
+                            getString(R.string.exported_session_service_success),
+                            Toast.LENGTH_LONG
+                        )
+                    }
+                }
             }
-        }
     }
 
     private fun deleteSession(sessionUUID: String) {
