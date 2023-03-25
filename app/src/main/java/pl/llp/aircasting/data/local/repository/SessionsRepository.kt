@@ -1,10 +1,10 @@
 package pl.llp.aircasting.data.local.repository
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.entity.SessionDBObject
-import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
@@ -166,7 +166,33 @@ class SessionsRepository {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
 
-    suspend fun updateOrder(sessionUUID: String, order: Int?) {
-        mDatabase.sessions().updateOrder(sessionUUID, order)
+    fun loadMobileActiveSessionsWithMeasurementsList(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
+            Session.Type.MOBILE,
+            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
+        )
+    }
+
+    fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
+        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
+    }
+
+    fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
+        return mDatabase.sessions().loadFollowingWithMeasurements()
+    }
+
+    fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
+        return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
+    }
+
+    fun loadSessionWithNotesAndStreamsByUUID(sessionUUID: String): LiveData<SessionWithStreamsAndNotesDBObject?> {
+        return mDatabase.sessions().loadSessionWithNotesByUUID(sessionUUID)
+    }
+
+    fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
+        return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(
+            Session.Type.MOBILE,
+            Session.Status.FINISHED
+        )
     }
 }

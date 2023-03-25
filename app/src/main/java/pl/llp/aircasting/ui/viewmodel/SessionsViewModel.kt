@@ -28,26 +28,27 @@ class SessionsViewModel : ViewModel() {
     }
 
     fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
-        return mDatabase.sessions().loadFollowingWithMeasurements()
+        return sessionsRepository.loadFollowingSessionsWithMeasurements()
     }
 
     fun loadLiveDataCompleteSessionBySessionUUID(sessionUUID: String): LiveData<CompleteSessionDBObject?> {
-        return mDatabase.sessions().loadLiveDataSessionForUploadByUUID(sessionUUID)
+        return sessionsRepository.loadLiveDataCompleteSessionBySessionUUID(sessionUUID)
     }
 
     fun loadSessionWithNotesAndStreamsByUUID(sessionUUID: String): LiveData<SessionWithStreamsAndNotesDBObject?> {
-        return mDatabase.sessions().loadSessionWithNotesByUUID(sessionUUID)
+        return sessionsRepository.loadSessionWithNotesAndStreamsByUUID(sessionUUID)
     }
 
     fun loadMobileDormantSessionsWithMeasurementsAndNotes(): LiveData<List<SessionWithStreamsAndNotesDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithNotes(
-            Session.Type.MOBILE,
-            Session.Status.FINISHED
-        )
+        return sessionsRepository.loadMobileDormantSessionsWithMeasurementsAndNotes()
     }
 
     fun loadFixedSessionsWithMeasurements(): LiveData<List<SessionWithStreamsDBObject>> {
-        return mDatabase.sessions().loadAllByType(Session.Type.FIXED)
+        return sessionsRepository.loadFixedSessionsWithMeasurements()
+    }
+
+    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
+        return sessionsRepository.loadMobileActiveSessionsWithMeasurementsList()
     }
 
     fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
@@ -67,12 +68,5 @@ class SessionsViewModel : ViewModel() {
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO
     ) = viewModelScope.launch(ioDispatcher) {
         sessionsRepository.updateFollowedAt(session)
-    }
-
-    fun loadMobileActiveSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
-        return mDatabase.sessions().loadAllByTypeAndStatusWithLastMeasurements(
-            Session.Type.MOBILE,
-            listOf(Session.Status.RECORDING.value, Session.Status.DISCONNECTED.value)
-        )
     }
 }
