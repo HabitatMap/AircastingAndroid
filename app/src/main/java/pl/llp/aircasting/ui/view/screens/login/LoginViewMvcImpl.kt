@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.android.material.textfield.TextInputLayout
-import pl.llp.aircasting.R
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import kotlinx.android.synthetic.main.activity_login.view.*
+import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
+import pl.llp.aircasting.util.Settings
 
 class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginViewMvc {
     constructor(
@@ -39,11 +39,11 @@ class LoginViewMvcImpl : BaseObservableViewMvc<LoginViewMvc.Listener>, LoginView
     }
 
     private fun onLoginClicked() {
-        val profile_name = getEditTextValue(R.id.profile_name_input)
+        val profileName = getEditTextValue(R.id.profile_name_input)
         val password = getEditTextValue(R.id.password_input)
 
         for (listener in listeners) {
-            listener.onLoginClicked(profile_name, password)
+            listener.onLoginClicked(profileName, password)
         }
     }
 

@@ -43,17 +43,25 @@ class LoginController(
         EventBus.getDefault().unregister(this)
     }
 
-    override fun onLoginClicked(profile_name: String, password: String) {
+    override fun onLoginClicked(profileName: String, password: String) {
         mContextActivity.hideKeyboard()
-        val successCallback = {
-            MainActivity.start(mContextActivity)
+        mContextActivity.lifecycleScope.launch {
+            mLoginService.performLogin(profileName, password)
+                .onSuccess {
+                    mSettings.login(
+                        it.username,
+                        it.email,
+                        it.authenticationToken,
+                        it.sessionStoppedAlert
+                    )
+                    MainActivity.start(mContextActivity)
+                }
+                .onFailure {
+                    mViewMvc.showError()
+                    val message = mContextActivity.getString(R.string.invalid_credentials_message)
+                    mContextActivity.showToast(message, Toast.LENGTH_LONG)
+                }
         }
-        val message = mContextActivity.getString(R.string.invalid_credentials_message)
-        val errorCallback = {
-            mViewMvc.showError()
-            mContextActivity.showToast(message, Toast.LENGTH_LONG)
-        }
-        mLoginService.performLogin(profile_name, password, successCallback, errorCallback)
     }
 
     override fun onForgotPasswordClicked() {

@@ -40,6 +40,8 @@ class AirBeam3ConfiguringFailed(type: String, status: Int) :
 class InternalAPIError :
     BaseException(null, "Something went wrong, please contact our support.")
 
+class UnauthorizedError : BaseException(null, "Unauthorized")
+
 class SyncError(t: Throwable? = null) :
     BaseException(Exception(t), "Session sync failed, check your network connection.")
 

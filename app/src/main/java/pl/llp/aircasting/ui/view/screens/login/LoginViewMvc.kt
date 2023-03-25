@@ -9,7 +9,7 @@ interface LoginViewMvc : ObservableViewMvc<LoginViewMvc.Listener> {
     }
 
     interface Listener {
-        fun onLoginClicked(profile_name: String, password: String)
+        fun onLoginClicked(profileName: String, password: String)
         fun onForgotPasswordClicked()
         fun onCreateAccountClicked()
     }

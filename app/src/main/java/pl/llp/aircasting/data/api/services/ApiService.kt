@@ -21,7 +21,6 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUser
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -43,10 +42,7 @@ interface ApiService {
     ): SessionWithMeasurementsResponse
 
     @GET(urlUser)
-    fun login(): Call<UserResponse>
-
-    @GET(urlUser)
-    suspend fun loginSuspend(): Response<UserResponse>
+    suspend fun login(): Response<UserResponse>
 
     @GET(urlExportSession)
     suspend fun exportSession(
