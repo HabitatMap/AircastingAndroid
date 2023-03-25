@@ -7,9 +7,9 @@ import pl.llp.aircasting.data.model.MeasurementStream
 class MeasurementStreamsRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
+    suspend fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
         val streamDBObject = mDatabase.measurementStreams()
-            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
+            .loadStreamBySessionIdAndSensorNameSuspend(sessionId, measurementStream.sensorName)
 
         return streamDBObject?.id
     }

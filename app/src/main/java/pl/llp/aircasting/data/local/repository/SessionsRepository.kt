@@ -43,10 +43,6 @@ class SessionsRepository {
         return mDatabase.sessions().loadSessionByIdSuspend(id)
     }
 
-    fun getSessionById(id: Long): SessionDBObject? {
-        return mDatabase.sessions().loadSessionById(id)
-    }
-
     suspend fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         return mDatabase.sessions().loadSessionAndMeasurementsByUUIDSuspend(uuid)
     }
@@ -109,15 +105,6 @@ class SessionsRepository {
             Session.Type.MOBILE,
             DeviceItem.Type.MIC
         ) != null
-    }
-
-    fun mobileActiveSessionExists(): Boolean {
-        return mDatabase.sessions()
-            .loadSessionByStatusAndType(Session.Status.RECORDING, Session.Type.MOBILE) != null ||
-                mDatabase.sessions().loadSessionByStatusAndType(
-                    Session.Status.DISCONNECTED,
-                    Session.Type.MOBILE
-                ) != null
     }
 
     suspend fun disconnectMobileBluetoothSessions() {
@@ -188,10 +175,6 @@ class SessionsRepository {
 
     suspend fun updateUrlLocation(session: Session, urlLocation: String?) {
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
-    }
-
-    suspend fun updateSessionAveragingFrequency(sessionId: Long, averagingFrequency: Int) {
-        mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
     }
 
     suspend fun updateFollowedAt(session: Session) {

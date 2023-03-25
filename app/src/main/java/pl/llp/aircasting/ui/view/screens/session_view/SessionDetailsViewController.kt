@@ -181,7 +181,7 @@ abstract class SessionDetailsViewController(
         }
     }
 
-    private fun loadMeasurements(): HashMap<String, List<Measurement>> {
+    private suspend fun loadMeasurements(): HashMap<String, List<Measurement>> {
         var measurements: HashMap<String, List<Measurement>> = hashMapOf()
         val sessionUUID = mSessionPresenter.sessionUUID
         var sessionDBObject: SessionDBObject? = null
@@ -214,7 +214,7 @@ abstract class SessionDetailsViewController(
         }
     }
 
-    private fun loadMeasurementsForStreams(
+    private suspend fun loadMeasurementsForStreams(
         sessionId: Long,
         measurementStreams: List<MeasurementStream>?,
         selectedStream: MeasurementStream,

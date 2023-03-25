@@ -121,12 +121,12 @@ class ActiveSessionMeasurementsRepository {
             .deleteAndInsertMultipleMeasurementsInTransaction(measurementDBObjects)
     }
 
-    fun loadMeasurementsForStreams(
+    suspend fun loadMeasurementsForStreams(
         sessionId: Long,
         measurementStreams: List<MeasurementStream>?,
         limit: Int
     ) {
-        var measurements: List<Measurement> = mutableListOf()
+        var measurements: List<Measurement>
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =

@@ -83,7 +83,7 @@ class MeasurementsRepositoryImpl : MeasurementsRepository {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?> {
+    suspend fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?> {
         return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
     }
 
