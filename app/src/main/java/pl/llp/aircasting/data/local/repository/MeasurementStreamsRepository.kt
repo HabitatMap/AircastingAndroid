@@ -58,7 +58,7 @@ class MeasurementStreamsRepository {
         return mDatabase.measurementStreams().insert(streamDBObject)
     }
 
-    fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
+    suspend fun markForRemoval(sessionId: Long?, streamsToDelete: List<MeasurementStream>?) {
         streamsToDelete?.forEach { stream ->
             if (sessionId != null) {
                 mDatabase.measurementStreams().markForRemoval(sessionId, stream.sensorName)

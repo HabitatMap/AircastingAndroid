@@ -66,14 +66,8 @@ class SessionsRepository {
         return Session(sessionDBObject)
     }
 
-    fun loadSessionForUpload(uuid: String): Session? {
+    suspend fun loadSessionForUpload(uuid: String): Session? {
         val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
-
-        return sessionForUploadDBObject?.let { Session(it) }
-    }
-
-    suspend fun loadSessionForUploadSuspend(uuid: String): Session? {
-        val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUIDSuspend(uuid)
 
         return sessionForUploadDBObject?.let { Session(it) }
     }
@@ -126,7 +120,7 @@ class SessionsRepository {
                 ) != null
     }
 
-    fun disconnectMobileBluetoothSessions() {
+    suspend fun disconnectMobileBluetoothSessions() {
         mDatabase.sessions().disconnectSessions(
             Session.Status.DISCONNECTED,
             DeviceItem.Type.MIC,
@@ -135,7 +129,7 @@ class SessionsRepository {
         )
     }
 
-    fun finishMobileMicSessions() {
+    suspend fun finishMobileMicSessions() {
         mDatabase.sessions().finishSessions(
             Session.Status.FINISHED,
             Date(),

@@ -36,7 +36,7 @@ interface MeasurementStreamDao {
     fun deleteAll()
 
     @Query("UPDATE measurement_streams SET deleted=1 WHERE session_id=:sessionId AND sensor_name=:sensorName")
-    fun markForRemoval(sessionId: Long, sensorName: String)
+    suspend fun markForRemoval(sessionId: Long, sensorName: String)
 
     @Query("DELETE FROM measurement_streams WHERE deleted=1")
     suspend fun deleteMarkedForRemoval()

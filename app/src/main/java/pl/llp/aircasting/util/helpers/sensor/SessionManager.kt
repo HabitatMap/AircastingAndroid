@@ -15,7 +15,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
@@ -46,8 +45,6 @@ class SessionManager(
     = FixedSessionUploadService(apiService, errorHandler),
     private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService
     = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler),
-    private var mCallback: (() -> Unit)? = null,
-
     private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
         coroutineScope,
         settings,
@@ -147,11 +144,13 @@ class SessionManager(
 
         // we only want to do this after a crash/restart becuase MainActivity can be destroyed when the app is in the background
         // https://stackoverflow.com/questions/59648644/foreground-service-content-intent-not-resuming-the-app-but-relaunching-it
-        if (settings.appRestarted()) {
-            updateMobileSessions()
-            settings.setAppNotRestarted()
+        coroutineScope.launch {
+            if (settings.appRestarted()) {
+                updateMobileSessions()
+                settings.setAppNotRestarted()
+            }
+            fixedSessionDownloadMeasurementsService.start()
         }
-        fixedSessionDownloadMeasurementsService.start()
     }
 
     fun onStop() {
@@ -174,11 +173,9 @@ class SessionManager(
         EventBus.getDefault().unregister(this)
     }
 
-    private fun updateMobileSessions() {
-        runOnIOThread {
-            sessionsRepository.disconnectMobileBluetoothSessions()
-            sessionsRepository.finishMobileMicSessions()
-        }
+    private suspend fun updateMobileSessions() {
+        sessionsRepository.disconnectMobileBluetoothSessions()
+        sessionsRepository.finishMobileMicSessions()
     }
 
     private fun updateSession(event: UpdateSessionEvent) {
@@ -212,24 +209,18 @@ class SessionManager(
     }
 
     private fun deleteStreams(session: Session, streamsToDelete: List<MeasurementStream>?) {
-        markForRemoval(session, streamsToDelete) {
-            coroutineScope.launch {
-                updateSession(session)
-            }
+        coroutineScope.launch {
+            markForRemoval(session, streamsToDelete)
+            updateSession(session)
         }
     }
 
-    private fun markForRemoval(
+    private suspend fun markForRemoval(
         session: Session,
-        streamsToDelete: List<MeasurementStream>?,
-        callback: () -> Unit
+        streamsToDelete: List<MeasurementStream>?
     ) {
-        mCallback = callback
-        runOnIOThread {
-            val sessionId = sessionsRepository.getSessionIdByUUID(session.uuid)
-            measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
-            mCallback?.invoke()
-        }
+        val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(session.uuid)
+        measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
     }
 
     private suspend fun updateSession(session: Session) {
@@ -241,7 +232,6 @@ class SessionManager(
                     deleteMarkedForRemoval()
                 }
         }
-
     }
 
     private fun deleteMarkedForRemoval() {

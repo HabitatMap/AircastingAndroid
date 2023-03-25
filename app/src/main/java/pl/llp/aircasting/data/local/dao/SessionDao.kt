@@ -85,10 +85,7 @@ interface SessionDao {
     fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithStreamsAndNotesDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    suspend fun loadSessionForUploadByUUIDSuspend(uuid: String): CompleteSessionDBObject?
+    suspend fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
@@ -171,7 +168,7 @@ interface SessionDao {
     )
 
     @Query("UPDATE sessions SET status=:newStatus WHERE type=:type AND device_type!=:deviceType AND status=:existingStatus")
-    fun disconnectSessions(
+    suspend fun disconnectSessions(
         newStatus: Session.Status,
         deviceType: DeviceItem.Type?,
         type: Session.Type,
@@ -179,7 +176,7 @@ interface SessionDao {
     )
 
     @Query("UPDATE sessions SET status=:newStatus, end_time=:endTime WHERE type=:type AND device_type=:deviceType AND status=:existingStatus")
-    fun finishSessions(
+    suspend fun finishSessions(
         newStatus: Session.Status,
         endTime: Date,
         deviceType: DeviceItem.Type?,
