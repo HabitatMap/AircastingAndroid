@@ -39,7 +39,6 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
-import java.util.concurrent.atomic.AtomicBoolean
 
 class SyncController(
     private val mRootActivity: AppCompatActivity,
@@ -65,7 +64,6 @@ class SyncController(
         SessionsSyncService.get(mApiService, mErrorHandler)
     private val mWizardNavigator =
         SyncWizardNavigator(mRootActivity, mSettings, mViewMvc, mFragmentManager)
-    private var mSessionsSyncStarted = AtomicBoolean(false)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -111,17 +109,32 @@ class SyncController(
                     when (syncResult) {
                         is SessionsSyncService.Result.Success -> {
                             Log.d(this@SyncController.TAG, "Acting on success sync result")
-                            mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
+                            goToSuccessScreen()
                         }
                         is SessionsSyncService.Result.Error -> {
-                            Log.d(this@SyncController.TAG, "Acting on error sync result: ${syncResult.throwable?.stackTraceToString()}")
-                            mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
+                            Log.d(
+                                this@SyncController.TAG,
+                                "Acting on error sync result: ${syncResult.throwable?.stackTraceToString()}"
+                            )
+                            goToErrorScreen()
                         }
                     }
                 }
                 .onFailure {
-                    mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
+                    goToErrorScreen()
                 }
+        }
+    }
+
+    private fun goToSuccessScreen() {
+        mRootActivity.lifecycleScope.launchWhenResumed {
+            mWizardNavigator.goToRefreshingSessionsSuccess(this@SyncController)
+        }
+    }
+
+    private fun goToErrorScreen() {
+        mRootActivity.lifecycleScope.launchWhenResumed {
+            mWizardNavigator.goToRefreshingSessionsError(this@SyncController)
         }
     }
 
