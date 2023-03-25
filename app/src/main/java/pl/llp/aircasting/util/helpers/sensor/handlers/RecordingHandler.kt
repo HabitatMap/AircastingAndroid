@@ -53,6 +53,7 @@ class RecordingHandlerImpl(
             when (session.type) {
                 Session.Type.FIXED -> {
                     session.setFollowedAtNow()
+                    sessionsRepository.updateFollowedAt(session)
                     settings.increaseFollowedSessionsCount()
                     fixedSessionUploadService.upload(session)
                 }
