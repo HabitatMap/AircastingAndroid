@@ -187,7 +187,7 @@ class SearchFollowViewModel @Inject constructor(
         )
     }
 
-    private fun insertMeasurementsToDB(
+    private suspend fun insertMeasurementsToDB(
         streamId: Long,
         sessionId: Long,
         stream: MeasurementStream

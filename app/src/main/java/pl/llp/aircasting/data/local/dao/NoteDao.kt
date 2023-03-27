@@ -19,7 +19,7 @@ interface NoteDao {
     suspend fun update(sessionId: Long, number: Int, text: String)
 
     @Query("DELETE FROM notes WHERE session_id=:sessionId AND number=:number")
-    fun delete(sessionId: Long, number: Int)
+    suspend fun delete(sessionId: Long, number: Int)
 
     @Query("DELETE FROM notes WHERE session_id=:sessionId")
     fun deleteAllNotesForSessionWithId(sessionId: Long)

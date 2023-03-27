@@ -6,7 +6,6 @@ import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
-import java.util.*
 
 class ActiveSessionMeasurementsRepository {
     companion object {
@@ -31,7 +30,7 @@ class ActiveSessionMeasurementsRepository {
         return mDatabase.activeSessionsMeasurements().insert(activeSessionMeasurementDBObject)
     }
 
-    fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+    suspend fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val measurementDBObjects = measurements.map { measurement ->
             ActiveSessionMeasurementDBObject(
                 measurementStreamId,
@@ -69,19 +68,14 @@ class ActiveSessionMeasurementsRepository {
         }
     }
 
-    fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
-        return mDatabase.activeSessionsMeasurements()
-            .getEndTimeOfMeasurementStream(sessionId, measurementStreamId)
-    }
-
-    fun deleteBySessionId(sessionId: Long?) {
+    suspend fun deleteBySessionId(sessionId: Long?) {
         sessionId?.let {
             mDatabase.activeSessionsMeasurements()
                 .deleteActiveSessionMeasurementsBySession(sessionId)
         }
     }
 
-    fun createOrReplaceMultipleRows(
+    suspend fun createOrReplaceMultipleRows(
         measurementStreamId: Long,
         sessionId: Long,
         measurements: List<Measurement>
@@ -101,7 +95,7 @@ class ActiveSessionMeasurementsRepository {
         } else insertAll(measurementStreamId, sessionId, measurementsToLoad)
     }
 
-    private fun deleteAndInsert(
+    private suspend fun deleteAndInsert(
         measurementStreamId: Long,
         sessionId: Long,
         measurements: List<Measurement>
