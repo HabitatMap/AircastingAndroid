@@ -8,16 +8,16 @@ import java.util.*
 interface ActiveSessionMeasurementDao {
 
     @Query("SELECT count(id) FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId")
-    fun countBySessionAndStream(sessionId: Long, streamId: Long): Int
+    suspend fun countBySessionAndStream(sessionId: Long, streamId: Long): Int
 
     @Query("SELECT count(id) FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId")
     suspend fun countBySessionAndStreamSuspend(sessionId: Long, streamId: Long): Int
 
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT 1")
-    fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
+    suspend fun getOldestMeasurementId(sessionId: Long, streamId: Long): Int
 
     @Query("SELECT id FROM active_sessions_measurements WHERE session_id=:sessionId AND stream_id=:streamId ORDER BY time ASC LIMIT :limit")
-    fun getOldestMeasurementsIds(sessionId: Long, streamId: Long, limit: Int): List<Int>
+    suspend fun getOldestMeasurementsIds(sessionId: Long, streamId: Long, limit: Int): List<Int>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(measurement: ActiveSessionMeasurementDBObject): Long

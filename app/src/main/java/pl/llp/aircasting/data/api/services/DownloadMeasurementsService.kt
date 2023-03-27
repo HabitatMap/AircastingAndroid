@@ -101,7 +101,7 @@ class DownloadMeasurementsService(
         }
     }
 
-    private fun lastMeasurementTimeString(sessionId: Long, session: Session): String {
+    private suspend fun lastMeasurementTimeString(sessionId: Long, session: Session): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
             LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)

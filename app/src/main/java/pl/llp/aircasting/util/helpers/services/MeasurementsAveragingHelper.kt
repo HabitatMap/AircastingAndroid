@@ -38,11 +38,11 @@ interface AverageableMeasurement {
 }
 
 interface MeasurementsAveragingHelper {
-    fun <T : AverageableMeasurement> averageMeasurements(
+    suspend fun <T : AverageableMeasurement> averageMeasurements(
         measurements: List<T>,
         startTime: Date,
         averagingWindow: AveragingWindow,
-        callback: (T, List<T>) -> Unit
+        callback: suspend (T, List<T>) -> Unit
     ): List<T>
 
     fun calculateAveragingWindow(startTime: Long, lastMeasurement: Long): AveragingWindow
@@ -52,11 +52,11 @@ class MeasurementsAveragingHelperDefault @Inject constructor() : MeasurementsAve
     private var intervalStart: Long = 0L
     private var intervalEnd: Long = 0L
 
-    override fun <T : AverageableMeasurement> averageMeasurements(
+    override suspend fun <T : AverageableMeasurement> averageMeasurements(
         measurements: List<T>,
         startTime: Date,
         averagingWindow: AveragingWindow,
-        callback: (T, List<T>) -> Unit
+        callback: suspend (T, List<T>) -> Unit
     ): List<T> {
         intervalStart = startTime.truncateTo(SECOND).time
         intervalEnd = intervalStart + averagingWindow.seconds
