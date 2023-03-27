@@ -72,10 +72,15 @@ class DownloadMeasurementsService(
         runCatching {
             apiService.downloadSessionWithMeasurements(session.uuid)
         }.onSuccess {
-            saveSessionData(it, session, sessionId)
+            val saveMeasurements = !hasMeasurements(dbSessionWithMeasurements)
+            updateSessionData(it, session, sessionId, saveMeasurements)
         }.onFailure {
             errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
         }
+    }
+
+    private fun hasMeasurements(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject): Boolean {
+        return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
     suspend fun downloadMeasurementsForFixed(
@@ -90,7 +95,7 @@ class DownloadMeasurementsService(
                 lastMeasurementSyncTimeString
             )
         }.onSuccess {
-            saveSessionData(it, session, sessionId)
+            updateSessionData(it, session, sessionId)
         }.onFailure {
             errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
         }
@@ -104,7 +109,18 @@ class DownloadMeasurementsService(
         return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, session.isExternal)
     }
 
-    private suspend fun saveSessionData(
+    private suspend fun updateSessionData(
+        response: SessionWithMeasurementsResponse,
+        session: Session,
+        sessionId: Long,
+        saveMeasurements: Boolean = true,
+    ) {
+        deleteLocalStreamsNotPresentInResponse(sessionId, response.streams)
+        if (saveMeasurements)
+            saveSessionMeasurements(response, session, sessionId)
+    }
+
+    private fun saveSessionMeasurements(
         response: SessionWithMeasurementsResponse,
         session: Session,
         sessionId: Long
@@ -113,8 +129,6 @@ class DownloadMeasurementsService(
             val streamResponses = streams.values
             if (!callCanceled.get()) {
                 try {
-                    deleteLocalStreamsNotPresentInResponse(sessionId, streams)
-
                     streamResponses.forEach { streamResponse ->
                         saveStreamData(streamResponse, session, sessionId)
                     }
