@@ -1,11 +1,8 @@
 package pl.llp.aircasting.di.modules
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.data.api.services.*
-import pl.llp.aircasting.data.local.LogoutService
-import pl.llp.aircasting.ui.view.screens.login.LoginService
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.annotation.Nullable
@@ -21,15 +18,7 @@ open class ApiModule {
 
     @Provides
     @Singleton
-    open fun providesApiServiceFactory(
-        settings: Settings,
-        webServerFactory: WebServerFactory
-    ): ApiServiceFactory = ApiServiceFactory(settings)
-
-
-    @Provides
-    @Singleton
-    @AuthenticatedWithToken
+    @Authenticated
     fun providesApiServiceAuthenticatedWithToken(
         settings: Settings,
         factory: ApiServiceFactory
@@ -83,21 +72,4 @@ open class ApiModule {
         val apiService = apiServiceFactory.getAuthenticated(authToken)
         return SessionDownloadService(apiService, errorHandler)
     }
-
-    @Provides
-    @Singleton
-    open fun providesLogoutService(
-        settings: Settings,
-        appContext: Context,
-        apiServiceFactory: ApiServiceFactory,
-        errorHandler: ErrorHandler
-    ): LogoutService = LogoutService(settings, appContext, apiServiceFactory, errorHandler)
-
-    @Provides
-    @Singleton
-    open fun providesLoginService(
-        settings: Settings,
-        errorHandler: ErrorHandler,
-        apiServiceFactory: ApiServiceFactory
-    ): LoginService = LoginService(settings, errorHandler, apiServiceFactory)
 }

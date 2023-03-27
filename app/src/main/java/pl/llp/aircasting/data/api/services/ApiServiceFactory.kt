@@ -13,7 +13,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
+@Singleton
 open class ApiServiceFactory @Inject constructor(
     private val settings: Settings
 ) {
@@ -33,7 +35,7 @@ open class ApiServiceFactory @Inject constructor(
         return getApiService(listOf(authInterceptor))
     }
 
-    @AuthenticatedWithToken
+    @Authenticated
     fun getAuthenticated(authToken: String?): ApiService {
         authToken ?: return getApiService(emptyList())
 
@@ -90,7 +92,7 @@ open class ApiServiceFactory @Inject constructor(
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
-annotation class AuthenticatedWithToken
+annotation class Authenticated
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)

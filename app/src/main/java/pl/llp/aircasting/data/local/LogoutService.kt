@@ -17,7 +17,9 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Response
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LogoutService @Inject constructor(
     private val mSettings: Settings,
     private val appContext: Context,
