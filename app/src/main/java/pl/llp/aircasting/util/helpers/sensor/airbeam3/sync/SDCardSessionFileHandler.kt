@@ -69,9 +69,9 @@ class SDCardSessionFileHandlerMobile(
 
         averagingService.stopAndPerformFinalAveraging(sessionUUID, finalAveragingWindow)
 
-        lines.chunked(averagingFrequency) { chunk ->
+        lines.chunked(averagingFrequency).forEach { chunk ->
             // We do not include leftover measurements
-            if (chunk.size < averagingFrequency) return@chunked
+            if (chunk.size < averagingFrequency) return@forEach
 
             averageMeasurementAndAddToSession(chunk)
         }
@@ -96,7 +96,7 @@ class SDCardSessionFileHandlerMobile(
             helper.calculateAveragingWindow(firstMeasurementTime, lastMeasurementTime)
     }
 
-    private fun averageMeasurementAndAddToSession(chunk: List<String>) {
+    private suspend fun averageMeasurementAndAddToSession(chunk: List<String>) {
         val start = startTime ?: return
         val firstMeasurementTime = Date(start)
         CSVMeasurementStream.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->

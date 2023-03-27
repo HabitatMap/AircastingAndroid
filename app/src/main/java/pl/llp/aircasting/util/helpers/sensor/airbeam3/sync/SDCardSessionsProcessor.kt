@@ -54,7 +54,7 @@ abstract class SDCardSessionsProcessor(
             "Inserting ${measurements.count()} measurements from ${measurementStream.sensorName}"
         )
 
-        mMeasurementsRepository.insertAllSuspend(measurementStreamId, sessionId, measurements)
+        mMeasurementsRepository.insertAll(measurementStreamId, sessionId, measurements)
     }
 
     abstract suspend fun filterMeasurements(

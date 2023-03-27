@@ -70,7 +70,7 @@ class AveragingService(
             window
         else {
             val lastMeasurementTime =
-                mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return
+                mMeasurementsRepository.lastMeasurementTime(session.id) ?: return
             helper.calculateAveragingWindow(
                 session.startTime.time,
                 lastMeasurementTime.time
@@ -125,7 +125,7 @@ class AveragingService(
                     "Periodic averaging fired for ${session.name}\nIn job: ${coroutineContext.job}"
                 )
                 val lastMeasurementTime =
-                    mMeasurementsRepository.lastMeasurementTimeSuspend(session.id) ?: return@launch
+                    mMeasurementsRepository.lastMeasurementTime(session.id) ?: return@launch
                 val currentWindow = helper.calculateAveragingWindow(
                     session.startTime.time,
                     lastMeasurementTime.time

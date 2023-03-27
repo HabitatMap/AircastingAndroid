@@ -46,7 +46,7 @@ class SDCardMobileSessionsProcessor(
     }
 
     private suspend fun finishSession(sessionId: Long, session: Session) {
-        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTimeSuspend(sessionId)
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
         session.stopRecording(lastMeasurementTime)
         mSessionsRepository.update(session)
     }
