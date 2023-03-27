@@ -1,74 +1,60 @@
 package pl.llp.aircasting.data.api.services
 
+
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 
-
 class PeriodicallyDownloadFixedSessionMeasurementsService(
     private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository = SessionsRepository(),
-    private val downloadMeasurementsService: DownloadMeasurementsService = DownloadMeasurementsService(apiService, errorHandler),
+    private val downloadMeasurementsService: DownloadMeasurementsService = DownloadMeasurementsService(
+        apiService,
+        errorHandler
+    ),
 ) {
-    private val thread: DownloadThread = DownloadThread()
+    private val coroutineScope = CoroutineScope(Dispatchers.IO)
+    private var downloadJob: Job? = null
+    private var paused = false
+
+    private val POLL_INTERVAL = 60 * 1000L // 1 minute
 
     fun start() {
-        thread.start()
+        downloadJob = coroutineScope.downloadMeasurementsPeriodically()
     }
 
     fun stop() {
-        thread.cancel()
+        downloadJob?.cancel()
     }
 
     fun pause() {
-        thread.paused = true
+        paused = true
     }
 
     fun resume() {
-        thread.paused = false
+        paused = false
     }
 
-    // TODO: Convert to coroutine
-    private inner class DownloadThread : Thread() {
-        private val POLL_INTERVAL = 60 * 1000L // 1 minute
-        var paused = false
-        private var call: Job? = null
-
-        override fun run() {
-            try {
-                while (!isInterrupted) {
-                    downloadMeasurements()
-                    sleep(POLL_INTERVAL)
-
-                    while (paused) {
-                        sleep(1000)
-                    }
-                }
-            } catch (e: InterruptedException) {
-                return
+    private fun CoroutineScope.downloadMeasurementsPeriodically() = launch {
+        while (isActive) {
+            if (!paused) {
+                downloadMeasurements()
             }
+            delay(POLL_INTERVAL)
         }
+    }
 
-        fun cancel() {
-            interrupt()
-            call?.cancel()
+    private suspend fun downloadMeasurements() {
+        val dbSessions = sessionsRepository.fixedSessions()
+        dbSessions.forEach { dbSession ->
+            val session = Session(dbSession)
+            downloadMeasurements(dbSession.id, session)
         }
+    }
 
-        private fun downloadMeasurements() {
-            val dbSessions = sessionsRepository.fixedSessions()
-            dbSessions.forEach { dbSession ->
-                val session = Session(dbSession)
-                downloadMeasurements(dbSession.id, session)
-            }
-        }
-
-        @OptIn(DelicateCoroutinesApi::class)
-        private fun downloadMeasurements(sessionId: Long, session: Session) {
-            call = GlobalScope.launch {
-                downloadMeasurementsService.downloadMeasurementsForFixed(session, sessionId)
-            }
-        }
+    private suspend fun downloadMeasurements(sessionId: Long, session: Session) {
+        downloadMeasurementsService.downloadMeasurementsForFixed(session, sessionId)
     }
 }

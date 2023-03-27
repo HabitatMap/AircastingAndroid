@@ -40,7 +40,7 @@ interface SessionDao {
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
 
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
-    fun byType(type: Session.Type): List<SessionDBObject>
+    suspend fun byType(type: Session.Type): List<SessionDBObject>
 
     @Query("SELECT * FROM sessions WHERE status=:status")
     suspend fun byStatus(status: Session.Status): List<SessionDBObject>

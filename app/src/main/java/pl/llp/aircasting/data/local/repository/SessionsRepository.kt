@@ -121,7 +121,7 @@ class SessionsRepository {
             .map { dbObject -> Session(dbObject) }
     }
 
-    fun fixedSessions(): List<SessionDBObject> {
+    suspend fun fixedSessions(): List<SessionDBObject> {
         return mDatabase.sessions().byType(Session.Type.FIXED)
     }
 
