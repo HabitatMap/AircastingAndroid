@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.NonAuthenticated
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
 
@@ -14,7 +15,11 @@ class LoginActivity : BaseActivity() {
     private var controller: LoginController? = null
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    @NonAuthenticated
+    lateinit var apiService: ApiService
+
+    @Inject
+    lateinit var loginControllerFactory: LoginControllerFactory
 
     companion object {
         const val FROM_ONBOARDING_KEY = "fromOnboarding"
@@ -53,8 +58,7 @@ class LoginActivity : BaseActivity() {
             .appComponent.inject(this)
 
         val view = LoginViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
-        controller =
-            LoginController(this, view, settings, apiServiceFactory, supportFragmentManager)
+        controller = loginControllerFactory.create(this, view, supportFragmentManager)
 
         setContentView(view.rootView)
     }

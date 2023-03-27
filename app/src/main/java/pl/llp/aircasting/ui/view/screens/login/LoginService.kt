@@ -7,8 +7,9 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.InternalAPIError
 import pl.llp.aircasting.util.exceptions.UnauthorizedError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
+import javax.inject.Inject
 
-class LoginService(
+class LoginService @Inject constructor(
     val mSettings: Settings,
     private val mErrorHandler: ErrorHandler,
     private val mApiServiceFactory: ApiServiceFactory

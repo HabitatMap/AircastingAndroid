@@ -6,32 +6,40 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ForgotPasswordService
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.hideKeyboard
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 
-class LoginController(
-    private val mContextActivity: AppCompatActivity,
-    private val mViewMvc: LoginViewMvc,
+
+@AssistedFactory
+interface LoginControllerFactory {
+    fun create(
+        mContextActivity: AppCompatActivity,
+        mViewMvc: LoginViewMvc,
+        fragmentManager: FragmentManager
+    ): LoginController
+}
+
+class LoginController @AssistedInject constructor(
+    @Assisted private val mContextActivity: AppCompatActivity,
+    @Assisted private val mViewMvc: LoginViewMvc,
+    @Assisted private val fragmentManager: FragmentManager,
     private val mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory,
-    private val fragmentManager: FragmentManager
+    private val mLoginService: LoginService,
+    private val mForgotPasswordService: ForgotPasswordService,
 ) : LoginViewMvc.Listener,
     LoginViewMvc.ForgotPasswordDialogListener,
     LogOutInBackgroundInfoDisplayer {
-    private val mErrorHandler = ErrorHandler(mContextActivity)
-    private val mLoginService = LoginService(mSettings, mErrorHandler, mApiServiceFactory)
-    private val mForgotPasswordService =
-        ForgotPasswordService(mErrorHandler, mApiServiceFactory)
 
     fun onStart() {
         mViewMvc.registerListener(this)
