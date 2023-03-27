@@ -10,7 +10,7 @@ class ForgotPasswordService(
     private val mApiServiceFactory: ApiServiceFactory
 ) {
     suspend fun resetPassword(login: String): Result<Unit> = runCatching {
-        val apiService = mApiServiceFactory.get(emptyList())
+        val apiService = mApiServiceFactory.get()
         val forgotPasswordParams = ForgotPasswordParams(login)
         val forgotPasswordBody = ForgotPasswordBody(forgotPasswordParams)
         val response = apiService.resetPassword(forgotPasswordBody)
