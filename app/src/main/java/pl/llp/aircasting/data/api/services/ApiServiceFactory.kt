@@ -12,14 +12,51 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Qualifier
 
 open class ApiServiceFactory @Inject constructor(
     private val settings: Settings
 ) {
+
+    @NonAuthenticated
+    fun getNonAuthenticated(): ApiService {
+        return getApiService(emptyList())
+    }
+
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
-    fun get(interceptors: List<Interceptor>? = null): ApiService {
+    @AuthenticatedWithCredentials
+    fun getAuthenticated(username: String, password: String): ApiService {
+        val credentialsEncoded = encodedCredentials(username, password)
+        val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+
+        return getApiService(listOf(authInterceptor))
+    }
+
+    @AuthenticatedWithToken
+    fun getAuthenticated(authToken: String?): ApiService {
+        authToken ?: return getApiService(emptyList())
+
+        val credentialsEncoded = encodedCredentials(authToken, "X")
+        val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
+
+        return getApiService(listOf(authInterceptor))
+    }
+
+    protected open fun baseUrl(): HttpUrl {
+        val suffix = "/"
+        val backendUrl = settings.getBackendUrl()
+
+        var baseUrl = backendUrl + ":" + settings.getBackendPort()
+
+        if (baseUrl.last().toString() != suffix)
+            baseUrl += suffix
+
+        return baseUrl.toHttpUrl()
+    }
+
+    private fun getApiService(interceptors: List<Interceptor>): ApiService {
         val logging = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
             logging.level = HttpLoggingInterceptor.Level.BODY
@@ -29,7 +66,7 @@ open class ApiServiceFactory @Inject constructor(
 
         val httpClientBuilder = OkHttpClient.Builder()
         httpClientBuilder.addInterceptor(logging)
-        interceptors?.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
+        interceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
 
         val httpClient = httpClientBuilder
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -45,55 +82,21 @@ open class ApiServiceFactory @Inject constructor(
         return retrofit.create(ApiService::class.java)
     }
 
-    fun get(username: String, password: String): ApiService {
-        val credentialsEncoded =
-            encodedCredentials(
-                username,
-                password
-            )
-        val authInterceptor =
-            AuthenticationInterceptor(
-                credentialsEncoded
-            )
-
-        return get(
-            listOf(authInterceptor)
-        )
-    }
-
-    fun get(authToken: String?): ApiService {
-        authToken ?: return get()
-
-        val credentialsEncoded =
-            encodedCredentials(
-                authToken,
-                "X"
-            )
-        val authInterceptor =
-            AuthenticationInterceptor(
-                credentialsEncoded
-            )
-
-        return get(
-            listOf(authInterceptor)
-        )
-    }
-
-    protected open fun baseUrl(): HttpUrl {
-        val suffix = "/"
-        val backendUrl = settings.getBackendUrl()
-
-        var baseUrl = backendUrl + ":" + settings.getBackendPort()
-
-        if (baseUrl.last().toString() != suffix)
-            baseUrl += suffix
-
-        return baseUrl.toHttpUrl()
-    }
-
     private fun encodedCredentials(username: String, password: String): String {
         val credentials = "${username}:${password}"
         val encodedCredentials = Base64.encodeToString(credentials.toByteArray(), Base64.NO_WRAP)
         return "Basic $encodedCredentials"
     }
 }
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class AuthenticatedWithCredentials
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class AuthenticatedWithToken
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class NonAuthenticated

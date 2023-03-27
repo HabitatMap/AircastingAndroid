@@ -85,7 +85,7 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
+        val apiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!)
         mSessionManager = SessionManager(rootActivity, apiService, mSettings)
 
         mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)

@@ -43,7 +43,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
-        verify(mockApiServiceFactory.get(emptyList())).getSessionsInRegion(anyOrNull())
+        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getSessionsInRegion(anyOrNull())
     }
 
     @Test
@@ -198,7 +198,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
-        verify(mockApiServiceFactory.get(emptyList())).getSessionsInRegion(
+        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getSessionsInRegion(
             argThat {
                 equals(
                     ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
@@ -224,7 +224,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
         // then
-        verify(mockApiServiceFactory.get(emptyList())).getStreamOfGivenSession(anyOrNull(), anyOrNull(), eq(1))
+        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(anyOrNull(), anyOrNull(), eq(1))
     }
 
     @Test
@@ -267,7 +267,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
             // then
-            verify(mockApiServiceFactory.get(emptyList())).getStreamOfGivenSession(
+            verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(
                 eq(expectedId),
                 eq(expectedSensorName),
                 eq(1)
@@ -293,7 +293,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(123L, "Ozone")
 
             // then
-            verify(mockApiServiceFactory.get(emptyList())).getStreamOfGivenSession(
+            verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(
                 eq(expectedId),
                 eq(expectedSensorName),
                 eq(expectedMeasurementLimit)
@@ -388,7 +388,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 } doReturn res
             }
             val mockFactory = mock<ApiServiceFactory> {
-                on { get(eq(emptyList())) } doReturn mockApi
+                on { getNonAuthenticated(eq(emptyList())) } doReturn mockApi
             }
             return@runBlocking mockFactory
         }
@@ -403,7 +403,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 } doReturn res
             }
             val mockFactory = mock<ApiServiceFactory> {
-                on { get(eq(emptyList())) } doReturn mockApi
+                on { getNonAuthenticated(eq(emptyList())) } doReturn mockApi
             }
             return@runBlocking mockFactory
         }

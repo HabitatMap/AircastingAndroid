@@ -3,10 +3,7 @@ package pl.llp.aircasting.di.modules
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.api.services.SessionDownloadService
-import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.screens.login.LoginService
 import pl.llp.aircasting.util.Settings
@@ -30,6 +27,22 @@ open class ApiModule {
     ): ApiServiceFactory = ApiServiceFactory(settings)
 
 
+    @Provides
+    @Singleton
+    @AuthenticatedWithToken
+    fun providesApiServiceAuthenticatedWithToken(
+        settings: Settings,
+        factory: ApiServiceFactory
+    ): ApiService {
+        return factory.getAuthenticated(settings.getAuthToken())
+    }
+
+    @Provides
+    @Singleton
+    @NonAuthenticated
+    fun provideApiServiceNonAuthenticated(factory: ApiServiceFactory): ApiService {
+        return factory.getNonAuthenticated()
+    }
 
     @Provides
     @Singleton
@@ -40,7 +53,7 @@ open class ApiModule {
     ): UploadFixedMeasurementsService? {
         val authToken = settings.getAuthToken() ?: return null
 
-        val apiService = apiServiceFactory.get(authToken)
+        val apiService = apiServiceFactory.getAuthenticated(authToken)
         return UploadFixedMeasurementsService(apiService, errorHandler)
     }
 
@@ -53,7 +66,7 @@ open class ApiModule {
     ): SessionsSyncService? {
         val authToken = settings.getAuthToken() ?: return null
 
-        val apiService = apiServiceFactory.get(authToken)
+        val apiService = apiServiceFactory.getAuthenticated(authToken)
         return SessionsSyncService.get(apiService, errorHandler)
     }
 
@@ -67,7 +80,7 @@ open class ApiModule {
     ): SessionDownloadService? {
         val authToken = settings.getAuthToken() ?: return null
 
-        val apiService = apiServiceFactory.get(authToken)
+        val apiService = apiServiceFactory.getAuthenticated(authToken)
         return SessionDownloadService(apiService, errorHandler)
     }
 

@@ -19,7 +19,7 @@ class ThresholdAlertRepositoryDefault @Inject constructor(
     apiServiceFactory: ApiServiceFactory,
     settings: Settings
 ) : ThresholdAlertRepository {
-    private val apiService = apiServiceFactory.get(settings.getAuthToken() ?: "")
+    private val apiService = apiServiceFactory.getAuthenticated(settings.getAuthToken() ?: "")
 
     override fun activeAlerts(): Flow<List<ThresholdAlertResponse>> = flow {
         emit(apiService.getThresholdAlerts())

@@ -21,7 +21,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
     apiServiceFactory: ApiServiceFactory,
     private val responseHandler: ResponseHandler
 ) {
-    private val apiService: ApiService = apiServiceFactory.get()
+    private val apiService: ApiService = apiServiceFactory.getNonAuthenticated()
     companion object {
         fun constructAndGetJsonWith(
             square: GeoSquare,

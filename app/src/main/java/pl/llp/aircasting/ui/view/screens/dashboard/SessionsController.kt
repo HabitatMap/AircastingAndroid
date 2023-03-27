@@ -32,7 +32,7 @@ abstract class SessionsController(
     mApiServiceFactory: ApiServiceFactory,
     val fragmentManager: FragmentManager,
     private var context: Context?,
-    private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
+    private val mApiService: ApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!),
     protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity!!),
     val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,

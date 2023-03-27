@@ -24,7 +24,7 @@ class LogoutService @Inject constructor(
     private val apiServiceFactory: ApiServiceFactory,
     private val errorHandler: ErrorHandler,
     private val sessionsSyncService: SessionsSyncService = SessionsSyncService.get(
-        apiServiceFactory.get(
+        apiServiceFactory.getAuthenticated(
             mSettings.getAuthToken()
         ), errorHandler
     ),
@@ -44,7 +44,7 @@ class LogoutService @Inject constructor(
     }
 
     suspend fun deleteAccount(): Result<Response<DeleteAccountResponse?>> {
-        val apiServiceAuthenticated = apiServiceFactory.get(mSettings.getAuthToken())
+        val apiServiceAuthenticated = apiServiceFactory.getAuthenticated(mSettings.getAuthToken())
         return runCatching { apiServiceAuthenticated.deleteAccount() }
     }
 

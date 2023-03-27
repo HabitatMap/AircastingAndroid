@@ -42,7 +42,7 @@ abstract class SessionDetailsViewController(
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity),
-    private val mApiService: ApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!),
+    private val mApiService: ApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!),
     private val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,
         mErrorHandler

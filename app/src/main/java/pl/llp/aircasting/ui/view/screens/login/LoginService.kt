@@ -17,7 +17,7 @@ class LoginService(
         username: String,
         password: String
     ): Result<UserResponse> = runCatching {
-        val apiService = mApiServiceFactory.get(username, password)
+        val apiService = mApiServiceFactory.getAuthenticated(username, password)
         val response = apiService.login()
 
         if (response.isSuccessful) {
@@ -33,7 +33,7 @@ class LoginService(
 
     suspend fun getUser(): UserResponse? {
         return try {
-            val response = mApiServiceFactory.get(mSettings.getAuthToken()).login()
+            val response = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()).login()
             if (!response.isSuccessful) {
                 mErrorHandler.handleAndDisplay(InternalAPIError())
                 return null

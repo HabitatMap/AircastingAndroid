@@ -48,7 +48,7 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
             childFragmentManager,
             loginService,
             logoutService,
-            apiServiceFactory.get(settings.getAuthToken() ?: "")
+            apiServiceFactory.getAuthenticated(settings.getAuthToken() ?: "")
         )
 
         return view?.rootView

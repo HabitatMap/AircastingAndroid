@@ -59,7 +59,7 @@ class SyncController(
     AirbeamSyncingViewMvc.Listener,
     ErrorViewMvc.Listener {
 
-    private val mApiService = mApiServiceFactory.get(mSettings.getAuthToken()!!)
+    private val mApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!)
     private val mSessionsSyncService =
         SessionsSyncService.get(mApiService, mErrorHandler)
     private val mWizardNavigator =

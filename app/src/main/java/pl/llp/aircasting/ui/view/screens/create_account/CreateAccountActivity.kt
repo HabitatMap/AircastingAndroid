@@ -41,7 +41,7 @@ class CreateAccountActivity : BaseActivity() {
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
         controller =
-            CreateAccountController(this, view, settings, apiServiceFactory.get(), fromOnboarding)
+            CreateAccountController(this, view, settings, apiServiceFactory.getNonAuthenticated(), fromOnboarding)
 
         setContentView(view.rootView)
     }

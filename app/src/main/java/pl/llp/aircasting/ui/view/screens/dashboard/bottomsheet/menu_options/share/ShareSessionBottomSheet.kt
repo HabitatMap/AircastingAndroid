@@ -70,7 +70,7 @@ class ShareSessionBottomSheet(
         (requireActivity().application as AircastingApplication).appComponent.inject(this)
 
         sessionsSyncService =
-            SessionsSyncService.get(apiServiceFactory.get(settings.getAuthToken()), mErrorHandler)
+            SessionsSyncService.get(apiServiceFactory.getAuthenticated(settings.getAuthToken()), mErrorHandler)
 
         expandBottomSheet()
 
