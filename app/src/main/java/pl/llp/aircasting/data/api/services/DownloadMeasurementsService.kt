@@ -120,7 +120,7 @@ class DownloadMeasurementsService(
             saveSessionMeasurements(response, session, sessionId)
     }
 
-    private fun saveSessionMeasurements(
+    private suspend fun saveSessionMeasurements(
         response: SessionWithMeasurementsResponse,
         session: Session,
         sessionId: Long

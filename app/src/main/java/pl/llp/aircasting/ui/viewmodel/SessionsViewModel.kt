@@ -3,29 +3,25 @@ package pl.llp.aircasting.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import pl.llp.aircasting.data.local.DatabaseProvider
-import pl.llp.aircasting.data.local.entity.*
+import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.local.repository.ThresholdsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 
-class SessionsViewModel : ViewModel() {
-    private val mDatabase = DatabaseProvider.get()
-    private val thresholdsRepository = ThresholdsRepository()
-    private val sessionsRepository = SessionsRepository()
+class SessionsViewModel(
+    private val thresholdsRepository: ThresholdsRepository = ThresholdsRepository(),
+    private val sessionsRepository: SessionsRepository = SessionsRepository(),
+) : ViewModel() {
 
     fun reloadSessionWithMeasurements(uuid: String) = flow {
         emit(sessionsRepository.reloadSessionWithMeasurements(uuid))
-    }
-
-    suspend fun reloadSessionWithMeasurementsSuspend(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
-        return mDatabase.sessions().reloadSessionAndMeasurementsByUUIDSuspend(uuid)
     }
 
     fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
@@ -66,8 +62,7 @@ class SessionsViewModel : ViewModel() {
 
     fun updateFollowedAt(
         session: Session,
-        ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-    ) = viewModelScope.launch(ioDispatcher) {
+    ) = viewModelScope.launch {
         sessionsRepository.updateFollowedAt(session)
     }
 }

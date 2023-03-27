@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -145,7 +146,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private suspend fun getFromDB(session: Session): Session? {
         val dbSessionWithMeasurements =
-            mSessionsViewModel.reloadSessionWithMeasurementsSuspend(session.uuid)
+            mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).firstOrNull()
 
         return dbSessionWithMeasurements?.let { Session(it) }
     }
