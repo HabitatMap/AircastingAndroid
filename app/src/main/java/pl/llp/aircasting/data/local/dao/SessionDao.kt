@@ -33,6 +33,12 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL ORDER BY session_order ASC")
     fun loadFollowingWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>>
 
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithStreamsAndNotesDBObject?>
+
+    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
+    fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
+
     @Query("SELECT * FROM sessions WHERE deleted=0 AND type=:type ORDER BY start_time DESC")
     fun byType(type: Session.Type): List<SessionDBObject>
 
@@ -52,13 +58,7 @@ interface SessionDao {
     suspend fun reloadSessionAndMeasurementsByUUIDSuspend(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithStreamsAndNotesDBObject?>
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadSessionForUploadByUUID(uuid: String): CompleteSessionDBObject?
-
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadSessionByUUID(uuid: String): SessionDBObject?

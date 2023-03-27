@@ -20,10 +20,4 @@ interface NoteDao {
 
     @Query("DELETE FROM notes WHERE session_id=:sessionId AND number=:number")
     suspend fun delete(sessionId: Long, number: Int)
-
-    @Query("DELETE FROM notes WHERE session_id=:sessionId")
-    fun deleteAllNotesForSessionWithId(sessionId: Long)
-
-    @Query("SELECT * FROM notes WHERE session_id=:sessionId AND number=:number")
-    fun loadNoteBySessionIdAndNumber(sessionId: Long, number: Int): NoteDBObject?
 }
