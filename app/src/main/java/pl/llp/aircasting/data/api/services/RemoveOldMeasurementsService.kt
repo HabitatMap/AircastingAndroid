@@ -5,12 +5,18 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RemoveOldMeasurementsService {
-    private val measurementRepository = MeasurementsRepositoryImpl()
-    private val sessionRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60
+@Singleton
+class RemoveOldMeasurementsService @Inject constructor(
+    private val measurementRepository: MeasurementsRepositoryImpl,
+    private val sessionRepository: SessionsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
+) {
+    companion object{
+        private const val TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT = 24 * 60
+    }
 
     suspend fun removeMeasurementsFromSessions() {
         // For next generations:
@@ -20,14 +26,21 @@ class RemoveOldMeasurementsService {
         // so we take 1440 last measurements for each stream in fixed sessions
         // and we remove older than the first of them.
         val fixedSessionsIds = sessionRepository.sessionsIdsByType(Session.Type.FIXED)
-        val streamsForFixedSessionsIds = measurementStreamsRepository.getStreamsIdsBySessionIds(fixedSessionsIds)
+        val streamsForFixedSessionsIds =
+            measurementStreamsRepository.getStreamsIdsBySessionIds(fixedSessionsIds)
 
         streamsForFixedSessionsIds.forEach { streamId ->
-            val lastMeasurements = measurementRepository.getLastMeasurementsForStream(streamId, TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT)
+            val lastMeasurements = measurementRepository.getLastMeasurementsForStream(
+                streamId,
+                TWENTY_FOUR_HOURS_MEASUREMENTS_COUNT
+            )
             if (shouldDeleteMeasurements(lastMeasurements.size)) {
                 val lastExpectedMeasurement = lastMeasurements.last()
                 val lastExpectedMeasurementTime: Date = lastExpectedMeasurement?.time!!
-                measurementRepository.deleteMeasurementsOlderThan(streamId, lastExpectedMeasurementTime)
+                measurementRepository.deleteMeasurementsOlderThan(
+                    streamId,
+                    lastExpectedMeasurementTime
+                )
             }
         }
     }

@@ -24,7 +24,9 @@ import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
 class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
-    private var controller: MainController? = null
+    @Inject
+    lateinit var controllerFactory: MainControllerFactory
+    lateinit var controller: MainController
     private var view: MainViewMvcImpl? = null
 
     @Inject
@@ -68,22 +70,21 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
-        controller =
-            MainController(this, settings, apiServiceFactory)
+        controller = controllerFactory.create(this)
 
-        controller?.onCreate()
+        controller.onCreate()
         setContentView(view?.rootView)
     }
 
     override fun onResume() {
         super.onResume()
-        controller?.onResume()
+        controller.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        controller?.onDestroy()
+        controller.onDestroy()
         LocationHelper.stop()
     }
 
@@ -102,7 +103,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        controller?.onRequestPermissionsResult(requestCode, grantResults)
+        controller.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onMapsSdkInitialized(renderer: Renderer) {

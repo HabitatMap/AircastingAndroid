@@ -4,25 +4,21 @@ import android.content.Context
 import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.fragments.*
+import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
+import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
 import pl.llp.aircasting.util.ProgressBarCounter
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardWizardNavigator
-import pl.llp.aircasting.ui.view.fragments.ErrorFragment
-import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvc
-import pl.llp.aircasting.ui.view.fragments.RefreshedSessionsFragment
-import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
-import pl.llp.aircasting.ui.view.fragments.RefreshingSessionsFragment
-import pl.llp.aircasting.ui.view.fragments.AirbeamSyncedFragment
-import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
-import pl.llp.aircasting.ui.view.fragments.AirbeamSyncingFragment
-import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 
 class SyncWizardNavigator(
     context: Context,
-    settings: Settings,
     private val mViewMvc: SyncViewMvc,
-    fragmentManager: FragmentManager
+    fragmentManager: FragmentManager,
+    settings: Settings,
 ): ClearSDCardWizardNavigator(
     context,
     settings,

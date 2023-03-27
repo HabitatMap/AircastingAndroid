@@ -25,16 +25,17 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 
-class DownloadMeasurementsService(
-    private val apiService: ApiService,
+class DownloadMeasurementsService@Inject constructor(
+    @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
+    private val sessionsRepository: SessionsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
+    private val measurementsRepository: MeasurementsRepositoryImpl,
+    private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val callCanceled: AtomicBoolean = AtomicBoolean(false),
-    private val sessionsRepository: SessionsRepository = SessionsRepository(),
-    private val measurementStreamsRepository: MeasurementStreamsRepository = MeasurementStreamsRepository(),
-    private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
-    private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository = ActiveSessionMeasurementsRepository(),
 ) {
     init {
         EventBus.getDefault().safeRegister(this)

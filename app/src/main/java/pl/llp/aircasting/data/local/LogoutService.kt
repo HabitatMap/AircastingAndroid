@@ -13,7 +13,6 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Response
 import javax.inject.Inject
@@ -24,12 +23,7 @@ class LogoutService @Inject constructor(
     private val mSettings: Settings,
     private val appContext: Context,
     private val apiServiceFactory: ApiServiceFactory,
-    private val errorHandler: ErrorHandler,
-    private val sessionsSyncService: SessionsSyncService = SessionsSyncService.get(
-        apiServiceFactory.getAuthenticated(
-            mSettings.getAuthToken()
-        ), errorHandler
-    ),
+    private val sessionsSyncService: SessionsSyncService,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
     fun logout(afterAccountDeletion: Boolean = false) {
@@ -54,7 +48,6 @@ class LogoutService @Inject constructor(
         EventBus.getDefault().unregister(this)
         mSettings.logout()
         clearDatabase()
-        SessionsSyncService.destroy()
         EventBus.getDefault().postSticky(LogoutEvent(false))
     }
     private fun clearDatabase() {

@@ -60,6 +60,7 @@ class ShareSessionBottomSheet(
     @Inject
     lateinit var settings: Settings
 
+    @Inject
     lateinit var sessionsSyncService: SessionsSyncService
 
     override fun layoutId(): Int {
@@ -68,9 +69,6 @@ class ShareSessionBottomSheet(
 
     override fun setup() {
         (requireActivity().application as AircastingApplication).appComponent.inject(this)
-
-        sessionsSyncService =
-            SessionsSyncService.get(apiServiceFactory.getAuthenticated(settings.getAuthToken()), mErrorHandler)
 
         expandBottomSheet()
 

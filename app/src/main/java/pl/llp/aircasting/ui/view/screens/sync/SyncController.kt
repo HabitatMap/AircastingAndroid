@@ -8,11 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
@@ -40,15 +41,17 @@ import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
 
-class SyncController(
-    private val mRootActivity: AppCompatActivity,
-    mViewMvc: SyncViewMvc,
+class SyncController @AssistedInject constructor(
+    @Assisted private val mRootActivity: AppCompatActivity,
+    @Assisted mViewMvc: SyncViewMvc,
     private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
     private val mFragmentManager: FragmentManager,
-    mApiServiceFactory: ApiServiceFactory,
     private val mErrorHandler: ErrorHandler,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val mSessionsSyncService: SessionsSyncService,
+    private val mWizardNavigator: SyncWizardNavigator =
+        SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings),
 ) : RefreshedSessionsViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
@@ -59,11 +62,6 @@ class SyncController(
     AirbeamSyncingViewMvc.Listener,
     ErrorViewMvc.Listener {
 
-    private val mApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!)
-    private val mSessionsSyncService =
-        SessionsSyncService.get(mApiService, mErrorHandler)
-    private val mWizardNavigator =
-        SyncWizardNavigator(mRootActivity, mSettings, mViewMvc, mFragmentManager)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)

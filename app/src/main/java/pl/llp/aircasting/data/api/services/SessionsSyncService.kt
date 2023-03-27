@@ -22,44 +22,22 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SessionsSyncService private constructor(
-    private val apiService: ApiService,
+@Singleton
+class SessionsSyncService @Inject constructor(
+    @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
+    private val uploadService: MobileSessionUploadService,
+    private val downloadService: SessionDownloadService,
+    private val removeOldMeasurementsService: RemoveOldMeasurementsService,
+    private val sessionRepository: SessionsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
+    private val noteRepository: NoteRepository,
+    private val _syncStatus: MutableStateFlow<Status> = MutableStateFlow(Status.Idle),
+    private val gson: Gson = Gson(),
 ) {
-    companion object {
-        private var mSingleton: SessionsSyncService? = null
-
-        fun get(
-            apiService: ApiService,
-            errorHandler: ErrorHandler,
-        ): SessionsSyncService {
-            if (mSingleton == null) {
-                mSingleton = SessionsSyncService(apiService, errorHandler)
-            }
-
-            return mSingleton!!
-        }
-
-        fun destroy() {
-            mSingleton = null
-        }
-    }
-
-    private val uploadService: MobileSessionUploadService =
-        MobileSessionUploadService(apiService)
-    private val downloadService: SessionDownloadService =
-        SessionDownloadService(apiService)
-    private val removeOldMeasurementsService: RemoveOldMeasurementsService =
-        RemoveOldMeasurementsService()
-    private val _syncStatus = MutableStateFlow<Status>(Status.Idle)
-    val syncStatus get(): StateFlow<Status> = _syncStatus
-    private val sessionRepository = SessionsRepository()
-    private val measurementStreamsRepository = MeasurementStreamsRepository()
-    private val noteRepository = NoteRepository()
-    private val gson = Gson()
-
-    // Define a sealed class to represent the result of the sync operation
     sealed class Result {
         object Success : Result()
         data class Error(val throwable: Throwable?) : Result()
@@ -70,6 +48,7 @@ class SessionsSyncService private constructor(
         object Idle : Status()
     }
 
+    val syncStatus get(): StateFlow<Status> = _syncStatus
     suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }

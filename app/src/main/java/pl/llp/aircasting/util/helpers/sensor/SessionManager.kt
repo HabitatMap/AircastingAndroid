@@ -22,32 +22,24 @@ import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
+import javax.inject.Inject
 
-class SessionManager(
+class SessionManager @Inject constructor(
     private val mContext: Context,
-    apiService: ApiService,
     private val settings: Settings,
-    private val errorHandler: ErrorHandler = ErrorHandler(mContext),
-    private val sessionsRepository: SessionsRepository = SessionsRepository(),
-    private val measurementStreamsRepository: MeasurementStreamsRepository
-    = MeasurementStreamsRepository(),
+    private val errorHandler: ErrorHandler,
+    private val sessionsRepository: SessionsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
-    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository
-    = ActiveSessionMeasurementsRepository(),
-    private val noteRepository: NoteRepository = NoteRepository(),
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    private val noteRepository: NoteRepository,
+    private val sessionsSyncService: SessionsSyncService,
+    private val sessionUpdateService: UpdateSessionService,
+    private val exportSessionService: ExportSessionService,
+    private val fixedSessionUploadService: FixedSessionUploadService,
+    private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val sessionsSyncService: SessionsSyncService
-    = SessionsSyncService.get(apiService, errorHandler),
-    private val sessionUpdateService: UpdateSessionService
-    = UpdateSessionService(apiService, errorHandler, mContext),
-    private val exportSessionService: ExportSessionService
-    = ExportSessionService(apiService, errorHandler),
-    private val fixedSessionUploadService: FixedSessionUploadService
-    = FixedSessionUploadService(apiService, errorHandler),
-    private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService
-    = PeriodicallyDownloadFixedSessionMeasurementsService(apiService, errorHandler),
     private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
-        coroutineScope,
         settings,
         fixedSessionUploadService,
         sessionsRepository,
@@ -61,8 +53,9 @@ class SessionManager(
             measurementStreamsRepository,
             sessionsRepository,
             MeasurementsAveragingHelperDefault()
-        )
-    )
+        ),
+        coroutineScope
+    ),
 ) {
 
     @Subscribe

@@ -3,9 +3,12 @@ package pl.llp.aircasting.data.api.services
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionExportFailedError
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ExportSessionService(
-    private val apiService: ApiService,
+@Singleton
+class ExportSessionService @Inject constructor(
+    @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler
 ) {
     suspend fun export(email: String, uuid: String): Result<Unit> = runCatching {

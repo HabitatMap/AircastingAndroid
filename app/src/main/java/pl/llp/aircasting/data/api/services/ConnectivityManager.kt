@@ -7,19 +7,15 @@ import android.net.ConnectivityManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.isConnected
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ConnectivityManager(
-    apiService: ApiService,
-    context: Context,
-    settings: Settings,
+@Singleton
+class ConnectivityManager @Inject constructor(
+    private val sessionSyncService: SessionsSyncService,
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-) :
-    BroadcastReceiver() {
-    private val sessionSyncService =
-        SessionsSyncService.get(apiService, ErrorHandler(context))
+) : BroadcastReceiver() {
 
     companion object {
         const val ACTION = ConnectivityManager.CONNECTIVITY_ACTION

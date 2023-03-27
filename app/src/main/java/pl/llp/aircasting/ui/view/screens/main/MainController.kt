@@ -6,11 +6,12 @@ import android.os.Looper
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.api.services.ApiService
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.Session
@@ -27,14 +28,21 @@ import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.SessionManager
 
-class MainController(
-    private val rootActivity: AppCompatActivity,
+@AssistedFactory
+interface MainControllerFactory {
+    fun create(
+        rootActivity: AppCompatActivity,
+    ): MainController
+}
+
+class MainController @AssistedInject constructor(
+    @Assisted private val rootActivity: AppCompatActivity,
     private val mSettings: Settings,
-    private val mApiServiceFactory: ApiServiceFactory
+    private val mSessionManager: SessionManager,
+    private val mConnectivityManager: ConnectivityManager,
+    private val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
+    private val sessionSyncService: SessionsSyncService,
 ) {
-    private var mSessionManager: SessionManager? = null
-    private var mConnectivityManager: ConnectivityManager? = null
-    private val mErrorHandler = ErrorHandler(rootActivity)
 
     fun onCreate() {
         val logout = EventBus.getDefault().getStickyEvent(LogoutEvent::class.java)
@@ -51,7 +59,7 @@ class MainController(
         NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
         SyncActivity.register(rootActivity, onFinish = { rootActivity.goToMobileDormantTab() })
 
-        mSessionManager?.onStart()
+        mSessionManager.onStart()
     }
 
     fun onResume() {
@@ -68,7 +76,7 @@ class MainController(
     fun onDestroy() {
         EventBus.getDefault().unregister(this)
         unregisterConnectivityManager()
-        mSessionManager?.onStop()
+        mSessionManager.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
     }
 
@@ -85,21 +93,14 @@ class MainController(
     private fun setupDashboard() {
         mErrorHandler.registerUser(mSettings.getEmail())
 
-        val apiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!)
-        mSessionManager = SessionManager(rootActivity, apiService, mSettings)
-
-        mConnectivityManager = ConnectivityManager(apiService, rootActivity, mSettings)
         registerConnectivityManager()
 
-        sync(apiService)
+        sync()
     }
 
-    private fun sync(apiService: ApiService) {
-        val syncService =
-            SessionsSyncService.get(apiService, mErrorHandler)
-
+    private fun sync() {
         rootActivity.lifecycleScope.launch {
-            syncService.sync()
+            sessionSyncService.sync()
         }
     }
 
@@ -116,11 +117,11 @@ class MainController(
 
     private fun registerConnectivityManager() {
         val filter = IntentFilter(ConnectivityManager.ACTION)
-        mConnectivityManager?.let { rootActivity.registerReceiver(it, filter) }
+        mConnectivityManager.let { rootActivity.registerReceiver(it, filter) }
     }
 
     private fun unregisterConnectivityManager() {
-        mConnectivityManager?.let { rootActivity.unregisterReceiver(it) }
+        mConnectivityManager.let { rootActivity.unregisterReceiver(it) }
     }
 
     @Subscribe
@@ -128,5 +129,4 @@ class MainController(
         if (mSettings.isKeepScreenOnEnabled()) rootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         else rootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
-
 }

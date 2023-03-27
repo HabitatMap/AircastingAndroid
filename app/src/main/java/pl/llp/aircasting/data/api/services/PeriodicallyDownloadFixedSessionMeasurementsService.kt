@@ -4,16 +4,11 @@ package pl.llp.aircasting.data.api.services
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.exceptions.ErrorHandler
+import javax.inject.Inject
 
-class PeriodicallyDownloadFixedSessionMeasurementsService(
-    private val apiService: ApiService,
-    private val errorHandler: ErrorHandler,
-    private val sessionsRepository: SessionsRepository = SessionsRepository(),
-    private val downloadMeasurementsService: DownloadMeasurementsService = DownloadMeasurementsService(
-        apiService,
-        errorHandler
-    ),
+class PeriodicallyDownloadFixedSessionMeasurementsService @Inject constructor(
+    private val sessionsRepository: SessionsRepository,
+    private val downloadMeasurementsService: DownloadMeasurementsService,
 ) {
     private val coroutineScope = CoroutineScope(Dispatchers.IO)
     private var downloadJob: Job? = null

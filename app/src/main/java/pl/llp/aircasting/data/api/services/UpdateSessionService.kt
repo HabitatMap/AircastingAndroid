@@ -8,9 +8,12 @@ import pl.llp.aircasting.data.api.params.UpdateSessionBody
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UpdateSessionService(
-    private val apiService: ApiService,
+@Singleton
+class UpdateSessionService @Inject constructor(
+    @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
     private val context: Context
 ) {

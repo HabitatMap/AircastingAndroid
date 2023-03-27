@@ -77,7 +77,6 @@ class RecordingHandlerImplTest {
     @Before
     fun setup() {
         recordingHandler = RecordingHandlerImpl(
-            testScope,
             settings,
             fixedSessionUploadService,
             sessionsRepository,
@@ -87,6 +86,7 @@ class RecordingHandlerImplTest {
             measurementStreamsRepository,
             measurementsRepository,
             flows,
+            testScope,
             observers
         )
     }
