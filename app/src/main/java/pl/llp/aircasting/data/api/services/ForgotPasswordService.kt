@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 
 class ForgotPasswordService(
     private val mErrorHandler: ErrorHandler,
-    private val mApiServiceFactory: ApiServiceFactory
+    private val mApiServiceFactory: ApiServiceFactory,
 ) {
     suspend fun resetPassword(login: String): Result<Unit> = runCatching {
         val apiService = mApiServiceFactory.getNonAuthenticated()

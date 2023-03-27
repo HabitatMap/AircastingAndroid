@@ -17,7 +17,7 @@ class LoginService(
         username: String,
         password: String
     ): Result<UserResponse> = runCatching {
-        val apiService = mApiServiceFactory.getAuthenticated(username, password)
+        val apiService = mApiServiceFactory.getAuthenticatedWithCredentials(username, password)
         val response = apiService.login()
 
         if (response.isSuccessful) {

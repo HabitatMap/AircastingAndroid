@@ -26,8 +26,7 @@ open class ApiServiceFactory @Inject constructor(
     private val READ_TIMEOUT_SECONDS: Long = 60
     private val CONNECT_TIMEOUT_SECONDS: Long = 60
 
-    @AuthenticatedWithCredentials
-    fun getAuthenticated(username: String, password: String): ApiService {
+    fun getAuthenticatedWithCredentials(username: String, password: String): ApiService {
         val credentialsEncoded = encodedCredentials(username, password)
         val authInterceptor = AuthenticationInterceptor(credentialsEncoded)
 
@@ -88,10 +87,6 @@ open class ApiServiceFactory @Inject constructor(
         return "Basic $encodedCredentials"
     }
 }
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class AuthenticatedWithCredentials
 
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
