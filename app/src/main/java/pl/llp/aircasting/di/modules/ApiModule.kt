@@ -33,19 +33,6 @@ open class ApiModule {
         return factory.getNonAuthenticated()
     }
 
-    @Provides
-    @Singleton
-    fun providesUploadFixedMeasurementsService(
-        apiServiceFactory: ApiServiceFactory,
-        settings: Settings,
-        errorHandler: ErrorHandler
-    ): UploadFixedMeasurementsService? {
-        val authToken = settings.getAuthToken() ?: return null
-
-        val apiService = apiServiceFactory.getAuthenticated(authToken)
-        return UploadFixedMeasurementsService(apiService, errorHandler)
-    }
-
     @Nullable
     @Provides
     fun providesSessionsSyncService(
@@ -57,19 +44,5 @@ open class ApiModule {
 
         val apiService = apiServiceFactory.getAuthenticated(authToken)
         return SessionsSyncService.get(apiService, errorHandler)
-    }
-
-    @Provides
-    @Singleton
-    @Nullable
-    fun providesSessionDownloadService(
-        apiServiceFactory: ApiServiceFactory,
-        settings: Settings,
-        errorHandler: ErrorHandler
-    ): SessionDownloadService? {
-        val authToken = settings.getAuthToken() ?: return null
-
-        val apiService = apiServiceFactory.getAuthenticated(authToken)
-        return SessionDownloadService(apiService, errorHandler)
     }
 }

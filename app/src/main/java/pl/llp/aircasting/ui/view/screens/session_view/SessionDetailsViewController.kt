@@ -45,7 +45,6 @@ abstract class SessionDetailsViewController(
     private val mApiService: ApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!),
     private val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,
-        mErrorHandler
     ),
     private val mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mMeasurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),

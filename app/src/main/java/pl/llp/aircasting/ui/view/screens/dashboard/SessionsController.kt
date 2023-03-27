@@ -36,7 +36,6 @@ abstract class SessionsController(
     protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity!!),
     val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,
-        mErrorHandler
     ),
     mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mDownloadMeasurementsService: DownloadMeasurementsService =

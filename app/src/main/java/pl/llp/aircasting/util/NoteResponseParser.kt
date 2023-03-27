@@ -6,17 +6,22 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.ParseDateError
 import java.text.ParseException
 import java.util.*
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NoteResponseParser(private val errorHandler: ErrorHandler) {
+@Singleton
+class NoteResponseParser @Inject constructor(
+    private val errorHandler: ErrorHandler
+) {
     fun noteFromResponse(noteResponse: NoteResponse): Note {
-            return Note(
-                parseDate(noteResponse.date),
-                noteResponse.text,
-                noteResponse.latitude,
-                noteResponse.longitude,
-                noteResponse.number,
-                noteResponse.photo_location
-            )
+        return Note(
+            parseDate(noteResponse.date),
+            noteResponse.text,
+            noteResponse.latitude,
+            noteResponse.longitude,
+            noteResponse.number,
+            noteResponse.photo_location
+        )
     }
 
     private fun parseDate(date: String): Date {

@@ -7,9 +7,12 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurementStream
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class UploadFixedMeasurementsService(
-    private val apiService: ApiService,
+@Singleton
+class UploadFixedMeasurementsService @Inject constructor(
+    @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler
 ) {
     suspend fun upload(

@@ -49,7 +49,7 @@ class SessionsSyncService private constructor(
     private val uploadService: MobileSessionUploadService =
         MobileSessionUploadService(apiService)
     private val downloadService: SessionDownloadService =
-        SessionDownloadService(apiService, errorHandler)
+        SessionDownloadService(apiService)
     private val removeOldMeasurementsService: RemoveOldMeasurementsService =
         RemoveOldMeasurementsService()
     private val _syncStatus = MutableStateFlow<Status>(Status.Idle)

@@ -7,14 +7,15 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.NoteResponseParser
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SessionDownloadService(
-    private val apiService: ApiService,
-    private val errorHandler: ErrorHandler
+@Singleton
+class SessionDownloadService @Inject constructor(
+    @Authenticated private val apiService: ApiService,
+    private val noteResponseParser: NoteResponseParser,
 ) {
-    private val noteResponseParser = NoteResponseParser(errorHandler)
 
     suspend fun download(
         uuid: String,
