@@ -9,11 +9,11 @@ import pl.llp.aircasting.data.model.Session
 class ThresholdsRepository {
     private val mDatabase = DatabaseProvider.get()
 
-    fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
+    suspend fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
         return findOrCreateSensorThresholds(session.streams)
     }
 
-    fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
+    suspend fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
         val existingThresholds = findSensorThresholds(streams)
         val newThresholds = insertNewSensorThresholds(streams, existingThresholds)
 
@@ -24,14 +24,14 @@ class ThresholdsRepository {
         return thresholds
     }
 
-    private fun findSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
+    private suspend fun findSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
         val sensorNames = streams.map { it.sensorName }
         return mDatabase.sensorThresholds()
             .allBySensorNames(sensorNames)
             .map { SensorThreshold(it) }
     }
 
-    private fun insertNewSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
+    private suspend fun insertNewSensorThresholds(streams: List<MeasurementStream>, existingThresholds: List<SensorThreshold>): List<SensorThreshold> {
         val existingSensorNames = existingThresholds.map { it.sensorName }
         val toCreate = streams.filter { !existingSensorNames.contains(it.sensorName) }
 
@@ -42,7 +42,7 @@ class ThresholdsRepository {
         }
     }
 
-    fun updateSensorThreshold(sensorThreshold: SensorThreshold) {
+    suspend fun updateSensorThreshold(sensorThreshold: SensorThreshold) {
         mDatabase.sensorThresholds().update(
             sensorThreshold.sensorName,
             sensorThreshold.thresholdVeryLow,

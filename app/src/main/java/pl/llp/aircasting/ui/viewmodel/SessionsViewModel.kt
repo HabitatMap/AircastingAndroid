@@ -48,15 +48,15 @@ class SessionsViewModel(
         return sessionsRepository.loadMobileActiveSessionsWithMeasurementsList()
     }
 
-    fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
-        return thresholdsRepository.findOrCreateSensorThresholds(session)
+    fun findOrCreateSensorThresholds(session: Session) = flow {
+        emit(thresholdsRepository.findOrCreateSensorThresholds(session))
     }
 
-    fun findOrCreateSensorThresholds(streams: List<MeasurementStream>): List<SensorThreshold> {
-        return thresholdsRepository.findOrCreateSensorThresholds(streams)
+    fun findOrCreateSensorThresholds(streams: List<MeasurementStream>) = flow {
+        emit(thresholdsRepository.findOrCreateSensorThresholds(streams))
     }
 
-    fun updateSensorThreshold(sensorThreshold: SensorThreshold) {
+    fun updateSensorThreshold(sensorThreshold: SensorThreshold) = viewModelScope.launch {
         thresholdsRepository.updateSensorThreshold(sensorThreshold)
     }
 

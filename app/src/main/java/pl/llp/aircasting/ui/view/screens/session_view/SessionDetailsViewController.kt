@@ -109,9 +109,7 @@ abstract class SessionDetailsViewController(
         event.sensorName == mSessionPresenter.selectedStream?.sensorName && event.deviceId == mSessionPresenter.session?.deviceId
 
     override fun onSensorThresholdChanged(sensorThreshold: SensorThreshold) {
-        runOnIOThread {
-            mSessionsViewModel.updateSensorThreshold(sensorThreshold)
-        }
+        mSessionsViewModel.updateSensorThreshold(sensorThreshold)
     }
 
 

@@ -4,10 +4,12 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.extensions.runOnIOThread
 
 abstract class SessionObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
@@ -38,7 +40,7 @@ abstract class SessionObserver<Type>(
     private fun onSessionChanged(session: Session) {
         mSessionPresenter.session = session
 
-        runOnIOThread { coroutineScope ->
+        CoroutineScope(Dispatchers.IO).launch {
             var selectedSensorName = mSessionPresenter.initialSensorName
             if (mSessionPresenter.selectedStream != null) {
                 selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
@@ -48,10 +50,10 @@ abstract class SessionObserver<Type>(
                 session.streams.firstOrNull { it.sensorName == selectedSensorName }
             mSessionPresenter.select(measurementStream)
 
-            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session)
+            val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session).first()
             mSessionPresenter.setSensorThresholds(sensorThresholds)
 
-            onSessionChangedCallback.invoke(coroutineScope)
+            onSessionChangedCallback.invoke(this)
         }
     }
 }

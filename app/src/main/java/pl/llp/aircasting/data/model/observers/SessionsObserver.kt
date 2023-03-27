@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -102,9 +103,9 @@ abstract class SessionsObserver<Type>(
         return updated
     }
 
-    private fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
+    private suspend fun getSensorThresholds(sessions: List<Session>): List<SensorThreshold> {
         val streams = sessions.flatMap { it.streams }.distinctBy { it.sensorName }
-        return mSessionsViewModel.findOrCreateSensorThresholds(streams)
+        return mSessionsViewModel.findOrCreateSensorThresholds(streams).first()
     }
 
     private fun showSessionsView(
