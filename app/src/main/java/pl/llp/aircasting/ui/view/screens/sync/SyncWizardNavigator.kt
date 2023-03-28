@@ -21,10 +21,10 @@ class SyncWizardNavigator(
     settings: Settings,
 ): ClearSDCardWizardNavigator(
     context,
-    settings,
     mViewMvc,
     fragmentManager,
-    R.id.airbeam_sync_fragment_container
+    R.id.airbeam_sync_fragment_container,
+    settings
 ) {
 
     override fun selectDeviceHeader(): String {

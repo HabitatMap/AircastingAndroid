@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -40,6 +41,14 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
+@AssistedFactory
+interface SyncControllerFactory {
+    fun create(
+        mContextActivity: AppCompatActivity,
+        mViewMvc: SyncViewMvc,
+        fragmentManager: FragmentManager
+    ): SyncController
+}
 
 class SyncController @AssistedInject constructor(
     @Assisted private val mRootActivity: AppCompatActivity,
@@ -50,8 +59,6 @@ class SyncController @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings,
     private val mSessionsSyncService: SessionsSyncService,
-    private val mWizardNavigator: SyncWizardNavigator =
-        SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings),
 ) : RefreshedSessionsViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
@@ -62,6 +69,8 @@ class SyncController @AssistedInject constructor(
     AirbeamSyncingViewMvc.Listener,
     ErrorViewMvc.Listener {
 
+    private val mWizardNavigator: SyncWizardNavigator =
+        SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)

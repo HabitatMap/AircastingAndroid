@@ -6,7 +6,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.params.DeleteAccountResponse
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.di.modules.IoCoroutineScope
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 class LogoutService @Inject constructor(
     private val mSettings: Settings,
     private val appContext: Context,
-    private val apiServiceFactory: ApiServiceFactory,
+    @Authenticated private val apiService: ApiService,
     private val sessionsSyncService: SessionsSyncService,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) {
@@ -40,8 +41,7 @@ class LogoutService @Inject constructor(
     }
 
     suspend fun deleteAccount(): Result<Response<DeleteAccountResponse?>> {
-        val apiServiceAuthenticated = apiServiceFactory.getAuthenticated(mSettings.getAuthToken())
-        return runCatching { apiServiceAuthenticated.deleteAccount() }
+        return runCatching { apiService.deleteAccount() }
     }
 
     private fun finaliseLogout() {

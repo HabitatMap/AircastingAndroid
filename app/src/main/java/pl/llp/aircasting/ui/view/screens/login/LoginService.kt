@@ -36,7 +36,7 @@ class LoginService @Inject constructor(
 
     suspend fun getUser(): UserResponse? {
         return try {
-            val response = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()).login()
+            val response = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!).login()
             if (!response.isSuccessful) {
                 mErrorHandler.handleAndDisplay(InternalAPIError())
                 return null

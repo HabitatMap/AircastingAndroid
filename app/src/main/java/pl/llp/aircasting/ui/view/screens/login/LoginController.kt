@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.login
 
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ForgotPasswordService
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
@@ -56,6 +58,7 @@ class LoginController @AssistedInject constructor(
         mContextActivity.lifecycleScope.launch {
             mLoginService.performLogin(profileName, password)
                 .onSuccess {
+                    Log.d(this@LoginController.TAG, "Saving login to settings")
                     mSettings.login(
                         it.username,
                         it.email,

@@ -1,12 +1,14 @@
 package pl.llp.aircasting.data.api.services
 
 import android.util.Base64
+import android.util.Log
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.Settings
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -37,7 +39,11 @@ open class ApiServiceFactory @Inject constructor(
 
     @Authenticated
     fun getAuthenticated(authToken: String?): ApiService {
-        authToken ?: return getApiService(emptyList())
+        if (authToken == null) {
+            Log.e(TAG, "Auth token was null")
+            return getApiService(emptyList())
+        }
+        Log.e(TAG, "Auth token was NOT null")
 
         val credentialsEncoded = encodedCredentials(authToken, "X")
         val authInterceptor = AuthenticationInterceptor(credentialsEncoded)

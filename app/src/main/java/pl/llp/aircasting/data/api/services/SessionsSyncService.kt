@@ -23,9 +23,7 @@ import pl.llp.aircasting.util.exceptions.SyncError
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
 class SessionsSyncService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,

@@ -18,7 +18,6 @@ open class ApiModule {
     open fun providesMockWebServerFactory(): WebServerFactory = WebServerFactory()
 
     @Provides
-    @Singleton
     @Authenticated
     fun providesApiServiceAuthenticatedWithToken(
         settings: Settings,
@@ -28,7 +27,6 @@ open class ApiModule {
     }
 
     @Provides
-    @Singleton
     @NonAuthenticated
     fun provideApiServiceNonAuthenticated(factory: ApiServiceFactory): ApiService {
         return factory.getNonAuthenticated()

@@ -7,28 +7,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.setupAppBar
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import javax.inject.Inject
 
 class SyncActivity : BaseActivity() {
-    private var controller: SyncController? = null
+    private lateinit var controller: SyncController
 
     @Inject
-    lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
-    lateinit var errorHandler: ErrorHandler
-
-    @Inject
-    lateinit var bluetoothManager: BluetoothManager
+    lateinit var controllerFactory: SyncControllerFactory
 
     companion object {
         private var launcher: ActivityResultLauncher<Intent>? = null
@@ -58,16 +45,7 @@ class SyncActivity : BaseActivity() {
         appComponent.inject(this)
 
         val view = SyncViewMvcImpl(layoutInflater, null)
-        controller = SyncController(
-            this,
-            view,
-            supportFragmentManager,
-            permissionsManager,
-            bluetoothManager,
-            apiServiceFactory,
-            errorHandler,
-            settings
-        )
+        controller = controllerFactory.create(this, view, supportFragmentManager)
 
         controller?.onCreate()
 

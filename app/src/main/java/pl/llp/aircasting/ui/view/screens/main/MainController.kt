@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.main
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +15,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
@@ -43,7 +45,7 @@ class MainController @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
     private val sessionSyncService: SessionsSyncService,
 ) {
-
+    private var isReceiverRegistered: Boolean = false
     fun onCreate() {
         val logout = EventBus.getDefault().getStickyEvent(LogoutEvent::class.java)
 
@@ -116,12 +118,18 @@ class MainController @AssistedInject constructor(
     }
 
     private fun registerConnectivityManager() {
+        Log.w(TAG, "Registering connectivity manager: $mConnectivityManager")
         val filter = IntentFilter(ConnectivityManager.ACTION)
         mConnectivityManager.let { rootActivity.registerReceiver(it, filter) }
+        isReceiverRegistered = true
     }
 
     private fun unregisterConnectivityManager() {
-        mConnectivityManager.let { rootActivity.unregisterReceiver(it) }
+        Log.w(TAG, "Unregistering connectivity manager: $mConnectivityManager")
+        if (isReceiverRegistered) {
+            mConnectivityManager.let { rootActivity.unregisterReceiver(it) }
+            isReceiverRegistered = false
+        }
     }
 
     @Subscribe

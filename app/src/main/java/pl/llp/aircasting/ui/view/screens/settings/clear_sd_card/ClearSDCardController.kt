@@ -6,6 +6,9 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
@@ -20,22 +23,32 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.restart_airbeam.
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.sd_card_cleared.SDCardClearedViewMvc
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.areLocationServicesOn
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.extensions.areLocationServicesOn
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
-import pl.llp.aircasting.util.extensions.safeRegister
 
-class ClearSDCardController(
-    private val mContextActivity: AppCompatActivity,
-    mViewMvc: ClearSDCardViewMvc,
-    private val mPermissionsManager: pl.llp.aircasting.util.helpers.permissions.PermissionsManager,
+@AssistedFactory
+interface ClearSDCardControllerFactory {
+    fun create(
+        mContextActivity: AppCompatActivity,
+        mViewMvc: ClearSDCardViewMvc,
+        fragmentManager: FragmentManager
+    ): ClearSDCardController
+}
+class ClearSDCardController @AssistedInject constructor(
+    @Assisted private val mContextActivity: AppCompatActivity,
+    @Assisted mViewMvc: ClearSDCardViewMvc,
+    @Assisted private val mFragmentManager: FragmentManager,
+    private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
-    private val mFragmentManager: FragmentManager,
-    private val mSettings: Settings
+    private val mSettings: Settings,
+    private val mErrorHandler: ErrorHandler,
 ): SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
     TurnOnBluetoothViewMvc.Listener,
@@ -45,11 +58,10 @@ class ClearSDCardController(
     private val mWizardNavigator =
         ClearSDCardWizardNavigator(
             mContextActivity,
-            mSettings,
             mViewMvc,
-            mFragmentManager
+            mFragmentManager,
+            mSettings = mSettings
         )
-    private val mErrorHandler = ErrorHandler(mContextActivity)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)

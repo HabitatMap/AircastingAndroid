@@ -10,7 +10,6 @@ import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.FOLLOWING_TAB_INDEX
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
@@ -27,10 +26,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     @Inject
     lateinit var controllerFactory: MainControllerFactory
     lateinit var controller: MainController
-    private var view: MainViewMvcImpl? = null
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    private lateinit var view: MainViewMvcImpl
 
     companion object {
         const val NAVIGATE_TO_TAB = "navigate_to_tab"

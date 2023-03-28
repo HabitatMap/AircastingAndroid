@@ -7,22 +7,17 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.extensions.setupAppBar
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import javax.inject.Inject
 
 class ClearSDCardActivity : BaseActivity() {
-    private var controller: ClearSDCardController? = null
+    private lateinit var controller: ClearSDCardController
 
     @Inject
-    lateinit var permissionsManager: PermissionsManager
+    lateinit var controllerFactory: ClearSDCardControllerFactory
 
-    @Inject
-    lateinit var bluetoothManager: BluetoothManager
-
-    companion object{
+    companion object {
         fun start(rootActivity: FragmentActivity?) {
-            rootActivity?.let{
+            rootActivity?.let {
                 val intent = Intent(it, ClearSDCardActivity::class.java)
                 it.startActivity(intent)
             }
@@ -37,14 +32,7 @@ class ClearSDCardActivity : BaseActivity() {
         appComponent.inject(this)
 
         val view = ClearSDCardViewMvcImpl(layoutInflater, null)
-        controller = ClearSDCardController(
-            this,
-            view,
-            permissionsManager,
-            bluetoothManager,
-            supportFragmentManager,
-            settings
-        )
+        controller = controllerFactory.create(this, view, supportFragmentManager)
 
         controller?.onCreate()
 
@@ -62,8 +50,10 @@ class ClearSDCardActivity : BaseActivity() {
         controller?.onStop()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int,
-                                            permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>, grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
