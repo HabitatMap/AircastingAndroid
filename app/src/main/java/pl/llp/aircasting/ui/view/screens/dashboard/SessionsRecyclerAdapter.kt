@@ -22,7 +22,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager,
-    protected val mSessionsViewModel: SessionsViewModel = SessionsViewModel()
+    protected val mSessionsViewModel: SessionsViewModel
 ) : RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :

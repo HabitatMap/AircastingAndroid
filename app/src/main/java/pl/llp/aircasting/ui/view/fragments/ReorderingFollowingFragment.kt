@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingController
 import pl.llp.aircasting.ui.view.screens.dashboard.reordering_following.ReorderingFollowingViewMvcImpl
 
 // ReorderingFollowingFragment is the only fragment attached to ReorderingDashboard
-class ReorderingFollowingFragment: FollowingFragment() {
+class ReorderingFollowingFragment : FollowingFragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -24,13 +23,11 @@ class ReorderingFollowingFragment: FollowingFragment() {
             childFragmentManager
         )
 
-        controller = FollowingController(
+        controller = controllerFactory.create(
             activity,
             view,
-            sessionsViewModel,
             viewLifecycleOwner,
-            settings,
-            apiServiceFactory,
+            childFragmentManager,
             context
         )
 

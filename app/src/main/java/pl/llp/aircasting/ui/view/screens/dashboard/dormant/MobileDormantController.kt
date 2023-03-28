@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.services.ApiService
@@ -31,11 +32,11 @@ interface MobileDormantControllerFactory {
 }
 
 class MobileDormantController @AssistedInject constructor(
-    mRootActivity: FragmentActivity?,
-    mViewMvc: SessionsViewMvc?,
-    mLifecycleOwner: LifecycleOwner,
-    fragmentManager: FragmentManager,
-    mContext: Context?,
+    @Assisted mRootActivity: FragmentActivity?,
+    @Assisted mViewMvc: SessionsViewMvc?,
+    @Assisted mLifecycleOwner: LifecycleOwner,
+    @Assisted fragmentManager: FragmentManager,
+    @Assisted mContext: Context?,
     private val mSessionsViewModel: SessionsViewModel,
     @Authenticated mApiService: ApiService,
     mErrorHandler: ErrorHandler,

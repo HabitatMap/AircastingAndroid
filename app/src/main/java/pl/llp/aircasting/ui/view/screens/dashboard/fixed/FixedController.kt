@@ -11,6 +11,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -39,7 +40,7 @@ open class FixedController @AssistedInject constructor(
     @Assisted fragmentManager: FragmentManager,
     @Assisted private val mContext: Context?,
     private val mSessionsViewModel: SessionsViewModel,
-    mApiService: ApiService,
+    @Authenticated mApiService: ApiService,
     mErrorHandler: ErrorHandler,
     mDownloadService: SessionDownloadService,
     mDownloadMeasurementsService: DownloadMeasurementsService,

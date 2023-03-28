@@ -8,6 +8,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -40,7 +41,7 @@ class FollowingController @AssistedInject constructor(
     @Assisted fragmentManager: FragmentManager,
     @Assisted mContext: Context?,
     private val mSessionsViewModel: SessionsViewModel,
-    mApiService: ApiService,
+    @Authenticated mApiService: ApiService,
     mErrorHandler: ErrorHandler,
     mDownloadService: SessionDownloadService,
     mDownloadMeasurementsService: DownloadMeasurementsService,

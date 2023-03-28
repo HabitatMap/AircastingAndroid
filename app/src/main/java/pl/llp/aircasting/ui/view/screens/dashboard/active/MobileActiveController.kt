@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -32,7 +33,7 @@ interface MobileActiveControllerFactory {
         mViewMvc: SessionsViewMvc?,
         mLifecycleOwner: LifecycleOwner,
         fragmentManager: FragmentManager,
-        mContext: Context
+        mContext: Context?
     ): MobileActiveController
 }
 
@@ -41,9 +42,9 @@ class MobileActiveController @AssistedInject constructor(
     @Assisted private val mViewMvc: SessionsViewMvc?,
     @Assisted mLifecycleOwner: LifecycleOwner,
     @Assisted fragmentManager: FragmentManager,
-    @Assisted mContext: Context,
+    @Assisted mContext: Context?,
     private val mSessionsViewModel: SessionsViewModel,
-    mApiService: ApiService,
+    @Authenticated mApiService: ApiService,
     mErrorHandler: ErrorHandler,
     mDownloadService: SessionDownloadService,
     mDownloadMeasurementsService: DownloadMeasurementsService,
