@@ -38,7 +38,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         view = initView(inflater, container)
         controller = DashboardController(view, sessionsSyncService)

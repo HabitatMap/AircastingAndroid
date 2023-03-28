@@ -81,7 +81,7 @@ class SearchLocationResultFragment @Inject constructor(
         savedInstanceState: Bundle?
     ): View {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
         _binding = FragmentSearchLocationResultBinding.inflate(inflater, container, false)
         return binding.root
     }

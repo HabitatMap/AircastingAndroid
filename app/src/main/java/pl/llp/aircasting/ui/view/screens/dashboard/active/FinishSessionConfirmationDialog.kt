@@ -26,7 +26,7 @@ open class FinishSessionConfirmationDialog(
 
     override fun setupView(inflater: LayoutInflater): View {
         rootActivity = requireActivity()
-        (rootActivity.application as AircastingApplication).appComponent.inject(this)
+        (rootActivity.application as AircastingApplication).userDependentComponent.inject(this)
 
         mView = inflater.inflate(R.layout.finish_session_confirmation_dialog, null)
 

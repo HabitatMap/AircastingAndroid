@@ -68,7 +68,7 @@ class ShareSessionBottomSheet(
     }
 
     override fun setup() {
-        (requireActivity().application as AircastingApplication).appComponent.inject(this)
+        (requireActivity().application as AircastingApplication).userDependentComponent.inject(this)
 
         expandBottomSheet()
 

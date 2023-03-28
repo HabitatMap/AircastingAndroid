@@ -1,8 +1,7 @@
 package pl.llp.aircasting.di
 
-import dagger.Component
+import dagger.Subcomponent
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.di.components.UserComponent
 import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.*
@@ -31,10 +30,10 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
-import javax.inject.Singleton
+import javax.inject.Scope
 
-@Singleton
-@Component(
+@UserSessionScope
+@Subcomponent(
     modules = [
         AppModule::class,
         ApiModule::class,
@@ -50,7 +49,11 @@ import javax.inject.Singleton
     ]
 )
 interface UserDependentComponent {
-    fun userComponentFactory(): UserComponent.Factory
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(): UserDependentComponent
+    }
+
     fun inject(app: AircastingApplication)
     fun inject(activity: BaseActivity)
     fun inject(activity: OnboardingActivity)
@@ -97,3 +100,6 @@ interface UserDependentComponent {
     fun inject(activity: AirBeamSyncService)
     fun inject(activity: AirBeamClearCardService)
 }
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class UserSessionScope

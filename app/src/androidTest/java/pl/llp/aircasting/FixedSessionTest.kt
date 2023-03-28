@@ -104,7 +104,7 @@ class FixedSessionTest {
             )
             .newSessionWizardModule(TestNewSessionWizardModule())
             .build()
-        app.appComponent = testAppComponent
+        app.userDependentComponent = testAppComponent
         testAppComponent.inject(this)
     }
 

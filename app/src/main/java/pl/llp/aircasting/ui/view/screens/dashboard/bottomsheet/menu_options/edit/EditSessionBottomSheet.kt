@@ -43,7 +43,7 @@ class EditSessionBottomSheet(
     }
 
     override fun setup() {
-        (activity?.application as AircastingApplication).appComponent.inject(this)
+        (activity?.application as AircastingApplication).userDependentComponent.inject(this)
         viewModel = ViewModelProvider(
             this,
             viewModelFactory

@@ -19,7 +19,7 @@ class AirbeamSyncedFragment: BaseFragment<AirbeamSyncedViewMvcImpl, AirbeamSynce
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         view = AirbeamSyncedViewMvcImpl(layoutInflater, null)
         controller = AirbeamSyncedController(view)

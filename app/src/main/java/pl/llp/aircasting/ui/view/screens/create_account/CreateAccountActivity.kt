@@ -39,7 +39,7 @@ class CreateAccountActivity : BaseActivity() {
         val fromOnboarding = intent.extras?.get(FROM_ONBOARDING_KEY) as Boolean?
 
         (application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
         controller =

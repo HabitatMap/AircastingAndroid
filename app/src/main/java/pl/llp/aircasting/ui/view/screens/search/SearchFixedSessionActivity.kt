@@ -45,7 +45,7 @@ class SearchFixedSessionActivity : BaseActivity() {
 
     private fun setupFactory() {
         (application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
         searchFollowViewModel =
             ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
         supportFragmentManager.fragmentFactory = fragmentFactory

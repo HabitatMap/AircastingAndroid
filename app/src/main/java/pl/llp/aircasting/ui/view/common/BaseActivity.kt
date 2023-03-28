@@ -15,7 +15,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         (application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
     }
 
     override fun onResume() {

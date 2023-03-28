@@ -60,7 +60,7 @@ class CreateAccountTest {
             .settingsModule(TestSettingsModule())
             .permissionsModule(permissionsModule)
             .build()
-        app.appComponent = testAppComponent
+        app.userDependentComponent = testAppComponent
         testAppComponent.inject(this)
     }
 

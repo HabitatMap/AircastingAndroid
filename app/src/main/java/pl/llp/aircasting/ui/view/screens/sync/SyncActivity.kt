@@ -41,7 +41,7 @@ class SyncActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         val app = application as AircastingApplication
-        val appComponent = app.appComponent
+        val appComponent = app.userDependentComponent
         appComponent.inject(this)
 
         val view = SyncViewMvcImpl(layoutInflater, null)

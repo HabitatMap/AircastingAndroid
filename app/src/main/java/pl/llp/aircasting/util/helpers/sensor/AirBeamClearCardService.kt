@@ -29,7 +29,7 @@ class AirBeamClearCardService: AirBeamService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val app = application as AircastingApplication
-        val appComponent = app.appComponent
+        val appComponent = app.userDependentComponent
         appComponent.inject(this)
 
         return super.onStartCommand(intent, flags, startId)

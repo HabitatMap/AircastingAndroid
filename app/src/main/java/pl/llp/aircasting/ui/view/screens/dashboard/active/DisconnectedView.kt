@@ -64,7 +64,7 @@ class DisconnectedView(
         mSecondaryButton = rootView?.disconnected_view_bluetooth_device_finish_button
         mReconnectingLoader = rootView?.reconnecting_loader
 
-        (rootActivity?.application as? AircastingApplication)?.appComponent?.inject(this)
+        (rootActivity?.application as? AircastingApplication)?.userDependentComponent?.inject(this)
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

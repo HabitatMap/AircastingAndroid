@@ -22,7 +22,7 @@ class ClearingSDCardFragment(
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         view = ClearingSDCardViewMvcImpl(layoutInflater, null)
         controller = ClearingSDCardController(mFragmentManager)

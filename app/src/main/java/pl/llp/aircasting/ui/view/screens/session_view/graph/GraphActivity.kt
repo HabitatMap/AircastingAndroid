@@ -55,7 +55,7 @@ class GraphActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         (application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         val sessionUUID: String = intent.extras?.get(SESSION_UUID_KEY) as String
         val sensorName: String? = intent.extras?.get(SENSOR_NAME_KEY) as String?

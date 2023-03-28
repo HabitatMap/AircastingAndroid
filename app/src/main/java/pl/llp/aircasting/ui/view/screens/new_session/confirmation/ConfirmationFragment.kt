@@ -23,7 +23,7 @@ class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationC
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         view = ConfirmationViewFactory.get(inflater, container, childFragmentManager, session, settings.areMapsDisabled())
         controller = ConfirmationController(view, settings)

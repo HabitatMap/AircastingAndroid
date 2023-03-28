@@ -27,7 +27,7 @@ class SessionDetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+            .userDependentComponent.inject(this)
 
         view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
         controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
