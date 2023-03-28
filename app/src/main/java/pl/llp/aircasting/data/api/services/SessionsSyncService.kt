@@ -35,8 +35,6 @@ class SessionsSyncService @Inject constructor(
     private val sessionRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val noteRepository: NoteRepository,
-    private val _syncStatus: MutableStateFlow<Status> = MutableStateFlow(Status.Idle),
-    private val gson: Gson = Gson(),
 ) {
     sealed class Result {
         object Success : Result()
@@ -49,6 +47,8 @@ class SessionsSyncService @Inject constructor(
     }
 
     val syncStatus get(): StateFlow<Status> = _syncStatus
+    private val gson: Gson = Gson()
+    private val _syncStatus: MutableStateFlow<Status> = MutableStateFlow(Status.Idle)
     suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }

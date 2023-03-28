@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.extensions.isConnected
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 @Singleton
 class ConnectivityManager @Inject constructor(
     private val sessionSyncService: SessionsSyncService,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) : BroadcastReceiver() {
 
     companion object {

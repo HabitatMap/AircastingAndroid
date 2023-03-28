@@ -9,53 +9,35 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.*
-import pl.llp.aircasting.data.local.repository.*
+import pl.llp.aircasting.data.api.services.ExportSessionService
+import pl.llp.aircasting.data.api.services.PeriodicallyDownloadFixedSessionMeasurementsService
+import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.services.UpdateSessionService
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.NoteRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
-import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
-import pl.llp.aircasting.util.helpers.services.AveragingService
-import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import javax.inject.Inject
 
 class SessionManager @Inject constructor(
     private val mContext: Context,
     private val settings: Settings,
-    private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
-    private val measurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
-    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val noteRepository: NoteRepository,
     private val sessionsSyncService: SessionsSyncService,
     private val sessionUpdateService: UpdateSessionService,
     private val exportSessionService: ExportSessionService,
-    private val fixedSessionUploadService: FixedSessionUploadService,
     private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    private val recordingHandler: RecordingHandler = RecordingHandlerImpl(
-        settings,
-        fixedSessionUploadService,
-        sessionsRepository,
-        activeSessionMeasurementsRepository,
-        sessionsSyncService,
-        errorHandler,
-        measurementStreamsRepository,
-        measurementsRepository,
-        averagingService = AveragingService(
-            measurementsRepository,
-            measurementStreamsRepository,
-            sessionsRepository,
-            MeasurementsAveragingHelperDefault()
-        ),
-        coroutineScope
-    ),
+    private val recordingHandler: RecordingHandler,
+    @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) {
 
     @Subscribe

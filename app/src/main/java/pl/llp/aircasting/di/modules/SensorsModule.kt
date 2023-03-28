@@ -2,9 +2,13 @@ package pl.llp.aircasting.di.modules
 
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -16,6 +20,8 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
 import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.*
+import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
+import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneReader
 import pl.llp.aircasting.util.helpers.services.AveragingService
@@ -190,5 +196,33 @@ open class SensorsModule {
         mMeasurementStreamsRepository,
         mSessionsRepository,
         helper
+    )
+
+    @Provides
+    @Singleton
+    fun providesRecordingHandler(
+        settings: Settings,
+        fixedSessionUploadService: FixedSessionUploadService,
+        sessionsRepository: SessionsRepository,
+        activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+        sessionsSyncService: SessionsSyncService,
+        errorHandler: ErrorHandler,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepositoryImpl,
+        averagingService: AveragingService,
+        @IoCoroutineScope coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    ): RecordingHandler = RecordingHandlerImpl(
+        settings,
+        fixedSessionUploadService,
+        sessionsRepository,
+        activeSessionMeasurementsRepository,
+        sessionsSyncService,
+        errorHandler,
+        measurementStreamsRepository,
+        measurementsRepository,
+        averagingService,
+        coroutineScope,
+        mutableMapOf(),
+        mutableMapOf()
     )
 }

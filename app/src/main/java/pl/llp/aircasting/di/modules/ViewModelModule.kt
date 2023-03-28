@@ -11,29 +11,36 @@ import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.edit
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountViewModel
 import pl.llp.aircasting.ui.viewmodel.CreateThresholdAlertBottomSheetViewModel
 import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import kotlin.reflect.KClass
 
 @Module
 abstract class ViewModelModule {
     @Binds
     @IntoMap
+    @ViewModelKey(SessionsViewModel::class)
+    internal abstract fun bindSessionsViewModel(
+        viewModel: SessionsViewModel
+    ): ViewModel
+    @Binds
+    @IntoMap
     @ViewModelKey(MyAccountViewModel::class)
     internal abstract fun bindMyAccountViewModel(
-        myAccountViewModel: MyAccountViewModel
+        viewModel: MyAccountViewModel
     ): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(EditSessionBottomSheetViewModel::class)
     internal abstract fun bindEditSessionBottomSheetViewModel(
-        editSessionBottomSheetViewModel: EditSessionBottomSheetViewModel
+        viewModel: EditSessionBottomSheetViewModel
     ): ViewModel
 
     @Binds
     @IntoMap
     @ViewModelKey(CreateThresholdAlertBottomSheetViewModel::class)
     internal abstract fun bindCreateThresholdAlertBottomSheetViewModel(
-        createThresholdAlertBottomSheetViewModel: CreateThresholdAlertBottomSheetViewModel
+        viewModel: CreateThresholdAlertBottomSheetViewModel
     ): ViewModel
 
     @Binds

@@ -16,7 +16,7 @@ import javax.inject.Singleton
         NewSessionWizardModule::class,
         ViewModelModule::class,
         DatabaseModule::class,
-        DispatcherModule::class,
+        CoroutineModule::class,
         FragmentModule::class,
         RepositoryModule::class
     ]

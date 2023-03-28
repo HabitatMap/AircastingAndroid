@@ -3,11 +3,12 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Qualifier
 
 @Module
-object DispatcherModule {
+object CoroutineModule {
     @IoDispatcher
     @Provides
     fun providesIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
@@ -15,6 +16,10 @@ object DispatcherModule {
     @MainDispatcher
     @Provides
     fun providesMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @IoCoroutineScope
+    @Provides
+    fun provideIoCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
 }
 
 @Retention(AnnotationRetention.BINARY)
@@ -24,3 +29,7 @@ annotation class IoDispatcher
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
 annotation class MainDispatcher
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class IoCoroutineScope

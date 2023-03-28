@@ -43,7 +43,7 @@ import javax.inject.Singleton
         SensorsModule::class,
         NewSessionWizardModule::class,
         ViewModelModule::class,
-        DispatcherModule::class,
+        CoroutineModule::class,
         FragmentModule::class,
         RepositoryModule::class
     ]

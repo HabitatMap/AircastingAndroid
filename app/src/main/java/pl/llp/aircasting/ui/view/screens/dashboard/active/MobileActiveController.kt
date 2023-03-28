@@ -2,43 +2,66 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.content.Context
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
+import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.ActiveSessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsController
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
+import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.expandedCards
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
-class MobileActiveController(
-    private val mRootActivity: FragmentActivity?,
-    private val mViewMvc: SessionsViewMvc?,
+@AssistedFactory
+interface MobileActiveControllerFactory {
+    fun create(
+        mRootActivity: FragmentActivity?,
+        mViewMvc: SessionsViewMvc?,
+        mLifecycleOwner: LifecycleOwner,
+        fragmentManager: FragmentManager,
+        mContext: Context
+    ): MobileActiveController
+}
+
+class MobileActiveController @AssistedInject constructor(
+    @Assisted mRootActivity: FragmentActivity?,
+    @Assisted private val mViewMvc: SessionsViewMvc?,
+    @Assisted mLifecycleOwner: LifecycleOwner,
+    @Assisted fragmentManager: FragmentManager,
+    @Assisted mContext: Context,
     private val mSessionsViewModel: SessionsViewModel,
-    mLifecycleOwner: LifecycleOwner,
-    private val mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector,
-    private val permissionsManager: PermissionsManager,
-    private val mContext: Context
+    mApiService: ApiService,
+    mErrorHandler: ErrorHandler,
+    mDownloadService: SessionDownloadService,
+    mDownloadMeasurementsService: DownloadMeasurementsService,
+    mActiveSessionsRepository: ActiveSessionMeasurementsRepository,
+    sessionFollower: SessionFollower,
 ) : SessionsController(
     mRootActivity,
     mViewMvc,
+    fragmentManager,
+    mContext,
     mSessionsViewModel,
-    mSettings,
-    mApiServiceFactory,
-    mRootActivity!!.supportFragmentManager,
-    mContext
-),
-    SessionsViewMvc.Listener {
+    mApiService,
+    mErrorHandler,
+    mDownloadService,
+    mDownloadMeasurementsService,
+    mActiveSessionsRepository,
+    sessionFollower
+), SessionsViewMvc.Listener {
 
     private var mSessionsObserver =
         ActiveSessionsObserver(mLifecycleOwner, mSessionsViewModel, mViewMvc)

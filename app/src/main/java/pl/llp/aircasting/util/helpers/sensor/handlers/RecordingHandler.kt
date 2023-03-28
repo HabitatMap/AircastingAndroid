@@ -17,8 +17,6 @@ import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
-import javax.inject.Inject
-import javax.inject.Singleton
 
 interface RecordingHandler {
     fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?)
@@ -28,8 +26,7 @@ interface RecordingHandler {
     fun disconnectSession(deviceId: String)
 }
 
-@Singleton
-class RecordingHandlerImpl @Inject constructor(
+class RecordingHandlerImpl(
     private val settings: Settings,
     private val fixedSessionUploadService: FixedSessionUploadService,
     private val sessionsRepository: SessionsRepository,
@@ -40,8 +37,8 @@ class RecordingHandlerImpl @Inject constructor(
     private val measurementsRepository: MeasurementsRepositoryImpl,
     private val averagingService: AveragingService,
     private val coroutineScope: CoroutineScope,
-    private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf(),
-    private val observers: MutableMap<String, Job> = mutableMapOf(),
+    private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>>,
+    private val observers: MutableMap<String, Job>,
 ) : RecordingHandler {
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {

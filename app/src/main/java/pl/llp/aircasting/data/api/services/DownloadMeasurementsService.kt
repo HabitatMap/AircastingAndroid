@@ -2,7 +2,6 @@ package pl.llp.aircasting.data.api.services
 
 import android.database.sqlite.SQLiteConstraintException
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -17,6 +16,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
@@ -27,19 +27,20 @@ import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefaul
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
-class DownloadMeasurementsService@Inject constructor(
+class DownloadMeasurementsService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepositoryImpl,
     private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val callCanceled: AtomicBoolean = AtomicBoolean(false),
+    @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
     init {
         EventBus.getDefault().safeRegister(this)
     }
+
+    private val callCanceled: AtomicBoolean = AtomicBoolean(false)
 
     suspend fun downloadMeasurements(session: Session) {
         val dbSession = sessionsRepository.getSessionWithMeasurementsByUUID(session.uuid)

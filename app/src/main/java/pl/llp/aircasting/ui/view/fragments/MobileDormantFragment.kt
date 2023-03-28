@@ -5,20 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantController
+import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantControllerFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantViewMvcImpl
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 
 class MobileDormantFragment : Fragment() {
     private var controller: MobileDormantController? = null
-    private val sessionsViewModel by activityViewModels<SessionsViewModel>()
     private var view: MobileDormantViewMvcImpl? = null
+
+    @Inject
+    lateinit var controllerFactory: MobileDormantControllerFactory
 
     @Inject
     lateinit var settings: Settings
@@ -42,13 +43,10 @@ class MobileDormantFragment : Fragment() {
             childFragmentManager
         )
 
-        controller = MobileDormantController(
+        controller = controllerFactory.create(
             activity,
             view,
-            sessionsViewModel,
             viewLifecycleOwner,
-            settings,
-            apiServiceFactory,
             childFragmentManager,
             context
         )

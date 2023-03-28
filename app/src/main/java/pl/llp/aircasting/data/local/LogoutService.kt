@@ -3,13 +3,13 @@ package pl.llp.aircasting.data.local
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.params.DeleteAccountResponse
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
@@ -24,7 +24,7 @@ class LogoutService @Inject constructor(
     private val appContext: Context,
     private val apiServiceFactory: ApiServiceFactory,
     private val sessionsSyncService: SessionsSyncService,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) {
     fun logout(afterAccountDeletion: Boolean = false) {
         // to make sure downloading sessions stopped before we start deleting them

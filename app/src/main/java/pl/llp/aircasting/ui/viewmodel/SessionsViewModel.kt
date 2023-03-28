@@ -14,10 +14,11 @@ import pl.llp.aircasting.data.local.repository.ThresholdsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import javax.inject.Inject
 
-class SessionsViewModel(
-    private val thresholdsRepository: ThresholdsRepository = ThresholdsRepository(),
-    private val sessionsRepository: SessionsRepository = SessionsRepository(),
+class SessionsViewModel @Inject constructor(
+    private val thresholdsRepository: ThresholdsRepository,
+    private val sessionsRepository: SessionsRepository,
 ) : ViewModel() {
 
     fun reloadSessionWithMeasurements(uuid: String) = flow {
