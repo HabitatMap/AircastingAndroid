@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
@@ -24,15 +25,19 @@ class LauncherActivity : AppCompatActivity() {
             showOnboardingScreen()
         } else if (mSettings.getAuthToken() == null || logout?.inProgress == true) {
             showLoginScreen()
+        } else {
+            showDashboard()
         }
+        finish()
+    }
+    private fun showDashboard() {
+        MainActivity.start(this)
     }
     private fun showLoginScreen() {
         LoginActivity.start(this)
-        finish()
     }
 
     private fun showOnboardingScreen() {
         OnboardingActivity.start(this)
-        finish()
     }
 }

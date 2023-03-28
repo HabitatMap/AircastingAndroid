@@ -8,6 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.params.CreateAccountBody
 import pl.llp.aircasting.data.api.params.CreateAccountParams
@@ -85,6 +86,7 @@ class CreateAccountController(
                         body.authenticationToken,
                         body.sessionStoppedAlert
                     )
+                    (mContextActivity.application as AircastingApplication).onUserLoggedIn()
                     MainActivity.start(mContextActivity)
                 }
             } else if (response.code() == 422) {

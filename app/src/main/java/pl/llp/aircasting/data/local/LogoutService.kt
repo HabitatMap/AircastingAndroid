@@ -1,10 +1,10 @@
 package pl.llp.aircasting.data.local
 
-import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.params.DeleteAccountResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.Authenticated
@@ -18,19 +18,18 @@ import pl.llp.aircasting.util.events.LogoutEvent
 import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Response
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @UserSessionScope
 class LogoutService @Inject constructor(
     private val mSettings: Settings,
-    private val appContext: Context,
+    private val app: AircastingApplication,
     @Authenticated private val apiService: ApiService,
     private val sessionsSyncService: SessionsSyncService,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) {
     fun logout(afterAccountDeletion: Boolean = false) {
         // to make sure downloading sessions stopped before we start deleting them
-        LoginActivity.startAfterSignOut(appContext)
+        LoginActivity.startAfterSignOut(app.applicationContext)
 
         EventBus.getDefault().postSticky(LogoutEvent())
         coroutineScope.launch {
@@ -49,6 +48,7 @@ class LogoutService @Inject constructor(
         EventBus.getDefault().unregister(this)
         mSettings.logout()
         clearDatabase()
+        app.userDependentComponent = null
         EventBus.getDefault().postSticky(LogoutEvent(false))
     }
     private fun clearDatabase() {

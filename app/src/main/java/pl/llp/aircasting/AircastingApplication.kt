@@ -10,16 +10,12 @@ import pl.llp.aircasting.di.UserDependentComponent
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.components.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.DatabaseModule
-import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.Settings.Companion.PREFERENCES_NAME
 
 class AircastingApplication : Application() {
     var userDependentComponent: UserDependentComponent? = null
     lateinit var appComponent: AppComponent
-    lateinit var permissionsModule: PermissionsModule
-    lateinit var databaseModule: DatabaseModule
     lateinit var mSettings: Settings
     val settings get() = mSettings
 
@@ -36,6 +32,10 @@ class AircastingApplication : Application() {
             .appModule(AppModule(this))
             .build()
         appComponent.inject(this)
+
+        if (mSettings.getAuthToken() != null) {
+            onUserLoggedIn()
+        }
 
         ProcessLifecycleOwner.get()
             .lifecycle

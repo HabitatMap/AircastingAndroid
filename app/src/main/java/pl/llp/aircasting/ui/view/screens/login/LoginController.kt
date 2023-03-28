@@ -12,6 +12,7 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.ForgotPasswordService
 import pl.llp.aircasting.data.api.util.TAG
@@ -65,6 +66,7 @@ class LoginController @AssistedInject constructor(
                         it.authenticationToken,
                         it.sessionStoppedAlert
                     )
+                    (mContextActivity.application as AircastingApplication).onUserLoggedIn()
                     MainActivity.start(mContextActivity)
                 }
                 .onFailure {

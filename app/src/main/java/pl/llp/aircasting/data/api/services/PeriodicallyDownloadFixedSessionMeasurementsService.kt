@@ -4,8 +4,10 @@ package pl.llp.aircasting.data.api.services
 import kotlinx.coroutines.*
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
 
+@UserSessionScope
 class PeriodicallyDownloadFixedSessionMeasurementsService @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val downloadMeasurementsService: DownloadMeasurementsService,
