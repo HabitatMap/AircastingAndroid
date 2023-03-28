@@ -33,7 +33,9 @@ class MobileActiveFragment : Fragment() {
             layoutInflater,
             null,
             childFragmentManager
-        )
+        ) {
+            controller?.getReloadSession(it)
+        }
         controller = controllerFactory.create(
             activity,
             view,

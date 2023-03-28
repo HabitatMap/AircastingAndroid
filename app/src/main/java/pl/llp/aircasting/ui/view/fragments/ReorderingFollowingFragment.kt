@@ -20,8 +20,16 @@ class ReorderingFollowingFragment : FollowingFragment() {
         view = ReorderingFollowingViewMvcImpl(
             layoutInflater,
             null,
-            childFragmentManager
-        )
+            childFragmentManager,
+            {
+                controller?.getReloadSession(it)
+            },
+            {
+                controller?.sessionDismissCallback(it)
+            }
+        ) {
+            controller?.sessionUpdateFollowedAtCallback(it)
+        }
 
         controller = controllerFactory.create(
             activity,

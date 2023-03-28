@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
@@ -12,12 +11,10 @@ open class FixedViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     val supportFragmentManager: FragmentManager,
-    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?
 ) : SessionsViewMvcImpl<FixedSessionViewMvc.Listener>(
     inflater,
     parent,
     supportFragmentManager,
-    reloadSessionCallback
 ),
     FixedSessionViewMvc.Listener {
 
@@ -30,7 +27,6 @@ open class FixedViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
             inflater,
             this,
             supportFragmentManager,
-            reloadSessionCallback,
         )
     }
 

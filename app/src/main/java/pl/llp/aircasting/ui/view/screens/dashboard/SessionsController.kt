@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
@@ -104,4 +106,7 @@ abstract class SessionsController(
             reloadSession(session)
         }
     }
+
+    suspend fun getReloadSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
+        mSessionsViewModel.reloadSessionWithMeasurements(uuid).firstOrNull()
 }

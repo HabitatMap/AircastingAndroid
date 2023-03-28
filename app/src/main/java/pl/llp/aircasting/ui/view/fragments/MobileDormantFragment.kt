@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantController
 import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantControllerFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.dormant.MobileDormantViewMvcImpl
-import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 
@@ -20,12 +18,6 @@ class MobileDormantFragment : Fragment() {
 
     @Inject
     lateinit var controllerFactory: MobileDormantControllerFactory
-
-    @Inject
-    lateinit var settings: Settings
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
 
     private var sessionsRequested = false
 
@@ -41,7 +33,9 @@ class MobileDormantFragment : Fragment() {
             layoutInflater,
             null,
             childFragmentManager
-        )
+        ) {
+            controller?.getReloadSession(it)
+        }
 
         controller = controllerFactory.create(
             activity,

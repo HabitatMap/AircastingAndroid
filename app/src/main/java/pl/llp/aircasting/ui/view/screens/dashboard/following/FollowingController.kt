@@ -46,7 +46,7 @@ class FollowingController @AssistedInject constructor(
     mDownloadService: SessionDownloadService,
     mDownloadMeasurementsService: DownloadMeasurementsService,
     mActiveSessionsRepository: ActiveSessionMeasurementsRepository,
-    sessionFollower: SessionFollower,
+    private val sessionFollower: SessionFollower,
     private val mSettings: Settings
 ) : FixedController(
     mRootActivity,
@@ -96,5 +96,13 @@ class FollowingController @AssistedInject constructor(
     override fun onUnfollowButtonClicked(session: Session) {
         super.onUnfollowButtonClicked(session)
         mRootActivity?.adjustMenuVisibility(true, mSettings.followedSessionsCount())
+    }
+
+    fun sessionUpdateFollowedAtCallback(session: Session) {
+        mSessionsViewModel.updateFollowedAt(session)
+    }
+
+    fun sessionDismissCallback(session: Session) {
+        sessionFollower.unfollow(session)
     }
 }

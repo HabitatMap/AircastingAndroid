@@ -17,13 +17,18 @@ class ReorderingFollowingViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
     supportFragmentManager: FragmentManager,
-    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
-    private val sessionDismissCallback: (session: Session) -> Unit,
-    private val sessionUpdateFollowedAtCallback: (session: Session) -> Unit,
-) : FollowingViewMvcImpl(inflater, parent, supportFragmentManager, reloadSessionCallback),
+) : FollowingViewMvcImpl(inflater, parent, supportFragmentManager),
     FollowingSessionViewMvc.Listener {
     init {
         addTouchHelperToRecyclerView()
+    }
+    private lateinit var sessionDismiss: (session: Session) -> Unit
+    fun setSessionDismissCallback(callback: (Session) -> Unit) {
+        sessionDismiss = callback
+    }
+    private lateinit var sessionUpdateFollowedAt: (session: Session) -> Unit
+    fun setSessionUpdateFollowedAtCallback(callback: (Session) -> Unit) {
+        sessionUpdateFollowedAt = callback
     }
 
     override fun buildAdapter(
@@ -35,9 +40,8 @@ class ReorderingFollowingViewMvcImpl(
             inflater,
             this,
             supportFragmentManager,
-            reloadSessionCallback,
-            sessionDismissCallback,
-            sessionUpdateFollowedAtCallback
+            sessionDismiss,
+            sessionUpdateFollowedAt
         )
     }
 
