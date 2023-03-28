@@ -1,7 +1,7 @@
 package pl.llp.aircasting
 
 import dagger.Component
-import pl.llp.aircasting.di.AppComponent
+import pl.llp.aircasting.di.UserDependentComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
 
@@ -21,7 +21,7 @@ import javax.inject.Singleton
         RepositoryModule::class
     ]
 )
-interface TestAppComponent: AppComponent {
+interface TestAppComponent: UserDependentComponent {
     fun inject(test: LoginTest)
     fun inject(test: CreateAccountTest)
     fun inject(test: MobileSessionTest)

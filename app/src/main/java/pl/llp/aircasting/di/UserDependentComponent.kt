@@ -49,7 +49,7 @@ import javax.inject.Singleton
         RepositoryModule::class
     ]
 )
-interface AppComponent {
+interface UserDependentComponent {
     fun userComponentFactory(): UserComponent.Factory
     fun inject(app: AircastingApplication)
     fun inject(activity: BaseActivity)
