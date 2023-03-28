@@ -4,6 +4,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.LauncherActivity
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.NonAuthenticated
@@ -28,6 +29,7 @@ interface AppComponent {
     fun inject(target: CreateAccountActivity)
     fun inject(target: LoginActivity)
     fun inject(target: BaseActivity)
+    fun inject(target: LauncherActivity)
 
     fun userComponentFactory(): UserDependentComponent.Factory
 }

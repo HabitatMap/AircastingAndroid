@@ -86,6 +86,8 @@ dependencies {
 
     implementation(platform(AppDependencies.firebaseBom))
     implementation(AppDependencies.appLibraries)
+    implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.google.android.material:material:1.4.0")
     kapt(AppDependencies.kaptLibraries)
     kaptAndroidTest(AppDependencies.kaptAndroidTestLibraries)
     androidTestImplementation(AppDependencies.androidTestImplementation)

@@ -17,13 +17,14 @@ import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionActivity
-import pl.llp.aircasting.ui.view.screens.onboarding.OnboardingActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.events.AppToForegroundEvent
+import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
+import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
+import pl.llp.aircasting.util.events.LocationPermissionsResultEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.goToMobileDormantTab
@@ -47,15 +48,8 @@ class MainController @AssistedInject constructor(
 ) {
     private var isReceiverRegistered: Boolean = false
     fun onCreate() {
-        val logout = EventBus.getDefault().getStickyEvent(LogoutEvent::class.java)
 
-        if (!mSettings.onboardingDisplayed() && mSettings.getAuthToken() == null) {
-            showOnboardingScreen()
-        } else if (mSettings.getAuthToken() == null || logout?.inProgress == true) {
-            showLoginScreen()
-        } else {
-            setupDashboard()
-        }
+        setupDashboard()
 
         NewSessionActivity.register(rootActivity, Session.Type.FIXED)
         NewSessionActivity.register(rootActivity, Session.Type.MOBILE)
@@ -80,16 +74,6 @@ class MainController @AssistedInject constructor(
         unregisterConnectivityManager()
         mSessionManager.onStop()
         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-    }
-
-    private fun showLoginScreen() {
-        LoginActivity.start(rootActivity)
-        rootActivity.finish()
-    }
-
-    private fun showOnboardingScreen() {
-        OnboardingActivity.start(rootActivity)
-        rootActivity.finish()
     }
 
     private fun setupDashboard() {
