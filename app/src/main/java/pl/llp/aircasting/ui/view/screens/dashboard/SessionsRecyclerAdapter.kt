@@ -3,17 +3,16 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.found
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
@@ -22,7 +21,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     private val recyclerView: RecyclerView?,
     private val mInflater: LayoutInflater,
     protected val supportFragmentManager: FragmentManager,
-    protected val mSessionsViewModel: SessionsViewModel
+    protected val reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
 ) : RecyclerView.Adapter<SessionsRecyclerAdapter<ListenerType>.MyViewHolder>() {
 
     inner class MyViewHolder(private val mViewMvc: SessionViewMvc<ListenerType>) :
@@ -72,7 +71,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
             val position = mSessionPresenters.indexOf(SessionPresenter(it))
             if (found(position)) {
                 val presenter = mSessionPresenters[position]
-                mSessionsViewModel.viewModelScope.launch {
+                MainScope().launch {
                     presenter.session =
                         prepareSession(it, mSessionPresenters[position].expanded)
                     presenter.updateSelectedStream()
@@ -146,7 +145,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
 
     private suspend fun getFromDB(session: Session): Session? {
         val dbSessionWithMeasurements =
-            mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).firstOrNull()
+            reloadSessionCallback(session.uuid)
 
         return dbSessionWithMeasurements?.let { Session(it) }
     }

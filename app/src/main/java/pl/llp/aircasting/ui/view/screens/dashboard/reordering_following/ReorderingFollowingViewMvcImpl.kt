@@ -4,22 +4,28 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
-import pl.llp.aircasting.util.ItemTouchHelperAdapter
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingViewMvcImpl
+import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
+import pl.llp.aircasting.util.ItemTouchHelperAdapter
 
 class ReorderingFollowingViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager
-): FollowingViewMvcImpl(inflater, parent, supportFragmentManager),
+    supportFragmentManager: FragmentManager,
+    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
+    private val sessionDismissCallback: (session: Session) -> Unit,
+    private val sessionUpdateFollowedAtCallback: (session: Session) -> Unit,
+) : FollowingViewMvcImpl(inflater, parent, supportFragmentManager, reloadSessionCallback),
     FollowingSessionViewMvc.Listener {
     init {
         addTouchHelperToRecyclerView()
     }
+
     override fun buildAdapter(
         inflater: LayoutInflater,
         supportFragmentManager: FragmentManager
@@ -28,7 +34,10 @@ class ReorderingFollowingViewMvcImpl(
             mRecyclerSessions,
             inflater,
             this,
-            supportFragmentManager
+            supportFragmentManager,
+            reloadSessionCallback,
+            sessionDismissCallback,
+            sessionUpdateFollowedAtCallback
         )
     }
 

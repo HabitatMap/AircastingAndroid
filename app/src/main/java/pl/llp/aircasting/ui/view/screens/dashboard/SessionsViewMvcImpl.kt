@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
@@ -23,7 +24,8 @@ import pl.llp.aircasting.util.ItemTouchHelperAdapter
 abstract class SessionsViewMvcImpl<ListenerType>(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager
+    supportFragmentManager: FragmentManager,
+    protected val reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
 ) : BaseObservableViewMvc<SessionsViewMvc.Listener>(),
     SessionsViewMvc {
 
@@ -68,7 +70,7 @@ abstract class SessionsViewMvcImpl<ListenerType>(
 
     abstract fun buildAdapter(
         inflater: LayoutInflater,
-        supportFragmentManager: FragmentManager
+        supportFragmentManager: FragmentManager,
     ): SessionsRecyclerAdapter<ListenerType>
 
     private fun onRecordNewSessionClicked() {

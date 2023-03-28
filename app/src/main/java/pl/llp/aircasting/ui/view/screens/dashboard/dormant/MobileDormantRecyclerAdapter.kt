@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 
 class MobileDormantRecyclerAdapter(
@@ -14,12 +14,12 @@ class MobileDormantRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: MobileDormantSessionViewMvc.Listener,
     supportFragmentManager: FragmentManager,
-    sessionsViewModel: SessionsViewModel = SessionsViewModel()
+    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
 ) : SessionsRecyclerAdapter<MobileDormantSessionViewMvc.Listener>(
     recyclerView,
     mInflater,
     supportFragmentManager,
-    sessionsViewModel
+    reloadSessionCallback
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {

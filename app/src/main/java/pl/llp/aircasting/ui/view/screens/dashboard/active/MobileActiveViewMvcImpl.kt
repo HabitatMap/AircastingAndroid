@@ -4,17 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsRecyclerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvcImpl
 
 class MobileActiveViewMvcImpl(
     inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager
+    supportFragmentManager: FragmentManager,
+    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?
 ) : SessionsViewMvcImpl<MobileActiveSessionViewMvc.Listener>(
     inflater,
     parent,
-    supportFragmentManager
+    supportFragmentManager,
+    reloadSessionCallback
 ), MobileActiveSessionViewMvc.Listener {
 
     override fun buildAdapter(
@@ -25,7 +28,8 @@ class MobileActiveViewMvcImpl(
             mRecyclerSessions,
             inflater,
             this,
-            supportFragmentManager
+            supportFragmentManager,
+            reloadSessionCallback
         )
     }
 

@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.fixed.FixedRecyclerAdapter
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.expandedCards
 
 open class FollowingRecyclerAdapter(
@@ -17,13 +17,13 @@ open class FollowingRecyclerAdapter(
     private val mInflater: LayoutInflater,
     private val mListener: FollowingSessionViewMvc.Listener,
     supportFragmentManager: FragmentManager,
-    sessionsViewModel: SessionsViewModel = SessionsViewModel()
+    reloadSessionCallback: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?,
 ) : FixedRecyclerAdapter<FollowingSessionViewMvc.Listener>(
     recyclerView,
     mInflater,
     mListener,
     supportFragmentManager,
-    sessionsViewModel
+    reloadSessionCallback
 ) {
     override val mSessionPresenters: SortedList<SessionPresenter> =
         SortedList(SessionPresenter::class.java, FollowingModificationCallback())
