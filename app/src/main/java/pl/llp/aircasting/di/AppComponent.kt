@@ -2,11 +2,12 @@ package pl.llp.aircasting.di
 
 import dagger.Component
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.components.UserComponent
 import pl.llp.aircasting.di.modules.*
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.*
-import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
+import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.active.DisconnectedView
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
@@ -49,6 +50,7 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent {
+    fun userComponentFactory(): UserComponent.Factory
     fun inject(app: AircastingApplication)
     fun inject(activity: BaseActivity)
     fun inject(activity: OnboardingActivity)

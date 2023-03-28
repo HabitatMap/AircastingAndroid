@@ -14,8 +14,10 @@ class ReorderingFollowingFragment : FollowingFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication)
-            .appComponent.inject(this)
+        (activity?.application as AircastingApplication).apply {
+            appComponent.inject(this@ReorderingFollowingFragment)
+            userComponent?.inject(this@ReorderingFollowingFragment)
+        }
 
         val reorderView = ReorderingFollowingViewMvcImpl(
             layoutInflater,

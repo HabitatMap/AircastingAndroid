@@ -39,8 +39,10 @@ class MyAccountActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (application as AircastingApplication)
-            .appComponent.inject(this)
+        (application as AircastingApplication).apply {
+            appComponent.inject(this@MyAccountActivity)
+            userComponent?.inject(this@MyAccountActivity)
+        }
 
         viewModel = ViewModelProvider(
             this,

@@ -40,9 +40,10 @@ class SyncActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val app = application as AircastingApplication
-        val appComponent = app.appComponent
-        appComponent.inject(this)
+        (application as AircastingApplication).apply {
+            appComponent.inject(this@SyncActivity)
+            userComponent?.inject(this@SyncActivity)
+        }
 
         val view = SyncViewMvcImpl(layoutInflater, null)
         controller = controllerFactory.create(this, view, supportFragmentManager)
