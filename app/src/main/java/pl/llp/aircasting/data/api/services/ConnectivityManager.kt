@@ -8,12 +8,13 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.extensions.isConnected
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class ConnectivityManager @Inject constructor(
     private val sessionSyncService: SessionsSyncService,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,

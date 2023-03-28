@@ -27,7 +27,7 @@ open class FollowingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .userDependentComponent.inject(this)
+            .userDependentComponent?.inject(this)
 
         view = FollowingViewMvcImpl(
             layoutInflater,

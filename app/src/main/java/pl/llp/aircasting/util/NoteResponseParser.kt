@@ -2,14 +2,14 @@ package pl.llp.aircasting.util
 
 import pl.llp.aircasting.data.api.response.NoteResponse
 import pl.llp.aircasting.data.model.Note
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.ParseDateError
 import java.text.ParseException
 import java.util.*
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class NoteResponseParser @Inject constructor(
     private val errorHandler: ErrorHandler
 ) {

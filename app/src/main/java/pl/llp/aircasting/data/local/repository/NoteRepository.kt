@@ -3,10 +3,11 @@ package pl.llp.aircasting.data.local.repository
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.NoteDBObject
 import pl.llp.aircasting.data.model.Note
+import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class NoteRepository @Inject constructor() {
     private val mDatabase = DatabaseProvider.get()
 

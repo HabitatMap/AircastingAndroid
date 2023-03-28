@@ -43,7 +43,7 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
     override fun setup() {
         super.setup()
         expandBottomSheet()
-        (activity?.application as AircastingApplication).userDependentComponent.inject(this)
+        (activity?.application as AircastingApplication).userDependentComponent?.inject(this)
 
         binding = contentView?.let { CreateThresholdAlertBottomSheetLayoutBinding.bind(it) }
         viewModel = ViewModelProvider(

@@ -5,7 +5,7 @@ import pl.llp.aircasting.di.UserDependentComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 @Component(
     modules = [
         AppModule::class,

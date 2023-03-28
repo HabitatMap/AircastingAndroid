@@ -1,12 +1,12 @@
 package pl.llp.aircasting.data.api.services
 
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionExportFailedError
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class ExportSessionService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler

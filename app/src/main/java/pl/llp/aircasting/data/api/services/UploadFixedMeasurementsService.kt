@@ -3,6 +3,7 @@ package pl.llp.aircasting.data.api.services
 import pl.llp.aircasting.data.api.GzippedParams
 import pl.llp.aircasting.data.api.params.UploadFixedMeasurementsBody
 import pl.llp.aircasting.data.api.params.UploadFixedMeasurementsParams
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
@@ -10,7 +11,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurementStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class UploadFixedMeasurementsService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler

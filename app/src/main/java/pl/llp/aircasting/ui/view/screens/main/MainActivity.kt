@@ -52,7 +52,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         super.onCreate(savedInstanceState)
 
         (application as AircastingApplication)
-            .userDependentComponent.inject(this)
+            .userDependentComponent?.inject(this)
 
         // subscribing to custom uncaught exception handler to handle crash
         Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))

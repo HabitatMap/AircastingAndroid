@@ -26,9 +26,7 @@ open class AirBeamRecordSessionService: AirBeamService() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val app = application as AircastingApplication
-        val appComponent = app.userDependentComponent
-        appComponent.inject(this)
+        (application as AircastingApplication).userDependentComponent?.inject(this)
 
         mIntent = intent
         mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as? DeviceItem?

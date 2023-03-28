@@ -40,7 +40,7 @@ class MyAccountActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         (application as AircastingApplication)
-            .userDependentComponent.inject(this)
+            .userDependentComponent?.inject(this)
 
         viewModel = ViewModelProvider(
             this,

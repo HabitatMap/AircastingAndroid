@@ -7,14 +7,13 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
-import javax.inject.Singleton
 
 open class WebServerFactory
 
 @Module
 open class ApiModule {
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesMockWebServerFactory(): WebServerFactory = WebServerFactory()
 
     @Provides

@@ -13,6 +13,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.SessionBuilder
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
@@ -27,22 +28,21 @@ import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneReader
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
-import javax.inject.Singleton
 
 @Module
 open class SensorsModule {
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardDownloadService(
         application: AircastingApplication
     ): SDCardFileService = SDCardFileService(application)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardCSVFileChecker(): SDCardCSVFileChecker = SDCardCSVFileChecker()
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardCSVFileFactory(
         application: AircastingApplication
     ): SDCardCSVFileFactory =
@@ -51,13 +51,13 @@ open class SensorsModule {
         )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesFixedSDCardCSVIterator(
         errorHandler: ErrorHandler
     ): SDCardSessionFileHandlerFixed = SDCardSessionFileHandlerFixed(errorHandler)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesMobileSDCardCSVIterator(
         errorHandler: ErrorHandler,
         sessionsRepository: SessionsRepository,
@@ -72,7 +72,7 @@ open class SensorsModule {
         )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardUploadFixedMeasurementsService(
         sdCardCSVIterator: SDCardSessionFileHandlerFixed,
         uploadFixedMeasurementsService: UploadFixedMeasurementsService?
@@ -83,7 +83,7 @@ open class SensorsModule {
         )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardMobileSessionsProcessor(
         csvIterator: SDCardSessionFileHandlerMobile,
         sessionsRepository: SessionsRepository,
@@ -97,7 +97,7 @@ open class SensorsModule {
     )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardFixedSessionsProcessor(
         csvFileFactory: SDCardCSVFileFactory,
         csvIterator: SDCardSessionFileHandlerFixed,
@@ -113,7 +113,7 @@ open class SensorsModule {
     )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardSyncService(
         sdCardFileService: SDCardFileService,
         sdCardCSVFileChecker: SDCardCSVFileChecker,
@@ -133,11 +133,11 @@ open class SensorsModule {
     )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSDCardClearService(): SDCardClearService = SDCardClearService()
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesAirBeamConnectorFactory(
         application: AircastingApplication,
         settings: Settings,
@@ -147,7 +147,7 @@ open class SensorsModule {
         AirBeamConnectorFactory(application, settings, errorHandler, bluetoothManager)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesAirBeamReconnector(
         application: AircastingApplication,
         sessionsRepository: SessionsRepository,
@@ -156,18 +156,18 @@ open class SensorsModule {
         AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesAirBeamDiscoveryService(
         application: AircastingApplication,
         bluetoothManager: BluetoothManager
     ): AirBeamDiscoveryService = AirBeamDiscoveryService(application, bluetoothManager)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesSessionBuilder(): SessionBuilder = SessionBuilder()
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesMicrophoneReader(
         audioReader: AudioReader,
         errorHandler: ErrorHandler,
@@ -175,17 +175,17 @@ open class SensorsModule {
     ): MicrophoneReader = MicrophoneReader(audioReader, errorHandler, settings)
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesAudioReader(): AudioReader = AudioReader()
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesMeasurementsAveragingHelper(
         helper: MeasurementsAveragingHelperDefault
     ): MeasurementsAveragingHelper = helper
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesAveragingService(
         mMeasurementsRepository: MeasurementsRepositoryImpl,
         mMeasurementStreamsRepository: MeasurementStreamsRepository,
@@ -199,7 +199,7 @@ open class SensorsModule {
     )
 
     @Provides
-    @Singleton
+    @UserSessionScope
     fun providesRecordingHandler(
         settings: Settings,
         fixedSessionUploadService: FixedSessionUploadService,

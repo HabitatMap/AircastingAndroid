@@ -5,13 +5,13 @@ import pl.llp.aircasting.data.api.response.SessionResponse
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.TAGS_SEPARATOR
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class SessionDownloadService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val noteResponseParser: NoteResponseParser,

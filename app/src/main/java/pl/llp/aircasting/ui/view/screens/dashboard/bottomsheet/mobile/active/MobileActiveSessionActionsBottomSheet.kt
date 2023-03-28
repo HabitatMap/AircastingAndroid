@@ -36,7 +36,7 @@ open class MobileActiveSessionActionsBottomSheet(
     }
 
     override fun setup() {
-        (requireActivity().application as AircastingApplication).userDependentComponent.inject(this)
+        (requireActivity().application as AircastingApplication).userDependentComponent?.inject(this)
         setupDisconnectedButton()
         setupStopButton()
         setupAddNoteButton()

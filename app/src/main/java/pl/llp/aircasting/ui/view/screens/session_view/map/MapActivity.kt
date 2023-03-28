@@ -59,7 +59,7 @@ class MapActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         (application as AircastingApplication)
-            .userDependentComponent.inject(this)
+            .userDependentComponent?.inject(this)
 
         val sensorName = intent.getStringExtra(SENSOR_NAME_KEY)
         val sessionUUID: String = intent.getStringExtra(SESSION_UUID_KEY) as String

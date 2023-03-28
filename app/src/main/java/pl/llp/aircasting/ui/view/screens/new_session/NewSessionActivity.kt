@@ -84,9 +84,7 @@ class NewSessionActivity : BaseActivity() {
             return
         }
 
-        val app = application as AircastingApplication
-        val appComponent = app.userDependentComponent
-        appComponent.inject(this)
+        (application as AircastingApplication).userDependentComponent?.inject(this)
 
         val view = NewSessionViewMvcImpl(layoutInflater, null)
         controller = NewSessionController(

@@ -3,6 +3,7 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManagerDefault
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothRuntimePermissionManager
@@ -13,11 +14,11 @@ import javax.inject.Singleton
 @Module
 open class PermissionsModule {
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesPermissionsManager(): PermissionsManager = PermissionsManager()
 
     @Provides
-    @Singleton
+    @UserSessionScope
     open fun providesBluetoothManager(application: AircastingApplication): BluetoothManager {
         return if (isSDKGreaterOrEqualToS())
             BluetoothRuntimePermissionManager(application.applicationContext, providesPermissionsManager())

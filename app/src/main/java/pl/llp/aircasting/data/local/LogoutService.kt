@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
@@ -19,7 +20,7 @@ import retrofit2.Response
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class LogoutService @Inject constructor(
     private val mSettings: Settings,
     private val appContext: Context,

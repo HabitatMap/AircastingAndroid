@@ -2,12 +2,13 @@ package pl.llp.aircasting.di.factories
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import pl.llp.aircasting.di.UserSessionScope
 
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class ViewModelFactory @Inject constructor(
     private val models: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
 ) : ViewModelProvider.Factory {

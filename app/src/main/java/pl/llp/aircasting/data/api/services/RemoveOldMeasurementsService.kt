@@ -4,11 +4,12 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@UserSessionScope
 class RemoveOldMeasurementsService @Inject constructor(
     private val measurementRepository: MeasurementsRepositoryImpl,
     private val sessionRepository: SessionsRepository,

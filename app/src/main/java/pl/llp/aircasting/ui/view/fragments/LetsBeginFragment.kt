@@ -26,7 +26,7 @@ class LetsBeginFragment : BaseFragment<LetsBeginViewMvcImpl, LetsBeginController
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .userDependentComponent.inject(this)
+            .userDependentComponent?.inject(this)
 
         val view = LetsBeginViewMvcImpl(layoutInflater, null, childFragmentManager)
         controller = LetsBeginController(activity, view, context, errorHandler)

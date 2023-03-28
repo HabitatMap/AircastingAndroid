@@ -27,9 +27,8 @@ class ClearSDCardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val app = application as AircastingApplication
-        val appComponent = app.userDependentComponent
-        appComponent.inject(this)
+        (application as AircastingApplication)
+            .userDependentComponent?.inject(this)
 
         val view = ClearSDCardViewMvcImpl(layoutInflater, null)
         controller = controllerFactory.create(this, view, supportFragmentManager)
