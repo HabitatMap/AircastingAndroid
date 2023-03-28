@@ -44,9 +44,9 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
 class SyncController @AssistedInject constructor(
     @Assisted private val mRootActivity: AppCompatActivity,
     @Assisted mViewMvc: SyncViewMvc,
+    @Assisted private val mFragmentManager: FragmentManager,
     private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
-    private val mFragmentManager: FragmentManager,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings,
     private val mSessionsSyncService: SessionsSyncService,

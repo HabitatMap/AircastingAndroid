@@ -23,6 +23,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUValidationErrorToast
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteDeletedEvent
@@ -45,6 +46,7 @@ abstract class SessionDetailsViewController(
     private val mApiService: ApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!),
     private val mDownloadService: SessionDownloadService = SessionDownloadService(
         mApiService,
+        NoteResponseParser(mErrorHandler)
     ),
     private val mSessionRepository: SessionsRepository = SessionsRepository(),
     private val mMeasurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),

@@ -26,6 +26,7 @@ class MobileActiveViewMvcImpl(
             inflater,
             this,
             supportFragmentManager,
+            reloadSession
         )
     }
 

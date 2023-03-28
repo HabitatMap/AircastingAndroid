@@ -27,6 +27,7 @@ class MobileDormantViewMvcImpl(
             inflater,
             this,
             supportFragmentManager,
+            reloadSession
         )
     }
 

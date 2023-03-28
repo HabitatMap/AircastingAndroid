@@ -27,6 +27,7 @@ open class FollowingViewMvcImpl(
             inflater,
             this,
             supportFragmentManager,
+            reloadSession
         )
     }
 }

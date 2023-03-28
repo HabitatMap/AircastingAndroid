@@ -22,22 +22,18 @@ import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
 import pl.llp.aircasting.util.ItemTouchHelperAdapter
 
 abstract class SessionsViewMvcImpl<ListenerType>(
-    inflater: LayoutInflater,
+    private val inflater: LayoutInflater,
     parent: ViewGroup?,
-    supportFragmentManager: FragmentManager,
+    private val supportFragmentManager: FragmentManager,
 ) : BaseObservableViewMvc<SessionsViewMvc.Listener>(),
     SessionsViewMvc {
-
     protected lateinit var reloadSession: suspend (uuid: String) -> SessionWithStreamsAndMeasurementsDBObject?
-    fun setReloadSessionCallback(callback: suspend (String) -> SessionWithStreamsAndMeasurementsDBObject?) {
-        reloadSession = callback
-    }
     private var mRecordSessionButton: Button? = null
     private var mOnExploreBtn: Button? = null
     protected var mRecyclerSessions: RecyclerView? = null
     private var mLoading: TextView? = null
     private var mEmptyView: View? = null
-    protected val mAdapter: SessionsRecyclerAdapter<ListenerType>
+    private lateinit var mAdapter: SessionsRecyclerAdapter<ListenerType>
     var mDidYouKnowBox: MaterialCardView? = null
 
     init {
@@ -57,15 +53,19 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         mDidYouKnowBox?.setOnClickListener {
             Navigation.findNavController(it).navigate(R.id.navigation_lets_begin)
         }
+    }
+
+    fun initializeAdapter(callback: suspend (String) -> SessionWithStreamsAndMeasurementsDBObject?) {
+        reloadSession = callback
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter
         if (mAdapter is ItemTouchHelperAdapter) {
-            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(mAdapter)
+            val adapter = mAdapter as ItemTouchHelperAdapter
+            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(adapter)
             val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
             itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
         }
     }
-
     abstract fun layoutId(): Int
     abstract fun showDidYouKnowBox(): Boolean
     abstract fun recordNewSessionButtonId(): Int

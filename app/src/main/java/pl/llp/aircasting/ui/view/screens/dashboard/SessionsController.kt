@@ -107,6 +107,6 @@ abstract class SessionsController(
         }
     }
 
-    suspend fun getReloadSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
+    suspend fun getReloadedSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
         mSessionsViewModel.reloadSessionWithMeasurements(uuid).firstOrNull()
 }

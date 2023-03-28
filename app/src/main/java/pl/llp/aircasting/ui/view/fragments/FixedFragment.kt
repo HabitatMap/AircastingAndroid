@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 
 class FixedFragment : Fragment() {
-    private var controller: FixedController? = null
-    private var view: FixedViewMvcImpl<FixedSessionViewMvc.Listener>? = null
+    private lateinit var controller: FixedController
+    private lateinit var view: FixedViewMvcImpl<FixedSessionViewMvc.Listener>
 
     @Inject
     lateinit var controllerFactory: FixedControllerFactory
@@ -35,9 +35,7 @@ class FixedFragment : Fragment() {
             layoutInflater,
             null,
             childFragmentManager
-        ) {
-            controller?.getReloadSession(it)
-        }
+        )
         controller = controllerFactory.create(
             activity,
             view,
@@ -45,6 +43,10 @@ class FixedFragment : Fragment() {
             childFragmentManager,
             context
         )
+
+        view.apply {
+            initializeAdapter(controller::getReloadedSession)
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()
@@ -71,15 +73,11 @@ class FixedFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        view = null
         controller?.onDestroy()
-        controller = null
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        view = null
         controller?.onDestroy()
-        controller = null
     }
 }

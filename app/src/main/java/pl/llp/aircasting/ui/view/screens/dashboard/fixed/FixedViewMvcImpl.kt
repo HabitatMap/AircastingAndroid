@@ -27,6 +27,7 @@ open class FixedViewMvcImpl<ListenerType : FixedSessionViewMvc.Listener>(
             inflater,
             this,
             supportFragmentManager,
+            reloadSession
         )
     }
 

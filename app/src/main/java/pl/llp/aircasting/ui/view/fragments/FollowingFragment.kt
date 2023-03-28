@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 
 open class FollowingFragment : Fragment() {
-    protected var controller: FollowingController? = null
-    protected var view: FollowingViewMvcImpl? = null
+    protected lateinit var controller: FollowingController
+    protected lateinit var view: FollowingViewMvcImpl
 
     @Inject
     lateinit var controllerFactory: FollowingControllerFactory
@@ -33,9 +33,7 @@ open class FollowingFragment : Fragment() {
             layoutInflater,
             null,
             childFragmentManager
-        ) {
-            controller?.getReloadSession(it)
-        }
+        )
 
         controller = controllerFactory.create(
             activity,
@@ -44,6 +42,8 @@ open class FollowingFragment : Fragment() {
             childFragmentManager,
             context
         )
+
+        view.initializeAdapter(controller::getReloadedSession)
 
         if (sessionsRequested) {
             controller?.onCreate()
@@ -70,15 +70,11 @@ open class FollowingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        view = null
         controller?.onDestroy()
-        controller = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        view = null
         controller?.onDestroy()
-        controller = null
     }
 }

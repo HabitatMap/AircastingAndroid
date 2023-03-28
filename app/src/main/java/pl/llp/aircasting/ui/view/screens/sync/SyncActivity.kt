@@ -61,9 +61,9 @@ class SyncActivity : BaseActivity() {
         controller = SyncController(
             this,
             view,
+            supportFragmentManager,
             permissionsManager,
             bluetoothManager,
-            supportFragmentManager,
             apiServiceFactory,
             errorHandler,
             settings

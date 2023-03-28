@@ -17,19 +17,11 @@ class ReorderingFollowingFragment : FollowingFragment() {
         (activity?.application as AircastingApplication)
             .appComponent.inject(this)
 
-        view = ReorderingFollowingViewMvcImpl(
+        val reorderView = ReorderingFollowingViewMvcImpl(
             layoutInflater,
             null,
             childFragmentManager,
-            {
-                controller?.getReloadSession(it)
-            },
-            {
-                controller?.sessionDismissCallback(it)
-            }
-        ) {
-            controller?.sessionUpdateFollowedAtCallback(it)
-        }
+        )
 
         controller = controllerFactory.create(
             activity,
@@ -38,6 +30,13 @@ class ReorderingFollowingFragment : FollowingFragment() {
             childFragmentManager,
             context
         )
+        reorderView.apply {
+            setSessionDismissCallback(controller::sessionDismissCallback)
+            setSessionUpdateFollowedAtCallback(controller::sessionUpdateFollowedAtCallback)
+            initializeAdapter(controller::getReloadedSession)
+        }
+
+        view = reorderView
 
         if (sessionsRequested) {
             controller?.onCreate()

@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 
 class MobileActiveFragment : Fragment() {
-    private var controller: MobileActiveController? = null
-    private var view: MobileActiveViewMvcImpl? = null
+    private lateinit var controller: MobileActiveController
+    private lateinit var view: MobileActiveViewMvcImpl
 
     @Inject
     lateinit var controllerFactory: MobileActiveControllerFactory
@@ -33,9 +33,7 @@ class MobileActiveFragment : Fragment() {
             layoutInflater,
             null,
             childFragmentManager
-        ) {
-            controller?.getReloadSession(it)
-        }
+        )
         controller = controllerFactory.create(
             activity,
             view,
@@ -43,6 +41,10 @@ class MobileActiveFragment : Fragment() {
             childFragmentManager,
             context
         )
+
+        view.apply {
+            initializeAdapter(controller::getReloadedSession)
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()
@@ -70,14 +72,10 @@ class MobileActiveFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         controller?.onDestroy()
-        controller = null
-        view = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
         controller?.onDestroy()
-        controller = null
-        view = null
     }
 }
