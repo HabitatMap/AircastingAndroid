@@ -51,10 +51,8 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (application as AircastingApplication).apply {
-            appComponent.inject(this@MainActivity)
-            userComponent?.inject(this@MainActivity)
-        }
+        (application as AircastingApplication)
+            .appComponent.inject(this)
 
         // subscribing to custom uncaught exception handler to handle crash
         Thread.setDefaultUncaughtExceptionHandler(AircastingUncaughtExceptionHandler(settings))

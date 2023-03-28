@@ -8,7 +8,6 @@ import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.di.UserDependentComponent
 import pl.llp.aircasting.di.DaggerAppComponent
-import pl.llp.aircasting.di.components.UserComponent
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.di.modules.PermissionsModule

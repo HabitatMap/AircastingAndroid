@@ -27,10 +27,7 @@ class MobileActiveFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         (activity?.application as AircastingApplication)
-            .apply {
-                appComponent.inject(this@MobileActiveFragment)
-                userComponent?.inject(this@MobileActiveFragment)
-            }
+            .appComponent.inject(this)
 
         view = MobileActiveViewMvcImpl(
             layoutInflater,

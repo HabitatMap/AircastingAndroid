@@ -26,10 +26,8 @@ class MobileDormantFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication).apply {
-            appComponent.inject(this@MobileDormantFragment)
-            userComponent?.inject(this@MobileDormantFragment)
-        }
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
 
         view = MobileDormantViewMvcImpl(
             layoutInflater,

@@ -27,10 +27,9 @@ class FixedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication).apply {
-            appComponent.inject(this@FixedFragment)
-            userComponent?.inject(this@FixedFragment)
-        }
+        (activity?.application as AircastingApplication)
+            .appComponent
+            .inject(this)
 
         view = FixedViewMvcImpl(
             layoutInflater,

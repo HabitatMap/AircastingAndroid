@@ -31,8 +31,8 @@ class AirBeamSyncService: AirBeamService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val app = application as AircastingApplication
-        app.appComponent.inject(this)
-        app.userComponent?.inject(this)
+        val appComponent = app.appComponent
+        appComponent.inject(this)
 
         return super.onStartCommand(intent, flags, startId)
     }

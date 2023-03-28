@@ -36,10 +36,8 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication).apply {
-            appComponent.inject(this@SettingsFragment)
-            userComponent?.inject(this@SettingsFragment)
-        }
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
 
         view = SettingsViewMvcImpl(inflater, container, settings)
         controller = SettingsController(

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.annotation.Nullable
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import pl.llp.aircasting.AircastingApplication
@@ -26,6 +27,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     lateinit var settings: Settings
 
     @Inject
+    @Nullable
     lateinit var sessionsSyncService: SessionsSyncService
 
     private var mTabPosition: Int = 0
@@ -35,10 +37,8 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        (activity?.application as AircastingApplication).apply {
-            appComponent.inject(this@DashboardFragment)
-            userComponent?.inject(this@DashboardFragment)
-        }
+        (activity?.application as AircastingApplication)
+            .appComponent.inject(this)
 
         view = initView(inflater, container)
         controller = DashboardController(view, sessionsSyncService)
