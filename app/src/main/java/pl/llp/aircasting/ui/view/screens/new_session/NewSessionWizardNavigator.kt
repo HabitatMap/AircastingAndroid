@@ -2,8 +2,6 @@ package pl.llp.aircasting.ui.view.screens.new_session
 
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationFragment
@@ -11,11 +9,15 @@ import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocat
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationFragment
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.*
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceFragment
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeFragment
 import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsFragment
 import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDetailsViewMvc
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 
 class NewSessionWizardNavigator(
     private val mViewMvc: NewSessionViewMvc,
@@ -80,7 +82,7 @@ class NewSessionWizardNavigator(
 
     fun goToConnectingAirBeam() {
         incrementStepProgress()
-        val fragment = ConnectingAirBeamFragment(mFragmentManager)
+        val fragment = ConnectingAirBeamFragment()
         registerBackPressed(fragment)
         goToFragment(fragment)
     }
