@@ -8,6 +8,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
 
+/**
+ * Created by Maria Turnau on 02/09/2020.
+ */
+
 class CreateAccountActivity : BaseActivity() {
     private var controller: CreateAccountController? = null
 
