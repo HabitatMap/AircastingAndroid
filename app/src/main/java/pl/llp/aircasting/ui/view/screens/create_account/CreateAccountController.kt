@@ -6,7 +6,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
-import kotlinx.coroutines.*
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -15,6 +20,7 @@ import pl.llp.aircasting.data.api.params.CreateAccountParams
 import pl.llp.aircasting.data.api.response.CreateAccountErrorResponse
 import pl.llp.aircasting.data.api.response.UserResponse
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.NonAuthenticated
 import pl.llp.aircasting.ui.view.screens.login.LogOutInBackgroundInfoDisplayer
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
@@ -26,17 +32,24 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import retrofit2.Response
 
-class CreateAccountController(
-    private val mContextActivity: AppCompatActivity,
-    private val mViewMvc: CreateAccountViewMvcImpl,
+@AssistedFactory
+interface CreateAccountControllerFactory {
+    fun create(
+        mContextActivity: AppCompatActivity,
+        mViewMvc: CreateAccountViewMvcImpl,
+        fromOnboarding: Boolean?
+    ): CreateAccountController
+}
+class CreateAccountController @AssistedInject constructor(
+    @Assisted private val mContextActivity: AppCompatActivity,
+    @Assisted private val mViewMvc: CreateAccountViewMvcImpl,
+    @Assisted private val fromOnboarding: Boolean?,
+    @NonAuthenticated private val apiService: ApiService,
     private val mSettings: Settings,
-    private val apiService: ApiService,
-    private val fromOnboarding: Boolean?,
-    private val mErrorHandler: ErrorHandler = ErrorHandler(mContextActivity),
-    private val coroutineScope: CoroutineScope = mContextActivity.lifecycleScope,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
-    private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-) : CreateAccountViewMvc.Listener, LogOutInBackgroundInfoDisplayer {
+    private val mErrorHandler: ErrorHandler,
+)  : CreateAccountViewMvc.Listener, LogOutInBackgroundInfoDisplayer {
+
+    private val coroutineScope: CoroutineScope = mContextActivity.lifecycleScope
 
     fun onStart() {
         mViewMvc.registerListener(this)
@@ -62,21 +75,18 @@ class CreateAccountController(
         )
         val createAccountBody = CreateAccountBody(createAccountParams)
 
-        callCreateAccountAndProcessResponse(apiService, createAccountBody)
+        callCreateAccountAndProcessResponse(createAccountBody)
     }
 
     private fun callCreateAccountAndProcessResponse(
-        apiService: ApiService,
         createAccountBody: CreateAccountBody
     ) {
         val exceptionHandler = CoroutineExceptionHandler { _, exception ->
             mErrorHandler.handleAndDisplay(UnexpectedAPIError(exception))
         }
 
-        coroutineScope.launch(mainDispatcher + exceptionHandler) {
-            val response = withContext(ioDispatcher) {
-                apiService.createAccount(createAccountBody)
-            }
+        coroutineScope.launch(exceptionHandler) {
+            val response = apiService.createAccount(createAccountBody)
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {

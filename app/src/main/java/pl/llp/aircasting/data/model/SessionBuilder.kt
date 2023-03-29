@@ -1,9 +1,10 @@
 package pl.llp.aircasting.data.model
 
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.Settings
+import javax.inject.Inject
 
-class SessionBuilder {
+class SessionBuilder @Inject constructor() {
     fun build(
         sessionUUID: String,
         deviceItem: DeviceItem,

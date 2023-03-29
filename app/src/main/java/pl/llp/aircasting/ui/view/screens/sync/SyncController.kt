@@ -70,7 +70,7 @@ class SyncController @AssistedInject constructor(
     ErrorViewMvc.Listener {
 
     private val mWizardNavigator: SyncWizardNavigator =
-        SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings)
+        SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings, mErrorHandler)
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)

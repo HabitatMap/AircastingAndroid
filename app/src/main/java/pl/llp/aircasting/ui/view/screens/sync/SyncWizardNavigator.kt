@@ -19,6 +19,7 @@ class SyncWizardNavigator(
     private val mViewMvc: SyncViewMvc,
     fragmentManager: FragmentManager,
     settings: Settings,
+    private val errorHandler: ErrorHandler,
 ): ClearSDCardWizardNavigator(
     context,
     mViewMvc,
@@ -68,7 +69,7 @@ class SyncWizardNavigator(
 
     fun goToAirbeamSyncing(listener: AirbeamSyncingViewMvc.Listener) {
         incrementStepProgress()
-        val fragment = AirbeamSyncingFragment(mFragmentManager, ErrorHandler(mContext))
+        val fragment = AirbeamSyncingFragment(mFragmentManager, errorHandler)
         fragment.listener = listener
         registerBackPressed(fragment)
         goToFragment(fragment)

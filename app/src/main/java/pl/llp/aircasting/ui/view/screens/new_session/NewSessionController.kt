@@ -7,7 +7,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentManager
-import kotlinx.coroutines.*
+import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -42,18 +46,26 @@ import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
-
-class NewSessionController(
-    private val mContextActivity: AppCompatActivity,
-    mViewMvc: NewSessionViewMvc,
-    private val mFragmentManager: FragmentManager,
+@AssistedFactory
+interface NewSessionControllerFactory {
+    fun create(
+        mContextActivity: AppCompatActivity,
+        mViewMvc: NewSessionViewMvc,
+        mFragmentManager: FragmentManager,
+        sessionType: Session.Type
+    ): NewSessionController
+}
+class NewSessionController @AssistedInject constructor(
+    @Assisted private val mContextActivity: AppCompatActivity,
+    @Assisted mViewMvc: NewSessionViewMvc,
+    @Assisted private val mFragmentManager: FragmentManager,
+    @Assisted private val sessionType: Session.Type,
     private val permissionsManager: PermissionsManager,
     private val bluetoothManager: BluetoothManager,
     private val sessionBuilder: SessionBuilder,
     private val settings: Settings,
-    private val sessionType: Session.Type,
-    private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
-    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val errorHandler: ErrorHandler,
+    private val sessionsRepository: SessionsRepository,
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -65,9 +77,8 @@ class NewSessionController(
     ChooseLocationViewMvc.Listener,
     ConfirmationViewMvc.Listener {
 
-    private val wizardNavigator = NewSessionWizardNavigator(mViewMvc, mFragmentManager)
-    private val errorHandler = ErrorHandler(mContextActivity)
-    private val sessionsRepository = SessionsRepository()
+    private val wizardNavigator: NewSessionWizardNavigator =
+        NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
 
@@ -152,14 +163,9 @@ class NewSessionController(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onMicrophoneDeviceSelected() {
-        GlobalScope.launch(mainDispatcher) {
-            var existing = false
-            val query = GlobalScope.async(ioDispatcher) {
-                existing = sessionsRepository.isMicrophoneSessionAlreadyRecording()
-            }
-            query.await()
+        mContextActivity.lifecycleScope.launch {
+            val existing = sessionsRepository.isMicrophoneSessionAlreadyRecording()
             if (existing) {
                 errorHandler.showError(mContextActivity.getString(R.string.you_cant_start_2_microphone_sessions_at_once))
             } else {
@@ -212,8 +218,8 @@ class NewSessionController(
 
             ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
                 if (!permissionsManager.permissionsGranted(grantResults)) errorHandler.showError(
-                        R.string.errors_location_background_services_required
-                    )
+                    R.string.errors_location_background_services_required
+                )
                 goToFirstStep()
             }
 
@@ -252,17 +258,10 @@ class NewSessionController(
         wizardNavigator.goToSelectDevice(bluetoothManager, this)
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     override fun onConnectClicked(selectedDeviceItem: DeviceItem) {
-        GlobalScope.launch(mainDispatcher) {
-            var existing = false
-            val query = GlobalScope.async(ioDispatcher) {
-                existing =
-                    sessionsRepository.mobileSessionAlreadyExistsForDeviceId(
-                        selectedDeviceItem.id
-                    )
-            }
-            query.await()
+        mContextActivity.lifecycleScope.launch {
+            val existing =
+                sessionsRepository.mobileSessionAlreadyExistsForDeviceId(selectedDeviceItem.id)
             if (existing) {
                 errorHandler.showError(R.string.active_session_already_exists)
             } else {

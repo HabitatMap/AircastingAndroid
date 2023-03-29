@@ -5,21 +5,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ApiService
-import pl.llp.aircasting.data.api.services.NonAuthenticated
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import javax.inject.Inject
-
-/**
- * Created by Maria Turnau on 02/09/2020.
- */
 
 class CreateAccountActivity : BaseActivity() {
     private var controller: CreateAccountController? = null
 
     @Inject
-    @NonAuthenticated
-    lateinit var apiService: ApiService
+    lateinit var controllerFactory: CreateAccountControllerFactory
 
     companion object {
         val FROM_ONBOARDING_KEY = "fromOnboarding"
@@ -42,8 +35,7 @@ class CreateAccountActivity : BaseActivity() {
             .appComponent.inject(this)
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
-        controller =
-            CreateAccountController(this, view, settings, apiService, fromOnboarding)
+        controller = controllerFactory.create(this, view, fromOnboarding)
 
         setContentView(view.rootView)
     }

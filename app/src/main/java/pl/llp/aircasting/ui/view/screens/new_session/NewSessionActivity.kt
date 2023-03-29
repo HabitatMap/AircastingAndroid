@@ -10,15 +10,12 @@ import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NullError
 import pl.llp.aircasting.util.extensions.goToFollowingTab
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.setupAppBar
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import javax.inject.Inject
 
 class NewSessionActivity : BaseActivity() {
@@ -26,13 +23,7 @@ class NewSessionActivity : BaseActivity() {
     private var controller: NewSessionController? = null
 
     @Inject
-    lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var bluetoothManager: BluetoothManager
-
-    @Inject
-    lateinit var sessionBuilder: SessionBuilder
+    lateinit var controllerFactory: NewSessionControllerFactory
 
     @Inject
     lateinit var errorHandler: ErrorHandler
@@ -87,16 +78,7 @@ class NewSessionActivity : BaseActivity() {
         (application as AircastingApplication).userDependentComponent?.inject(this)
 
         val view = NewSessionViewMvcImpl(layoutInflater, null)
-        controller = NewSessionController(
-            this,
-            view,
-            supportFragmentManager,
-            permissionsManager,
-            bluetoothManager,
-            sessionBuilder,
-            settings,
-            sessionType
-        )
+        controller = controllerFactory.create(this, view, supportFragmentManager, sessionType)
         controller?.onCreate()
 
         setContentView(view.rootView)
