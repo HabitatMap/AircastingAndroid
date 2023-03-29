@@ -1,6 +1,6 @@
 package pl.llp.aircasting.data.local.repository
 
-import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
@@ -9,9 +9,9 @@ import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
 
 @UserSessionScope
-class ThresholdsRepository @Inject constructor() {
-    private val mDatabase = DatabaseProvider.get()
-
+class ThresholdsRepository @Inject constructor(
+    private val mDatabase: AppDatabase
+) {
     suspend fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {
         return findOrCreateSensorThresholds(session.streams)
     }

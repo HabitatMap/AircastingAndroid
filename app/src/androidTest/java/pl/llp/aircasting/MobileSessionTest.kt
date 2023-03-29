@@ -17,7 +17,7 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.local.DatabaseProvider
+
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSensorsModule

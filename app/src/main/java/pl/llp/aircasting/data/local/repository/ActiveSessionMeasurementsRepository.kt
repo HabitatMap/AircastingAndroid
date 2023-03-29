@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
 import pl.llp.aircasting.data.api.util.Constants
-import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
@@ -10,15 +10,17 @@ import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
 
 @UserSessionScope
-class ActiveSessionMeasurementsRepository @Inject constructor() {
+class ActiveSessionMeasurementsRepository @Inject constructor(
+    private val mDatabase: AppDatabase,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
+    private val measurementsRepositoryImpl :MeasurementsRepositoryImpl,
+) {
     companion object {
         // We get 10 hours/minutes of Measurements for chart (we display 9 dots)
         // 10 hours are needed because we need to cut off last unfinished hour and
         // still get 540 measurements in total, so one hour acts as a buffer
         const val MAX_MEASUREMENTS_PER_STREAM_NUMBER = Constants.MEASUREMENTS_IN_HOUR * 10
     }
-
-    private val mDatabase = DatabaseProvider.get()
 
     suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
         val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(
@@ -127,12 +129,12 @@ class ActiveSessionMeasurementsRepository @Inject constructor() {
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =
-                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+                measurementStreamsRepository.getId(sessionId, measurementStream)
 
             streamId?.let { streamId ->
                 measurements =
                     measurementsList(
-                        MeasurementsRepositoryImpl().getLastMeasurementsForStream(
+                        measurementsRepositoryImpl.getLastMeasurementsForStream(
                             streamId,
                             limit
                         )

@@ -6,6 +6,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Note
@@ -32,7 +33,8 @@ open class MapController(
     mDownloadService: SessionDownloadService,
     mSessionRepository: SessionsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
-    private val airBeamReconnector: AirBeamReconnector
+    private val airBeamReconnector: AirBeamReconnector,
+    measurementStreamsRepository: MeasurementStreamsRepository
 ) : SessionDetailsViewController(
     rootActivity,
     mViewMvc,
@@ -46,6 +48,7 @@ open class MapController(
     mDownloadService,
     mSessionRepository,
     mMeasurementsRepository,
+    measurementStreamsRepository
 ),
     SessionDetailsViewMvc.Listener {
     private var mLocateRequested = false

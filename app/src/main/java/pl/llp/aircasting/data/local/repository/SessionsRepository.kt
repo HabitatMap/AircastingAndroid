@@ -3,7 +3,7 @@ package pl.llp.aircasting.data.local.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import pl.llp.aircasting.data.api.util.TAG
-import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
@@ -12,9 +12,9 @@ import java.util.*
 import javax.inject.Inject
 
 @UserSessionScope
-class SessionsRepository @Inject constructor() {
-    private val mDatabase = DatabaseProvider.get()
-
+class SessionsRepository @Inject constructor(
+    private val mDatabase: AppDatabase
+) {
     suspend fun insert(session: Session): Long {
         val sessionDBObject =
             SessionDBObject(session)

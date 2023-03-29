@@ -35,10 +35,7 @@ import javax.inject.Scope
 @UserSessionScope
 @Subcomponent(
     modules = [
-//        AppModule::class,
         ApiModule::class,
-        DatabaseModule::class,
-//        SettingsModule::class,
         PermissionsModule::class,
         SensorsModule::class,
         NewSessionWizardModule::class,

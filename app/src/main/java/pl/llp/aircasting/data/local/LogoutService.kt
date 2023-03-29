@@ -2,6 +2,7 @@ package pl.llp.aircasting.data.local
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
@@ -15,7 +16,6 @@ import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LogoutEvent
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -25,14 +25,14 @@ class LogoutService @Inject constructor(
     private val app: AircastingApplication,
     @Authenticated private val apiService: ApiService,
     private val sessionsSyncService: SessionsSyncService,
-    @IoCoroutineScope private val coroutineScope: CoroutineScope,
+    private val mDatabase: AppDatabase,
+    @IoCoroutineScope private val ioScope: CoroutineScope,
 ) {
     fun logout(afterAccountDeletion: Boolean = false) {
-        // to make sure downloading sessions stopped before we start deleting them
         LoginActivity.startAfterSignOut(app.applicationContext)
 
         EventBus.getDefault().postSticky(LogoutEvent())
-        coroutineScope.launch {
+        ioScope.launch {
             if (!afterAccountDeletion) {
                 sessionsSyncService.sync()
             }
@@ -44,17 +44,17 @@ class LogoutService @Inject constructor(
         return runCatching { apiService.deleteAccount() }
     }
 
-    private fun finaliseLogout() {
+    private suspend fun finaliseLogout() {
         EventBus.getDefault().unregister(this)
         mSettings.logout()
         clearDatabase()
         app.userDependentComponent = null
         EventBus.getDefault().postSticky(LogoutEvent(false))
     }
-    private fun clearDatabase() {
-        Thread.sleep(1000)
+    private suspend fun clearDatabase() {
+        delay(1000)
 
         Log.d(TAG, "Clearing database")
-        runOnIOThread { DatabaseProvider.get().clearAllTables() }
+        mDatabase.clearAllTables()
     }
 }

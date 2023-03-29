@@ -3,7 +3,7 @@ package pl.llp.aircasting
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
-import pl.llp.aircasting.data.local.DatabaseProvider
+
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.di.UserDependentComponent
@@ -21,8 +21,6 @@ class AircastingApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        DatabaseProvider.setup(applicationContext)
 
         mSettings = Settings(getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE))
         ExpandedCardsRepository.setup(mSettings)

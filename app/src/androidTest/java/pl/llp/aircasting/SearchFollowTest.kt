@@ -37,7 +37,7 @@ import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
-import pl.llp.aircasting.data.local.DatabaseProvider
+
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule

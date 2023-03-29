@@ -44,6 +44,7 @@ abstract class SessionDetailsViewController(
     private val mDownloadService: SessionDownloadService,
     private val mSessionRepository: SessionsRepository,
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
+    private val measurementStreamsRepository: MeasurementStreamsRepository
 ) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     protected var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)
@@ -180,7 +181,7 @@ abstract class SessionDetailsViewController(
         var sessionDBObject: SessionDBObject? = null
 
         sessionUUID?.let { sessionUUID ->
-            sessionDBObject = SessionsRepository().getSessionByUUID(sessionUUID)
+            sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
         }
 
         sessionDBObject?.let { session ->
@@ -217,7 +218,7 @@ abstract class SessionDetailsViewController(
 
         measurementStreams?.forEach { measurementStream ->
             val streamId =
-                MeasurementStreamsRepository().getId(sessionId, measurementStream)
+                measurementStreamsRepository.getId(sessionId, measurementStream)
 
             streamId?.let { streamId ->
                 measurements[measurementStream.sensorName] =

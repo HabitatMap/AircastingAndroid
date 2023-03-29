@@ -4,6 +4,7 @@ import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseActivity
@@ -23,6 +24,7 @@ class MapControllerFactory @Inject constructor(
     private val mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val mErrorHandler: ErrorHandler,
     private val airBeamReconnector: AirBeamReconnector,
+    private val measurementStreamsRepository: MeasurementStreamsRepository
 ) {
     fun create(
         rootActivity: BaseActivity,
@@ -45,7 +47,8 @@ class MapControllerFactory @Inject constructor(
             mDownloadService,
             mSessionRepository,
             mMeasurementsRepository,
-            airBeamReconnector
+            airBeamReconnector,
+            measurementStreamsRepository
         )
         else -> MapController(
             rootActivity,
@@ -60,7 +63,8 @@ class MapControllerFactory @Inject constructor(
             mDownloadService,
             mSessionRepository,
             mMeasurementsRepository,
-            airBeamReconnector
+            airBeamReconnector,
+            measurementStreamsRepository
         )
     }
 }

@@ -2,7 +2,7 @@ package pl.llp.aircasting.data.local.repository
 
 import android.util.Log
 import pl.llp.aircasting.data.api.util.TAG
-import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.di.UserSessionScope
@@ -15,9 +15,9 @@ interface MeasurementsRepository {
 }
 
 @UserSessionScope
-class MeasurementsRepositoryImpl @Inject constructor() : MeasurementsRepository {
-    private val mDatabase = DatabaseProvider.get()
-
+class MeasurementsRepositoryImpl @Inject constructor(
+    private val mDatabase: AppDatabase
+) : MeasurementsRepository {
     suspend fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
         val measurementDBObjects = measurements.map { measurement ->
             MeasurementDBObject(

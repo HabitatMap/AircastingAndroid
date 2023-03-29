@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
@@ -31,6 +32,7 @@ class MobileActiveMapController(
     mSessionRepository: SessionsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
     airBeamReconnector: AirBeamReconnector,
+    measurementStreamsRepository: MeasurementStreamsRepository
 ) : MapController(
     activity,
     mViewMvc,
@@ -44,7 +46,8 @@ class MobileActiveMapController(
     mDownloadService,
     mSessionRepository,
     mMeasurementsRepository,
-    airBeamReconnector
+    airBeamReconnector,
+    measurementStreamsRepository
 ) {
     @Subscribe
     fun onMessage(event: NoteCreatedEvent) {

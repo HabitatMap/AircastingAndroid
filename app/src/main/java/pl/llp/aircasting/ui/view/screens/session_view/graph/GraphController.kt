@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
@@ -27,7 +28,8 @@ open class GraphController(
     mDownloadService: SessionDownloadService,
     mSessionRepository: SessionsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
-    private val airBeamReconnector: AirBeamReconnector
+    private val airBeamReconnector: AirBeamReconnector,
+    measurementStreamsRepository: MeasurementStreamsRepository
 ) : SessionDetailsViewController(
     rootActivity,
     mViewMvc,
@@ -41,6 +43,7 @@ open class GraphController(
     mDownloadService,
     mSessionRepository,
     mMeasurementsRepository,
+    measurementStreamsRepository
 ),
     SessionDetailsViewMvc.Listener {
     override fun locateRequested() {}

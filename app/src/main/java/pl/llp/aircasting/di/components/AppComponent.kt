@@ -10,6 +10,7 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.NonAuthenticated
 import pl.llp.aircasting.di.UserDependentComponent
 import pl.llp.aircasting.di.modules.AppModule
+import pl.llp.aircasting.di.modules.DatabaseModule
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
@@ -20,7 +21,8 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AppModule::class,
-        NonAuthenticatedModule::class
+        NonAuthenticatedModule::class,
+        DatabaseModule::class,
     ]
 )
 interface AppComponent {
@@ -30,7 +32,6 @@ interface AppComponent {
     fun inject(target: LoginActivity)
     fun inject(target: BaseActivity)
     fun inject(target: LauncherActivity)
-
     fun userComponentFactory(): UserDependentComponent.Factory
 }
 

@@ -1,15 +1,15 @@
 package pl.llp.aircasting.data.local.repository
 
-import pl.llp.aircasting.data.local.DatabaseProvider
+import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
 
 @UserSessionScope
-class MeasurementStreamsRepository @Inject constructor() {
-    private val mDatabase = DatabaseProvider.get()
-
+class MeasurementStreamsRepository @Inject constructor(
+    private val mDatabase: AppDatabase
+) {
     suspend fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
         val streamDBObject = mDatabase.measurementStreams()
             .loadStreamBySessionIdAndSensorNameSuspend(sessionId, measurementStream.sensorName)
