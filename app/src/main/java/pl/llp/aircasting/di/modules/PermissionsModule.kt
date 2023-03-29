@@ -9,19 +9,17 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManagerDefault
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothRuntimePermissionManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
-import javax.inject.Singleton
 
 @Module
 open class PermissionsModule {
     @Provides
     @UserSessionScope
-    open fun providesPermissionsManager(): PermissionsManager = PermissionsManager()
-
-    @Provides
-    @UserSessionScope
-    open fun providesBluetoothManager(application: AircastingApplication): BluetoothManager {
+    open fun providesBluetoothManager(
+        application: AircastingApplication,
+        permissionsManager: PermissionsManager
+    ): BluetoothManager {
         return if (isSDKGreaterOrEqualToS())
-            BluetoothRuntimePermissionManager(application.applicationContext, providesPermissionsManager())
+            BluetoothRuntimePermissionManager(application.applicationContext, permissionsManager)
         else
             BluetoothManagerDefault()
     }
