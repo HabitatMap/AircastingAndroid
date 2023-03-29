@@ -23,10 +23,6 @@ class AppModule(private val app: AircastingApplication) {
     fun providesApp(): AircastingApplication = app
 
     @Provides
-    @Singleton
-    fun providesErrorHandler(): ErrorHandler = ErrorHandler(app)
-
-    @Provides
     fun provideFragmentFactory(
         fragmentProviders: Map<Class<out Fragment>, @JvmSuppressWildcards Provider<Fragment>>
     ): FragmentFactory {

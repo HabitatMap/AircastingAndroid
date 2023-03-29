@@ -16,11 +16,12 @@ import javax.inject.Inject
 
 class MapActivity : BaseActivity() {
     private var controller: MapController? = null
-    private val errorHandler = ErrorHandler(this)
     private var view: MapViewMvcImpl? = null
 
     @Inject
     lateinit var controllerFactory: MapControllerFactory
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     companion object {
         val SENSOR_NAME_KEY = "SENSOR_NAME"

@@ -7,10 +7,8 @@ import android.widget.TextView
 import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
-import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.exceptions.SDCardSyncError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 
 class AirbeamSyncingViewMvcImpl(
     inflater: LayoutInflater,
@@ -32,7 +30,6 @@ class AirbeamSyncingViewMvcImpl(
     }
 
     fun finishSync() {
-        ErrorHandler(context).handle(SDCardSyncError("finishSync, calling listener"))
         for (listener in listeners) {
             listener.syncFinished()
         }

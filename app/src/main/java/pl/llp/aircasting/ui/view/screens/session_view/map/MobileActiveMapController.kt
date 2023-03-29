@@ -3,7 +3,10 @@ package pl.llp.aircasting.ui.view.screens.session_view.map
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
@@ -11,6 +14,7 @@ import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 class MobileActiveMapController(
@@ -18,20 +22,28 @@ class MobileActiveMapController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    mFragmentManager: FragmentManager,
+    fragmentManager: FragmentManager,
     mSessionsViewModel: SessionsViewModel,
-    settings: Settings,
-    mApiServiceFactory: ApiServiceFactory,
+    mSettings: Settings,
+    mErrorHandler: ErrorHandler,
+    mApiService: ApiService,
+    mDownloadService: SessionDownloadService,
+    mSessionRepository: SessionsRepository,
+    mMeasurementsRepository: MeasurementsRepositoryImpl,
     airBeamReconnector: AirBeamReconnector,
 ) : MapController(
     activity,
     mViewMvc,
     sessionUUID,
     sensorName,
-    mFragmentManager,
+    fragmentManager,
     mSessionsViewModel,
-    settings,
-    mApiServiceFactory,
+    mSettings,
+    mErrorHandler,
+    mApiService,
+    mDownloadService,
+    mSessionRepository,
+    mMeasurementsRepository,
     airBeamReconnector
 ) {
     @Subscribe

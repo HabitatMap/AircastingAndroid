@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.SessionDownloadService
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewController
@@ -12,6 +15,7 @@ import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
+import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
@@ -20,20 +24,28 @@ open class MapController(
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
-    val mFragmentManager: FragmentManager,
+    fragmentManager: FragmentManager,
     mSessionsViewModel: SessionsViewModel,
-    private val mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory,
+    mSettings: Settings,
+    mErrorHandler: ErrorHandler,
+    mApiService: ApiService,
+    mDownloadService: SessionDownloadService,
+    mSessionRepository: SessionsRepository,
+    mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val airBeamReconnector: AirBeamReconnector
 ) : SessionDetailsViewController(
     rootActivity,
-    mSessionsViewModel,
     mViewMvc,
+    fragmentManager,
     sessionUUID,
     sensorName,
-    mFragmentManager,
+    mSessionsViewModel,
     mSettings,
-    mApiServiceFactory
+    mErrorHandler,
+    mApiService,
+    mDownloadService,
+    mSessionRepository,
+    mMeasurementsRepository,
 ),
     SessionDetailsViewMvc.Listener {
     private var mLocateRequested = false

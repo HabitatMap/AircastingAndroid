@@ -9,7 +9,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.services.ApiService
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.SessionDownloadService
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
@@ -23,7 +22,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.EditNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.session_view.hlu.HLUValidationErrorToast
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteDeletedEvent
@@ -35,21 +33,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class SessionDetailsViewController(
     protected val mRootActivity: AppCompatActivity,
-    protected val mSessionsViewModel: SessionsViewModel,
     protected var mViewMvc: SessionDetailsViewMvc?,
+    val fragmentManager: FragmentManager,
     sessionUUID: String,
     sensorName: String?,
-    val fragmentManager: FragmentManager,
+    protected val mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
-    mApiServiceFactory: ApiServiceFactory,
-    protected val mErrorHandler: ErrorHandler = ErrorHandler(mRootActivity),
-    private val mApiService: ApiService = mApiServiceFactory.getAuthenticated(mSettings.getAuthToken()!!),
-    private val mDownloadService: SessionDownloadService = SessionDownloadService(
-        mApiService,
-        NoteResponseParser(mErrorHandler)
-    ),
-    private val mSessionRepository: SessionsRepository = SessionsRepository(),
-    private val mMeasurementsRepository: MeasurementsRepositoryImpl = MeasurementsRepositoryImpl(),
+    protected val mErrorHandler: ErrorHandler,
+    private val mApiService: ApiService,
+    private val mDownloadService: SessionDownloadService,
+    private val mSessionRepository: SessionsRepository,
+    private val mMeasurementsRepository: MeasurementsRepositoryImpl,
 ) : SessionDetailsViewMvc.Listener,
     EditNoteBottomSheet.Listener {
     protected var mSessionPresenter = SessionPresenter(sessionUUID, sensorName)

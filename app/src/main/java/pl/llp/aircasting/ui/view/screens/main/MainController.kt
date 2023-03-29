@@ -43,7 +43,7 @@ class MainController @AssistedInject constructor(
     private val mSettings: Settings,
     private val mSessionManager: SessionManager,
     private val mConnectivityManager: ConnectivityManager,
-    private val mErrorHandler: ErrorHandler = ErrorHandler(rootActivity),
+    private val mErrorHandler: ErrorHandler,
     private val sessionSyncService: SessionsSyncService,
 ) {
     private var isReceiverRegistered: Boolean = false
