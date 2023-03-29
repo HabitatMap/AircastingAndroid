@@ -1,7 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.app.Activity
-import android.content.Context
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -9,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
@@ -19,16 +19,21 @@ import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
+import javax.inject.Inject
 
 class AddNoteBottomSheet(
-    private var mSession: Session,
-    private val mContext: Context?,
-    private val mErrorHandler: ErrorHandler,
-    private val mPermissionsManager: PermissionsManager
+    private var mSession: Session?,
 ) : BottomSheet() {
+    constructor() : this(null)
+
     private var noteInput: EditText? = null
     private var mPhotoPath: String? = null
     private val mDate: Date = Date()
+
+    @Inject
+    lateinit var mErrorHandler: ErrorHandler
+    @Inject
+    lateinit var mPermissionsManager: PermissionsManager
 
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
@@ -49,7 +54,7 @@ class AddNoteBottomSheet(
 
                 }
                 ImagePicker.RESULT_ERROR -> Toast.makeText(
-                    mContext,
+                    requireContext(),
                     ImagePicker.getError(data),
                     Toast.LENGTH_SHORT
                 ).show()
@@ -61,6 +66,8 @@ class AddNoteBottomSheet(
     }
 
     override fun setup() {
+        (requireActivity().application as AircastingApplication).userDependentComponent?.inject(this)
+
         checkIfCameraPermissionGranted()
 
         noteInput = contentView?.note_input
@@ -70,8 +77,8 @@ class AddNoteBottomSheet(
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
 
-    private fun addNote(mSession: Session) {
-        val lastMeasurement = mSession.lastMeasurement()
+    private fun addNote(mSession: Session?) {
+        val lastMeasurement = mSession?.lastMeasurement()
         if (lastMeasurement?.latitude == null || lastMeasurement.longitude == null) {
             mErrorHandler.handleAndDisplay(NotesNoLocationError())
             return
@@ -113,14 +120,12 @@ class AddNoteBottomSheet(
     private fun showEmptyError() {
         contentView?.note_input_layout?.apply {
             isErrorEnabled = true
-            error = mContext?.getString(R.string.notes_description_empty_error)
+            error = context.getString(R.string.notes_description_empty_error)
         }
     }
 
     private fun checkIfCameraPermissionGranted() {
-        mContext ?: return
-
-        if (!mPermissionsManager.cameraPermissionGranted(mContext)) showCameraHelperDialog()
+        if (!mPermissionsManager.cameraPermissionGranted(requireContext())) showCameraHelperDialog()
     }
 
     /**
