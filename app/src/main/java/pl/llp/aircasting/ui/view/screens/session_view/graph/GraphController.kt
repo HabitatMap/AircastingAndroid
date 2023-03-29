@@ -8,20 +8,18 @@ import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewControll
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 open class GraphController(
     rootActivity: AppCompatActivity,
-    mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     fragmentManager: FragmentManager,
     mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector,
-    private val permissionsManager: PermissionsManager
+    mSessionsViewModel: SessionsViewModel,
+    private val airBeamReconnector: AirBeamReconnector
 ) : SessionDetailsViewController(
     rootActivity,
     mSessionsViewModel,

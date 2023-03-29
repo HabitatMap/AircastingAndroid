@@ -3,32 +3,20 @@ package pl.llp.aircasting.ui.view.screens.session_view.graph
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.extensions.setupAppBar
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 class GraphActivity : BaseActivity() {
-    private var controller: GraphController? = null
-    private var view: SessionDetailsViewMvc? = null
-    private val sessionsViewModel by viewModels<SessionsViewModel>()
+    private lateinit var controller: GraphController
+    private lateinit var view: SessionDetailsViewMvc
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
-    lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var airbeamReconnector: AirBeamReconnector
+    lateinit var controllerFactory: GraphControllerFactory
 
     companion object {
         val SESSION_UUID_KEY = "SESSION_UUID"
@@ -67,17 +55,12 @@ class GraphActivity : BaseActivity() {
             supportFragmentManager,
             SessionsTab.fromInt(sessionTab)
         )
-        controller = GraphControllerFactory.get(
+        controller = controllerFactory.create(
             this,
-            sessionsViewModel,
             view,
             sessionUUID,
             sensorName,
             supportFragmentManager,
-            settings,
-            apiServiceFactory,
-            airbeamReconnector,
-            permissionsManager,
             SessionsTab.fromInt(sessionTab)
         )
 
@@ -104,6 +87,5 @@ class GraphActivity : BaseActivity() {
 
         view?.onDestroy()
         controller?.onDestroy()
-        controller = null
     }
 }

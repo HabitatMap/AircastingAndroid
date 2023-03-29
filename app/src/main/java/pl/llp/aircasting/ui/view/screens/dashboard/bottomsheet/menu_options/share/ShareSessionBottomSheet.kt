@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
@@ -15,7 +14,6 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.CSVGenerationService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.MeasurementStream
@@ -23,7 +21,6 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.CSVHelper
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.ShareHelper
 import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -49,16 +46,11 @@ class ShareSessionBottomSheet(
     private var loader: ImageView? = null
     lateinit var chosenSensor: String
 
-    private val mSessionsViewModel by activityViewModels<SessionsViewModel>()
+    @Inject
+    lateinit var mSessionsViewModel: SessionsViewModel
 
     @Inject
     lateinit var mErrorHandler: ErrorHandler
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
-    lateinit var settings: Settings
 
     @Inject
     lateinit var sessionsSyncService: SessionsSyncService

@@ -6,46 +6,44 @@ import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import javax.inject.Inject
 
-object MapControllerFactory {
-    fun get(
+class MapControllerFactory @Inject constructor(
+    private val mSessionsViewModel: SessionsViewModel,
+    private val mSettings: Settings,
+    private val mApiServiceFactory: ApiServiceFactory,
+    private val airBeamReconnector: AirBeamReconnector
+) {
+    fun create(
         rootActivity: BaseActivity,
-        sessionsViewModel: SessionsViewModel,
-        view: MapViewMvcImpl?,
+        mViewMvc: MapViewMvcImpl?,
         sessionUUID: String,
         sensorName: String?,
         supportFragmentManager: FragmentManager,
-        settings: Settings,
-        apiServiceFactory: ApiServiceFactory,
-        airbeamReconnector: AirBeamReconnector,
-        permissionsManager: PermissionsManager,
         sessionsTab: SessionsTab
-    ) = when(sessionsTab) {
+    ) = when (sessionsTab) {
         SessionsTab.MOBILE_ACTIVE -> MobileActiveMapController(
             rootActivity,
-            sessionsViewModel,
-            view,
+            mViewMvc,
             sessionUUID,
             sensorName,
             supportFragmentManager,
-            settings,
-            apiServiceFactory,
-            airbeamReconnector,
-            permissionsManager
+            mSessionsViewModel,
+            mSettings,
+            mApiServiceFactory,
+            airBeamReconnector
         )
         else -> MapController(
             rootActivity,
-            sessionsViewModel,
-            view,
+            mViewMvc,
             sessionUUID,
             sensorName,
             supportFragmentManager,
-            settings,
-            apiServiceFactory,
-            airbeamReconnector,
-            permissionsManager
+            mSessionsViewModel,
+            mSettings,
+            mApiServiceFactory,
+            airBeamReconnector
         )
     }
 }

@@ -11,31 +11,28 @@ import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 class MobileActiveMapController(
     activity: AppCompatActivity,
-    mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     mFragmentManager: FragmentManager,
+    mSessionsViewModel: SessionsViewModel,
     settings: Settings,
     mApiServiceFactory: ApiServiceFactory,
     airBeamReconnector: AirBeamReconnector,
-    permissionsManager: PermissionsManager,
 ) : MapController(
     activity,
-    mSessionsViewModel,
     mViewMvc,
     sessionUUID,
     sensorName,
     mFragmentManager,
+    mSessionsViewModel,
     settings,
     mApiServiceFactory,
-    airBeamReconnector,
-    permissionsManager
+    airBeamReconnector
 ) {
     @Subscribe
     fun onMessage(event: NoteCreatedEvent) {

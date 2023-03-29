@@ -13,20 +13,18 @@ import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
 import pl.llp.aircasting.util.helpers.location.LocationHelper
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 
 open class MapController(
     rootActivity: AppCompatActivity,
-    mSessionsViewModel: SessionsViewModel,
     mViewMvc: SessionDetailsViewMvc?,
     sessionUUID: String,
     sensorName: String?,
     val mFragmentManager: FragmentManager,
+    mSessionsViewModel: SessionsViewModel,
     private val mSettings: Settings,
     mApiServiceFactory: ApiServiceFactory,
-    private val airBeamReconnector: AirBeamReconnector,
-    private val permissionsManager: PermissionsManager
+    private val airBeamReconnector: AirBeamReconnector
 ) : SessionDetailsViewController(
     rootActivity,
     mSessionsViewModel,
