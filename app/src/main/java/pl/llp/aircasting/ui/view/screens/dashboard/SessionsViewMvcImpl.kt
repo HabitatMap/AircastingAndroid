@@ -7,7 +7,6 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
@@ -18,8 +17,6 @@ import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
-import pl.llp.aircasting.util.FollowingSessionReorderingTouchHelperCallback
-import pl.llp.aircasting.util.ItemTouchHelperAdapter
 
 abstract class SessionsViewMvcImpl<ListenerType>(
     private val inflater: LayoutInflater,
@@ -55,16 +52,10 @@ abstract class SessionsViewMvcImpl<ListenerType>(
         }
     }
 
-    fun initializeAdapter(callback: suspend (String) -> SessionWithStreamsAndMeasurementsDBObject?) {
+    open fun initializeAdapter(callback: suspend (String) -> SessionWithStreamsAndMeasurementsDBObject?) {
         reloadSession = callback
         mAdapter = buildAdapter(inflater, supportFragmentManager)
         mRecyclerSessions?.adapter = mAdapter
-        if (mAdapter is ItemTouchHelperAdapter) {
-            val adapter = mAdapter as ItemTouchHelperAdapter
-            val itemTouchCallback = FollowingSessionReorderingTouchHelperCallback(adapter)
-            val itemTouchHelper = ItemTouchHelper(itemTouchCallback)
-            itemTouchHelper.attachToRecyclerView(mRecyclerSessions)
-        }
     }
     abstract fun layoutId(): Int
     abstract fun showDidYouKnowBox(): Boolean

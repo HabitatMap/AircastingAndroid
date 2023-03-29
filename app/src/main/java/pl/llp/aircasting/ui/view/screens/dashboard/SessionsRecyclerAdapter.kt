@@ -3,7 +3,6 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SortedList
 import kotlinx.coroutines.MainScope
@@ -28,8 +27,6 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
         RecyclerView.ViewHolder(mViewMvc.rootView!!) {
         val view: SessionViewMvc<ListenerType> get() = mViewMvc
     }
-
-    lateinit var mItemTouchHelper: ItemTouchHelper
 
     protected open val mSessionPresenters: SortedList<SessionPresenter> =
         SortedList(SessionPresenter::class.java, ModificationCallback())

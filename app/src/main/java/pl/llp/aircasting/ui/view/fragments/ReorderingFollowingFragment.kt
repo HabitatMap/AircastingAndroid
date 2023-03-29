@@ -22,10 +22,9 @@ class ReorderingFollowingFragment : FollowingFragment() {
             null,
             childFragmentManager,
         )
-
         controller = controllerFactory.create(
             activity,
-            view,
+            reorderView,
             viewLifecycleOwner,
             childFragmentManager,
             context
@@ -35,7 +34,6 @@ class ReorderingFollowingFragment : FollowingFragment() {
             setSessionUpdateFollowedAtCallback(controller::sessionUpdateFollowedAtCallback)
             initializeAdapter(controller::getReloadedSession)
         }
-
         view = reorderView
 
         if (sessionsRequested) {

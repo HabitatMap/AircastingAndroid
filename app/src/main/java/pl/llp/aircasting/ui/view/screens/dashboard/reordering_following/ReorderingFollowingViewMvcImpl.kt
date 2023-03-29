@@ -15,7 +15,6 @@ class ReorderingFollowingViewMvcImpl(
     supportFragmentManager: FragmentManager,
 ) : FollowingViewMvcImpl(inflater, parent, supportFragmentManager),
     FollowingSessionViewMvc.Listener {
-
     private lateinit var sessionDismiss: (session: Session) -> Unit
     fun setSessionDismissCallback(callback: (Session) -> Unit) {
         sessionDismiss = callback
