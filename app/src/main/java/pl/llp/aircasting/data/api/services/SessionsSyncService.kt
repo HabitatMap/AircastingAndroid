@@ -5,10 +5,8 @@ import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
@@ -17,6 +15,8 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
@@ -24,6 +24,7 @@ import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.extensions.encodeToBase64
 import javax.inject.Inject
 
+@UserSessionScope
 class SessionsSyncService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val errorHandler: ErrorHandler,
@@ -33,6 +34,7 @@ class SessionsSyncService @Inject constructor(
     private val sessionRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val noteRepository: NoteRepository,
+    private val settings: Settings,
 ) {
     sealed class Result {
         object Success : Result()
@@ -48,6 +50,12 @@ class SessionsSyncService @Inject constructor(
     private val gson: Gson = Gson()
     private val _syncStatus: MutableStateFlow<Status> = MutableStateFlow(Status.Idle)
     suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
+        Log.w(
+            this@SessionsSyncService.TAG, "Performing sync\n" +
+                    "SyncService: ${this@SessionsSyncService.hashCode()}\n" +
+                    "ApiService: ${apiService.hashCode()}\n" +
+                    "AuthToken: ${settings.getAuthToken()}"
+        )
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }
         val jsonData = gson.toJson(syncParams)
@@ -130,26 +138,24 @@ class SessionsSyncService @Inject constructor(
 
     private suspend fun download(uuids: List<String>) {
         uuids.forEach { uuid ->
-            MainScope().launch {
-                downloadService.download(uuid)
-                    .onSuccess { session ->
-                        try {
-                            val sessionId = sessionRepository.updateOrCreate(session)
-                                ?: return@onSuccess
+            downloadService.download(uuid)
+                .onSuccess { session ->
+                    try {
+                        val sessionId = sessionRepository.updateOrCreate(session)
+                            ?: return@onSuccess
 
-                            measurementStreamsRepository.insert(sessionId, session.streams)
+                        measurementStreamsRepository.insert(sessionId, session.streams)
 
-                            session.notes.forEach { note ->
-                                noteRepository.insert(sessionId, note)
-                            }
-                        } catch (e: SQLiteConstraintException) {
-                            errorHandler.handle(DBInsertException(e))
+                        session.notes.forEach { note ->
+                            noteRepository.insert(sessionId, note)
                         }
+                    } catch (e: SQLiteConstraintException) {
+                        errorHandler.handle(DBInsertException(e))
                     }
-                    .onFailure {
-                        errorHandler.handle(UnexpectedAPIError(it))
-                    }
-            }
+                }
+                .onFailure {
+                    errorHandler.handle(UnexpectedAPIError(it))
+                }
         }
     }
 
