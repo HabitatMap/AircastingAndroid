@@ -5,14 +5,17 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.*
+import javax.inject.Inject
 
 interface MeasurementsRepository {
     suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long
 }
 
-class MeasurementsRepositoryImpl : MeasurementsRepository {
+@UserSessionScope
+class MeasurementsRepositoryImpl @Inject constructor() : MeasurementsRepository {
     private val mDatabase = DatabaseProvider.get()
 
     suspend fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {

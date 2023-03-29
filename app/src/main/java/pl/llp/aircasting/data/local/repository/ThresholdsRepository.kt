@@ -5,8 +5,11 @@ import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
+import javax.inject.Inject
 
-class ThresholdsRepository {
+@UserSessionScope
+class ThresholdsRepository @Inject constructor() {
     private val mDatabase = DatabaseProvider.get()
 
     suspend fun findOrCreateSensorThresholds(session: Session): List<SensorThreshold> {

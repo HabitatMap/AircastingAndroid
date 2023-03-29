@@ -6,8 +6,11 @@ import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.di.UserSessionScope
+import javax.inject.Inject
 
-class ActiveSessionMeasurementsRepository {
+@UserSessionScope
+class ActiveSessionMeasurementsRepository @Inject constructor() {
     companion object {
         // We get 10 hours/minutes of Measurements for chart (we display 9 dots)
         // 10 hours are needed because we need to cut off last unfinished hour and

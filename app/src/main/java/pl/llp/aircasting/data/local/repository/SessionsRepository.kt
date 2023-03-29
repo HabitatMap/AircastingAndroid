@@ -6,10 +6,13 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.DatabaseProvider
 import pl.llp.aircasting.data.local.entity.*
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import java.util.*
+import javax.inject.Inject
 
-class SessionsRepository {
+@UserSessionScope
+class SessionsRepository @Inject constructor() {
     private val mDatabase = DatabaseProvider.get()
 
     suspend fun insert(session: Session): Long {
