@@ -3,7 +3,6 @@ package pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.the
 import android.util.Log
 import android.view.View
 import androidx.core.view.doOnNextLayout
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -31,12 +30,10 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
     private var binding: CreateThresholdAlertBottomSheetLayoutBinding? = null
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var errorHandler: ErrorHandler
 
-    private lateinit var viewModel: CreateThresholdAlertBottomSheetViewModel
+    @Inject
+    lateinit var viewModel: CreateThresholdAlertBottomSheetViewModel
 
     private lateinit var uiAlerts: List<ThresholdAlertUiRepresentation>
 
@@ -46,10 +43,6 @@ class CreateThresholdAlertBottomSheet(private val session: Session?) : BottomShe
         (activity?.application as AircastingApplication).userDependentComponent?.inject(this)
 
         binding = contentView?.let { CreateThresholdAlertBottomSheetLayoutBinding.bind(it) }
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[CreateThresholdAlertBottomSheetViewModel::class.java]
         binding?.apply {
             lifecycleOwner = this@CreateThresholdAlertBottomSheet
             view = this@CreateThresholdAlertBottomSheet

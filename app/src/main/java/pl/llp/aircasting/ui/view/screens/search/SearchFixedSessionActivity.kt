@@ -5,13 +5,11 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
-import androidx.lifecycle.ViewModelProvider
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
-import pl.llp.aircasting.ui.viewmodel.SearchFollowViewModel
 import javax.inject.Inject
 
 class SearchFixedSessionActivity : BaseActivity() {
@@ -26,12 +24,7 @@ class SearchFixedSessionActivity : BaseActivity() {
     }
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
     lateinit var fragmentFactory: FragmentFactory
-
-    lateinit var searchFollowViewModel: SearchFollowViewModel
 
     lateinit var binding: ActivitySearchFixedSessionsBinding
 
@@ -46,8 +39,6 @@ class SearchFixedSessionActivity : BaseActivity() {
     private fun setupFactory() {
         (application as AircastingApplication)
             .userDependentComponent?.inject(this)
-        searchFollowViewModel =
-            ViewModelProvider(this, viewModelFactory)[SearchFollowViewModel::class.java]
         supportFragmentManager.fragmentFactory = fragmentFactory
     }
 

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
 import kotlinx.android.synthetic.main.activity_myaccount.view.*
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.llp.aircasting.AircastingApplication
@@ -23,9 +22,7 @@ class MyAccountActivity : BaseActivity() {
     lateinit var logoutService: LogoutService
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: MyAccountViewModel
+    lateinit var viewModel: MyAccountViewModel
 
     companion object {
         fun start(context: Context?) {
@@ -41,11 +38,6 @@ class MyAccountActivity : BaseActivity() {
 
         (application as AircastingApplication)
             .userDependentComponent?.inject(this)
-
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[MyAccountViewModel::class.java]
 
         rootView = layoutInflater.inflate(R.layout.activity_myaccount, null, false)
 

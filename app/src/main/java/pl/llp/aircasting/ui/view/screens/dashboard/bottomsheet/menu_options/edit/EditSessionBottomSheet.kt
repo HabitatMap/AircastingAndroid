@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.edit_session_bottom_sheet.view.*
@@ -34,9 +33,7 @@ class EditSessionBottomSheet(
     private var mLoader: ImageView? = null
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private lateinit var viewModel: EditSessionBottomSheetViewModel
+    lateinit var viewModel: EditSessionBottomSheetViewModel
 
     override fun layoutId(): Int {
         return R.layout.edit_session_bottom_sheet
@@ -44,10 +41,6 @@ class EditSessionBottomSheet(
 
     override fun setup() {
         (activity?.application as AircastingApplication).userDependentComponent?.inject(this)
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        )[EditSessionBottomSheetViewModel::class.java]
 
         mLoader = contentView?.edit_loader
 
