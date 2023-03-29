@@ -27,7 +27,7 @@ class SettingsControllerTest {
     @Mock
     lateinit var settings: Settings
 
-    lateinit var controller: SettingsController
+    var controller: SettingsController
 
     private val testCoroutineScope = TestScope()
 

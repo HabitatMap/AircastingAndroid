@@ -14,8 +14,8 @@ import javax.inject.Inject
 
 
 class FixedFragment : Fragment() {
-    private lateinit var controller: FixedController
-    private lateinit var view: FixedViewMvcImpl<FixedSessionViewMvc.Listener>
+    private var controller: FixedController? = null
+    private var view: FixedViewMvcImpl<FixedSessionViewMvc.Listener>? = null
 
     @Inject
     lateinit var controllerFactory: FixedControllerFactory
@@ -43,9 +43,10 @@ class FixedFragment : Fragment() {
             context
         )
 
-        view.apply {
-            initializeAdapter(controller::getReloadedSession)
+        view?.initializeAdapter {
+            controller?.getReloadedSession(it)
         }
+
 
         if (sessionsRequested) {
             controller?.onCreate()

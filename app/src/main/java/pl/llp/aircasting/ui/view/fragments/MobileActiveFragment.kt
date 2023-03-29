@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 
 class MobileActiveFragment : Fragment() {
-    private lateinit var controller: MobileActiveController
-    private lateinit var view: MobileActiveViewMvcImpl
+    private var controller: MobileActiveController? = null
+    private var view: MobileActiveViewMvcImpl? = null
 
     @Inject
     lateinit var controllerFactory: MobileActiveControllerFactory
@@ -42,9 +42,10 @@ class MobileActiveFragment : Fragment() {
             context
         )
 
-        view.apply {
-            initializeAdapter(controller::getReloadedSession)
+        view?.initializeAdapter {
+            controller?.getReloadedSession(it)
         }
+
 
         if (sessionsRequested) {
             controller?.onCreate()

@@ -10,7 +10,7 @@ import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class ClearSDCardActivity : BaseActivity() {
-    private lateinit var controller: ClearSDCardController
+    private var controller: ClearSDCardController? = null
 
     @Inject
     lateinit var controllerFactory: ClearSDCardControllerFactory

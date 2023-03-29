@@ -42,7 +42,7 @@ class CreateAccountControllerTest {
     private val token = "token"
     private val sessionStoppedAlert = true
 
-    private lateinit var controller: CreateAccountController
+    private var controller: CreateAccountController
 
     @Before
     fun setup() {

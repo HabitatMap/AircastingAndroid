@@ -13,8 +13,8 @@ import javax.inject.Inject
 
 
 open class FollowingFragment : Fragment() {
-    protected lateinit var controller: FollowingController
-    protected lateinit var view: FollowingViewMvcImpl
+    protected var controller: FollowingController? = null
+    protected var view: FollowingViewMvcImpl? = null
 
     @Inject
     lateinit var controllerFactory: FollowingControllerFactory
@@ -43,7 +43,9 @@ open class FollowingFragment : Fragment() {
             context
         )
 
-        view.initializeAdapter(controller::getReloadedSession)
+        view?.initializeAdapter {
+            controller?.getReloadedSession(it)
+        }
 
         if (sessionsRequested) {
             controller?.onCreate()

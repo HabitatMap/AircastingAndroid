@@ -30,9 +30,15 @@ class ReorderingFollowingFragment : FollowingFragment() {
             context
         )
         reorderView.apply {
-            setSessionDismissCallback(controller::sessionDismissCallback)
-            setSessionUpdateFollowedAtCallback(controller::sessionUpdateFollowedAtCallback)
-            initializeAdapter(controller::getReloadedSession)
+            setSessionDismissCallback {
+                controller?.sessionDismissCallback(it)
+            }
+            setSessionUpdateFollowedAtCallback {
+                controller?.sessionUpdateFollowedAtCallback(it)
+            }
+            initializeAdapter {
+                controller?.getReloadedSession(it)
+            }
         }
         view = reorderView
 

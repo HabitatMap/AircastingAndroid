@@ -12,7 +12,7 @@ import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class SyncActivity : BaseActivity() {
-    private lateinit var controller: SyncController
+    private var controller: SyncController? = null
 
     @Inject
     lateinit var controllerFactory: SyncControllerFactory

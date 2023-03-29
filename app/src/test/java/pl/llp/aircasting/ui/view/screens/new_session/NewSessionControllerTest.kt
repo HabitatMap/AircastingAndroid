@@ -15,7 +15,7 @@ import pl.llp.aircasting.util.Settings
 class NewSessionControllerTest {
     private val memberAccessor = ReflectionMemberAccessor()
     @Mock
-    lateinit var controller: NewSessionController
+    var controller: NewSessionController
 
     @Mock
     lateinit var session: Session

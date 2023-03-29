@@ -25,8 +25,8 @@ import javax.inject.Inject
 class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     @Inject
     lateinit var controllerFactory: MainControllerFactory
-    lateinit var controller: MainController
-    private lateinit var view: MainViewMvcImpl
+    var controller: MainController? = null
+    private var view: MainViewMvcImpl? = null
 
     companion object {
         const val NAVIGATE_TO_TAB = "navigate_to_tab"
@@ -68,19 +68,19 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         view = MainViewMvcImpl(layoutInflater, null, this)
         controller = controllerFactory.create(this)
 
-        controller.onCreate()
+        controller?.onCreate()
         setContentView(view?.rootView)
     }
 
     override fun onResume() {
         super.onResume()
-        controller.onResume()
+        controller?.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        controller.onDestroy()
+        controller?.onDestroy()
         LocationHelper.stop()
     }
 
@@ -99,7 +99,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         permissions: Array<String>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        controller.onRequestPermissionsResult(requestCode, grantResults)
+        controller?.onRequestPermissionsResult(requestCode, grantResults)
     }
 
     override fun onMapsSdkInitialized(renderer: Renderer) {

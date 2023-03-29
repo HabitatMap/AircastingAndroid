@@ -15,9 +15,9 @@ import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class MapActivity : BaseActivity() {
-    private lateinit var controller: MapController
+    private var controller: MapController? = null
     private val errorHandler = ErrorHandler(this)
-    private lateinit var view: MapViewMvcImpl
+    private var view: MapViewMvcImpl? = null
 
     @Inject
     lateinit var controllerFactory: MapControllerFactory

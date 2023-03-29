@@ -12,8 +12,8 @@ import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
 
 class GraphActivity : BaseActivity() {
-    private lateinit var controller: GraphController
-    private lateinit var view: SessionDetailsViewMvc
+    private var controller: GraphController? = null
+    private var view: SessionDetailsViewMvc? = null
 
     @Inject
     lateinit var controllerFactory: GraphControllerFactory
