@@ -76,22 +76,6 @@ open class ChartAveragesCreator {
         return 0.1 * measurementsInPeriod
     }
 
-    fun getMobileEntriesForSessionOverSecondThreshold(lastMeasurements: List<Measurement>): MutableList<Entry> {
-        val entries: MutableList<Entry> = mutableListOf()
-        var xValue = MAX_X_VALUE
-        for (measurement in lastMeasurements.reversed()) {
-            entries.add(
-                Entry(
-                    xValue.toFloat(),
-                    measurement.value.toFloat()
-                )
-            )
-            xValue--
-        }
-
-        return entries
-    }
-
     private lateinit var startTimeBoundary: Date
     private lateinit var endTimeBoundary: Date
 

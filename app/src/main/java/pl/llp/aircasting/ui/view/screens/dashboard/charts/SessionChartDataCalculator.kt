@@ -5,7 +5,6 @@ import org.apache.commons.lang3.time.DateUtils
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.util.helpers.services.AveragedMeasurementsService
 import java.util.*
 
 open class SessionChartDataCalculator(private var mSession: Session) {
@@ -60,16 +59,8 @@ open class SessionChartDataCalculator(private var mSession: Session) {
         stream?.let { stream ->
             when (mSession.type) {
                 Session.Type.MOBILE -> {
-                    val averagedMeasurementsService = AveragedMeasurementsService(mSession.uuid)
-                    val measurementsOverSecondThreshold =
-                        averagedMeasurementsService.getMeasurementsOverSecondThreshold(stream)
+                    entries = ChartAveragesCreator().getMobileEntries(stream)
 
-                    entries = if (measurementsOverSecondThreshold.isEmpty())
-                        ChartAveragesCreator().getMobileEntries(stream)
-                    else
-                        ChartAveragesCreator().getMobileEntriesForSessionOverSecondThreshold(
-                            measurementsOverSecondThreshold
-                        )
                     setCount(entries)
                     calculateTimes()
                 }
