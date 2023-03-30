@@ -12,7 +12,9 @@ import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.util.extensions.showToast
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ErrorHandler @Inject constructor(private val mContext: Context) : Handler(Looper.getMainLooper()) {
     private val TAG = "ErrorHandler"
     private val crashlytics = FirebaseCrashlytics.getInstance()
