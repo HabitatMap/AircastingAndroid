@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.MapsInitializer.Renderer
 import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.FOLLOWING_TAB_INDEX
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
@@ -30,12 +32,13 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
 
     companion object {
         const val NAVIGATE_TO_TAB = "navigate_to_tab"
-        fun start(fromContext: Context?) {
-            fromContext?.let {
+        fun start(contextActivity: AppCompatActivity?) {
+            contextActivity?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 intent.flags =
                     Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 it.startActivity(intent)
+                it.overridePendingTransition(R.anim.slide_in, R.anim.slide_out)
             }
         }
         fun navigate(fromContext: Context?, tabToNavigateTo: Int = FOLLOWING_TAB_INDEX) {
