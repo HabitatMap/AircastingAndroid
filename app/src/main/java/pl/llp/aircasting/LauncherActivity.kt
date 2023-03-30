@@ -37,15 +37,9 @@ class LauncherActivity : AppCompatActivity() {
             showLoginScreen()
         } else {
             showDashboard()
-//            overridePendingTransition(R.anim.fade_in, 0)
         }
 
         finishAfterTransition()
-//
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            finish()
-//        overridePendingTransition(0, R.anim.fade_out)
-//        }, 1000)
     }
 
     private fun showDashboard() {

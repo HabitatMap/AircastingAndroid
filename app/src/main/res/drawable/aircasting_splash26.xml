@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:width="152dp"
-        android:height="152dp"
-        android:drawable="@drawable/aircasting_blue"
-        android:gravity="center"
-        android:right="20dp" />
-</layer-list>
