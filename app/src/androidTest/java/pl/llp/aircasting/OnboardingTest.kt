@@ -14,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
@@ -26,16 +27,13 @@ class OnboardingTest {
     @Inject
     lateinit var settings: Settings
 
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
     @get:Rule
     val testRule: ActivityTestRule<MainActivity>
             = ActivityTestRule(MainActivity::class.java, false, false)
 
     private fun setupDagger() {
         val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-        val permissionsModule = PermissionsModule()
+        val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(TestApiModule())

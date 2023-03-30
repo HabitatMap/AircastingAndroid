@@ -19,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
@@ -35,25 +36,22 @@ import javax.inject.Inject
 class CreateAccountTest {
     @Inject
     lateinit var settings: Settings
+    @Inject
     lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java, true, false)
 
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
     @Before
     fun setup() {
         setupDagger()
-        server = getMockWebServerFrom(apiServiceFactory)
         server.start()
     }
 
     private fun setupDagger() {
         val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-        val permissionsModule = PermissionsModule()
+        val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(TestApiModule())
@@ -116,7 +114,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+            server
         )
     }
 
@@ -143,7 +141,7 @@ class CreateAccountTest {
                 "/api/user.json" to createAccountErrorResponse,
                 "/api/user/sessions/sync_with_versioning.json" to syncResponse
             ),
-            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+            server
         )
 
         testRule.launchActivity(null)

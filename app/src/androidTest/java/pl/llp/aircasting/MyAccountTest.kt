@@ -15,12 +15,14 @@ import androidx.test.rule.ActivityTestRule
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.AppDatabase
 
 import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
@@ -39,7 +41,10 @@ class MyAccountTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    lateinit var db: AppDatabase
+
+    @Inject
+    lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MyAccountActivity> =
@@ -47,10 +52,8 @@ class MyAccountTest {
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    lateinit var db: AppDatabase
-
     private fun setupDagger() {
-        val permissionsModule = PermissionsModule()
+        val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(TestApiModule())
@@ -61,23 +64,17 @@ class MyAccountTest {
         testAppComponent.inject(this)
     }
 
-    private fun setupDatabase() {
-        DatabaseProvider.setup(app)
-        db = DatabaseProvider.get()
-    }
-
     @Before
     fun setup() {
         setupDagger()
-        DatabaseProvider.toggleTestMode()
-        getMockWebServerFrom(apiServiceFactory).start()
+        server.start()
     }
 
     @After
     fun cleanup() {
         testRule.finishActivity()
-        DatabaseProvider.mAppDatabase?.close()
-        getMockWebServerFrom(apiServiceFactory).shutdown()
+        db.close()
+        server.shutdown()
     }
 
     @Ignore("Make assertion wait for full logout process with sync")
@@ -100,7 +97,7 @@ class MyAccountTest {
             mapOf(
                 "/api/realtime/sync_measurements.json" to syncResponseMock
             ),
-            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+            server
         )
 
         Thread.sleep(5000)

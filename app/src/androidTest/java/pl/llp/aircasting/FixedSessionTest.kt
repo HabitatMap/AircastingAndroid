@@ -8,6 +8,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
@@ -19,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.local.AppDatabase
 
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
@@ -41,19 +45,11 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
 class FixedSessionTest {
     @Inject
     lateinit var settings: Settings
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
-    lateinit var permissionsManager: PermissionsManager
-
-    @Inject
-    lateinit var bluetoothManager: BluetoothManager
 
     @Inject
     lateinit var sessionsRepository: SessionsRepository
@@ -64,6 +60,10 @@ class FixedSessionTest {
     @Inject
     lateinit var measurementsRepository: MeasurementsRepositoryImpl
 
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
     lateinit var server: MockWebServer
 
     private val measurementValue = 70.0
@@ -110,10 +110,8 @@ class FixedSessionTest {
 
     @Before
     fun setup() {
-        DatabaseProvider.toggleTestMode()
         setupDagger()
 
-        server = getMockWebServerFrom(apiServiceFactory)
         server.start()
         settings.login("X", "EMAIL", "TOKEN")
         val syncResponseMock = MockResponse()
@@ -129,17 +127,17 @@ class FixedSessionTest {
     @After
     fun cleanup() {
         server.shutdown()
-        DatabaseProvider.mAppDatabase?.close()
+        database.close()
     }
 
     @Test
     fun testFixedOutdoorSessionRecording() {
         testRule.launchActivity(null)
 
-        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
-        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
-        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        stubPairedDevice(bluetoothManager)
+        
+
+
+        
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
@@ -204,10 +202,9 @@ class FixedSessionTest {
 
     @Test
     fun testFixedIndoorSessionRecording() {
-        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
-        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
-        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        stubPairedDevice(bluetoothManager)
+
+
+        
 
         testRule.launchActivity(null)
 
@@ -266,6 +263,7 @@ class FixedSessionTest {
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
+
     @Test
     fun testFollow() {
         val session = Session(
@@ -280,7 +278,7 @@ class FixedSessionTest {
 
         testRule.launchActivity(null)
 
-        runOnIOThread {
+        runTest {
             val sessionId = sessionsRepository.insert(session)
             val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
             measurementsRepository.insertAll(streamId, sessionId, measurements)

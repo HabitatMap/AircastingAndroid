@@ -9,7 +9,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 import org.junit.runner.RunWith
@@ -17,11 +20,13 @@ import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
+import pl.llp.aircasting.data.local.AppDatabase
 
 import pl.llp.aircasting.di.TestApiModule
 import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSensorsModule
 import pl.llp.aircasting.di.TestSettingsModule
+import pl.llp.aircasting.di.components.DaggerAppComponent
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
@@ -40,13 +45,16 @@ class MobileSessionTest {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
-
-    @Inject
     lateinit var bluetoothManager: BluetoothManager
 
     @Inject
     lateinit var permissionsManager: PermissionsManager
+
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
@@ -55,8 +63,6 @@ class MobileSessionTest {
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
     private fun setupDagger() {
-        val permissionsModule =
-            TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(TestApiModule())
@@ -68,27 +74,30 @@ class MobileSessionTest {
                 )
             )
             .build()
+        val testAppComponent = DaggerTestAppComponent.builder()
+            .appModule(AppModule(app))
+            .sensorsModule(TestSensorsModule(app)
+            .build()
+        appComponent.inject(this)
         app.userDependentComponent = testAppComponent
         testAppComponent.inject(this)
     }
 
     fun clearDatabase() {
-        DatabaseProvider.setup(app)
-        runOnIOThread { DatabaseProvider.get().clearAllTables() }
+        runBlocking { database.clearAllTables() }
     }
 
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
-        DatabaseProvider.toggleTestMode()
         setupDagger()
-        getMockWebServerFrom(apiServiceFactory).start()
+        server.start()
     }
 
     @After
     fun cleanup() {
-        getMockWebServerFrom(apiServiceFactory).shutdown()
-        DatabaseProvider.mAppDatabase?.close()
+        server.shutdown()
+        database.close()
     }
 
     @Test
@@ -98,7 +107,7 @@ class MobileSessionTest {
         whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
         whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
         whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-        stubPairedDevice(bluetoothManager)
+
 
         testRule.launchActivity(null)
 
@@ -157,7 +166,7 @@ class MobileSessionTest {
         waitAndRetry {
             onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         }
-        onView (withId(R.id.measurements_table)).check(matches(isDisplayed()))
+        onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
 
         onView(isRoot()).perform(pressBack())
@@ -195,7 +204,7 @@ class MobileSessionTest {
             mapOf(
                 "/api/user/sessions/update_session.json" to updateResponse
             ),
-            getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+            server
         )
 
         settings.login("X", "EMAIL", "TOKEN")

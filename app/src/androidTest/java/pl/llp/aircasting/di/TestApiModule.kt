@@ -1,20 +1,22 @@
 package pl.llp.aircasting.di
 
+import dagger.Module
+import dagger.Provides
+import okhttp3.mockwebserver.MockWebServer
+import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.di.mocks.FakeApiServiceFactory
-import pl.llp.aircasting.di.mocks.FakeWebServerFactory
-import pl.llp.aircasting.di.modules.ApiModule
-import pl.llp.aircasting.di.modules.WebServerFactory
-import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.data.api.services.Authenticated
+import javax.inject.Singleton
 
-class TestApiModule : ApiModule(){
-    override fun providesMockWebServerFactory(): WebServerFactory =
-        FakeWebServerFactory()
+@Module
+class TestApiModule {
+    @Provides
+    @Singleton
+    fun providesServer(): MockWebServer = MockWebServer()
 
-    override fun providesApiServiceFactory(settings: Settings, webServerFactory: WebServerFactory): ApiServiceFactory {
-        val mockWebServer = (webServerFactory as FakeWebServerFactory).getMockWebServer()
-        return FakeApiServiceFactory(
-            mockWebServer, settings
-        )
+    @Provides
+    @Authenticated
+    fun provideApiService(factory: ApiServiceFactory): ApiService {
+        return factory.getNonAuthenticated()
     }
 }

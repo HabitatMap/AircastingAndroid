@@ -37,8 +37,10 @@ import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
+import pl.llp.aircasting.data.local.AppDatabase
 
 import pl.llp.aircasting.di.TestApiModule
+import pl.llp.aircasting.di.TestPermissionsModule
 import pl.llp.aircasting.di.TestSettingsModule
 import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.PermissionsModule
@@ -81,7 +83,10 @@ class SearchFollowTest {
     }
 
     @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var server: MockWebServer
 
     @Inject
     lateinit var settings: Settings
@@ -94,7 +99,6 @@ class SearchFollowTest {
 
     lateinit var searchScenario: FragmentScenario<SearchLocationFragment>
     lateinit var mapScenario: FragmentScenario<SearchLocationResultFragment>
-    lateinit var server: MockWebServer
 
     private val newYork = "New York"
     private val newYorkArgs = bundleOf(
@@ -107,10 +111,8 @@ class SearchFollowTest {
 
     @Before
     fun setup() {
-        DatabaseProvider.toggleTestMode()
         setupDagger()
 
-        server = getMockWebServerFrom(apiServiceFactory)
         server.start()
 
         val newYorkResponse = MockResponse()
@@ -134,7 +136,7 @@ class SearchFollowTest {
 
     private fun setupDagger() {
         val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-        val permissionsModule = PermissionsModule()
+        val permissionsModule = TestPermissionsModule()
         val testAppComponent = DaggerTestAppComponent.builder()
             .appModule(AppModule(app))
             .apiModule(TestApiModule())
@@ -148,7 +150,7 @@ class SearchFollowTest {
     @After
     fun cleanup() {
         server.shutdown()
-        DatabaseProvider.mAppDatabase?.close()
+        database.close()
     }
 
     @Test

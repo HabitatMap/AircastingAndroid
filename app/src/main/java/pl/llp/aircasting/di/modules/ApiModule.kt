@@ -14,10 +14,6 @@ open class WebServerFactory
 open class ApiModule {
     @Provides
     @UserSessionScope
-    open fun providesMockWebServerFactory(): WebServerFactory = WebServerFactory()
-
-    @Provides
-    @UserSessionScope
     @Authenticated
     fun providesApiServiceAuthenticatedWithToken(
         settings: Settings,

@@ -9,5 +9,5 @@ fun getFakeApiServiceFactoryFrom(apiServiceFactory: ApiServiceFactory) : FakeApi
 }
 
 fun getMockWebServerFrom(apiServiceFactory: ApiServiceFactory) : MockWebServer {
-    return getFakeApiServiceFactoryFrom(apiServiceFactory).mockWebServer
+    return server
 }
