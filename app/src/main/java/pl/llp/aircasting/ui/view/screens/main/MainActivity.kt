@@ -34,7 +34,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
             fromContext?.let {
                 val intent = Intent(it, MainActivity::class.java)
                 intent.flags =
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 it.startActivity(intent)
             }
         }

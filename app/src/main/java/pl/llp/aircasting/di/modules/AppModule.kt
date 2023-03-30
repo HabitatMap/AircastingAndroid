@@ -7,7 +7,6 @@ import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.factories.FragmentsFactory
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import javax.inject.Provider
 import javax.inject.Singleton
 

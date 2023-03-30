@@ -34,6 +34,8 @@ object AppDependencies {
         "androidx.swiperefreshlayout:swiperefreshlayout:${Versions.swipeRefresh}"
     private const val recycleView = "androidx.recyclerview:recyclerview:${Versions.recyclerView}"
     private const val materialDesign = "com.google.android.material:material:${Versions.material}"
+    private const val coreSplashScreen = "androidx.core:core-splashscreen:${Versions.coreSplashScreen}"
+
 
     private const val groupie = "com.github.lisawray.groupie:groupie:${Versions.groupie}"
     private const val groupieAndroidExtension =
@@ -152,6 +154,7 @@ object AppDependencies {
         add(swipRefreshLayout)
         add(recycleView)
         add(materialDesign)
+        add(coreSplashScreen)
         add(groupie)
         add(groupieAndroidExtension)
         add(guava)

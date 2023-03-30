@@ -2,6 +2,12 @@
 
     <!-- Themes -->
 
+    <style name="Theme.Aircasting.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/background_main</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/aircasting_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.Aircasting</item>
+    </style>
+
     <style name="Theme.Aircasting" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/aircasting_blue_400</item>
         <item name="colorPrimaryDark">@color/aircasting_dark_blue</item>

@@ -17,6 +17,7 @@ object Versions {
     const val fragmentKtx = "2.4.2"
     const val swipeRefresh = "1.1.0"
     const val lifeCycle = "2.4.1"
+    const val coreSplashScreen = "1.0.0"
 
     const val recyclerView = "1.2.1"
     const val groupie = "2.9.0"
