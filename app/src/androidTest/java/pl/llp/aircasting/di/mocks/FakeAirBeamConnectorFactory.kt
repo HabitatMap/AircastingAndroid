@@ -14,7 +14,7 @@ class FakeAirBeamConnectorFactory(
     private val mErrorHandler: ErrorHandler,
     private val bluetoothManager: BluetoothManager,
     ): AirBeamConnectorFactory(app, mSettings, mErrorHandler, bluetoothManager) {
-    override fun get(deviceItem: DeviceItem): AirBeamConnector? {
+    override fun get(deviceItem: DeviceItem): AirBeamConnector {
         return FakeAirBeam2Connector(
             app,
             mSettings,

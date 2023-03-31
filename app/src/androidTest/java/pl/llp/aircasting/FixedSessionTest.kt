@@ -8,22 +8,15 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.any
-import org.mockito.kotlin.whenever
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.AppDatabase
-
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -32,22 +25,17 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.*
 import pl.llp.aircasting.di.mocks.FakeFixedSessionDetailsController
-import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.runOnIOThread
-import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(AndroidJUnit4::class)
-class FixedSessionTest {
+class FixedSessionTest : BaseTest() {
     @Inject
     lateinit var settings: Settings
 
@@ -62,9 +50,6 @@ class FixedSessionTest {
 
     @Inject
     lateinit var database: AppDatabase
-
-    @Inject
-    lateinit var server: MockWebServer
 
     private val measurementValue = 70.0
     private val stream = MeasurementStream(
@@ -89,30 +74,11 @@ class FixedSessionTest {
 
     val app: AircastingApplication = ApplicationProvider.getApplicationContext()
 
-    private fun setupDagger() {
-        val permissionsModule =
-            TestPermissionsModule()
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(app))
-            .apiModule(TestApiModule())
-            .settingsModule(TestSettingsModule())
-            .permissionsModule(permissionsModule)
-            .sensorsModule(
-                TestSensorsModule(
-                    app
-                )
-            )
-            .newSessionWizardModule(TestNewSessionWizardModule())
-            .build()
-        app.userDependentComponent = testAppComponent
-        testAppComponent.inject(this)
-    }
-
     @Before
-    fun setup() {
-        setupDagger()
+    override fun setup() {
+        super.setup()
+        injectUserComponent(this)
 
-        server.start()
         settings.login("X", "EMAIL", "TOKEN")
         val syncResponseMock = MockResponse()
             .setResponseCode(200)
@@ -125,19 +91,14 @@ class FixedSessionTest {
     }
 
     @After
-    fun cleanup() {
-        server.shutdown()
+    override fun cleanup() {
+        super.cleanup()
         database.close()
     }
 
     @Test
     fun testFixedOutdoorSessionRecording() {
         testRule.launchActivity(null)
-
-        
-
-
-        
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
         onView(allOf(withId(R.id.navigation_lets_begin), isDisplayed())).perform(click())
@@ -278,7 +239,7 @@ class FixedSessionTest {
 
         testRule.launchActivity(null)
 
-        runTest {
+        runBlocking {
             val sessionId = sessionsRepository.insert(session)
             val streamId = measurementStreamRepository.getIdOrInsert(sessionId, stream)
             measurementsRepository.insertAll(streamId, sessionId, measurements)

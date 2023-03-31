@@ -10,28 +10,17 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runTest
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.AppDatabase
-
-import pl.llp.aircasting.di.TestApiModule
-import pl.llp.aircasting.di.TestPermissionsModule
-import pl.llp.aircasting.di.TestSensorsModule
-import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.di.components.DaggerAppComponent
-import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.extensions.runOnIOThread
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import java.net.HttpURLConnection
@@ -40,7 +29,7 @@ import javax.inject.Inject
 
 
 @RunWith(AndroidJUnit4::class)
-class MobileSessionTest {
+class MobileSessionTest : BaseTest() {
     @Inject
     lateinit var settings: Settings
 
@@ -53,50 +42,25 @@ class MobileSessionTest {
     @Inject
     lateinit var database: AppDatabase
 
-    @Inject
-    lateinit var server: MockWebServer
-
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    private fun setupDagger() {
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(app))
-            .apiModule(TestApiModule())
-            .settingsModule(TestSettingsModule())
-            .permissionsModule(permissionsModule)
-            .sensorsModule(
-                TestSensorsModule(
-                    app
-                )
-            )
-            .build()
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(app))
-            .sensorsModule(TestSensorsModule(app)
-            .build()
-        appComponent.inject(this)
-        app.userDependentComponent = testAppComponent
-        testAppComponent.inject(this)
-    }
-
     fun clearDatabase() {
         runBlocking { database.clearAllTables() }
     }
 
     @Before
-    fun setup() {
+    override fun setup() {
+        super.setup()
         MockitoAnnotations.initMocks(this)
-        setupDagger()
-        server.start()
     }
 
     @After
-    fun cleanup() {
-        server.shutdown()
+    override fun cleanup() {
+        super.cleanup()
         database.close()
     }
 

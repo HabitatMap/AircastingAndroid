@@ -6,7 +6,8 @@ import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.util.Settings
 
 class FakeApiServiceFactory(
-    val mockWebServer: MockWebServer, settings: Settings
+    val mockWebServer: MockWebServer,
+    settings: Settings
 ) : ApiServiceFactory(settings) {
     override fun baseUrl(): HttpUrl {
         return mockWebServer.url("/")

@@ -15,27 +15,17 @@ import androidx.test.rule.ActivityTestRule
 import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertTrue
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.junit.*
 import org.junit.runner.RunWith
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.local.AppDatabase
-
-import pl.llp.aircasting.di.TestApiModule
-import pl.llp.aircasting.di.TestPermissionsModule
-import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
-import pl.llp.aircasting.helpers.getFakeApiServiceFactoryFrom
-import pl.llp.aircasting.helpers.getMockWebServerFrom
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
-class MyAccountTest {
+class MyAccountTest : BaseTest() {
 
     @Inject
     lateinit var settings: Settings
@@ -43,38 +33,17 @@ class MyAccountTest {
     @Inject
     lateinit var db: AppDatabase
 
-    @Inject
-    lateinit var server: MockWebServer
-
     @get:Rule
     val testRule: ActivityTestRule<MyAccountActivity> =
         ActivityTestRule(MyAccountActivity::class.java, false, false)
 
     val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
 
-    private fun setupDagger() {
-        val permissionsModule = TestPermissionsModule()
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(app))
-            .apiModule(TestApiModule())
-            .settingsModule(TestSettingsModule())
-            .permissionsModule(permissionsModule)
-            .build()
-        app.userDependentComponent = testAppComponent
-        testAppComponent.inject(this)
-    }
-
-    @Before
-    fun setup() {
-        setupDagger()
-        server.start()
-    }
-
     @After
-    fun cleanup() {
+    override fun cleanup() {
         testRule.finishActivity()
         db.close()
-        server.shutdown()
+        super.cleanup()
     }
 
     @Ignore("Make assertion wait for full logout process with sync")

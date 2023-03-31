@@ -24,26 +24,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
 import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
 import pl.llp.aircasting.data.local.AppDatabase
-
-import pl.llp.aircasting.di.TestApiModule
-import pl.llp.aircasting.di.TestPermissionsModule
-import pl.llp.aircasting.di.TestSettingsModule
-import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.PermissionsModule
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
@@ -61,7 +53,7 @@ import javax.inject.Inject
 * */
 
 @RunWith(AndroidJUnit4::class)
-class SearchFollowTest {
+class SearchFollowTest : BaseTest() {
     companion object {
         private lateinit var startIntent: Intent
         private lateinit var searchIntent: Intent
@@ -86,9 +78,6 @@ class SearchFollowTest {
     lateinit var database: AppDatabase
 
     @Inject
-    lateinit var server: MockWebServer
-
-    @Inject
     lateinit var settings: Settings
 
     @Inject
@@ -110,11 +99,8 @@ class SearchFollowTest {
     )
 
     @Before
-    fun setup() {
-        setupDagger()
-
-        server.start()
-
+    override fun setup() {
+        super.setup()
         val newYorkResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(Util.readFile("NewYork.json"))
@@ -134,22 +120,9 @@ class SearchFollowTest {
         settings.login("NAME", "EMAIL", "TOKEN")
     }
 
-    private fun setupDagger() {
-        val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-        val permissionsModule = TestPermissionsModule()
-        val testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(app))
-            .apiModule(TestApiModule())
-            .settingsModule(TestSettingsModule())
-            .permissionsModule(permissionsModule)
-            .build()
-        app.userDependentComponent = testAppComponent
-        testAppComponent.inject(this)
-    }
-
     @After
-    fun cleanup() {
-        server.shutdown()
+    override fun cleanup() {
+        super.cleanup()
         database.close()
     }
 
