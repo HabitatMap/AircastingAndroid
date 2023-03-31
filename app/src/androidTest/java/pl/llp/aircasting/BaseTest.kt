@@ -1,13 +1,10 @@
 package pl.llp.aircasting
 
-import androidx.test.core.app.ApplicationProvider
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
-import pl.llp.aircasting.di.DaggerTestAppComponent
 import pl.llp.aircasting.di.TestAppComponent
 import pl.llp.aircasting.di.TestUserDependentComponent
-import pl.llp.aircasting.di.modules.AppModule
 
 abstract class BaseTest {
     lateinit var testAppComponent: TestAppComponent
@@ -16,23 +13,24 @@ abstract class BaseTest {
     lateinit var server: MockWebServer
 
     init {
-        testAppComponent = DaggerTestAppComponent.builder()
-            .appModule(AppModule(ApplicationProvider.getApplicationContext()))
-            .build()
-        testUserDependentComponent = testAppComponent.userComponentFactory().create()
+//        testAppComponent = DaggerTestAppComponent.builder()
+//            .appModule(AppModule(ApplicationProvider.getApplicationContext()))
+//            .build()
+//        testUserDependentComponent = testAppComponent.userComponentFactory().create()
     }
 
     @Before
     open fun setup() {
+
         server.start()
     }
 
     protected fun inject(test: BaseTest) {
-        testAppComponent.inject(test)
+//        testAppComponent.inject(test)
     }
 
     protected fun injectUserComponent(test: BaseTest) {
-        testUserDependentComponent.inject(test)
+//        testUserDependentComponent.inject(test)
     }
 
     @After

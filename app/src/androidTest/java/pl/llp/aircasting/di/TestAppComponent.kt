@@ -4,6 +4,7 @@ import dagger.Component
 import dagger.Subcomponent
 import pl.llp.aircasting.BaseTest
 import pl.llp.aircasting.CreateAccountTest
+import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
 @Singleton
@@ -16,8 +17,8 @@ import javax.inject.Singleton
         ServerModule::class,
     ]
 )
-interface TestAppComponent {
-    fun userComponentFactory(): TestUserDependentComponent.Factory
+interface TestAppComponent : AppComponent {
+    fun testUserComponentFactory(): TestUserDependentComponent.Factory
 
     fun inject(test: BaseTest)
 //    fun inject(test: LoginTest)
@@ -44,7 +45,7 @@ interface TestAppComponent {
 //        PermissionsModule::class,
     ]
 )
-interface TestUserDependentComponent {
+interface TestUserDependentComponent : UserDependentComponent {
     @Subcomponent.Factory
     interface Factory {
         fun create(): TestUserDependentComponent

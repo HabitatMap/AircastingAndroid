@@ -26,9 +26,7 @@ open class AircastingApplication : Application() {
         ExpandedCardsRepository.setup(mSettings)
         setCorrectAppTheme()
 
-        appComponent = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .build()
+        appComponent = initialiseAppComponent()
         appComponent.inject(this)
 
         if (mSettings.getAuthToken() != null) {
@@ -40,12 +38,18 @@ open class AircastingApplication : Application() {
             .addObserver(AppLifecycleObserver())
     }
 
+    protected open fun initialiseAppComponent(): AppComponent = DaggerAppComponent.builder()
+        .appModule(AppModule(this))
+        .build()
+
     fun onUserLoggedIn() {
         // Create an instance of UserComponent
-        userDependentComponent = appComponent
-            .userComponentFactory()
-            .create()
+        userDependentComponent = initialiseUserDependentComponent()
     }
+
+    protected open fun initialiseUserDependentComponent(): UserDependentComponent = appComponent
+        .userComponentFactory()
+        .create()
 
     private fun setCorrectAppTheme() {
         if (mSettings.isDarkThemeEnabled()) AppCompatDelegate.setDefaultNightMode(

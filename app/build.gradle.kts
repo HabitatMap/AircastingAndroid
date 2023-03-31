@@ -55,6 +55,9 @@ android {
             this.java.srcDir("src/test/res")
         }
         getByName("androidTest").assets.srcDirs(files("$projectDir/schemas"))
+        getByName("androidTest") {
+            manifest.srcFile("src/androidTest/manifests/AndroidManifest.xml")
+        }
     }
 
     testOptions {
