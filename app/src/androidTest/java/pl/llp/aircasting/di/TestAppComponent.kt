@@ -2,10 +2,10 @@ package pl.llp.aircasting.di
 
 import dagger.Component
 import dagger.Subcomponent
-import pl.llp.aircasting.BaseTest
 import pl.llp.aircasting.CreateAccountTest
 import pl.llp.aircasting.FixedSessionTest
 import pl.llp.aircasting.LoginTest
+import pl.llp.aircasting.MobileSessionTest
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
@@ -24,11 +24,6 @@ interface TestAppComponent : AppComponent {
 
     fun inject(test: CreateAccountTest)
     fun inject(test: LoginTest)
-//    fun inject(test: MobileSessionTest)
-//    fun inject(test: FixedSessionTest)
-//    fun inject(test: MyAccountTest)
-//    fun inject(test: OnboardingTest)
-//    fun inject(test: SearchFollowTest)
 }
 
 @UserSessionScope
@@ -50,6 +45,6 @@ interface TestUserDependentComponent : UserDependentComponent {
     interface Factory {
         fun create(): TestUserDependentComponent
     }
-    fun inject(test: BaseTest)
     fun inject(test: FixedSessionTest)
+    fun inject(test: MobileSessionTest)
 }

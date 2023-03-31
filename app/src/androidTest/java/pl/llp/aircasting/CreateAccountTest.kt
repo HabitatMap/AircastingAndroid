@@ -1,6 +1,5 @@
 package pl.llp.aircasting
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -15,8 +14,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.llp.aircasting.di.TestAppComponent
-import pl.llp.aircasting.di.TestUserDependentComponent
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
 import pl.llp.aircasting.helpers.Util
 import pl.llp.aircasting.helpers.awaitForAssertion
@@ -38,11 +35,7 @@ class CreateAccountTest : BaseTest() {
         ActivityTestRule(CreateAccountActivity::class.java, true, false)
 
     override fun setup() {
-        (ApplicationProvider.getApplicationContext() as TestApplication)
-            .apply {
-                (appComponent as TestAppComponent).inject(this@CreateAccountTest)
-                (userDependentComponent as? TestUserDependentComponent)?.inject(this@CreateAccountTest)
-            }
+        appComponent.inject(this)
         server = mockServer
         super.setup()
     }

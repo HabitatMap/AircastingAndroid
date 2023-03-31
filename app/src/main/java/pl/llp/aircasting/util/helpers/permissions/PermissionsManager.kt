@@ -6,13 +6,10 @@ import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
-import javax.inject.Inject
 
-@UserSessionScope
-open class PermissionsManager @Inject constructor() {
+open class PermissionsManager {
     private val LOCATION_PERMISSIONS = arrayOf(
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION

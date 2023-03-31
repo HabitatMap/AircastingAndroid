@@ -14,6 +14,11 @@ import pl.llp.aircasting.util.isSDKGreaterOrEqualToS
 open class PermissionsModule {
     @Provides
     @UserSessionScope
+    fun providesPermissionsManager(): PermissionsManager =
+        PermissionsManager()
+
+    @Provides
+    @UserSessionScope
     open fun providesBluetoothManager(
         application: AircastingApplication,
         permissionsManager: PermissionsManager

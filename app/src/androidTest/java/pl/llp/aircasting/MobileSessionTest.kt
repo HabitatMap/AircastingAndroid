@@ -1,6 +1,5 @@
 package pl.llp.aircasting
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -9,12 +8,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
 import org.junit.runner.RunWith
-import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 import pl.llp.aircasting.data.local.AppDatabase
@@ -42,37 +40,23 @@ class MobileSessionTest : BaseTest() {
     @Inject
     lateinit var database: AppDatabase
 
+    @Inject
+    lateinit var mockServer: MockWebServer
+
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java, false, false)
 
-    val app = ApplicationProvider.getApplicationContext<AircastingApplication>()
-
-    fun clearDatabase() {
-        runBlocking { database.clearAllTables() }
-    }
-
     @Before
     override fun setup() {
+        userComponent?.inject(this)
+        server = mockServer
         super.setup()
-        MockitoAnnotations.initMocks(this)
-    }
-
-    @After
-    override fun cleanup() {
-        super.cleanup()
-        database.close()
     }
 
     @Test
     fun testBluetoothMobileSessionRecording() {
         settings.login("X", "EMAIL", "TOKEN")
-
-        whenever(bluetoothManager.isBluetoothEnabled()).thenReturn(true)
-        whenever(permissionsManager.bluetoothPermissionsGranted(any())).thenReturn(true)
-        whenever(permissionsManager.locationPermissionsGranted(any())).thenReturn(true)
-
-
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
@@ -87,8 +71,10 @@ class MobileSessionTest : BaseTest() {
         )
 
         onView(withId(R.id.connect_button)).perform(click())
-        Thread.sleep(4000)
-        onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+
+        awaitForAssertion {
+            onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        }
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
@@ -100,7 +86,7 @@ class MobileSessionTest : BaseTest() {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        waitAndRetry {
+        awaitForAssertion {
             val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
             measurementValuesRow.check(matches(hasMinimumChildCount(1)))
         }
@@ -108,15 +94,12 @@ class MobileSessionTest : BaseTest() {
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.chart_container)).check(matches(isDisplayed()))
 
-        onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
+        openMap()
 
-        waitAndRetry(::openMap)
-
-        waitAndRetry {
-            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
-        }
+        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
         onView(withId(R.id.hlu)).check(matches(isDisplayed()))
+
         onView(isRoot()).perform(pressBack())
 
         expandCard()
@@ -125,9 +108,9 @@ class MobileSessionTest : BaseTest() {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
 
-        waitAndRetry(::openGraph)
+        openGraph()
 
-        waitAndRetry {
+        awaitForAssertion {
             onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         }
         onView(withId(R.id.measurements_table)).check(matches(isDisplayed()))
@@ -139,7 +122,7 @@ class MobileSessionTest : BaseTest() {
         stopSession()
         // should navigate to mobile tab
 
-        waitAndRetry {
+        awaitForAssertion {
             onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile bluetooth session")))
         }
         onView(withId(R.id.session_info)).check(matches(withText("Mobile: AirBeam2")))
@@ -149,9 +132,9 @@ class MobileSessionTest : BaseTest() {
 
         onView(allOf(withId(R.id.recycler_sessions), isDisplayed())).perform(swipeUp())
 
-        waitAndRetry(::openMap)
+        awaitForAssertion(::openMap)
 
-        waitAndRetry {
+        awaitForAssertion {
             onView(withId(R.id.more_invisible_button)).perform(click())
         }
         onView(isRoot()).perform(swipeUp())
@@ -194,17 +177,17 @@ class MobileSessionTest : BaseTest() {
         onView(withId(R.id.map)).check(matches(isDisplayed()))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(4000)
-
-        val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
-        measurementValuesRow.check(matches(hasMinimumChildCount(1)))
+        awaitForAssertion {
+            val measurementValuesRow = onView(allOf(withId(R.id.measurement_values), isDisplayed()))
+            measurementValuesRow.check(matches(hasMinimumChildCount(1)))
+        }
 
         stopSession()
         // should navigate to mobile tab
-        Thread.sleep(4000)
-
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
-        onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")))
+        awaitForAssertion {
+            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile microphone session")))
+            onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")))
+        }
 
         onView(withId(R.id.session_actions_button)).perform(click())
 
@@ -214,8 +197,9 @@ class MobileSessionTest : BaseTest() {
         onView(isRoot()).perform(swipeUp())
         onView(withId(R.id.edit_data_button)).perform(click())
         // check if name is edited:
-        Thread.sleep(2000)
-        onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile mic session")))
+        awaitForAssertion {
+            onView(withId(R.id.session_name)).check(matches(withText("Ania's mobile mic session")))
+        }
 
         // delete session test
         onView(withId(R.id.session_actions_button)).perform(click())
@@ -228,8 +212,9 @@ class MobileSessionTest : BaseTest() {
 
         onView(isRoot()).perform(swipeUp())
         onView(withId(R.id.delete_streams_button)).perform(click())
-        Thread.sleep(2000)
-        // check if session deleted
-        onView(withText("Ania's mobile mic session")).check(doesNotExist())
+        awaitForAssertion {
+            // check if session deleted
+            onView(withText("Ania's mobile mic session")).check(doesNotExist())
+        }
     }
 }

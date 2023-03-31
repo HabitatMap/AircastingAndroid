@@ -2,11 +2,11 @@ package pl.llp.aircasting.helpers
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import org.awaitility.core.ThrowingRunnable
 import pl.llp.aircasting.R
 
 fun openMap() {
@@ -27,18 +27,16 @@ fun expandCard() {
         { onView(withId(R.id.collapse_session_button)).check(matches(isDisplayed())) })
 }
 
-fun clickButtonWithRetry(id: Int, assertBlock: () -> Unit, retryCount: Int = 0) {
+fun clickButtonWithRetry(id: Int, assertion: ThrowingRunnable, retryCount: Int = 0) {
     if (retryCount >= 3) {
         return
     }
 
     try {
-        onView(withId(id)).perform(ViewActions.click())
-        Thread.sleep(2000)
-        assertBlock()
+        onView(withId(id)).perform(click())
+        awaitForAssertion(assertion)
     } catch(e: Throwable) {
-        Thread.sleep(1000)
-        clickButtonWithRetry(id, assertBlock, retryCount + 1)
+        clickButtonWithRetry(id, assertion, retryCount + 1)
     }
 }
 fun stopSession(retryCount: Int = 0) {

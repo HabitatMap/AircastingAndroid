@@ -1,6 +1,5 @@
 package pl.llp.aircasting
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -16,7 +15,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.llp.aircasting.di.TestAppComponent
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
@@ -36,10 +34,7 @@ class LoginTest : BaseTest() {
         ActivityTestRule(LoginActivity::class.java, false, false)
 
     override fun setup() {
-        (ApplicationProvider.getApplicationContext() as TestApplication)
-            .apply {
-                (appComponent as TestAppComponent).inject(this@LoginTest)
-            }
+        appComponent.inject(this)
         server = mockServer
         super.setup()
     }

@@ -1,6 +1,5 @@
 package pl.llp.aircasting
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -76,15 +75,9 @@ class FixedSessionTest : BaseTest() {
     val testRule: ActivityTestRule<MainActivity> =
         ActivityTestRule(MainActivity::class.java, true, false)
 
-    val app: AircastingApplication = ApplicationProvider.getApplicationContext()
-
     @Before
     override fun setup() {
-        (ApplicationProvider.getApplicationContext() as TestApplication)
-            .apply {
-                onUserLoggedIn()
-                (userDependentComponent as? TestUserDependentComponent)?.inject(this@FixedSessionTest)
-            }
+        userComponent?.inject(this)
         server = mockServer
         super.setup()
 
