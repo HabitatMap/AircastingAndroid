@@ -23,7 +23,6 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent {
-
     fun inject(target: AircastingApplication)
     fun inject(target: CreateAccountActivity)
     fun inject(target: LoginActivity)

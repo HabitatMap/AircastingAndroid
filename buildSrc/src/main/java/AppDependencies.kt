@@ -210,7 +210,7 @@ object AppDependencies {
         add(testExtJunit)
         add(awaitility)
         add(testRunner)
-//        add(coroutinesTest)
+        add(coroutinesTest)
     }
     val testImplementation = arrayListOf<String>().apply {
         add(coroutinesTest)

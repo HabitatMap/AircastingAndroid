@@ -41,8 +41,6 @@ interface TestAppComponent : AppComponent {
         FragmentModule::class,
         RepositoryModule::class,
         TestPermissionsModule::class,
-
-//        PermissionsModule::class,
     ]
 )
 interface TestUserDependentComponent : UserDependentComponent {

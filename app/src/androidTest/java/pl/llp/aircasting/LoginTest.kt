@@ -31,7 +31,6 @@ class LoginTest : BaseTest(){
 
     override fun setup() {
         super.setup()
-        inject(this)
     }
 
     @Test

@@ -54,9 +54,6 @@ class CreateAccountTest : BaseTest() {
 
         createAccountLogic()
 
-        Espresso.closeSoftKeyboard()
-        onView(withId(R.id.create_account_button)).perform(ViewActions.scrollTo(), click())
-        Thread.sleep(500)
         onView(withId(R.id.email_input)).perform(ViewActions.typeText("maria@example.org"))
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.profile_name_input)).perform(ViewActions.typeText("maria"))

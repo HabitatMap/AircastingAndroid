@@ -25,5 +25,5 @@ open class DevicesModule {
 
     @Provides
     @UserSessionScope
-    fun providesAudioReader(application: AircastingApplication): AudioReader = AudioReader()
+    fun providesAudioReader(): AudioReader = AudioReader()
 }

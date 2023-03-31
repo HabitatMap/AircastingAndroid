@@ -77,7 +77,7 @@ class FixedSessionTest : BaseTest() {
     @Before
     override fun setup() {
         super.setup()
-        injectUserComponent(this)
+
 
         settings.login("X", "EMAIL", "TOKEN")
         val syncResponseMock = MockResponse()

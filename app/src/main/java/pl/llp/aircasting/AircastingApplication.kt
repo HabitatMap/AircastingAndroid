@@ -43,7 +43,6 @@ open class AircastingApplication : Application() {
         .build()
 
     fun onUserLoggedIn() {
-        // Create an instance of UserComponent
         userDependentComponent = initialiseUserDependentComponent()
     }
 
