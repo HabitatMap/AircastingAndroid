@@ -38,7 +38,7 @@ import javax.inject.Scope
     modules = [
         ApiModule::class,
         PermissionsModule::class,
-        SensorsModule::class,
+        DevicesModule::class,
         NewSessionWizardModule::class,
         ViewModelModule::class,
         CoroutineModule::class,

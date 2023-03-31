@@ -13,7 +13,7 @@ import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.Settings.Companion.PREFERENCES_NAME
 
-class AircastingApplication : Application() {
+open class AircastingApplication : Application() {
     var userDependentComponent: UserDependentComponent? = null
     lateinit var appComponent: AppComponent
     lateinit var mSettings: Settings

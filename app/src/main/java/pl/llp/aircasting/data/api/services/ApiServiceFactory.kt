@@ -13,12 +13,9 @@ import pl.llp.aircasting.util.Settings
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
-@Singleton
-open class ApiServiceFactory @Inject constructor(
+open class ApiServiceFactory(
     private val settings: Settings
 ) {
 

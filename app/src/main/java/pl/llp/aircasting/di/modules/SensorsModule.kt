@@ -17,7 +17,6 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
 import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.*
@@ -138,16 +137,6 @@ open class SensorsModule {
 
     @Provides
     @UserSessionScope
-    open fun providesAirBeamConnectorFactory(
-        application: AircastingApplication,
-        settings: Settings,
-        errorHandler: ErrorHandler,
-        bluetoothManager: BluetoothManager
-    ): AirBeamConnectorFactory =
-        AirBeamConnectorFactory(application, settings, errorHandler, bluetoothManager)
-
-    @Provides
-    @UserSessionScope
     open fun providesAirBeamReconnector(
         application: AircastingApplication,
         sessionsRepository: SessionsRepository,
@@ -173,10 +162,6 @@ open class SensorsModule {
         errorHandler: ErrorHandler,
         settings: Settings
     ): MicrophoneReader = MicrophoneReader(audioReader, errorHandler, settings)
-
-    @Provides
-    @UserSessionScope
-    open fun providesAudioReader(): AudioReader = AudioReader()
 
     @Provides
     @UserSessionScope
