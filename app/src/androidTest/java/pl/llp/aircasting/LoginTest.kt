@@ -1,5 +1,6 @@
 package pl.llp.aircasting
 
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
@@ -10,26 +11,36 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import pl.llp.aircasting.di.TestAppComponent
 import pl.llp.aircasting.helpers.*
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
+import pl.llp.aircasting.ui.view.screens.login.LoginActivity
 import pl.llp.aircasting.util.Settings
 import java.net.HttpURLConnection
 import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
-class LoginTest : BaseTest(){
+class LoginTest : BaseTest() {
     @Inject
     lateinit var settings: Settings
 
+    @Inject
+    lateinit var mockServer: MockWebServer
+
     @get:Rule
-    val testRule: ActivityTestRule<MainActivity>
-            = ActivityTestRule(MainActivity::class.java, false, false)
+    val testRule: ActivityTestRule<LoginActivity> =
+        ActivityTestRule(LoginActivity::class.java, false, false)
 
     override fun setup() {
+        (ApplicationProvider.getApplicationContext() as TestApplication)
+            .apply {
+                (appComponent as TestAppComponent).inject(this@LoginTest)
+            }
+        server = mockServer
         super.setup()
     }
 
@@ -37,11 +48,15 @@ class LoginTest : BaseTest(){
     fun testLogin() {
         val loginResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.buildJson(mapOf(
-                "email" to "ania@example.org",
-                "username" to "ania",
-                "authentication_token" to "XYZ123FAKETOKEN"
-            )))
+            .setBody(
+                Util.buildJson(
+                    mapOf(
+                        "email" to "ania@example.org",
+                        "username" to "ania",
+                        "authentication_token" to "XYZ123FAKETOKEN"
+                    )
+                )
+            )
 
         val syncResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -64,7 +79,7 @@ class LoginTest : BaseTest(){
         Espresso.closeSoftKeyboard()
         onView(withId(R.id.login_button)).perform(click())
 
-        waitAndRetry {
+        awaitForAssertion {
             onView(withId(R.id.dashboard)).check(matches(isDisplayed()))
         }
 

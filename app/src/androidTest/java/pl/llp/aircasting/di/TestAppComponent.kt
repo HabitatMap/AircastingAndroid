@@ -5,6 +5,7 @@ import dagger.Subcomponent
 import pl.llp.aircasting.BaseTest
 import pl.llp.aircasting.CreateAccountTest
 import pl.llp.aircasting.FixedSessionTest
+import pl.llp.aircasting.LoginTest
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
@@ -21,9 +22,8 @@ import javax.inject.Singleton
 interface TestAppComponent : AppComponent {
     fun testUserComponentFactory(): TestUserDependentComponent.Factory
 
-    fun inject(test: BaseTest)
-//    fun inject(test: LoginTest)
     fun inject(test: CreateAccountTest)
+    fun inject(test: LoginTest)
 //    fun inject(test: MobileSessionTest)
 //    fun inject(test: FixedSessionTest)
 //    fun inject(test: MyAccountTest)
