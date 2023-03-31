@@ -29,14 +29,11 @@ class FakeAirBeam2Connector(
 
     private inner class ConnectThread(private val deviceItem: DeviceItem) : Thread() {
         override fun run() {
-            sleep(2000) // imitate connection time
-
             onConnectionSuccessful(deviceItem)
 
             while (true) {
                 val inputStream = app.resources.openRawResource(R.raw.airbeam2_stream)
                 mAirBeam2Reader.run(inputStream)
-                sleep(1000)
                 inputStream.close()
             }
         }

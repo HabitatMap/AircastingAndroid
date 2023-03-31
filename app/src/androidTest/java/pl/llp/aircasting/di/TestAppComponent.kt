@@ -4,6 +4,7 @@ import dagger.Component
 import dagger.Subcomponent
 import pl.llp.aircasting.BaseTest
 import pl.llp.aircasting.CreateAccountTest
+import pl.llp.aircasting.FixedSessionTest
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
@@ -14,7 +15,7 @@ import javax.inject.Singleton
         TestApiServiceFactoryModule::class,
         TestSettingsModule::class,
         TestDatabaseModule::class,
-        ServerModule::class,
+        TestServerModule::class,
     ]
 )
 interface TestAppComponent : AppComponent {
@@ -35,7 +36,7 @@ interface TestAppComponent : AppComponent {
     modules = [
         TestDevicesModule::class,
         ApiModule::class,
-        NewSessionWizardModule::class,
+        TestNewSessionWizardModule::class,
         ViewModelModule::class,
         CoroutineModule::class,
         FragmentModule::class,
@@ -43,10 +44,12 @@ interface TestAppComponent : AppComponent {
         TestPermissionsModule::class,
     ]
 )
+
 interface TestUserDependentComponent : UserDependentComponent {
     @Subcomponent.Factory
     interface Factory {
         fun create(): TestUserDependentComponent
     }
     fun inject(test: BaseTest)
+    fun inject(test: FixedSessionTest)
 }

@@ -10,6 +10,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Before
@@ -51,6 +52,9 @@ class FixedSessionTest : BaseTest() {
     @Inject
     lateinit var database: AppDatabase
 
+    @Inject
+    lateinit var mockServer: MockWebServer
+
     private val measurementValue = 70.0
     private val stream = MeasurementStream(
         "AirBeam2:0018961070D6",
@@ -76,10 +80,16 @@ class FixedSessionTest : BaseTest() {
 
     @Before
     override fun setup() {
+        (ApplicationProvider.getApplicationContext() as TestApplication)
+            .apply {
+                onUserLoggedIn()
+                (userDependentComponent as? TestUserDependentComponent)?.inject(this@FixedSessionTest)
+            }
+        server = mockServer
         super.setup()
 
-
         settings.login("X", "EMAIL", "TOKEN")
+
         val syncResponseMock = MockResponse()
             .setResponseCode(200)
         MockWebServerDispatcher.set(
@@ -112,8 +122,9 @@ class FixedSessionTest : BaseTest() {
         )
 
         onView(withId(R.id.connect_button)).perform(click())
-        Thread.sleep(4000)
-        onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        awaitForAssertion {
+            onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        }
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
@@ -147,26 +158,19 @@ class FixedSessionTest : BaseTest() {
 
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(4000)
-
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
-        Thread.sleep(4000)
 
-        onView(
-            allOf(
-                withId(R.id.session_name),
-                isDisplayed()
-            )
-        ).check(matches(withText("Ania's fixed outdoor session")))
+
+        awaitForAssertion {
+            onView(
+                allOf(withId(R.id.session_name), isDisplayed())
+            ).check(matches(withText("Ania's fixed outdoor session")))
+        }
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
     @Test
     fun testFixedIndoorSessionRecording() {
-
-
-        
-
         testRule.launchActivity(null)
 
         onView(withId(R.id.nav_view)).check(matches(isDisplayed()))
@@ -181,8 +185,9 @@ class FixedSessionTest : BaseTest() {
         )
 
         onView(withId(R.id.connect_button)).perform(click())
-        Thread.sleep(4000)
-        onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        awaitForAssertion {
+            onView(withId(R.id.airbeam_connected_header)).check(matches(isDisplayed()))
+        }
         onView(withId(R.id.airbeam_connected_continue_button)).perform(click())
 
         // replaceText is needed here to go around autocorrect...
@@ -210,17 +215,13 @@ class FixedSessionTest : BaseTest() {
         onView(withId(R.id.map)).check(matches(not(isDisplayed())))
         onView(withId(R.id.start_recording_button)).perform(scrollTo(), click())
 
-        Thread.sleep(4000)
-
         onView(withId(R.id.tabs)).perform(selectTabAtPosition(DashboardPagerAdapter.FIXED_TAB_INDEX))
-        Thread.sleep(4000)
 
-        onView(
-            allOf(
-                withId(R.id.session_name),
-                isDisplayed()
-            )
-        ).check(matches(withText("Ania's fixed indoor session")))
+        awaitForAssertion {
+            onView(
+                allOf(withId(R.id.session_name), isDisplayed())
+            ).check(matches(withText("Ania's fixed indoor session")))
+        }
         onView(allOf(withId(R.id.session_info), isDisplayed())).check(matches(withText("Fixed: ")))
     }
 
@@ -253,28 +254,10 @@ class FixedSessionTest : BaseTest() {
         checkMeasurementTableValueIsCorrect(measurementValue)
         onView(withId(R.id.follow_button)).perform(click())
         checkMeasurementTableValueIsCorrect(measurementValue)
-//        onView(withId(R.id.tabs))
-//            .perform(selectTabAtPosition(DashboardPagerAdapter.FOLLOWING_TAB_INDEX))
-
-//        onView(
-//            allOf(
-//                withEffectiveVisibility(Visibility.VISIBLE),
-//                withId(R.id.expand_session_button)
-//            )
-//        ).perform(click())
-//        onView(withId(R.id.unfollow_button)).perform(click())
-//
-//        onView(
-//            allOf(
-//                withText("New session to follow"),
-//                withEffectiveVisibility(Visibility.VISIBLE)
-//            )
-//        )
-//            .check(matches(isDisplayed()))
     }
 
     private fun checkMeasurementTableValueIsCorrect(measurementValue: Double) {
-        waitAndRetry {
+        awaitForAssertion {
             onView(withId(R.id.measurement_value))
                 .check(matches(withText(measurementValue.roundToInt().toString())))
         }

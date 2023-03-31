@@ -6,7 +6,6 @@ import org.junit.Before
 
 abstract class BaseTest {
     lateinit var server: MockWebServer
-
     @Before
     open fun setup() {
         server.start()

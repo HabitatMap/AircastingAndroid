@@ -6,7 +6,7 @@ import okhttp3.mockwebserver.MockWebServer
 import javax.inject.Singleton
 
 @Module
-class ServerModule {
+class TestServerModule {
     @Provides
     @Singleton
     fun providesServer(): MockWebServer = MockWebServer()
