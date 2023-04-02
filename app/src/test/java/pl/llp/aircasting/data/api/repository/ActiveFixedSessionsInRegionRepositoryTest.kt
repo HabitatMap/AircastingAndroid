@@ -8,7 +8,6 @@ import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.services.ApiService
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.model.GeoSquare
@@ -43,7 +42,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
-        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getSessionsInRegion(anyOrNull())
+        verify(mockApiServiceFactory).getSessionsInRegion(anyOrNull())
     }
 
     @Test
@@ -198,7 +197,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
 
         // then
-        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getSessionsInRegion(
+        verify(mockApiServiceFactory).getSessionsInRegion(
             argThat {
                 equals(
                     ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
@@ -224,7 +223,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
         // then
-        verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(anyOrNull(), anyOrNull(), eq(1))
+        verify(mockApiServiceFactory).getStreamOfGivenSession(anyOrNull(), anyOrNull(), eq(1))
     }
 
     @Test
@@ -267,7 +266,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(1758913L, "AirBeam3-PM2.5")
 
             // then
-            verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(
+            verify(mockApiServiceFactory).getStreamOfGivenSession(
                 eq(expectedId),
                 eq(expectedSensorName),
                 eq(1)
@@ -293,7 +292,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             repository.getStreamOfGivenSession(123L, "Ozone")
 
             // then
-            verify(mockApiServiceFactory.getNonAuthenticated(emptyList())).getStreamOfGivenSession(
+            verify(mockApiServiceFactory).getStreamOfGivenSession(
                 eq(expectedId),
                 eq(expectedSensorName),
                 eq(expectedMeasurementLimit)
@@ -378,33 +377,25 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             assertNotNull(result.data)
         }
 
-    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsResponse): ApiServiceFactory =
+    private fun mockGetSessionsInRegionCallWithResponse(res: SessionsInRegionsResponse): ApiService =
         runBlocking {
-            val mockApi = mock<ApiService> {
+            return@runBlocking mock<ApiService> {
                 onBlocking {
                     getSessionsInRegion(
                         anyOrNull()
                     )
                 } doReturn res
             }
-            val mockFactory = mock<ApiServiceFactory> {
-                on { getNonAuthenticated(eq(emptyList())) } doReturn mockApi
-            }
-            return@runBlocking mockFactory
         }
 
-    private fun mockGetStreamOfGivenSessionCallWithResponse(res: StreamOfGivenSessionResponse): ApiServiceFactory =
+    private fun mockGetStreamOfGivenSessionCallWithResponse(res: StreamOfGivenSessionResponse): ApiService =
         runBlocking {
-            val mockApi = mock<ApiService> {
+            return@runBlocking mock<ApiService> {
                 onBlocking {
                     getStreamOfGivenSession(
                         anyOrNull(), anyOrNull(), anyOrNull()
                     )
                 } doReturn res
             }
-            val mockFactory = mock<ApiServiceFactory> {
-                on { getNonAuthenticated(eq(emptyList())) } doReturn mockApi
-            }
-            return@runBlocking mockFactory
         }
 }
