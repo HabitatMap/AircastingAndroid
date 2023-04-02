@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.create_account
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseActivity
@@ -39,7 +40,7 @@ class CreateAccountActivity : BaseActivity() {
             .appComponent.inject(this)
 
         val view = CreateAccountViewMvcImpl(layoutInflater, null, settings, fromOnboarding)
-        controller = controllerFactory.create(this, view, fromOnboarding)
+        controller = controllerFactory.create(this, view, fromOnboarding, lifecycleScope)
 
         setContentView(view.rootView)
     }

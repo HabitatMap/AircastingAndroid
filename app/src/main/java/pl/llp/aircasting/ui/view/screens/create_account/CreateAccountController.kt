@@ -4,7 +4,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -37,19 +36,20 @@ interface CreateAccountControllerFactory {
     fun create(
         mContextActivity: AppCompatActivity,
         mViewMvc: CreateAccountViewMvcImpl,
-        fromOnboarding: Boolean?
+        fromOnboarding: Boolean?,
+        coroutineScope: CoroutineScope
     ): CreateAccountController
 }
 class CreateAccountController @AssistedInject constructor(
     @Assisted private val mContextActivity: AppCompatActivity,
     @Assisted private val mViewMvc: CreateAccountViewMvcImpl,
     @Assisted private val fromOnboarding: Boolean?,
+    @Assisted private val coroutineScope: CoroutineScope,
     @NonAuthenticated private val apiService: ApiService,
     private val mSettings: Settings,
     private val mErrorHandler: ErrorHandler,
 )  : CreateAccountViewMvc.Listener, LogOutInBackgroundInfoDisplayer {
 
-    private val coroutineScope: CoroutineScope = mContextActivity.lifecycleScope
 
     fun onStart() {
         mViewMvc.registerListener(this)
