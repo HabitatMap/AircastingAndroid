@@ -38,3 +38,10 @@ fun awaitForAssertion(assertion: ThrowingRunnable) =
         .with().pollInterval(1, TimeUnit.SECONDS)
         .pollDelay(500, TimeUnit.MILLISECONDS)
         .untilAsserted(assertion)
+
+fun awaitUntilAsserted(assertion: ThrowingRunnable) =
+    Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
+        .with().pollInterval(1, TimeUnit.SECONDS)
+        .pollDelay(500, TimeUnit.MILLISECONDS)
+        .untilAsserted(assertion)

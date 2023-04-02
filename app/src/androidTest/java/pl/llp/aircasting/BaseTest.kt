@@ -8,7 +8,7 @@ import pl.llp.aircasting.di.TestAppComponent
 import pl.llp.aircasting.di.TestUserDependentComponent
 
 abstract class BaseTest {
-    lateinit var server: MockWebServer
+    open lateinit var server: MockWebServer
 
     @Before
     open fun setup() {

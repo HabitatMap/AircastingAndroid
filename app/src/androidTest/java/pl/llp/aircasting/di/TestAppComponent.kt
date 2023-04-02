@@ -2,10 +2,7 @@ package pl.llp.aircasting.di
 
 import dagger.Component
 import dagger.Subcomponent
-import pl.llp.aircasting.CreateAccountTest
-import pl.llp.aircasting.FixedSessionTest
-import pl.llp.aircasting.LoginTest
-import pl.llp.aircasting.MobileSessionTest
+import pl.llp.aircasting.*
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.*
 import javax.inject.Singleton
@@ -47,4 +44,5 @@ interface TestUserDependentComponent : UserDependentComponent {
     }
     fun inject(test: FixedSessionTest)
     fun inject(test: MobileSessionTest)
+    fun inject(test: MyAccountTest)
 }
