@@ -42,7 +42,7 @@ class CreateAccountControllerTest {
     private val token = "token"
     private val sessionStoppedAlert = true
 
-    private var controller: CreateAccountController
+    private lateinit var controller: CreateAccountController
 
     @Before
     fun setup() {
@@ -50,13 +50,10 @@ class CreateAccountControllerTest {
         controller = CreateAccountController(
             appCompatActivity,
             mock(),
-            settings,
-            apiService,
             false,
+            apiService,
+            settings,
             mock(),
-            coroutineScope = testCoroutineScope,
-            ioDispatcher = testDispatcher,
-            mainDispatcher = testDispatcher
         )
     }
 
