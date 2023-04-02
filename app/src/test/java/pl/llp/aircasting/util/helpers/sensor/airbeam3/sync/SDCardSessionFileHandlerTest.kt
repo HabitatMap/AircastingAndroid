@@ -63,7 +63,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
+            val averagingThreshold = helper.calculateAveragingWindow(dbSession.startTime.time, fileLastMeasurementTime!!.time).value
             val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
@@ -83,7 +83,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
+            val averagingThreshold = helper.calculateAveragingWindow(dbSession.startTime.time, fileLastMeasurementTime!!.time).value
             val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
@@ -108,18 +108,18 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val firstExpectedMeasurementTime =
-                calendar().addSeconds(sessionStartTime, AveragingWindow.FIRST.value)
-            val firstFahrenheitAverage = 72.0
-            val firstRHAverage = 64.0
-            val firstLatitude = 50.0582475
-            val firstLongitude = 19.9261414
-            val secondFahrenheitAverage = 71.0
-            val secondRHAverage = 43.0
-            val secondLatitude = 38.0582475
-            val secondLongitude = 18.9261414
-            val secondMeasurementExpectedTime =
-                calendar().addSeconds(firstExpectedMeasurementTime, 5)
+            val firstExpectedAveragedMeasurementTime =
+                calendar().addSeconds(fileStartTime, AveragingWindow.FIRST.value - 1)
+            val firstExpectedAveragedFahrenheit = 72.0
+            val firstExpectedAveragedRH = 68.0
+            val firstExpectedAveragedLatitude = 50.0582475
+            val firstExpectedAveragedLongitude = 19.9261414
+            val secondExpectedAveragedFahrenheit = 73.0
+            val secondExpectedAveragedRH = 44.0
+            val secondExpectedAveragedLatitude = 38.0582475
+            val secondExpectedAveragedLongitude = 18.9261414
+            val secondExpectedAveragedMeasurementTime =
+                calendar().addSeconds(firstExpectedAveragedMeasurementTime, AveragingWindow.FIRST.value)
             val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
@@ -132,22 +132,22 @@ internal class SDCardSessionFileHandlerTest {
             val secondResultRHAverage =
                 csvSession.streams[SDCardCSVFileFactory.Header.RH.value]!![1]
 
-            assertEquals(firstFahrenheitAverage, firstResultFahrenheitAverage.value)
-            assertEquals(secondFahrenheitAverage, secondResultFahrenheitAverage.value)
-            assertEquals(firstLatitude, firstResultFahrenheitAverage.latitude)
-            assertEquals(secondLatitude, secondResultFahrenheitAverage.latitude)
-            assertEquals(firstLongitude, firstResultFahrenheitAverage.longitude)
-            assertEquals(secondLongitude, secondResultFahrenheitAverage.longitude)
-            assertEquals(firstExpectedMeasurementTime, firstResultFahrenheitAverage.time)
-            assertEquals(secondMeasurementExpectedTime, secondResultFahrenheitAverage.time)
-            assertEquals(firstRHAverage, firstResultRHAverage.value)
-            assertEquals(secondRHAverage, secondResultRHAverage.value)
-            assertEquals(firstLatitude, firstResultRHAverage.latitude)
-            assertEquals(secondLatitude, secondResultRHAverage.latitude)
-            assertEquals(firstLongitude, firstResultRHAverage.longitude)
-            assertEquals(secondLongitude, secondResultRHAverage.longitude)
-            assertEquals(firstExpectedMeasurementTime, firstResultRHAverage.time)
-            assertEquals(secondMeasurementExpectedTime, secondResultRHAverage.time)
+            assertEquals(firstExpectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
+            assertEquals(secondExpectedAveragedFahrenheit, secondResultFahrenheitAverage.value)
+            assertEquals(firstExpectedAveragedLatitude, firstResultFahrenheitAverage.latitude)
+            assertEquals(secondExpectedAveragedLatitude, secondResultFahrenheitAverage.latitude)
+            assertEquals(firstExpectedAveragedLongitude, firstResultFahrenheitAverage.longitude)
+            assertEquals(secondExpectedAveragedLongitude, secondResultFahrenheitAverage.longitude)
+            assertEquals(firstExpectedAveragedMeasurementTime, firstResultFahrenheitAverage.time)
+            assertEquals(secondExpectedAveragedMeasurementTime, secondResultFahrenheitAverage.time)
+            assertEquals(firstExpectedAveragedRH, firstResultRHAverage.value)
+            assertEquals(secondExpectedAveragedRH, secondResultRHAverage.value)
+            assertEquals(firstExpectedAveragedLatitude, firstResultRHAverage.latitude)
+            assertEquals(secondExpectedAveragedLatitude, secondResultRHAverage.latitude)
+            assertEquals(firstExpectedAveragedLongitude, firstResultRHAverage.longitude)
+            assertEquals(secondExpectedAveragedLongitude, secondResultRHAverage.longitude)
+            assertEquals(firstExpectedAveragedMeasurementTime, firstResultRHAverage.time)
+            assertEquals(secondExpectedAveragedMeasurementTime, secondResultRHAverage.time)
         }
 
     @Test
@@ -165,12 +165,12 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val firstMeasurementTime =
-                calendar().addSeconds(sessionStartTime, AveragingWindow.SECOND.value)
-            val firstFahrenheitAverage = 72.78333333333333
-            val firstRHAverage = 49.5
-            val firstLatitude = 78.0582475
-            val firstLongitude = 90.9261414
+            val expectedAveragedMeasurementTime =
+                calendar().addSeconds(fileStartTime, AveragingWindow.SECOND.value - 1)
+            val expectedAveragedFahrenheit = 73.0
+            val expectedAveragedRH = 49.0
+            val expectedAveragedLatitude = 78.0582475
+            val expectedAveragedLongitude = 90.9261414
             val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
@@ -179,14 +179,14 @@ internal class SDCardSessionFileHandlerTest {
             val firstResultRHAverage =
                 csvSession.streams[SDCardCSVFileFactory.Header.RH.value]!![0]
 
-            assertEquals(firstFahrenheitAverage, firstResultFahrenheitAverage.value)
-            assertEquals(firstLatitude, firstResultFahrenheitAverage.latitude)
-            assertEquals(firstLongitude, firstResultFahrenheitAverage.longitude)
-            assertEquals(firstMeasurementTime, firstResultFahrenheitAverage.time)
-            assertEquals(firstRHAverage, firstResultRHAverage.value)
-            assertEquals(firstLatitude, firstResultRHAverage.latitude)
-            assertEquals(firstLongitude, firstResultRHAverage.longitude)
-            assertEquals(firstMeasurementTime, firstResultRHAverage.time)
+            assertEquals(expectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
+            assertEquals(expectedAveragedLatitude, firstResultFahrenheitAverage.latitude)
+            assertEquals(expectedAveragedLongitude, firstResultFahrenheitAverage.longitude)
+            assertEquals(expectedAveragedMeasurementTime, firstResultFahrenheitAverage.time)
+            assertEquals(expectedAveragedRH, firstResultRHAverage.value)
+            assertEquals(expectedAveragedLatitude, firstResultRHAverage.latitude)
+            assertEquals(expectedAveragedLongitude, firstResultRHAverage.longitude)
+            assertEquals(expectedAveragedMeasurementTime, firstResultRHAverage.time)
         }
 
     @Test
