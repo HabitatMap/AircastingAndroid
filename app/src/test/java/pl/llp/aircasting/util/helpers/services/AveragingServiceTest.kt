@@ -1,6 +1,9 @@
 package pl.llp.aircasting.util.helpers.services
 
-import org.junit.After
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.*
@@ -12,165 +15,168 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.extensions.addHours
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
-import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.DEFAULT_FREQUENCY
-import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.FIRST_THRESHOLD_FREQUENCY
-import pl.llp.aircasting.util.helpers.services.AveragingService.Companion.SECOND_THRESHOLD_FREQUENCY
 import pl.llp.aircasting.utilities.StubData
 import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@OptIn(ExperimentalCoroutinesApi::class)
 internal class AveragingServiceTest {
     private val sessionId = 210L
+    private val sessionUuid = "uuid"
     private val sessionStartTime = Date(1649310342000L)
     private val streamId = 598L
-    private var sessionAveragingFrequency = SECOND_THRESHOLD_FREQUENCY
+    private val helper = MeasurementsAveragingHelperDefault()
+    private val testScope = TestScope()
+    private var sessionAveragingFrequency = AveragingWindow.SECOND.value
     private lateinit var dbSession: SessionDBObject
     private lateinit var sessionsRepository: SessionsRepository
     private lateinit var streamsRepository: MeasurementStreamsRepository
     private lateinit var dbMeasurementsRH: MutableList<MeasurementDBObject>
     private lateinit var db: MutableMap<Long, MeasurementDBObject>
     private lateinit var measurementsRepository: MeasurementsRepositoryImpl
+    
 
     @Before
-    fun setup() {
+    fun setup() = runBlocking {
         dbMeasurementsRH =
             StubData.dbMeasurementsFrom("60MeasurementsRHwithAveragingFrequency60.csv")
         dbSession = mock {
             on { id } doReturn sessionId
+            on { uuid } doReturn sessionUuid
             on { startTime } doReturn sessionStartTime
             on { averaging_frequency } doReturn sessionAveragingFrequency
         }
         sessionsRepository = mock {
-            on { getSessionByIdSuspend(sessionId) } doReturn dbSession
+            onBlocking { getSessionByIdSuspend(sessionId) } doReturn dbSession
         }
         streamsRepository = mock {
-            on { getStreamsIdsBySessionIds(listOf(sessionId)) } doReturn listOf(streamId)
+            onBlocking { getStreamsIdsBySessionIds(listOf(sessionId)) } doReturn listOf(streamId)
         }
         measurementsRepository = mock {
-            on {
+            onBlocking {
                 getNonAveragedCurrentMeasurements(
                     eq(streamId),
                     any(),
                     any()
                 )
             } doReturn dbMeasurementsRH
-            on { averageMeasurement(any(), any(), any(), any()) } doAnswer {
+            onBlocking { averageMeasurement(any(), any(), any(), any()) } doAnswer {
                 val id = it.getArgument(0) as Long
                 val average = it.getArgument(1) as Double
                 val time = it.getArgument(3) as Date
                 db[id] = db[id]!!.copy(value = average, time = time)
             }
-            on { deleteMeasurements(any(), any()) } doAnswer { invocationOnMock ->
+            onBlocking { deleteMeasurements(any(), any()) } doAnswer { invocationOnMock ->
                 val ids = invocationOnMock.getArgument(1, List::class.java) as List<Long>
                 ids.forEach { db.remove(it) }
             }
-            on { lastMeasurementTime(sessionId) } doReturn
+            onBlocking { lastMeasurementTime(sessionId) } doReturn
                     calendar().addHours(sessionStartTime, 10)
         }
         db = dbMeasurementsRH.associateBy { it.id }.toMutableMap()
     }
-
-    @After
-    fun tearDown() {
-        AveragingService.destroy(sessionId)
-    }
-
+    
     @Test
-    fun perform_whenAveragingFrequencyIs60_calculatesAveragingCorrectly() {
-        val averagingService = AveragingService.get(
-            sessionId,
+    fun perform_whenAveragingFrequencyIs60_calculatesAveragingCorrectly() = runTest {
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
-        val expectedAverage = dbMeasurementsRH.map { it.mValue }.toTypedArray().average()
+            sessionsRepository,
+            helper,
+            testScope
+        )
+        val expectedAverage = dbMeasurementsRH.map { it.value }.toTypedArray().average()
 
-        averagingService.perform()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(1, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
     }
 
     @Test
-    fun perform_whenAveragingIsFinal_removesTrailingMeasurements() {
+    fun perform_whenAveragingIsFinal_removesTrailingMeasurements() = runTest {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAverage = dbMeasurementsRH
-            .map { it.mValue }
+            .map { it.value }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
 
-        averagingService.perform(isFinal = true)
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(1, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
     }
 
     @Test
-    fun perform_whenAveragingIsNotFinal_doesNotRemoveTrailingMeasurements() {
+    fun perform_whenAveragingIsNotFinal_doesNotRemoveTrailingMeasurements() = runTest {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAverage = dbMeasurementsRH
-            .map { it.mValue }
+            .map { it.value }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
 
-        averagingService.perform(isFinal = false)
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(60, db.size)
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
     }
 
     @Test
-    fun perform_whenAveragingFrequencyIs5_calculatesAveragingCorrectly() {
+    fun perform_whenAveragingFrequencyIs5_calculatesAveragingCorrectly() = runTest {
         setFirstAveragingFrequency()
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAverages = dbMeasurementsRH
-            .map { it.mValue }
-            .chunked(FIRST_THRESHOLD_FREQUENCY)
+            .map { it.value }
+            .chunked(AveragingWindow.FIRST.value)
             .map { it.toTypedArray().average() }
 
-        averagingService.perform()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(expectedAverages.size, db.size)
         expectedAverages.forEach { averageValue ->
-            assertNotNull(db.values.find { it.mValue == averageValue })
+            assertNotNull(db.values.find { it.value == averageValue })
         }
     }
 
     @Test
-    fun perform_whenAveragingFrequencyIs60_keepsMeasurements60SecondsApartFromEachOther() {
+    fun perform_whenAveragingFrequencyIs60_keepsMeasurements60SecondsApartFromEachOther() = runTest {
         val expectedDifference = 60 * 1000L
         setStreamMeasurementsFromFile("HabitatHQ-RH-15-hours-of-measurements.csv")
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
-        val expectedAveragedSize = 900 / SECOND_THRESHOLD_FREQUENCY
+            sessionsRepository,
+            helper,
+            testScope
+        )
+        val expectedAveragedSize = 900 / AveragingWindow.SECOND.value
         val expectedFirstMeasurementTime =
-            calendar().addSeconds(sessionStartTime, SECOND_THRESHOLD_FREQUENCY)
+            calendar().addSeconds(sessionStartTime, AveragingWindow.SECOND.value)
 
-        averagingService.perform()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         val averaged = db.values.toMutableList()
         for (i in 1 until averaged.size) {
@@ -186,21 +192,22 @@ internal class AveragingServiceTest {
     }
 
     @Test
-    fun perform_whenAveragingFrequencyIs5_keepsMeasurements5SecondsApartFromEachOther() {
+    fun perform_whenAveragingFrequencyIs5_keepsMeasurements5SecondsApartFromEachOther() = runTest {
         val expectedDifference = 5 * 1000L
         setStreamMeasurementsFromFile("HabitatHQ-RH-15-hours-of-measurements.csv")
         setFirstAveragingFrequency()
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
-        val expectedAveragedSize = 900 / FIRST_THRESHOLD_FREQUENCY
+            sessionsRepository,
+            helper,
+            testScope
+        )
+        val expectedAveragedSize = 900 / AveragingWindow.FIRST.value
         val expectedFirstMeasurementTime =
-            calendar().addSeconds(sessionStartTime, FIRST_THRESHOLD_FREQUENCY)
+            calendar().addSeconds(sessionStartTime, AveragingWindow.FIRST.value)
 
-        averagingService.perform()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         val averaged = db.values.toMutableList()
         for (i in 1 until averaged.size) {
@@ -216,72 +223,76 @@ internal class AveragingServiceTest {
     }
 
     @Test
-    fun averagePreviousMeasurementsWithNewFrequency_removesTrailingMeasurements() {
+    fun averagePreviousMeasurementsWithNewFrequency_removesTrailingMeasurements() = runTest {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
-        setupDbForAveragingPreviousMeasurements(DEFAULT_FREQUENCY)
+        setupDbForAveragingPreviousMeasurements(AveragingWindow.ZERO.value)
         whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAverage = dbMeasurementsRH
-            .map { it.mValue }
+            .map { it.value }
             .take(sessionAveragingFrequency)
             .toTypedArray()
             .average()
 
-        averagingService.averagePreviousMeasurementsWithNewFrequency()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(1, db.size, db.toString())
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
     }
 
     @Test
-    fun averagePreviousMeasurementsWithNewFrequency_whenAveragingFrequencyChanges_calculatesNewWindowBasedOnFrequencyRatio() {
+    fun averagePreviousMeasurementsWithNewFrequency_whenAveragingFrequencyChanges_calculatesNewWindowBasedOnFrequencyRatio() = runTest {
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
-        setupDbForAveragingPreviousMeasurements(FIRST_THRESHOLD_FREQUENCY)
-        val averagingService = AveragingService.get(
-            sessionId,
+        setupDbForAveragingPreviousMeasurements(AveragingWindow.FIRST.value)
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
-        val newAveragingFrequency = SECOND_THRESHOLD_FREQUENCY / FIRST_THRESHOLD_FREQUENCY
+            sessionsRepository,
+            helper,
+            testScope
+        )
+        val newAveragingFrequency = AveragingWindow.SECOND.value / AveragingWindow.FIRST.value
         val expectedAverages = dbMeasurementsRH
-            .map { it.mValue }
+            .map { it.value }
             .chunked(newAveragingFrequency)
             .map { it.toTypedArray().average() }
         val expectedAveragedDBSize = db.size / newAveragingFrequency
 
-        averagingService.averagePreviousMeasurementsWithNewFrequency()
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(expectedAveragedDBSize, db.size, db.toString())
         expectedAverages.forEach { averageValue ->
-            assertNotNull(db.values.find { it.mValue == averageValue })
+            assertNotNull(db.values.find { it.value == averageValue })
         }
     }
 
     // TODO: check averages time differences when performing final averaging after sync
     @Test
-    fun performFinalAveragingAfterSDSync_calculatesAveragesAccordingToPassedFrequency() {
-        val frequency = FIRST_THRESHOLD_FREQUENCY
+    fun performFinalAveragingAfterSDSync_calculatesAveragesAccordingToPassedFrequency() = runTest {
+        val window = AveragingWindow.FIRST
+        val frequency = window.value
         val expectedDifference = frequency * 1000L
         setStreamMeasurementsFromFile("HabitatHQ-RH-15-hours-of-measurements.csv")
         setDefaultAveragingFrequency()
 
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAveragedSize = 900 / frequency
         val expectedFirstMeasurementTime =
             calendar().addSeconds(sessionStartTime, frequency)
 
-        averagingService.performFinalAveragingAfterSDSync(frequency)
+        averagingService.stopAndPerformFinalAveraging(sessionUuid, window)
 
         val averaged = db.values.toMutableList()
         for (i in 1 until averaged.size) {
@@ -297,31 +308,32 @@ internal class AveragingServiceTest {
     }
 
     @Test
-    fun performFinalAveragingAfterSDSync_removesTrailingMeasurements() {
-        val frequency = SECOND_THRESHOLD_FREQUENCY
+    fun performFinalAveragingAfterSDSync_removesTrailingMeasurements() = runTest {
+        val frequency = AveragingWindow.SECOND.value
         setStreamMeasurementsFromFile("119MeasurementsRHwithAveragingFrequency60.csv")
-        setupDbForAveragingPreviousMeasurements(DEFAULT_FREQUENCY)
+        setupDbForAveragingPreviousMeasurements(AveragingWindow.ZERO.value)
         setDefaultAveragingFrequency()
         whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
-        val averagingService = AveragingService.get(
-            sessionId,
+        val averagingService = AveragingService(
             measurementsRepository,
             streamsRepository,
-            sessionsRepository
-        )!!
+            sessionsRepository,
+            helper,
+            testScope
+        )
         val expectedAverage = dbMeasurementsRH
-            .map { it.mValue }
+            .map { it.value }
             .take(frequency)
             .toTypedArray()
             .average()
 
-        averagingService.performFinalAveragingAfterSDSync(frequency)
+        averagingService.stopAndPerformFinalAveraging(sessionUuid)
 
         assertEquals(1, db.size, db.toString())
-        assertEquals(expectedAverage, db.firstNotNullOf { it.value.mValue })
+        assertEquals(expectedAverage, db.firstNotNullOf { it.value.value })
     }
 
-    private fun setupDbForAveragingPreviousMeasurements(frequency: Int) {
+    private fun setupDbForAveragingPreviousMeasurements(frequency: Int) = runBlocking {
         whenever(
             measurementsRepository.getNonAveragedPreviousMeasurementsCount(any(), any(), any())
         ).thenReturn(db.size)
@@ -335,7 +347,7 @@ internal class AveragingServiceTest {
         whenever(sessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(dbSession)
     }
 
-    private fun setStreamMeasurementsFromFile(fileName: String) {
+    private fun setStreamMeasurementsFromFile(fileName: String) = runBlocking {
         dbMeasurementsRH =
             StubData.dbMeasurementsFrom(fileName)
         db = dbMeasurementsRH.associateBy { it.id }.toMutableMap()
@@ -343,7 +355,7 @@ internal class AveragingServiceTest {
             .thenReturn(dbMeasurementsRH)
     }
 
-    private fun setFirstAveragingFrequency() {
+    private fun setFirstAveragingFrequency() = runBlocking {
         whenever(measurementsRepository.lastMeasurementTime(sessionId)).doReturn(
             calendar().addHours(
                 sessionStartTime,
@@ -352,7 +364,7 @@ internal class AveragingServiceTest {
         )
     }
 
-    private fun setDefaultAveragingFrequency() {
+    private fun setDefaultAveragingFrequency() = runBlocking {
         whenever(measurementsRepository.lastMeasurementTime(sessionId)).doReturn(sessionStartTime)
     }
 }

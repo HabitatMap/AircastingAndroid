@@ -85,8 +85,9 @@ class RecordingHandlerImplTest {
             errorHandler,
             measurementStreamsRepository,
             measurementsRepository,
-            flows,
+            mock(),
             testScope,
+            flows,
             observers
         )
     }
