@@ -66,9 +66,6 @@ class ReorderingFollowingRecyclerAdapterTest {
             mock(),
             mock(),
             mock(),
-            mock(),
-            sessionFollower,
-            sessionsViewModel
         )
         val adapterAllFields = getAllFields(mutableListOf(), adapter.javaClass)
         val sessionPresentersField = adapterAllFields?.find { it?.name == "mSessionPresenters" }
