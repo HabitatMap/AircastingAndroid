@@ -10,6 +10,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
+import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.params.CreateAccountBody
 import pl.llp.aircasting.data.api.params.CreateAccountParams
 import pl.llp.aircasting.data.api.response.UserResponse
@@ -31,6 +32,9 @@ class CreateAccountControllerTest {
     @Mock
     lateinit var appCompatActivity: AppCompatActivity
 
+    @Mock
+    lateinit var application: AircastingApplication
+
     private val testDispatcher = StandardTestDispatcher()
     private val testCoroutineScope = TestScope(testDispatcher)
 
@@ -47,10 +51,12 @@ class CreateAccountControllerTest {
     @Before
     fun setup() {
         whenever(appCompatActivity.startActivity(any())).thenAnswer { }
+        whenever(appCompatActivity.application).thenAnswer { application }
         controller = CreateAccountController(
             appCompatActivity,
             mock(),
             false,
+            testCoroutineScope,
             apiService,
             settings,
             mock(),
