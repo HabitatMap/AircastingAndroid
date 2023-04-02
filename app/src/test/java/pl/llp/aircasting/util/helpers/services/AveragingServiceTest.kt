@@ -153,7 +153,7 @@ internal class AveragingServiceTest {
             .chunked(AveragingWindow.FIRST.value)
             .map { it.toTypedArray().average() }
 
-        averagingService.stopAndPerformFinalAveraging(sessionUuid)
+        averagingService.stopAndPerformFinalAveraging(sessionUuid, AveragingWindow.FIRST)
 
         assertEquals(expectedAverages.size, db.size)
         expectedAverages.forEach { averageValue ->
