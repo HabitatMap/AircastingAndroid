@@ -8,11 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_settings.view.*
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.ApiServiceFactory
-import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseFragment
-import pl.llp.aircasting.ui.view.screens.login.LoginService
 import pl.llp.aircasting.ui.view.screens.settings.SettingsController
+import pl.llp.aircasting.ui.view.screens.settings.SettingsControllerFactory
 import pl.llp.aircasting.ui.view.screens.settings.SettingsViewMvcImpl
 import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
@@ -23,13 +21,7 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
     lateinit var settings: Settings
 
     @Inject
-    lateinit var logoutService: LogoutService
-
-    @Inject
-    lateinit var loginService: LoginService
-
-    @Inject
-    lateinit var apiServiceFactory: ApiServiceFactory
+    lateinit var controllerFactory: SettingsControllerFactory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,15 +32,12 @@ class SettingsFragment : BaseFragment<SettingsViewMvcImpl, SettingsController>()
             .userDependentComponent?.inject(this)
 
         view = SettingsViewMvcImpl(inflater, container, settings)
-        controller = SettingsController(
+        controller = controllerFactory.create(
             activity,
             requireContext(),
             view,
-            settings,
             childFragmentManager,
-            loginService,
-            logoutService,
-            apiServiceFactory.getAuthenticated(settings.getAuthToken() ?: "")
+            lifecycleScope
         )
 
         return view?.rootView

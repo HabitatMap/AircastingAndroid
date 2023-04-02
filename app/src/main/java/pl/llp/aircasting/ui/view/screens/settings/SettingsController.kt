@@ -9,6 +9,9 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -16,6 +19,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.params.UserSettingsBody
 import pl.llp.aircasting.data.api.params.UserSettingsData
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.services.Authenticated
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseController
 import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDescriptionDialog
@@ -26,16 +30,26 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.KeepScreenOnToggledEvent
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
 
-class SettingsController(
-    private val mRootActivity: FragmentActivity?,
-    private val mContext: Context?,
-    var viewMvc: SettingsViewMvcImpl?,
+@AssistedFactory
+interface SettingsControllerFactory {
+    fun create(
+        mRootActivity: FragmentActivity?,
+        mContext: Context?,
+        viewMvc: SettingsViewMvcImpl?,
+        fragmentManager: FragmentManager,
+        coroutineScope: CoroutineScope?,
+    ): SettingsController
+}
+class SettingsController @AssistedInject constructor(
+    @Assisted private val mRootActivity: FragmentActivity?,
+    @Assisted private val mContext: Context?,
+    @Assisted var viewMvc: SettingsViewMvcImpl?,
+    @Assisted private val fragmentManager: FragmentManager,
+    @Assisted private val coroutineScope: CoroutineScope? = mRootActivity?.lifecycleScope,
     private val mSettings: Settings,
-    private val fragmentManager: FragmentManager,
     private val loginService: LoginService,
     private val logoutService: LogoutService,
-    private val apiService: ApiService,
-    private val coroutineScope: CoroutineScope? = mRootActivity?.lifecycleScope,
+    @Authenticated private val apiService: ApiService,
 ) : SettingsViewMvc.Listener,
     SettingsViewMvc.BackendSettingsDialogListener,
     SettingsViewMvc.MicrophoneSettingsDialogListener,
