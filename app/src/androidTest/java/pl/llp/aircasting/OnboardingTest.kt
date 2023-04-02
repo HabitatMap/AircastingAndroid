@@ -7,10 +7,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import okhttp3.mockwebserver.MockWebServer
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.util.Settings
 import javax.inject.Inject
 
@@ -20,8 +20,15 @@ class OnboardingTest : BaseTest() {
     lateinit var settings: Settings
 
     @get:Rule
-    val testRule: ActivityTestRule<MainActivity>
-            = ActivityTestRule(MainActivity::class.java, false, false)
+    val testRule: ActivityTestRule<LauncherActivity>
+            = ActivityTestRule(LauncherActivity::class.java, false, false)
+
+    @Inject
+    override lateinit var server: MockWebServer
+    override fun setup() {
+        appComponent.inject(this)
+        super.setup()
+    }
 
     @Test
     fun onboardingTest() {

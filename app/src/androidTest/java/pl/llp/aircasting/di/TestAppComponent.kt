@@ -21,6 +21,7 @@ interface TestAppComponent : AppComponent {
 
     fun inject(test: CreateAccountTest)
     fun inject(test: LoginTest)
+    fun inject(test: OnboardingTest)
 }
 
 @UserSessionScope
