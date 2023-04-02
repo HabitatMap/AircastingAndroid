@@ -8,18 +8,12 @@ import org.mockito.Mock
 import org.mockito.Mockito.spy
 import org.mockito.internal.util.reflection.ReflectionMemberAccessor
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.inOrder
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import pl.llp.aircasting.data.local.AppDatabase
+import org.mockito.kotlin.*
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.observers.SessionsObserver
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.dashboard.following.FollowingRecyclerAdapter
-import pl.llp.aircasting.ui.view.screens.dashboard.helpers.SessionFollower
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.utilities.mockPresenter
 import java.lang.reflect.Field
 import java.util.*
@@ -37,10 +31,10 @@ class ReorderingFollowingRecyclerAdapterTest {
     private lateinit var callback: FollowingRecyclerAdapter.FollowingModificationCallback
 
     @Mock
-    private lateinit var sessionFollower: SessionFollower
+    private lateinit var sessionDismissCallback: (session: Session) -> Unit
 
     @Mock
-    private lateinit var sessionsViewModel: SessionsViewModel
+    private lateinit var sessionUpdateFollowedAtCallback: (session: Session) -> Unit
 
     private val firstDate = Date(2L)
     private val secondDate = Date(1L)
@@ -55,21 +49,20 @@ class ReorderingFollowingRecyclerAdapterTest {
     @Before
     fun setup() {
         sessionPresenters = spy(SortedList(SessionPresenter::class.java, callback))
-        val memberAccessor = ReflectionMemberAccessor()
-        val dbField = SessionsViewModel::class.java.getDeclaredField("mDatabase")
-        memberAccessor.set(dbField, sessionsViewModel, mock<AppDatabase>())
+
         adapter = ReorderingFollowingRecyclerAdapter(
+            null,
             mock(),
             mock(),
             mock(),
             mock(),
-            mock(),
-            mock(),
-            mock(),
+            sessionDismissCallback,
+            sessionUpdateFollowedAtCallback,
         )
         val adapterAllFields = getAllFields(mutableListOf(), adapter.javaClass)
         val sessionPresentersField = adapterAllFields?.find { it?.name == "mSessionPresenters" }
 
+        val memberAccessor = ReflectionMemberAccessor()
         memberAccessor.set(sessionPresentersField, adapter, sessionPresenters)
 
         sessionPresenters.addAll(firstPresenter, secondPresenter, thirdPresenter)
@@ -99,14 +92,14 @@ class ReorderingFollowingRecyclerAdapterTest {
     }
 
     @Test
-    fun onItemMove_shouldRecalculatePositions_updateFollowedAt() {
+    fun onItemMove_shouldRecalculatePositions_invokesUpdateFollowedAtCallback() {
         adapter.onItemMove(0, 1)
 
-        inOrder(sessionPresenters, sessionsViewModel) {
+        inOrder(sessionPresenters, sessionUpdateFollowedAtCallback) {
             verify(sessionPresenters).recalculatePositionOfItemAt(0)
             verify(sessionPresenters).recalculatePositionOfItemAt(1)
-            verify(sessionsViewModel).updateFollowedAt(firstPresenter.session!!)
-            verify(sessionsViewModel).updateFollowedAt(secondPresenter.session!!)
+            verify(sessionUpdateFollowedAtCallback).invoke(firstPresenter.session!!)
+            verify(sessionUpdateFollowedAtCallback).invoke(secondPresenter.session!!)
         }
     }
 
@@ -120,10 +113,10 @@ class ReorderingFollowingRecyclerAdapterTest {
     }
 
     @Test
-    fun onItemDismiss_unfollowsSession() {
+    fun onItemDismiss_invokesSessionDismissCallback() {
         adapter.onItemDismiss(1)
 
-        verify(sessionFollower).unfollow(secondPresenter.session!!)
+        verify(sessionDismissCallback).invoke(secondPresenter.session!!)
     }
 
     private fun getAllFields(fields: MutableList<Field?>, type: Class<*>): List<Field?>? {
