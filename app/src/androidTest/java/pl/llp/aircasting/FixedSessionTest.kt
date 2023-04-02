@@ -52,7 +52,7 @@ class FixedSessionTest : BaseTest() {
     lateinit var database: AppDatabase
 
     @Inject
-    lateinit var mockServer: MockWebServer
+    override lateinit var server: MockWebServer
 
     private val measurementValue = 70.0
     private val stream = MeasurementStream(
@@ -78,7 +78,6 @@ class FixedSessionTest : BaseTest() {
     @Before
     override fun setup() {
         userComponent?.inject(this)
-        server = mockServer
         super.setup()
 
         settings.login("X", "EMAIL", "TOKEN")

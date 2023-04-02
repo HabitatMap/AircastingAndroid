@@ -46,4 +46,5 @@ interface TestUserDependentComponent : UserDependentComponent {
     fun inject(test: FixedSessionTest)
     fun inject(test: MobileSessionTest)
     fun inject(test: MyAccountTest)
+    fun inject(test: SearchFollowTest)
 }

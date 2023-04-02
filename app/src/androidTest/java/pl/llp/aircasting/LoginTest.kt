@@ -27,7 +27,7 @@ class LoginTest : BaseTest() {
     lateinit var settings: Settings
 
     @Inject
-    lateinit var mockServer: MockWebServer
+    override lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<LoginActivity> =
@@ -35,7 +35,6 @@ class LoginTest : BaseTest() {
 
     override fun setup() {
         appComponent.inject(this)
-        server = mockServer
         super.setup()
     }
 

@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.*
@@ -83,6 +84,9 @@ class SearchFollowTest : BaseTest() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
+    @Inject
+    override lateinit var server: MockWebServer
+
     lateinit var mainActivityScenario: ActivityScenario<MainActivity>
     lateinit var searchActivityScenario: ActivityScenario<SearchFixedSessionActivity>
 
@@ -100,6 +104,7 @@ class SearchFollowTest : BaseTest() {
 
     @Before
     override fun setup() {
+        userComponent?.inject(this)
         super.setup()
         val newYorkResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -393,6 +398,15 @@ class SearchFollowTest : BaseTest() {
     }
 
     private fun selectSensor(parameter: String, sensor: String) {
+        awaitUntilAsserted {
+            onView(
+                allOf(
+                    isA(Chip::class.java),
+                    withParent(withId(R.id.chipGroupFirstLevel)),
+                    textContainsString(parameter)
+                )
+            ).check(matches(isDisplayed()))
+        }
         onView(
             allOf(
                 isA(Chip::class.java),
@@ -435,20 +449,16 @@ class SearchFollowTest : BaseTest() {
         onView(withId(R.id.places_autocomplete_search_bar))
             .check(matches(withText(place)))
 
-        waitAndRetry {
+        awaitUntilAsserted {
+            onView(withId(R.id.places_autocomplete_list)).check(matches(isDisplayed()))
+        }
             onView(withId(R.id.places_autocomplete_list))
                 .perform(clickOnFirstItem())
-        }
     }
 
     private fun searchFieldHasHint(hint: String) {
         onView(withId(R.id.places_autocomplete_search_input))
             .check(matches(hintContainsString(hint)))
-    }
-
-    private fun searchFieldHasText(hint: String) {
-        onView(withId(R.id.places_autocomplete_search_input))
-            .check(matches(textContainsString(hint)))
     }
 
     private fun launchSearchScreen() {

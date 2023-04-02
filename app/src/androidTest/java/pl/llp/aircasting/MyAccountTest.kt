@@ -36,7 +36,7 @@ class MyAccountTest : BaseTest() {
     lateinit var db: AppDatabase
 
     @Inject
-    lateinit var mockServer: MockWebServer
+    override lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MyAccountActivity> =
@@ -45,7 +45,6 @@ class MyAccountTest : BaseTest() {
     @Before
     override fun setup() {
         userComponent?.inject(this)
-        server = mockServer
         super.setup()
     }
 

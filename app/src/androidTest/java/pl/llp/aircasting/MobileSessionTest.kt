@@ -41,7 +41,7 @@ class MobileSessionTest : BaseTest() {
     lateinit var database: AppDatabase
 
     @Inject
-    lateinit var mockServer: MockWebServer
+    override lateinit var server: MockWebServer
 
     @get:Rule
     val testRule: ActivityTestRule<MainActivity> =
@@ -50,7 +50,6 @@ class MobileSessionTest : BaseTest() {
     @Before
     override fun setup() {
         userComponent?.inject(this)
-        server = mockServer
         super.setup()
     }
 
