@@ -27,7 +27,7 @@ class SettingsControllerTest {
     @Mock
     lateinit var settings: Settings
 
-    var controller: SettingsController
+    lateinit var controller: SettingsController
 
     private val testCoroutineScope = TestScope()
 
@@ -37,11 +37,12 @@ class SettingsControllerTest {
             mock(),
             mock(),
             mock(),
-            settings,
-            mock(),
-            mock(),
-            apiService,
-            testCoroutineScope
+            fragmentManager = mock(),
+            coroutineScope = testCoroutineScope,
+            mSettings = settings,
+            loginService = mock(),
+            logoutService = mock(),
+            apiService = apiService
         )
     }
 
