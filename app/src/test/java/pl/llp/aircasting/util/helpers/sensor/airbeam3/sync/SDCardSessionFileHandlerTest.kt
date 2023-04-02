@@ -13,8 +13,8 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.extensions.addHours
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
-import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import pl.llp.aircasting.utilities.StubData
 import kotlin.test.assertEquals
 
@@ -25,6 +25,7 @@ internal class SDCardSessionFileHandlerTest {
     private val fileLinesCount = fileLines.count()
     private val fileFirstMeasurementTime = CSVSession.timestampFrom(fileLines.first())
     private val fileLastMeasurementTime = CSVSession.timestampFrom(fileLines.last())
+    private val helper = MeasurementsAveragingHelperDefault()
 
     private val streamsCount = 5
     private val sessionId = 1L
@@ -42,11 +43,8 @@ internal class SDCardSessionFileHandlerTest {
     @Test
     fun mobile_read_whenNoMeasurementsArePresentInDB_determinesThresholdBasedOnCSVMeasurementsOnly() =
         runTest {
-            val averagingThreshold = AveragingService.getAveragingFrequency(
-                fileFirstMeasurementTime,
-                fileLastMeasurementTime
-            )
-            val iterator = SDCardSessionFileHandlerMobile(mock(), mock())
+            val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
+            val iterator = SDCardSessionFileHandlerMobile(mock(), mock(), helper, mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -65,11 +63,8 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val averagingThreshold = AveragingService.getAveragingFrequency(
-                threeHoursBefore,
-                fileLastMeasurementTime
-            )
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -88,11 +83,8 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val averagingThreshold = AveragingService.getAveragingFrequency(
-                tenHoursBefore,
-                fileLastMeasurementTime
-            )
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -128,7 +120,7 @@ internal class SDCardSessionFileHandlerTest {
             val secondLongitude = 18.9261414
             val secondMeasurementExpectedTime =
                 calendar().addSeconds(firstExpectedMeasurementTime, 5)
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
@@ -179,7 +171,7 @@ internal class SDCardSessionFileHandlerTest {
             val firstRHAverage = 49.5
             val firstLatitude = 78.0582475
             val firstLongitude = 90.9261414
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
@@ -207,7 +199,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
 
@@ -234,7 +226,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val iterator = SDCardSessionFileHandlerMobile(mock(), sessionsRepository)
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
 
             val csvSession = iterator.handle(file)
 
