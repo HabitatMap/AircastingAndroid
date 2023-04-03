@@ -9,10 +9,7 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ExportSessionService
-import pl.llp.aircasting.data.api.services.PeriodicallyDownloadFixedSessionMeasurementsService
-import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.api.services.UpdateSessionService
+import pl.llp.aircasting.data.api.services.*
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -36,6 +33,7 @@ class SessionManager @Inject constructor(
     private val sessionUpdateService: UpdateSessionService,
     private val exportSessionService: ExportSessionService,
     private val fixedSessionDownloadMeasurementsService: PeriodicallyDownloadFixedSessionMeasurementsService,
+    private val downloadFollowedSessionMeasurementsService: DownloadFollowedSessionMeasurementsService,
     private val recordingHandler: RecordingHandler,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) {
@@ -135,6 +133,9 @@ class SessionManager @Inject constructor(
 
     private fun onAppToForeground() {
         fixedSessionDownloadMeasurementsService.resume()
+        coroutineScope.launch {
+            downloadFollowedSessionMeasurementsService.downloadMeasurements()
+        }
     }
 
     private fun onAppToBackground() {

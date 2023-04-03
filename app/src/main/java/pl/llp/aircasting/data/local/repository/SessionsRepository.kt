@@ -128,6 +128,10 @@ class SessionsRepository @Inject constructor(
         return mDatabase.sessions().byType(Session.Type.FIXED)
     }
 
+    suspend fun followedSessions(): List<SessionDBObject> {
+        return mDatabase.sessions().loadFollowed()
+    }
+
     suspend fun sessionsIdsByType(type: Session.Type): List<Long> {
         return mDatabase.sessions().loadSessionUuidsByType(type)
     }

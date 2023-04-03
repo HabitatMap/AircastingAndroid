@@ -45,6 +45,9 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE status=:status")
     suspend fun byStatus(status: Session.Status): List<SessionDBObject>
 
+    @Query("SELECT * FROM sessions WHERE deleted=0 AND followed_at IS NOT NULL")
+    suspend fun loadFollowed(): List<SessionDBObject>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(session: SessionDBObject): Long
 
