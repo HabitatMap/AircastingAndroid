@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
-import androidx.annotation.Nullable
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardController
+import pl.llp.aircasting.ui.view.screens.dashboard.DashboardControllerFactory
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardViewMvcImpl
 import pl.llp.aircasting.util.Settings
@@ -27,8 +27,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
     lateinit var settings: Settings
 
     @Inject
-    @Nullable
-    lateinit var sessionsSyncService: SessionsSyncService
+    lateinit var controllerFactory: DashboardControllerFactory
 
     private var mTabPosition: Int = 0
 
@@ -41,7 +40,7 @@ class DashboardFragment : BaseFragment<DashboardViewMvcImpl, DashboardController
             .userDependentComponent?.inject(this)
 
         view = initView(inflater, container)
-        controller = DashboardController(view, sessionsSyncService)
+        controller = controllerFactory.create(view, lifecycleScope)
 
         val tabId = arguments?.get("tabId") as Int?
         controller?.onCreate(tabId)
