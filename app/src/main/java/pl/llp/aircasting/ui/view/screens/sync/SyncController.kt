@@ -1,7 +1,9 @@
 package pl.llp.aircasting.ui.view.screens.sync
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.os.PowerManager
 import android.util.Log
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +43,7 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
+
 @AssistedFactory
 interface SyncControllerFactory {
     fun create(
@@ -71,6 +74,8 @@ class SyncController @AssistedInject constructor(
 
     private val mWizardNavigator: SyncWizardNavigator =
         SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings, mErrorHandler)
+    private val wakeLock: PowerManager.WakeLock = (mRootActivity.getSystemService(Context.POWER_SERVICE) as PowerManager)
+        .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AircastingApplication::SDSyncWakeLock")
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -217,6 +222,10 @@ class SyncController @AssistedInject constructor(
 
     private fun syncAirbeam(deviceItem: DeviceItem) {
         mRootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        wakeLock.acquire(20 * 60 * 1000L /* 20 minutes */)
+        Log.d("WakeLock", "Acquired wakelock: ${wakeLock.isHeld}")
+
         AirBeamSyncService.startService(mRootActivity, deviceItem)
         mWizardNavigator.goToAirbeamSyncing(this)
     }
@@ -283,6 +292,8 @@ class SyncController @AssistedInject constructor(
 
     override fun syncFinished() {
         mRootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        wakeLock.release()
+        Log.d("WakeLock", "Released wakelock: ${!wakeLock.isHeld}")
         mErrorHandler.handle(SDCardSyncError("syncFinished in syncController"))
         mWizardNavigator.goToAirbeamSynced(this)
     }
