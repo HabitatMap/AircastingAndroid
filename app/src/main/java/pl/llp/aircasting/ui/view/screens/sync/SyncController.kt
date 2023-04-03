@@ -295,6 +295,8 @@ class SyncController @AssistedInject constructor(
         wakeLock.release()
         Log.d("WakeLock", "Released wakelock: ${!wakeLock.isHeld}")
         mErrorHandler.handle(SDCardSyncError("syncFinished in syncController"))
-        mWizardNavigator.goToAirbeamSynced(this)
+        mRootActivity.lifecycleScope.launchWhenResumed {
+            mWizardNavigator.goToAirbeamSynced(this@SyncController)
+        }
     }
 }
