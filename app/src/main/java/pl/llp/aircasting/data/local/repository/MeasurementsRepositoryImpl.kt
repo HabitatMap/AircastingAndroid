@@ -64,10 +64,6 @@ class MeasurementsRepositoryImpl @Inject constructor(
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    suspend fun getLastMeasurementsWithGivenAveragingFrequency(streamId: Long, limit: Int, averagingFrequency: Int): List<MeasurementDBObject?> {
-        return mDatabase.measurements().getLastMeasurementsWithGivenAveragingFrequency(streamId, limit, averagingFrequency)
-    }
-
     suspend fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
         return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
     }
@@ -79,28 +75,12 @@ class MeasurementsRepositoryImpl @Inject constructor(
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    suspend fun getNonAveragedPreviousMeasurementsCount(sessionId: Long, crossingThresholdTime: Date, newAveragingFrequency: Int): Int {
-        return mDatabase.measurements().getNonAveragedPreviousMeasurementsCount(sessionId, crossingThresholdTime, newAveragingFrequency )
-    }
-
-    suspend fun getNonAveragedPreviousMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedPreviousMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
-    }
-
-    suspend fun getNonAveragedCurrentMeasurements(streamId: Long, averagingFrequency: Int, thresholdCrossingTime: Date): List<MeasurementDBObject> {
-        return mDatabase.measurements().getNonAveragedCurrentMeasurements(streamId, averagingFrequency, thresholdCrossingTime)
-    }
-
     suspend fun getMeasurementsToAverage(streamId: Long, averagingWindow: AveragingWindow): List<MeasurementDBObject> {
         return mDatabase.measurements().getMeasurementsToAverage(streamId, averagingWindow.value)
     }
 
     suspend fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
-    }
-
-    suspend fun deleteMeasurementsSuspend(streamId: Long, measurementsIds: List<Long>) {
-        mDatabase.measurements().deleteMeasurementsSuspend(streamId, measurementsIds)
     }
 
     suspend fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int, time: Date?) {

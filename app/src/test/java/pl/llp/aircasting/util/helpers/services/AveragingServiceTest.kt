@@ -93,7 +93,7 @@ class AveragingServiceTest {
                         streamId,
                         averagingWindow
                     )
-                    verify(mMeasurementsRepository).deleteMeasurementsSuspend(eq(streamId), any())
+                    verify(mMeasurementsRepository).deleteMeasurements(eq(streamId), any())
                 }
             }
         }

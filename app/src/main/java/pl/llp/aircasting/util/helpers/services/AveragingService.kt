@@ -90,7 +90,7 @@ class AveragingService(
             val leftoverMeasurements =
                 mMeasurementsRepository.getMeasurementsToAverage(streamId, currentWindow)
                     .map { it.id }
-            mMeasurementsRepository.deleteMeasurementsSuspend(streamId, leftoverMeasurements)
+            mMeasurementsRepository.deleteMeasurements(streamId, leftoverMeasurements)
         }
     }
 
