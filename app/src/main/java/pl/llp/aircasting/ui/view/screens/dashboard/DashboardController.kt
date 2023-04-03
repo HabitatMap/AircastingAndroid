@@ -4,7 +4,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.api.services.DownloadFollowedSessionMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -25,30 +25,41 @@ class DashboardController @AssistedInject constructor(
     private val sessionsSyncService: SessionsSyncService,
     private val downloadFollowedSessionMeasurementsService: DownloadFollowedSessionMeasurementsService
 ) : BaseDashboardController(viewMvc),
-    DashboardViewMvc.Listener,
-    FlowCollector<OperationStatus> {
+    DashboardViewMvc.Listener {
 
     override fun onCreate(tabId: Int?) {
         super.onCreate(tabId)
         viewMvc?.registerListener(this)
         lifecycleCoroutineScope.launch {
-            sessionsSyncService.syncStatus.collect(this@DashboardController)
-        }
-        lifecycleCoroutineScope.launch {
-            downloadFollowedSessionMeasurementsService.downloadStatus.collect(this@DashboardController)
+            sessionsSyncService.syncStatus
+                .combine(
+                    downloadFollowedSessionMeasurementsService.downloadStatus
+                ) { syncStatus, downloadStatus ->
+                    Pair(syncStatus, downloadStatus)
+                }.collect { value ->
+                    val (syncStatus, downloadStatus) = value
+                    if (eitherIsInProgress(syncStatus, downloadStatus)) {
+                        viewMvc?.showLoader()
+                    } else if (bothAreIdle(syncStatus, downloadStatus)) {
+                        viewMvc?.hideLoader()
+                    }
+                }
         }
     }
+
+    private fun bothAreIdle(
+        syncStatus: OperationStatus,
+        downloadStatus: OperationStatus
+    ) = syncStatus == OperationStatus.Idle && downloadStatus == OperationStatus.Idle
+
+    private fun eitherIsInProgress(
+        syncStatus: OperationStatus,
+        downloadStatus: OperationStatus
+    ) = syncStatus == OperationStatus.InProgress || downloadStatus == OperationStatus.InProgress
 
     override fun onRefreshTriggered() {
         lifecycleCoroutineScope.launch {
             sessionsSyncService.sync()
-        }
-    }
-
-    override suspend fun emit(value: OperationStatus) {
-        when (value) {
-            OperationStatus.InProgress -> viewMvc?.showLoader()
-            OperationStatus.Idle -> viewMvc?.hideLoader()
         }
     }
 }

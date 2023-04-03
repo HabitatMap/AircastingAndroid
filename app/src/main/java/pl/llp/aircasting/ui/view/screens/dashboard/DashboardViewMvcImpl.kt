@@ -1,5 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.dashboard
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
@@ -9,6 +10,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 
 open class DashboardViewMvcImpl(
@@ -43,11 +45,13 @@ open class DashboardViewMvcImpl(
     }
 
     override fun showLoader() {
-        mRootActivity.runOnUiThread { mSwipeRefreshLayout?.isRefreshing = true }
+        Log.d(TAG, "show mSwipeRefreshLayout: $mSwipeRefreshLayout")
+        mSwipeRefreshLayout?.isRefreshing = true
     }
 
     override fun hideLoader() {
-        mRootActivity.runOnUiThread { mSwipeRefreshLayout?.isRefreshing = false }
+        Log.d(TAG, "hide mSwipeRefreshLayout: $mSwipeRefreshLayout")
+        mSwipeRefreshLayout?.isRefreshing = false
     }
 
     private fun setTabsMargins() {

@@ -15,6 +15,7 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.*
@@ -23,6 +24,7 @@ import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import javax.inject.Inject
 
+@UserSessionScope
 class SessionManager @Inject constructor(
     private val mContext: Context,
     private val settings: Settings,
