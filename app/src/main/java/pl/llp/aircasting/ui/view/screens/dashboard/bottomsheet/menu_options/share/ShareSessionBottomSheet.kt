@@ -21,6 +21,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.CSVHelper
+import pl.llp.aircasting.util.OperationStatus
 import pl.llp.aircasting.util.ShareHelper
 import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -117,7 +118,7 @@ class ShareSessionBottomSheet(
 
             sessionsSyncService.syncStatus.collect { syncStatus ->
                 when (syncStatus) {
-                    SessionsSyncService.Status.InProgress -> {
+                    OperationStatus.InProgress -> {
                         shareFileButton?.isEnabled = false
                         shareFileButton?.text = context?.getString(R.string.sync_in_progress)
                         loader?.apply {
@@ -125,7 +126,7 @@ class ShareSessionBottomSheet(
                             visible()
                         }
                     }
-                    SessionsSyncService.Status.Idle -> {
+                    OperationStatus.Idle -> {
                         shareFileButton?.isEnabled = true
                         shareFileButton?.text = context?.getString(R.string.share_file)
                         loader?.apply {

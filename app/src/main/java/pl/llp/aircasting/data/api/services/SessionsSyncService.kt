@@ -16,6 +16,7 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
+import pl.llp.aircasting.util.OperationStatus
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -41,14 +42,9 @@ class SessionsSyncService @Inject constructor(
         data class Error(val throwable: Throwable?) : Result()
     }
 
-    sealed class Status {
-        object InProgress : Status()
-        object Idle : Status()
-    }
-
-    val syncStatus get(): StateFlow<Status> = _syncStatus
+    val syncStatus get(): StateFlow<OperationStatus> = _syncStatus
     private val gson: Gson = Gson()
-    private val _syncStatus: MutableStateFlow<Status> = MutableStateFlow(Status.Idle)
+    private val _syncStatus: MutableStateFlow<OperationStatus> = MutableStateFlow(OperationStatus.Idle)
     suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
         Log.w(
             this@SessionsSyncService.TAG, "Performing sync\n" +
@@ -61,7 +57,7 @@ class SessionsSyncService @Inject constructor(
         val jsonData = gson.toJson(syncParams)
 
         val syncResult = runCatching {
-            _syncStatus.emit(Status.InProgress)
+            _syncStatus.emit(OperationStatus.InProgress)
             val response = apiService.sync(SyncSessionBody(jsonData))
 
             if (response.isSuccessful) {
@@ -86,7 +82,7 @@ class SessionsSyncService @Inject constructor(
         syncResult.onFailure { exception ->
             errorHandler.handle(SyncError(exception))
         }
-        _syncStatus.emit(Status.Idle)
+        _syncStatus.emit(OperationStatus.Idle)
 
         syncResult
     }
