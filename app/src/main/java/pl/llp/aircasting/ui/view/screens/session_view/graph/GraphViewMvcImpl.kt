@@ -74,10 +74,12 @@ abstract class GraphViewMvcImpl(
     }
 
     override fun addNote(note: Note) {
+        super.addNote(note)
         graphContainer?.refresh(mSessionPresenter)
     }
 
     override fun deleteNote(note: Note) {
+        super.deleteNote(note)
         graphContainer?.refresh(mSessionPresenter)
     }
 

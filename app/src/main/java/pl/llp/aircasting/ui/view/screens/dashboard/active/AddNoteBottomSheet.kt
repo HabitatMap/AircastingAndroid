@@ -28,10 +28,10 @@ class AddNoteBottomSheet(
 
     private var noteInput: EditText? = null
     private var mPhotoPath: String? = null
-    private val mDate: Date = Date()
 
     @Inject
     lateinit var mErrorHandler: ErrorHandler
+
     @Inject
     lateinit var mPermissionsManager: PermissionsManager
 
@@ -83,38 +83,30 @@ class AddNoteBottomSheet(
             mErrorHandler.handleAndDisplay(NotesNoLocationError())
             return
         }
-
         val noteText = noteInput?.text.toString().trim()
-        val note: Note?
+        if (noteText.isEmpty()) {
+            showEmptyError()
+            return
+        }
 
-        val mSessionNotes = mSession.notes
-        if (noteText.isNotEmpty()) {
-            if (mSessionNotes.isNotEmpty()) {
-                note = Note(
-                    mDate,
-                    noteText,
-                    lastMeasurement.latitude,
-                    lastMeasurement.longitude,
-                    mSessionNotes.last().number + 1,
-                    mPhotoPath
-                )
-                val event = NoteCreatedEvent(mSession, note)
-                EventBus.getDefault().post(event)
-                dismiss()
-            } else {
-                note = Note(
-                    mDate,
-                    noteText,
-                    lastMeasurement.latitude,
-                    lastMeasurement.longitude,
-                    0,
-                    mPhotoPath
-                )
-                val event = NoteCreatedEvent(mSession, note)
-                EventBus.getDefault().post(event)
-                dismiss()
-            }
-        } else showEmptyError()
+        val noteDate = Date()
+        val sessionNotes = mSession.notes
+        val noteNumber = if (sessionNotes.isNotEmpty())
+            sessionNotes.last().number + 1
+        else
+            0
+
+        val note = Note(
+            noteDate,
+            noteText,
+            lastMeasurement.latitude,
+            lastMeasurement.longitude,
+            noteNumber,
+            mPhotoPath
+        )
+        val event = NoteCreatedEvent(mSession, note)
+        EventBus.getDefault().post(event)
+        dismiss()
     }
 
     private fun showEmptyError() {
