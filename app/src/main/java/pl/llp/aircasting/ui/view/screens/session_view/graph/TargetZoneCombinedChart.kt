@@ -25,7 +25,6 @@ class TargetZoneCombinedChart : CombinedChart {
         mYAxisSafeZonePaint = Paint()
         mYAxisSafeZonePaint?.style = Paint.Style.FILL
         mTargetZones = ArrayList()
-//        setViewPortOffsets(4f, 4f, 4f, 4f)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -51,9 +50,6 @@ class TargetZoneCombinedChart : CombinedChart {
     fun addTargetZone(targetZone: TargetZone) {
         mTargetZones!!.add(targetZone)
     }
-
-    val targetZones: List<Any>?
-        get() = mTargetZones
 
     fun clearTargetZones() {
         mTargetZones = ArrayList()

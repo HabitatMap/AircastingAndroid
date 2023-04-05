@@ -131,6 +131,8 @@ class AveragingService(
                     lastMeasurementTime.time
                 )
                 Log.d(TAG, "Calculated current window: $currentWindow")
+                if (currentWindow.value > session.averagingFrequency)
+                    mSessionsRepository.updateAveragingFrequency(session.id, currentWindow.value)
 
                 if (currentWindow > window) {
                     coroutineScope.launch {

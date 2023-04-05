@@ -36,6 +36,13 @@ class SessionsRepository @Inject constructor(
         return mDatabase.sessions().loadSessionByUUID(uuid)
     }
 
+    suspend fun updateAveragingFrequency(sessionId: Long?, averagingFrequency: Int?) {
+        sessionId ?: return
+        averagingFrequency ?: return
+
+        mDatabase.sessions().updateAveragingFrequency(sessionId, averagingFrequency)
+    }
+
     suspend fun getSessionByIdSuspend(id: Long): SessionDBObject? {
         return mDatabase.sessions().loadSessionById(id)
     }

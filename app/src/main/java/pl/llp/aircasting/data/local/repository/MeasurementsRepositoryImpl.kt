@@ -18,7 +18,11 @@ interface MeasurementsRepository {
 class MeasurementsRepositoryImpl @Inject constructor(
     private val mDatabase: AppDatabase
 ) : MeasurementsRepository {
-    suspend fun insertAll(measurementStreamId: Long, sessionId: Long, measurements: List<Measurement>) {
+    suspend fun insertAll(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    ) {
         val measurementDBObjects = measurements.map { measurement ->
             MeasurementDBObject(
                 measurementStreamId,
@@ -34,7 +38,11 @@ class MeasurementsRepositoryImpl @Inject constructor(
         mDatabase.measurements().insertAll(measurementDBObjects)
     }
 
-    override suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long {
+    override suspend fun insert(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurement: Measurement
+    ): Long {
         val measurementDBObject = MeasurementDBObject(
             measurementStreamId,
             sessionId,
@@ -60,11 +68,27 @@ class MeasurementsRepositoryImpl @Inject constructor(
         return measurement?.time
     }
 
-    suspend fun getLastMeasurementsForStream(streamId: Long, limit: Int): List<MeasurementDBObject?> {
+    suspend fun lastTimeOfMeasurementWithAveragingFrequency(
+        sessionId: Long?,
+        frequency: Int?
+    ): Date? {
+        if (sessionId == null || frequency == null) return null
+
+        return mDatabase.measurements()
+            .lastTimeOfMeasurementWithAveragingFrequency(sessionId, frequency)
+    }
+
+    suspend fun getLastMeasurementsForStream(
+        streamId: Long,
+        limit: Int
+    ): List<MeasurementDBObject?> {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    suspend fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?> {
+    suspend fun getBySessionIdAndStreamId(
+        sessionId: Long,
+        measurementStreamId: Long
+    ): List<MeasurementDBObject?> {
         return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
     }
 
@@ -75,7 +99,10 @@ class MeasurementsRepositoryImpl @Inject constructor(
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    suspend fun getMeasurementsToAverage(streamId: Long, averagingWindow: AveragingWindow): List<MeasurementDBObject> {
+    suspend fun getMeasurementsToAverage(
+        streamId: Long,
+        averagingWindow: AveragingWindow
+    ): List<MeasurementDBObject> {
         return mDatabase.measurements().getMeasurementsToAverage(streamId, averagingWindow.value)
     }
 
@@ -83,7 +110,12 @@ class MeasurementsRepositoryImpl @Inject constructor(
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
     }
 
-    suspend fun averageMeasurement(measurementId: Long, value: Double, averagingFrequency: Int, time: Date?) {
+    suspend fun averageMeasurement(
+        measurementId: Long,
+        value: Double,
+        averagingFrequency: Int,
+        time: Date?
+    ) {
         if (time == null) {
             Log.e(TAG, "time was null")
             return

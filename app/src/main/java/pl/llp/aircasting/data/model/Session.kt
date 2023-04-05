@@ -50,6 +50,7 @@ open class Session(
         sessionDBObject.contribute,
         sessionDBObject.locationless,
         sessionDBObject.is_indoor,
+        averagingFrequency = sessionDBObject.averagingFrequency,
         order = sessionDBObject.session_order,
         isExternal = sessionDBObject.isExternal == true
     ) {

@@ -31,7 +31,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "locationless") val locationless: Boolean = false,
     @ColumnInfo(name = "url_location") val urlLocation: String? = null,
     @ColumnInfo(name = "is_indoor") val is_indoor: Boolean = false,
-    @ColumnInfo(name = "averaging_frequency") val averaging_frequency: Int = 1,
+    @ColumnInfo(name = "averaging_frequency") val averagingFrequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
     @ColumnInfo(name = "username") val username: String? = null,
     @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean? = false

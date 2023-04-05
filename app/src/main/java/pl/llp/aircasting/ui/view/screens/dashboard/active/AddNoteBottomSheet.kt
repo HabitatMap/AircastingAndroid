@@ -5,14 +5,18 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import com.github.dhaval2404.imagepicker.ImagePicker
 import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.ui.viewmodel.AddNoteBottomSheetViewModel
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
@@ -35,11 +39,13 @@ class AddNoteBottomSheet(
     @Inject
     lateinit var mPermissionsManager: PermissionsManager
 
+    @Inject
+    lateinit var viewModel: AddNoteBottomSheetViewModel
+
     private val startForProfileImageResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             val resultCode = result.resultCode
             val data = result.data
-
             when (resultCode) {
                 Activity.RESULT_OK -> {
                     val fileUri = data?.data
@@ -77,19 +83,19 @@ class AddNoteBottomSheet(
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
 
-    private fun addNote(mSession: Session?) {
+    private fun addNote(mSession: Session?) = lifecycleScope.launch {
         val lastMeasurement = mSession?.lastMeasurement()
         if (lastMeasurement?.latitude == null || lastMeasurement.longitude == null) {
             mErrorHandler.handleAndDisplay(NotesNoLocationError())
-            return
+            return@launch
         }
         val noteText = noteInput?.text.toString().trim()
         if (noteText.isEmpty()) {
             showEmptyError()
-            return
+            return@launch
         }
 
-        val noteDate = Date()
+        val noteDate = viewModel.lastAveragedMeasurementTime(mSession.uuid).first() ?: Date()
         val sessionNotes = mSession.notes
         val noteNumber = if (sessionNotes.isNotEmpty())
             sessionNotes.last().number + 1

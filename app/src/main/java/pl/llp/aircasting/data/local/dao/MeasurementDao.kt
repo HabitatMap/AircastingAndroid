@@ -21,6 +21,12 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
     suspend fun lastForSession(sessionId: Long): MeasurementDBObject?
 
+    @Query("SELECT time FROM measurements WHERE session_id=:sessionId AND averaging_frequency =:frequency ORDER BY time DESC LIMIT 1")
+    suspend fun lastTimeOfMeasurementWithAveragingFrequency(
+        sessionId: Long,
+        frequency: Int
+    ): Date?
+
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
     suspend fun lastForSessionSuspend(sessionId: Long): MeasurementDBObject?
 
@@ -28,7 +34,10 @@ interface MeasurementDao {
     suspend fun lastForStream(sessionId: Long, measurementStreamId: Long): MeasurementDBObject?
 
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId AND measurement_stream_id=:measurementStreamId ORDER BY time")
-    suspend fun getBySessionIdAndStreamId(sessionId: Long, measurementStreamId: Long): List<MeasurementDBObject?>
+    suspend fun getBySessionIdAndStreamId(
+        sessionId: Long,
+        measurementStreamId: Long
+    ): List<MeasurementDBObject?>
 
     @Query("DELETE FROM measurements WHERE session_id=:sessionId AND time < :lastExpectedMeasurementDate ")
     suspend fun delete(sessionId: Long, lastExpectedMeasurementDate: Date)
@@ -40,11 +49,14 @@ interface MeasurementDao {
     suspend fun getLastMeasurements(streamId: Long, limit: Int): List<MeasurementDBObject?>
 
     @Query("SELECT * FROM measurements WHERE averaging_frequency < :averagingFrequency AND measurement_stream_id=:streamId ORDER BY time")
-    suspend fun getMeasurementsToAverage(streamId: Long, averagingFrequency: Int): List<MeasurementDBObject>
+    suspend fun getMeasurementsToAverage(
+        streamId: Long,
+        averagingFrequency: Int
+    ): List<MeasurementDBObject>
 
     @Transaction
     suspend fun deleteInTransaction(streamId: Long, lastExpectedMeasurementDate: Date) {
-        delete(streamId, lastExpectedMeasurementDate )
+        delete(streamId, lastExpectedMeasurementDate)
     }
 
     @Transaction
@@ -53,5 +65,10 @@ interface MeasurementDao {
     }
 
     @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value, time=:time WHERE id=:measurement_id")
-    suspend fun averageMeasurement(measurement_id: Long, value: Double, averagingFrequency: Int, time: Date)
+    suspend fun averageMeasurement(
+        measurement_id: Long,
+        value: Double,
+        averagingFrequency: Int,
+        time: Date
+    )
 }
