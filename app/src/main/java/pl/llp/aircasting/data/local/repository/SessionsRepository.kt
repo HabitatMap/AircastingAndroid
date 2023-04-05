@@ -48,10 +48,6 @@ class SessionsRepository @Inject constructor(
         return mDatabase.sessions().loadSessionByUUID(uuid)?.id
     }
 
-    suspend fun getSessionIdByUUIDSuspend(uuid: String): Long? {
-        return mDatabase.sessions().loadSessionByUUID(uuid)?.id
-    }
-
     suspend fun loadSessionAndMeasurementsByUUID(uuid: String): Session? {
         val sessionDBObject = mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
 

@@ -201,7 +201,7 @@ class SessionManager @Inject constructor(
         session: Session,
         streamsToDelete: List<MeasurementStream>?
     ) {
-        val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(session.uuid)
+        val sessionId = sessionsRepository.getSessionIdByUUID(session.uuid)
         measurementStreamsRepository.markForRemoval(sessionId, streamsToDelete)
     }
 
@@ -225,7 +225,7 @@ class SessionManager @Inject constructor(
 
     private fun addNote(event: NoteCreatedEvent) {
         coroutineScope.launch {
-            val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(event.session.uuid)
+            val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
             sessionId?.let {
                 noteRepository.insert(sessionId, event.note)
             }
@@ -235,7 +235,7 @@ class SessionManager @Inject constructor(
     private fun editNote(event: NoteEditedEvent) {
         coroutineScope.launch {
             event.session?.let {
-                val sessionId = sessionsRepository.getSessionIdByUUIDSuspend(event.session.uuid)
+                val sessionId = sessionsRepository.getSessionIdByUUID(event.session.uuid)
                 if (sessionId != null && event.note != null) {
                     noteRepository.update(sessionId, event.note)
                 }

@@ -109,7 +109,7 @@ class SessionsSyncService @Inject constructor(
     }
 
     private suspend fun getPhotosFromSessionNotes(uuid: String): List<String?>? {
-        val sessionID = sessionRepository.getSessionIdByUUIDSuspend(uuid)
+        val sessionID = sessionRepository.getSessionIdByUUID(uuid)
         val mNotes = sessionID?.let { noteRepository.getNotesForSessionWithId(it) }
 
         val encodedPhotos = mNotes?.filterNotNull()?.map { note ->
