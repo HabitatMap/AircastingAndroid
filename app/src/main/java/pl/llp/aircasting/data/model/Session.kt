@@ -411,7 +411,7 @@ open class Session(
     }
 
     fun lastMeasurement(): Measurement? {
-        return streams.first().lastMeasurement()
+        return streams.firstOrNull()?.lastMeasurement()
     }
 
     override fun equals(other: Any?): Boolean {

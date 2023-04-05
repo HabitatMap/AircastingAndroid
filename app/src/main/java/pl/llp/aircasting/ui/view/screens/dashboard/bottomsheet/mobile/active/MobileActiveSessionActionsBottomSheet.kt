@@ -76,9 +76,9 @@ open class MobileActiveSessionActionsBottomSheet(
         val addNoteButton = contentView?.add_note_button
         val session = mSessionPresenter?.session ?: return
         addNoteButton?.setOnClickListener {
-            AddNoteBottomSheet(session).show(
-                requireActivity().supportFragmentManager
-            )
+            AddNoteBottomSheet(session.uuid)
+                .show(requireActivity().supportFragmentManager)
+
             dismiss()
         }
     }

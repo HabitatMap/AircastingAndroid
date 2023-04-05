@@ -47,7 +47,8 @@ class SessionsRepository @Inject constructor(
         return mDatabase.sessions().loadSessionById(id)
     }
 
-    suspend fun getSessionWithMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
+    suspend fun getSessionWithMeasurementsByUUID(uuid: String?): SessionWithStreamsAndMeasurementsDBObject? {
+        uuid ?: return null
         return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }
 
@@ -62,8 +63,10 @@ class SessionsRepository @Inject constructor(
         return Session(sessionDBObject)
     }
 
-    suspend fun loadSessionForUpload(uuid: String): Session? {
-        val sessionForUploadDBObject = mDatabase.sessions().loadSessionForUploadByUUID(uuid)
+    suspend fun loadCompleteSession(uuid: String?): Session? {
+        uuid ?: return null
+
+        val sessionForUploadDBObject = mDatabase.sessions().loadCompleteSession(uuid)
 
         return sessionForUploadDBObject?.let { Session(it) }
     }

@@ -1,6 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.app.Activity
+import android.app.Dialog
+import android.os.Bundle
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
@@ -14,7 +16,6 @@ import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Note
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
 import pl.llp.aircasting.ui.viewmodel.AddNoteBottomSheetViewModel
 import pl.llp.aircasting.util.events.NoteCreatedEvent
@@ -26,7 +27,7 @@ import java.util.*
 import javax.inject.Inject
 
 class AddNoteBottomSheet(
-    private var mSession: Session?,
+    private var sessionUuid: String?,
 ) : BottomSheet() {
     constructor() : this(null)
 
@@ -67,6 +68,16 @@ class AddNoteBottomSheet(
             }
         }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString("sessionUuid", sessionUuid)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        sessionUuid = savedInstanceState?.getString("sessionUuid") ?: sessionUuid
+        return super.onCreateDialog(savedInstanceState)
+    }
+
     override fun layoutId(): Int {
         return R.layout.add_note_bottom_sheet
     }
@@ -77,14 +88,15 @@ class AddNoteBottomSheet(
         checkIfCameraPermissionGranted()
 
         noteInput = contentView?.note_input
-        contentView?.add_note_button?.setOnClickListener { addNote(mSession) }
+        contentView?.add_note_button?.setOnClickListener { addNote() }
         contentView?.add_picture_button?.setOnClickListener { takePictureUsingCamera() }
         contentView?.cancel_button?.setOnClickListener { dismiss() }
         contentView?.close_button?.setOnClickListener { dismiss() }
     }
 
-    private fun addNote(mSession: Session?) = lifecycleScope.launch {
-        val lastMeasurement = mSession?.lastMeasurement()
+    private fun addNote() = lifecycleScope.launch {
+        val session = viewModel.getSessionByUUID(sessionUuid).first()
+        val lastMeasurement = session.lastMeasurement()
         if (lastMeasurement?.latitude == null || lastMeasurement.longitude == null) {
             mErrorHandler.handleAndDisplay(NotesNoLocationError())
             return@launch
@@ -95,8 +107,8 @@ class AddNoteBottomSheet(
             return@launch
         }
 
-        val noteDate = viewModel.lastAveragedMeasurementTime(mSession.uuid).first() ?: Date()
-        val sessionNotes = mSession.notes
+        val noteDate = viewModel.lastAveragedMeasurementTime(sessionUuid).first() ?: Date()
+        val sessionNotes = session.notes
         val noteNumber = if (sessionNotes.isNotEmpty())
             sessionNotes.last().number + 1
         else
@@ -110,7 +122,7 @@ class AddNoteBottomSheet(
             noteNumber,
             mPhotoPath
         )
-        val event = NoteCreatedEvent(mSession, note)
+        val event = NoteCreatedEvent(session, note)
         EventBus.getDefault().post(event)
         dismiss()
     }

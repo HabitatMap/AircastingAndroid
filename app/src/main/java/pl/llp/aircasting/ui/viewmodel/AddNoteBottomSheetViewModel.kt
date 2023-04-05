@@ -10,7 +10,7 @@ class AddNoteBottomSheetViewModel @Inject constructor(
     private val measurementsRepository: MeasurementsRepositoryImpl,
     private val sessionsRepository: SessionsRepository,
 ) : ViewModel() {
-    fun lastAveragedMeasurementTime(uuid: String) = flow {
+    fun lastAveragedMeasurementTime(uuid: String?) = flow {
         val session = sessionsRepository.getSessionByUUID(uuid)
         session ?: return@flow
 
@@ -20,5 +20,10 @@ class AddNoteBottomSheetViewModel @Inject constructor(
                 session.averagingFrequency
             )
         )
+    }
+
+    fun getSessionByUUID(uuid: String?) = flow {
+        val sessionDB = sessionsRepository.loadCompleteSession(uuid) ?: return@flow
+        emit(sessionDB)
     }
 }

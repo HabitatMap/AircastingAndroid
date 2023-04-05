@@ -97,7 +97,7 @@ class SessionsSyncService @Inject constructor(
 
     private suspend fun upload(uuids: List<String>) {
         uuids.forEach { uuid ->
-            val session = sessionRepository.loadSessionForUpload(uuid)
+            val session = sessionRepository.loadCompleteSession(uuid)
             val encodedPhotos = getPhotosFromSessionNotes(uuid)
 
             session ?: return

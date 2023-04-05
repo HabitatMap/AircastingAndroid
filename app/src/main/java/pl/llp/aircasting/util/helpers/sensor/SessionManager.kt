@@ -206,7 +206,7 @@ class SessionManager @Inject constructor(
     }
 
     private suspend fun updateSession(session: Session) {
-        val reloadedSession = sessionsRepository.loadSessionForUpload(session.uuid)
+        val reloadedSession = sessionsRepository.loadCompleteSession(session.uuid)
 
         if (reloadedSession != null) {
             sessionUpdateService.update(reloadedSession)
