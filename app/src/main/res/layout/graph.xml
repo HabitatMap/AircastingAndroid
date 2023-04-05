@@ -13,17 +13,13 @@
             android:id="@+id/graph"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="-14dp"
-            android:layout_marginStart="-16dp"
-            android:layout_marginEnd="-20dp" />
+            android:layout_marginBottom="-14dp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="-16dp"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="-50dp"
-            android:layout_marginEnd="-20dp"
             android:background="@color/graph_overlay" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

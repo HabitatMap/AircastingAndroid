@@ -25,9 +25,11 @@ class TargetZoneCombinedChart : CombinedChart {
         mYAxisSafeZonePaint = Paint()
         mYAxisSafeZonePaint?.style = Paint.Style.FILL
         mTargetZones = ArrayList()
+//        setViewPortOffsets(4f, 4f, 4f, 4f)
     }
 
     override fun onDraw(canvas: Canvas) {
+        minOffset = 0f
         for (targetZone in mTargetZones!!) {
             // prepare coordinates
             points[1] = targetZone.lowerLimit
