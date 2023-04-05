@@ -1,6 +1,9 @@
 package pl.llp.aircasting.ui.view.screens.session_view.graph
 
 import android.content.Context
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.data.Entry
 import org.apache.commons.lang3.time.DateUtils
@@ -10,7 +13,6 @@ import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.dayOfMonth
 import pl.llp.aircasting.util.extensions.truncateToMidnight
-import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.*
 
@@ -123,11 +125,28 @@ class GraphDataGenerator(
     private fun buildAverageEntry(date: Date, hasNote: Boolean = false): Entry {
         val time = convertDateToFloat(date)
         val value = getAverageValue().toFloat()
+
         return if (hasNote) {
-            Entry(time, value, ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
+            Entry(
+                time,
+                value,
+                adjustIconBounds(ContextCompat.getDrawable(mContext, R.drawable.ic_note_icon))
+            )
         } else {
             Entry(time, value)
         }
+    }
+
+    private fun adjustIconBounds(drawable: Drawable?): Drawable {
+        val wrapper = DrawableWrapperCompat(drawable)
+        val iconHeight = drawable?.intrinsicHeight ?: 0
+
+        // Adjust the bottom of the bounds by adding some padding, e.g., half of the icon height
+        val paddingBottom = iconHeight / 2
+        wrapper.bounds =
+            Rect(0, -paddingBottom, drawable?.intrinsicWidth ?: 0, iconHeight - paddingBottom)
+
+        return wrapper
     }
 
     private fun convertDateToFloat(date: Date): Float {
