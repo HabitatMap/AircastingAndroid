@@ -4,7 +4,8 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -27,7 +28,8 @@ import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.events.NoteDeletedEvent
 import pl.llp.aircasting.util.events.NoteEditedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.*
+import pl.llp.aircasting.util.extensions.adjustMenuVisibility
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -53,14 +55,14 @@ abstract class SessionDetailsViewController(
             mRootActivity,
             mSessionsViewModel,
             mSessionPresenter,
-            this::onSessionChanged
+            ::onSessionChanged
         )
     } else {
         MobileSessionObserver(
             mRootActivity,
             mSessionsViewModel,
             mSessionPresenter,
-            this::onSessionChanged
+            ::onSessionChanged
         )
     }
     private var editNoteDialog: EditNoteBottomSheet? = null
@@ -80,13 +82,11 @@ abstract class SessionDetailsViewController(
         if (mSettings.isKeepScreenOnEnabled()) mRootActivity.window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun onSessionChanged(coroutineScope: CoroutineScope) {
-        backToUIThread(coroutineScope) {
-            mViewMvc?.bindSession(mSessionPresenter)
-            if (mShouldRefreshStatistics.get()) {
-                mViewMvc?.refreshStatisticsContainer()
-                mShouldRefreshStatistics.set(false)
-            }
+    private fun onSessionChanged() {
+        mViewMvc?.bindSession(mSessionPresenter)
+        if (mShouldRefreshStatistics.get()) {
+            mViewMvc?.refreshStatisticsContainer()
+            mShouldRefreshStatistics.set(false)
         }
     }
 
@@ -127,7 +127,7 @@ abstract class SessionDetailsViewController(
             mRootActivity.lifecycleScope.launch {
                 mDownloadService.download(session.uuid)
                     .onSuccess {
-                        withContext(Dispatchers.IO) { mSessionRepository.update(session) }
+                        mSessionRepository.update(session)
                         editNoteDialog?.reload(session)
                     }
                 editNoteDialog?.hideLoader()
@@ -155,14 +155,10 @@ abstract class SessionDetailsViewController(
         reloadMeasurements()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     private fun reloadMeasurements() {
         runBlocking {
-            val query = GlobalScope.async(Dispatchers.IO) {
-                val result = loadMeasurements()
-                onMeasurementsLoadResult(result)
-            }
-            query.await()
+            val result = loadMeasurements()
+            onMeasurementsLoadResult(result)
         }
     }
 

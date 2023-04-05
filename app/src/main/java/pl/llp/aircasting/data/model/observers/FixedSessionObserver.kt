@@ -4,15 +4,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import kotlinx.coroutines.CoroutineScope
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 class FixedSessionObserver(
     mLifecycleOwner: LifecycleOwner,
     mSessionsViewModel: SessionsViewModel,
     private val mSessionPresenter: SessionPresenter,
-    private val onSessionChangedCallback: (coroutineScope: CoroutineScope) -> Unit
+    private val onSessionChangedCallback: () -> Unit
 ): SessionObserver<CompleteSessionDBObject>(mLifecycleOwner, mSessionsViewModel, mSessionPresenter, onSessionChangedCallback) {
 
     override fun buildSession(dbSession: CompleteSessionDBObject): Session {

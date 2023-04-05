@@ -3,8 +3,7 @@ package pl.llp.aircasting.data.model.observers
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.model.Session
@@ -15,7 +14,7 @@ abstract class SessionObserver<Type>(
     private val mLifecycleOwner: LifecycleOwner,
     protected val mSessionsViewModel: SessionsViewModel,
     private val mSessionPresenter: SessionPresenter,
-    private val onSessionChangedCallback: (coroutineScope: CoroutineScope) -> Unit
+    private val onSessionChangedCallback: () -> Unit
 
 ) {
     private var mObserver: Observer<Type?> = Observer { sessionDBObject ->
@@ -40,7 +39,7 @@ abstract class SessionObserver<Type>(
     private fun onSessionChanged(session: Session) {
         mSessionPresenter.session = session
 
-        CoroutineScope(Dispatchers.IO).launch {
+        mLifecycleOwner.lifecycleScope.launch {
             var selectedSensorName = mSessionPresenter.initialSensorName
             if (mSessionPresenter.selectedStream != null) {
                 selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
@@ -53,7 +52,7 @@ abstract class SessionObserver<Type>(
             val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session).first()
             mSessionPresenter.setSensorThresholds(sensorThresholds)
 
-            onSessionChangedCallback.invoke(this)
+            onSessionChangedCallback.invoke()
         }
     }
 }

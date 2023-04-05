@@ -4,17 +4,21 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndNotesDBObject
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
-import kotlinx.coroutines.CoroutineScope
+import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
 
 class MobileSessionObserver(
     mLifecycleOwner: LifecycleOwner,
     mSessionsViewModel: SessionsViewModel,
     private val mSessionPresenter: SessionPresenter,
-    private val onSessionChangedCallback: (coroutineScope: CoroutineScope) -> Unit
-): SessionObserver<SessionWithStreamsAndNotesDBObject>(mLifecycleOwner, mSessionsViewModel, mSessionPresenter, onSessionChangedCallback) {
+    private val onSessionChangedCallback: () -> Unit
+) : SessionObserver<SessionWithStreamsAndNotesDBObject>(
+    mLifecycleOwner,
+    mSessionsViewModel,
+    mSessionPresenter,
+    onSessionChangedCallback
+) {
 
     override fun buildSession(dbSession: SessionWithStreamsAndNotesDBObject): Session {
         return Session(dbSession)
