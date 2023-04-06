@@ -12,7 +12,7 @@ class MeasurementStreamsRepository @Inject constructor(
 ) {
     suspend fun getId(sessionId: Long, measurementStream: MeasurementStream): Long? {
         val streamDBObject = mDatabase.measurementStreams()
-            .loadStreamBySessionIdAndSensorNameSuspend(sessionId, measurementStream.sensorName)
+            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         return streamDBObject?.id
     }
@@ -25,7 +25,7 @@ class MeasurementStreamsRepository @Inject constructor(
 
     suspend fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStream): Long {
         var streamDBObject = mDatabase.measurementStreams()
-            .loadStreamBySessionIdAndSensorNameSuspend(sessionId, measurementStream.sensorName)
+            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
 
         if (streamDBObject != null) return streamDBObject.id
 

@@ -98,7 +98,7 @@ class AveragingService(
         sessionId ?: return
 
         coroutineScope.launch {
-            val session = mSessionsRepository.getSessionByIdSuspend(sessionId)
+            val session = mSessionsRepository.getSessionById(sessionId)
             val sessionStart = session?.startTime ?: return@launch
 
             val fromSessionStartToFirstThreshold =

@@ -56,7 +56,7 @@ class ActiveSessionMeasurementsRepository @Inject constructor(
 
     suspend fun createOrReplace(sessionId: Long, streamId: Long, measurement: Measurement) {
         val lastMeasurementsCount =
-            mDatabase.activeSessionsMeasurements().countBySessionAndStreamSuspend(sessionId, streamId)
+            mDatabase.activeSessionsMeasurements().countBySessionAndStream(sessionId, streamId)
 
         if (lastMeasurementsCount > MAX_MEASUREMENTS_PER_STREAM_NUMBER) {
             val activeSessionMeasurementDBObject = ActiveSessionMeasurementDBObject(

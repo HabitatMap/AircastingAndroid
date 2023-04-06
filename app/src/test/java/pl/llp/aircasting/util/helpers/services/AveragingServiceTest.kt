@@ -103,13 +103,13 @@ class AveragingServiceTest {
         // Arrange
         val sessionId = 1L
         val session = mock<SessionDBObject>()
-        whenever(mSessionsRepository.getSessionByIdSuspend(sessionId)).thenReturn(session)
+        whenever(mSessionsRepository.getSessionById(sessionId)).thenReturn(session)
 
         // Act
         averagingService.scheduleAveraging(sessionId)
         yield()
 
         // Assert
-        verify(mSessionsRepository).getSessionByIdSuspend(sessionId)
+        verify(mSessionsRepository).getSessionById(sessionId)
     }
 }

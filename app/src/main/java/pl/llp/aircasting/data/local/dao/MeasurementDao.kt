@@ -27,9 +27,6 @@ interface MeasurementDao {
         frequency: Int
     ): Date?
 
-    @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
-    suspend fun lastForSessionSuspend(sessionId: Long): MeasurementDBObject?
-
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId AND measurement_stream_id=:measurementStreamId ORDER BY time DESC LIMIT 1")
     suspend fun lastForStream(sessionId: Long, measurementStreamId: Long): MeasurementDBObject?
 

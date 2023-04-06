@@ -15,7 +15,7 @@ interface MeasurementStreamDao {
     suspend fun insert(measurementStream: MeasurementStreamDBObject): Long
 
     @Query("SELECT * FROM measurement_streams WHERE session_id=:sessionId AND sensor_name=:sensorName")
-    suspend fun loadStreamBySessionIdAndSensorNameSuspend(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
+    suspend fun loadStreamBySessionIdAndSensorName(sessionId: Long, sensorName: String): MeasurementStreamDBObject?
 
     @Query("SELECT id FROM measurement_streams WHERE session_id in (:sessionIds)")
     suspend fun getStreamsIdsBySessionIds(sessionIds: List<Long>): List<Long>
