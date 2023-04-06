@@ -20,9 +20,6 @@ import androidx.core.view.marginLeft
 import androidx.core.view.marginRight
 import androidx.core.view.marginTop
 import com.google.android.gms.maps.GoogleMap
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import java.io.FileInputStream
@@ -104,26 +101,8 @@ fun Drawable.startAnimation() {
     (this as Animatable).start()
 }
 
-fun runOnIOThread(block: (scope: CoroutineScope) -> Unit) {
-    CoroutineScope(Dispatchers.IO).launch {
-        block(this)
-    }
-}
-
-fun runOnMainThread(block: (scope: CoroutineScope) -> Unit) {
-    CoroutineScope(Dispatchers.Main).launch {
-        block(this)
-    }
-}
-
 fun Drawable.stopAnimation() {
     (this as Animatable).stop()
-}
-
-fun backToUIThread(scope: CoroutineScope, uiBlock: () -> Unit) {
-    scope.launch(Dispatchers.Main) {
-        uiBlock()
-    }
 }
 
 fun encodeToBase64(filepath: Uri?): String? {

@@ -4,15 +4,14 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.model.SensorThreshold
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
-import pl.llp.aircasting.util.extensions.backToUIThread
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class SessionsObserver<Type>(
@@ -36,10 +35,12 @@ abstract class SessionsObserver<Type>(
         mSessionsViewModel.viewModelScope.launch(Dispatchers.Default) {
             val sessions = dbSessions.map { dbSession -> buildSession(dbSession) }
             val sensorThresholds = getSensorThresholds(sessions)
-            if (anySensorThresholdChanged(sensorThresholds)) updateSensorThresholds(sensorThresholds)
-            if (anySessionChanged(sessions)) {
-                onSessionsChanged(this, sessions)
-            }
+
+            if (anySensorThresholdChanged(sensorThresholds))
+                updateSensorThresholds(sensorThresholds)
+
+            if (anySessionChanged(sessions))
+                onSessionsChanged(sessions)
         }
     }
 
@@ -55,12 +56,12 @@ abstract class SessionsObserver<Type>(
         mSessionsLiveData = null
     }
 
-    private fun onSessionsChanged(coroutineScope: CoroutineScope, sessions: List<Session>) {
+    private suspend fun onSessionsChanged(sessions: List<Session>) {
         if (sessions.isNotEmpty()) {
             val modifiedSessions = searchForModifiedSessions(sessions)
-            showSessionsView(coroutineScope, modifiedSessions)
+            showSessionsView(modifiedSessions)
         } else {
-            showEmptyView(coroutineScope)
+            showEmptyView()
         }
 
         updateSessionsCache(sessions)
@@ -108,17 +109,16 @@ abstract class SessionsObserver<Type>(
         return mSessionsViewModel.findOrCreateSensorThresholds(streams).first()
     }
 
-    private fun showSessionsView(
-        coroutineScope: CoroutineScope,
+    private suspend fun showSessionsView(
         modifiedSessions: Map<ModificationType, List<Session>>
     ) {
-        backToUIThread(coroutineScope) {
+        withContext(Dispatchers.Main) {
             mViewMvc?.showSessionsView(modifiedSessions, mSensorThresholds)
         }
     }
 
-    private fun showEmptyView(coroutineScope: CoroutineScope) {
-        backToUIThread(coroutineScope) {
+    private suspend fun showEmptyView() {
+        withContext(Dispatchers.Main) {
             mViewMvc?.showEmptyView()
         }
     }
