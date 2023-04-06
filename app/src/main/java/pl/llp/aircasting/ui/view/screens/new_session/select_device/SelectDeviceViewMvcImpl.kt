@@ -15,14 +15,16 @@ import kotlinx.android.synthetic.main.fragment_select_device.view.*
 import kotlinx.android.synthetic.main.select_device_group_header.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.*
 import kotlinx.android.synthetic.main.select_device_item.view.label
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
 import java.util.*
 
-class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
+class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listener>,
     SelectDeviceViewMvc {
 
     private var mRefreshListener: SelectDeviceViewMvc.OnRefreshListener? = null
@@ -38,7 +40,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         inflater: LayoutInflater,
         parent: ViewGroup?,
         headerDescription: String?
-    ): super() {
+    ) : super() {
         this.rootView = inflater.inflate(R.layout.fragment_select_device, parent, false)
 
         this.rootView?.select_device_header?.text = headerDescription
@@ -65,7 +67,8 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         mRefreshListener = refreshListener
     }
 
-    inner class RecyclerViewDeviceItem(val deviceItem: DeviceItem, var selected: Boolean = false) : Item<GroupieViewHolder>() {
+    inner class RecyclerViewDeviceItem(val deviceItem: DeviceItem, var selected: Boolean = false) :
+        Item<GroupieViewHolder>() {
         override fun getLayout() = R.layout.select_device_item
 
         override fun bind(viewHolder: GroupieViewHolder, position: Int) {
@@ -78,7 +81,7 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
     }
 
-    inner class RecyclerViewGroupHeader(private val label: String?): Item<GroupieViewHolder>() {
+    inner class RecyclerViewGroupHeader(private val label: String?) : Item<GroupieViewHolder>() {
         private var mLoader: ImageView? = null
 
         override fun getLayout() = R.layout.select_device_group_header
@@ -96,18 +99,15 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
             viewHolder.itemView.label.text = label
         }
 
-        @OptIn(DelicateCoroutinesApi::class)
         fun showLoader() {
             mLoader?.startAnimation()
             hideRefreshButton()
 
             // There is no way to actually know when the device list is ready
             // So we are hiding loader after 3s...
-            GlobalScope.launch(Dispatchers.IO) {
+            MainScope().launch {
                 delay(3000)
-                GlobalScope.launch(Dispatchers.Main) {
-                    hideLoader()
-                }
+                hideLoader()
             }
         }
 
@@ -117,7 +117,10 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         }
     }
 
-    inner class RecyclerViewSection(private val label: String?, private val deviceItems: List<DeviceItem>): Section() {
+    inner class RecyclerViewSection(
+        private val label: String?,
+        private val deviceItems: List<DeviceItem>
+    ) : Section() {
         private var mDeviceItemsAddresses: MutableSet<String>
         private val mHeader: RecyclerViewGroupHeader
 
@@ -147,9 +150,11 @@ class SelectDeviceViewMvcImpl: BaseObservableViewMvc<SelectDeviceViewMvc.Listene
         val airbeams = deviceItems.filter { it.isAirBeam() }
         val others = deviceItems.filter { !it.isAirBeam() }
 
-        mAirBeamDevicesSection = RecyclerViewSection(getLabel(R.string.select_device_airbeams_label), airbeams)
+        mAirBeamDevicesSection =
+            RecyclerViewSection(getLabel(R.string.select_device_airbeams_label), airbeams)
         mAdapter.add(mAirBeamDevicesSection!!)
-        mOtherDevicesSection = RecyclerViewSection(getLabel(R.string.select_device_others_label), others)
+        mOtherDevicesSection =
+            RecyclerViewSection(getLabel(R.string.select_device_others_label), others)
         mAdapter.add(mOtherDevicesSection!!)
     }
 

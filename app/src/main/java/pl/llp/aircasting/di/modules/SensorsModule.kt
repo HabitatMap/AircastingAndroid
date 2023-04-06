@@ -3,7 +3,6 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -33,8 +32,9 @@ open class SensorsModule {
     @Provides
     @UserSessionScope
     fun providesSDCardDownloadService(
-        application: AircastingApplication
-    ): SDCardFileService = SDCardFileService(application)
+        application: AircastingApplication,
+        @IoCoroutineScope coroutineScope: CoroutineScope,
+    ): SDCardFileService = SDCardFileService(application, coroutineScope)
 
     @Provides
     @UserSessionScope
@@ -120,7 +120,8 @@ open class SensorsModule {
         sdCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
         sessionsSyncService: SessionsSyncService?,
         sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
-        errorHandler: ErrorHandler
+        errorHandler: ErrorHandler,
+        @IoCoroutineScope coroutineScope: CoroutineScope,
     ): SDCardSyncService = SDCardSyncService(
         sdCardFileService,
         sdCardCSVFileChecker,
@@ -128,7 +129,8 @@ open class SensorsModule {
         sdCardFixedSessionsProcessor,
         sessionsSyncService,
         sdCardUploadFixedMeasurementsService,
-        errorHandler
+        errorHandler,
+        coroutineScope
     )
 
     @Provides
@@ -140,9 +142,10 @@ open class SensorsModule {
     open fun providesAirBeamReconnector(
         application: AircastingApplication,
         sessionsRepository: SessionsRepository,
-        airBeamDiscoveryService: AirBeamDiscoveryService
+        airBeamDiscoveryService: AirBeamDiscoveryService,
+        @IoCoroutineScope coroutineScope: CoroutineScope,
     ): AirBeamReconnector =
-        AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService)
+        AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService, coroutineScope)
 
     @Provides
     @UserSessionScope
@@ -195,7 +198,7 @@ open class SensorsModule {
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepositoryImpl,
         averagingService: AveragingService,
-        @IoCoroutineScope coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+        @IoCoroutineScope coroutineScope: CoroutineScope,
     ): RecordingHandler = RecordingHandlerImpl(
         settings,
         fixedSessionUploadService,

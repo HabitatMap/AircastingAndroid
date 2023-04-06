@@ -2,7 +2,6 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -11,6 +10,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
@@ -37,6 +37,10 @@ abstract class AirBeamService : SensorService(),
 
     @Inject
     lateinit var mSessionRepository: SessionsRepository
+
+    @Inject
+    @IoCoroutineScope
+    lateinit var coroutineScope: CoroutineScope
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         Log.d(TAG, "Creating AirBeamConnector")
@@ -82,7 +86,7 @@ abstract class AirBeamService : SensorService(),
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
 
         event.sessionUUID?.let { sessionUUID ->
-            CoroutineScope(Dispatchers.IO).launch {
+            coroutineScope.launch {
                 val sessionDBObject = mSessionRepository.getSessionByUUID(sessionUUID)
                 sessionDBObject?.let { sessionDBObject ->
                     val session = Session(sessionDBObject)

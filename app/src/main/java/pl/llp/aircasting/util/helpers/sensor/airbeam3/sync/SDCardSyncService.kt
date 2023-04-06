@@ -2,7 +2,6 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -22,7 +21,7 @@ class SDCardSyncService(
     private val mSessionsSyncService: SessionsSyncService?,
     private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler,
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val coroutineScope: CoroutineScope
 ) {
     private val TAG = "SDCardSyncService"
 

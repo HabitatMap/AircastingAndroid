@@ -80,20 +80,20 @@ class EditSessionBottomSheet(
         }
     }
 
-    fun reload(session: Session) {
+    private fun reload(session: Session) {
         mSession = session
         sessionNameInput?.setText(mSession?.name)
         tagsInput?.setText(mSession?.tags?.joinToString(TAGS_SEPARATOR))
     }
 
-    fun showLoader() {
+    private fun showLoader() {
         mLoader?.startAnimation()
         mLoader?.visibility = View.VISIBLE
         sessionNameInput?.isEnabled = false
         tagsInput?.isEnabled = false
     }
 
-    fun hideLoader() {
+    private fun hideLoader() {
         mLoader?.stopAnimation()
         mLoader?.visibility = View.GONE
         sessionNameInput?.isEnabled = true

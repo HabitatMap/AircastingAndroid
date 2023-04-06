@@ -4,7 +4,7 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
@@ -16,8 +16,8 @@ import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
+import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.OperationStatus
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SyncError
@@ -35,7 +35,7 @@ class SessionsSyncService @Inject constructor(
     private val sessionRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val noteRepository: NoteRepository,
-    private val settings: Settings,
+    @IoDispatcher val ioDispatcher: CoroutineDispatcher
 ) {
     sealed class Result {
         object Success : Result()
@@ -45,13 +45,7 @@ class SessionsSyncService @Inject constructor(
     val syncStatus get(): StateFlow<OperationStatus> = _syncStatus
     private val gson: Gson = Gson()
     private val _syncStatus: MutableStateFlow<OperationStatus> = MutableStateFlow(OperationStatus.Idle)
-    suspend fun sync(): kotlin.Result<Result> = withContext(Dispatchers.IO) {
-        Log.w(
-            this@SessionsSyncService.TAG, "Performing sync\n" +
-                    "SyncService: ${this@SessionsSyncService.hashCode()}\n" +
-                    "ApiService: ${apiService.hashCode()}\n" +
-                    "AuthToken: ${settings.getAuthToken()}"
-        )
+    suspend fun sync(): kotlin.Result<Result> = withContext(ioDispatcher) {
         val sessions = sessionRepository.allSessionsExceptRecording()
         val syncParams = sessions.map { session -> SyncSessionParams(session) }
         val jsonData = gson.toJson(syncParams)
