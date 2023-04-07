@@ -6,12 +6,14 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.Settings
 
 class SDCardMobileSessionsProcessor(
     mSDCardCSVIterator: SDCardSessionFileHandler,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    mMeasurementsRepository: MeasurementsRepositoryImpl
+    mMeasurementsRepository: MeasurementsRepositoryImpl,
+    private val settings: Settings
 ) : SDCardSessionsProcessor(
     mSDCardCSVIterator,
     mSessionsRepository,
@@ -41,7 +43,6 @@ class SDCardMobileSessionsProcessor(
             }
 
             finishSession(sessionId, session)
-            mProcessedSessionsIds.add(sessionId)
         }
     }
 
@@ -49,6 +50,7 @@ class SDCardMobileSessionsProcessor(
         val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
         session.stopRecording(lastMeasurementTime)
         mSessionsRepository.update(session)
+        settings.decreaseActiveMobileSessionsCount()
     }
 
     override suspend fun filterMeasurements(

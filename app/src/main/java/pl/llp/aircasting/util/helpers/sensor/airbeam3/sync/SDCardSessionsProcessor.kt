@@ -13,7 +13,6 @@ abstract class SDCardSessionsProcessor(
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,
 ) {
-    val mProcessedSessionsIds: MutableList<Long> = mutableListOf()
 
     suspend fun start(
         file: File,

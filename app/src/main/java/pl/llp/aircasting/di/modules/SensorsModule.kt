@@ -87,12 +87,14 @@ open class SensorsModule {
         csvIterator: SDCardSessionFileHandlerMobile,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
-        measurementsRepository: MeasurementsRepositoryImpl
+        measurementsRepository: MeasurementsRepositoryImpl,
+        settings: Settings
     ): SDCardMobileSessionsProcessor = SDCardMobileSessionsProcessor(
         csvIterator,
         sessionsRepository,
         measurementStreamsRepository,
-        measurementsRepository
+        measurementsRepository,
+        settings
     )
 
     @Provides

@@ -29,12 +29,8 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val KEEP_SCREEN_ON_KEY = "keep_screen_on"
         private const val USE_SATELLITE_VIEW = "use_satellite_view"
 
-        private const val DELETE_SESSION_IN_PROGRESS_KEY = "delete_session_in_progress"
-        private const val SESSIONS_TO_REMOVE_KEY = "sessions_to_remove"
         private const val EXPANDED_SESSION_CARDS = "expanded_session_cards"
 
-        private const val DEFAULT_DELETE_SESSION_IN_PROGRESS = false
-        private const val DEFAULT_SESSIONS_TO_REMOVE = false
         private const val DEFAULT_CALIBRATION_VALUE = 100
         private const val DEFAULT_USE_24_HOUR_FORMAT = true
         private const val DEFAULT_USE_CELSIUS_SCALE = false
