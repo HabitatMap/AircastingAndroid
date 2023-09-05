@@ -1,6 +1,5 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
-import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,10 +19,9 @@ import java.io.FileWriter
 import java.io.IOException
 
 class SDCardFileService(
-    mContext: Context,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val mCSVFileFactory: SDCardCSVFileFactory,
 ) {
-    private val mCSVFileFactory = SDCardCSVFileFactory(mContext)
 
     private var fileWriter: FileWriter? = null
     private var counter = 0

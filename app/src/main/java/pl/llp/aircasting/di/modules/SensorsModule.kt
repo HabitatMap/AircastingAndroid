@@ -18,7 +18,16 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.*
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileChecker
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardClearService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardFileService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardFixedSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardMobileSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerFixed
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerMobile
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsService
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
@@ -32,9 +41,9 @@ open class SensorsModule {
     @Provides
     @UserSessionScope
     fun providesSDCardDownloadService(
-        application: AircastingApplication,
         @IoCoroutineScope coroutineScope: CoroutineScope,
-    ): SDCardFileService = SDCardFileService(application, coroutineScope)
+        mCSVFileFactory: SDCardCSVFileFactory,
+    ): SDCardFileService = SDCardFileService(coroutineScope, mCSVFileFactory)
 
     @Provides
     @UserSessionScope
@@ -100,13 +109,11 @@ open class SensorsModule {
     @Provides
     @UserSessionScope
     fun providesSDCardFixedSessionsProcessor(
-        csvFileFactory: SDCardCSVFileFactory,
         csvIterator: SDCardSessionFileHandlerFixed,
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepositoryImpl
     ): SDCardFixedSessionsProcessor = SDCardFixedSessionsProcessor(
-        csvFileFactory,
         csvIterator,
         sessionsRepository,
         measurementStreamsRepository,
