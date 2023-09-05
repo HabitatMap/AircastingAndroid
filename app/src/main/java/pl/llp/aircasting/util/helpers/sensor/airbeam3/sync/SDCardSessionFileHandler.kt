@@ -7,6 +7,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.services.AveragingService
@@ -27,7 +28,7 @@ class SDCardSessionFileHandlerFixed(
         val lines = file.readLines().filter {
             !SDCardCSVFileChecker.lineIsCorrupted(it)
         }
-        val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
+        val sessionUUID = CSVLineParameterHandler.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID)
         lines.forEach { line ->
             csvSession.addMeasurements(line)
@@ -58,12 +59,12 @@ class SDCardSessionFileHandlerMobile(
         val lines = file.readLines().filter {
             !SDCardCSVFileChecker.lineIsCorrupted(it)
         }
-        val sessionUUID = CSVSession.uuidFrom(lines.firstOrNull())
+        val sessionUUID = CSVLineParameterHandler.uuidFrom(lines.firstOrNull())
 
         dbSession = sessionRepository.getSessionByUUID(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         startTime = dbSession?.startTime?.time
-            ?: CSVSession.timestampFrom(lines.firstOrNull())?.time
+            ?: CSVLineParameterHandler.timestampFrom(lines.firstOrNull())?.time
         finalAveragingWindow = getFinalAveragingWindow(lines)
         val averagingFrequency = finalAveragingWindow.value
         Log.d(TAG, "${dbSession?.name} final averaging frequency: $averagingFrequency")
@@ -89,7 +90,7 @@ class SDCardSessionFileHandlerMobile(
         lines: List<String>
     ): AveragingWindow {
         val firstMeasurementTime = startTime
-        val lastMeasurementTime = CSVSession.timestampFrom(lines.lastOrNull())?.time
+        val lastMeasurementTime = CSVLineParameterHandler.timestampFrom(lines.lastOrNull())?.time
         Log.d(TAG, "First measurement time: $startTime")
         Log.d(TAG, "Last measurement time: $lastMeasurementTime")
         return if (firstMeasurementTime == null || lastMeasurementTime == null)
@@ -101,7 +102,7 @@ class SDCardSessionFileHandlerMobile(
     private suspend fun averageMeasurementAndAddToSession(chunk: List<String>) {
         val start = startTime ?: return
         val firstMeasurementTime = Date(start)
-        CSVSession.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
+        CSVLineParameterHandler.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
             val streamMeasurements: List<CSVMeasurement> = chunk.mapNotNull { line ->
                 getCsvMeasurement(line, currentStreamHeader)
             }
@@ -120,7 +121,7 @@ class SDCardSessionFileHandlerMobile(
         line: String,
         currentStreamLineParameter: CSVSession.AB3LineParameter
     ): CSVMeasurement? {
-        val params = CSVSession.lineParameters(line)
+        val params = CSVLineParameterHandler.lineParameters(line)
         val value = getValueFor(params, currentStreamLineParameter)
             ?: return null
         val latitude = getValueFor(params, CSVSession.AB3LineParameter.Latitude)

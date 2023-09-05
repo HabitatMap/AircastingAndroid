@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import android.annotation.SuppressLint
 import android.util.Log
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
@@ -34,7 +35,7 @@ class SDCardUploadFixedMeasurementsService(
 
         csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
             val streamLineParameter = CSVSession.AB3LineParameter.fromInt(streamHeaderValue) ?: return@forEach
-            val csvMeasurementStream = CSVSession.fromHeader(
+            val csvMeasurementStream = CSVLineParameterHandler.fromHeader(
                 streamLineParameter
             )
 

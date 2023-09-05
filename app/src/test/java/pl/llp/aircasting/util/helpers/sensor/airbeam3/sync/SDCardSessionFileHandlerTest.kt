@@ -25,8 +25,8 @@ internal class SDCardSessionFileHandlerTest {
     private val file = StubData.getFile("SDCardMeasurementsFromSession.csv")
     private val fileLines = file.readLines()
     private val fileLinesCount = fileLines.count()
-    private val fileFirstMeasurementTime = CSVSession.timestampFrom(fileLines.first())
-    private val fileLastMeasurementTime = CSVSession.timestampFrom(fileLines.last())
+    private val fileFirstMeasurementTime = CSVLineParameterHandler.timestampFrom(fileLines.first())
+    private val fileLastMeasurementTime = CSVLineParameterHandler.timestampFrom(fileLines.last())
     private val helper = MeasurementsAveragingHelperDefault()
 
     private val streamsCount = 5
