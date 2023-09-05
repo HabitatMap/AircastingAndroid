@@ -20,7 +20,7 @@ class CSVSession(
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return lineParameters(line)[Header.UUID.value]
+            return lineParameters(line)[Header.UUID.position]
         }
 
         fun timestampFrom(line: String?): Date? {
@@ -28,7 +28,7 @@ class CSVSession(
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[Header.DATE.value]} ${lineParameters[Header.TIME.value]}"
+                "${lineParameters[Header.DATE.position]} ${lineParameters[Header.TIME.position]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
@@ -110,7 +110,7 @@ class CSVSession(
         }
     }
 
-    enum class Header(val value: Int) {
+    enum class Header(val position: Int) {
         INDEX(0),
         UUID(1),
         DATE(2),
@@ -126,7 +126,7 @@ class CSVSession(
         PM10(12);
 
         companion object {
-            fun fromInt(value: Int) = values().first { it.value == value }
+            fun fromInt(value: Int) = values().first { it.position == value }
         }
     }
 
@@ -153,7 +153,7 @@ class CSVSession(
         val latitude = getValueFor(lineParameters, Header.LATITUDE)
         val longitude = getValueFor(lineParameters, Header.LONGITUDE)
         val dateString =
-            "${lineParameters[Header.DATE.value]} ${lineParameters[Header.TIME.value]}"
+            "${lineParameters[Header.DATE.position]} ${lineParameters[Header.TIME.position]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -161,13 +161,13 @@ class CSVSession(
 
         val supportedStreamHeaders = SUPPORTED_STREAMS.keys
         supportedStreamHeaders.forEach { streamHeader ->
-            if (!streams.containsKey(streamHeader.value)) {
-                streams[streamHeader.value] = ArrayList()
+            if (!streams.containsKey(streamHeader.position)) {
+                streams[streamHeader.position] = ArrayList()
             }
 
             val measurement =
                 buildMeasurement(latitude, longitude, time, lineParameters, streamHeader)
-            measurement?.let { streams[streamHeader.value]?.add(measurement) }
+            measurement?.let { streams[streamHeader.position]?.add(measurement) }
         }
     }
 
@@ -175,10 +175,10 @@ class CSVSession(
         measurement: CSVMeasurement,
         streamHeader: Header
     ) {
-        if (!streams.containsKey(streamHeader.value)) {
-            streams[streamHeader.value] = ArrayList()
+        if (!streams.containsKey(streamHeader.position)) {
+            streams[streamHeader.position] = ArrayList()
         }
-        streams[streamHeader.value]?.add(measurement)
+        streams[streamHeader.position]?.add(measurement)
     }
 
     private fun buildMeasurement(
@@ -232,7 +232,7 @@ class CSVSession(
 
     private fun getValueFor(line: List<String>, header: Header): Double? {
         return try {
-            line[header.value].toDouble()
+            line[header.position].toDouble()
         } catch (e: NumberFormatException) {
             null
         }

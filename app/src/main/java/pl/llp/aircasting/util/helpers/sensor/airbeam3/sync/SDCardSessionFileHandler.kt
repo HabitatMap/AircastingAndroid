@@ -124,7 +124,7 @@ class SDCardSessionFileHandlerMobile(
         val latitude = getValueFor(params, CSVSession.Header.LATITUDE)
         val longitude = getValueFor(params, CSVSession.Header.LONGITUDE)
         val dateString =
-            "${params[CSVSession.Header.DATE.value]} ${params[CSVSession.Header.TIME.value]}"
+            "${params[CSVSession.Header.DATE.position]} ${params[CSVSession.Header.TIME.position]}"
         val time = DateConverter.fromString(
             dateString,
             dateFormat = CSVSession.DATE_FORMAT
@@ -136,7 +136,7 @@ class SDCardSessionFileHandlerMobile(
 
     private fun getValueFor(line: List<String>, header: CSVSession.Header): Double? {
         return try {
-            line[header.value].toDouble()
+            line[header.position].toDouble()
         } catch (e: NumberFormatException) {
             null
         }
