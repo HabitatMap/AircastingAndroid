@@ -8,8 +8,6 @@ class SDCardCSVFileFactory(private val mContext: Context) {
         private const val DIR_NAME = "sync"
         private const val MOBILE_DIR_NAME = "mobile"
         private const val FIXED_DIR_NAME = "fixed"
-        const val AB_DELIMITER = ","
-        fun String.airBeamParams() = split(AB_DELIMITER)
     }
 
     enum class Header(val value: Int) {

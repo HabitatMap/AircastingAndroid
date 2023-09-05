@@ -3,8 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
-import java.util.*
+import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
 
 class CSVSession(
@@ -15,6 +14,8 @@ class CSVSession(
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
+
+        private const val AB_DELIMITER = ","
 
         fun uuidFrom(line: String?): String? {
             line ?: return null
@@ -34,7 +35,7 @@ class CSVSession(
             )
         }
 
-        private fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
+        fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
 
     }
 

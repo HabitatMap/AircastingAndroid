@@ -13,7 +13,6 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.AB_DELIMITER
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -44,7 +43,7 @@ class SDCardFileService(
 
         newLinesFlow.onEach { lines ->
             lines.forEach { line ->
-                val lineParams = line.split(AB_DELIMITER)
+                val lineParams = CSVSession.lineParameters(line)
                 val uuid = lineParams[1]
 
                 if (sessionHasChanged(uuid)) {

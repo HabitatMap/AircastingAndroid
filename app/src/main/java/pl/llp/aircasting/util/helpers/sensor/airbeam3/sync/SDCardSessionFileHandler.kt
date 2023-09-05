@@ -7,7 +7,6 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory.Companion.airBeamParams
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
@@ -119,7 +118,7 @@ class SDCardSessionFileHandlerMobile(
         line: String,
         currentStreamHeader: SDCardCSVFileFactory.Header
     ): CSVMeasurement? {
-        val params = line.airBeamParams()
+        val params = CSVSession.lineParameters(line)
         val value = getValueFor(params, currentStreamHeader)
             ?: return null
         val latitude = getValueFor(params, SDCardCSVFileFactory.Header.LATITUDE)
