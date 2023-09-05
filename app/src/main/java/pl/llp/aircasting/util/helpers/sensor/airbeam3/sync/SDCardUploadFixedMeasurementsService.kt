@@ -31,7 +31,7 @@ class SDCardUploadFixedMeasurementsService(
 
         csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
             val streamHeader = SDCardCSVFileFactory.Header.fromInt(streamHeaderValue)
-            val csvMeasurementStream = CSVMeasurementStream.fromHeader(
+            val csvMeasurementStream = CSVSession.fromHeader(
                 streamHeader
             )
 

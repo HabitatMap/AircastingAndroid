@@ -99,7 +99,7 @@ class SDCardSessionFileHandlerMobile(
     private suspend fun averageMeasurementAndAddToSession(chunk: List<String>) {
         val start = startTime ?: return
         val firstMeasurementTime = Date(start)
-        CSVMeasurementStream.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
+        CSVSession.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
             val streamMeasurements: List<CSVMeasurement> = chunk.mapNotNull { line ->
                 getCsvMeasurement(line, currentStreamHeader)
             }

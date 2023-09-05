@@ -37,6 +37,77 @@ class CSVSession(
 
         fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
 
+        private const val PM_MEASUREMENT_TYPE = "Particulate Matter"
+        private const val PM_MEASUREMENT_SHORT_TYPE = "PM"
+        private const val PM_UNIT_NAME = "microgram per cubic meter"
+        private const val PM_UNIT_SYMBOL = "µg/m³"
+
+        val SUPPORTED_STREAMS = hashMapOf(
+            SDCardCSVFileFactory.Header.F to CSVMeasurementStream(
+                "${CSVMeasurementStream.DEVICE_NAME}-F",
+                "Temperature",
+                "F",
+                "fahrenheit",
+                "F",
+                15,
+                45,
+                75,
+                105,
+                135
+            ),
+            SDCardCSVFileFactory.Header.RH to CSVMeasurementStream(
+                "${CSVMeasurementStream.DEVICE_NAME}-RH",
+                "Humidity",
+                "RH",
+                "percent",
+                "%",
+                0,
+                25,
+                50,
+                75,
+                100
+            ),
+            SDCardCSVFileFactory.Header.PM1 to CSVMeasurementStream(
+                "${CSVMeasurementStream.DEVICE_NAME}-PM1",
+                PM_MEASUREMENT_TYPE,
+                PM_MEASUREMENT_SHORT_TYPE,
+                PM_UNIT_NAME,
+                PM_UNIT_SYMBOL,
+                0,
+                12,
+                35,
+                55,
+                150
+            ),
+            SDCardCSVFileFactory.Header.PM2_5 to CSVMeasurementStream(
+                "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
+                PM_MEASUREMENT_TYPE,
+                PM_MEASUREMENT_SHORT_TYPE,
+                PM_UNIT_NAME,
+                PM_UNIT_SYMBOL,
+                0,
+                12,
+                35,
+                55,
+                150
+            ),
+            SDCardCSVFileFactory.Header.PM10 to CSVMeasurementStream(
+                "${CSVMeasurementStream.DEVICE_NAME}-PM10",
+                PM_MEASUREMENT_TYPE,
+                PM_MEASUREMENT_SHORT_TYPE,
+                PM_UNIT_NAME,
+                PM_UNIT_SYMBOL,
+                0,
+                20,
+                50,
+                100,
+                200
+            )
+        )
+
+        fun fromHeader(streamHeader: SDCardCSVFileFactory.Header): CSVMeasurementStream? {
+            return SUPPORTED_STREAMS[streamHeader]
+        }
     }
 
     fun startTime(): Date? {
@@ -68,7 +139,7 @@ class CSVSession(
             dateFormat = DATE_FORMAT
         )
 
-        val supportedStreamHeaders = CSVMeasurementStream.SUPPORTED_STREAMS.keys
+        val supportedStreamHeaders = SUPPORTED_STREAMS.keys
         supportedStreamHeaders.forEach { streamHeader ->
             if (!streams.containsKey(streamHeader.value)) {
                 streams[streamHeader.value] = ArrayList()
