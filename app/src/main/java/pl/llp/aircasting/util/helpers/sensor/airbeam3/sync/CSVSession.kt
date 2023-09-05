@@ -20,7 +20,7 @@ class CSVSession(
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return lineParameters(line)[SDCardCSVFileFactory.Header.UUID.value]
+            return lineParameters(line)[Header.UUID.value]
         }
 
         fun timestampFrom(line: String?): Date? {
@@ -28,7 +28,7 @@ class CSVSession(
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[SDCardCSVFileFactory.Header.DATE.value]} ${lineParameters[SDCardCSVFileFactory.Header.TIME.value]}"
+                "${lineParameters[Header.DATE.value]} ${lineParameters[Header.TIME.value]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
@@ -43,7 +43,7 @@ class CSVSession(
         private const val PM_UNIT_SYMBOL = "µg/m³"
 
         val SUPPORTED_STREAMS = hashMapOf(
-            SDCardCSVFileFactory.Header.F to CSVMeasurementStream(
+            Header.F to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-F",
                 "Temperature",
                 "F",
@@ -55,7 +55,7 @@ class CSVSession(
                 105,
                 135
             ),
-            SDCardCSVFileFactory.Header.RH to CSVMeasurementStream(
+            Header.RH to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-RH",
                 "Humidity",
                 "RH",
@@ -67,7 +67,7 @@ class CSVSession(
                 75,
                 100
             ),
-            SDCardCSVFileFactory.Header.PM1 to CSVMeasurementStream(
+            Header.PM1 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM1",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -79,7 +79,7 @@ class CSVSession(
                 55,
                 150
             ),
-            SDCardCSVFileFactory.Header.PM2_5 to CSVMeasurementStream(
+            Header.PM2_5 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -91,7 +91,7 @@ class CSVSession(
                 55,
                 150
             ),
-            SDCardCSVFileFactory.Header.PM10 to CSVMeasurementStream(
+            Header.PM10 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM10",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -105,8 +105,28 @@ class CSVSession(
             )
         )
 
-        fun fromHeader(streamHeader: SDCardCSVFileFactory.Header): CSVMeasurementStream? {
+        fun fromHeader(streamHeader: Header): CSVMeasurementStream? {
             return SUPPORTED_STREAMS[streamHeader]
+        }
+    }
+
+    enum class Header(val value: Int) {
+        INDEX(0),
+        UUID(1),
+        DATE(2),
+        TIME(3),
+        LATITUDE(4),
+        LONGITUDE(5),
+        F(6),
+        C(7),
+        K(8),
+        RH(9),
+        PM1(10),
+        PM2_5(11),
+        PM10(12);
+
+        companion object {
+            fun fromInt(value: Int) = values().first { it.value == value }
         }
     }
 
@@ -130,10 +150,10 @@ class CSVSession(
 
     fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
-        val latitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LATITUDE)
-        val longitude = getValueFor(lineParameters, SDCardCSVFileFactory.Header.LONGITUDE)
+        val latitude = getValueFor(lineParameters, Header.LATITUDE)
+        val longitude = getValueFor(lineParameters, Header.LONGITUDE)
         val dateString =
-            "${lineParameters[SDCardCSVFileFactory.Header.DATE.value]} ${lineParameters[SDCardCSVFileFactory.Header.TIME.value]}"
+            "${lineParameters[Header.DATE.value]} ${lineParameters[Header.TIME.value]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -153,7 +173,7 @@ class CSVSession(
 
     fun addMeasurement(
         measurement: CSVMeasurement,
-        streamHeader: SDCardCSVFileFactory.Header
+        streamHeader: Header
     ) {
         if (!streams.containsKey(streamHeader.value)) {
             streams[streamHeader.value] = ArrayList()
@@ -166,7 +186,7 @@ class CSVSession(
         longitude: Double?,
         time: Date?,
         line: List<String>,
-        streamHeader: SDCardCSVFileFactory.Header
+        streamHeader: Header
     ): CSVMeasurement? {
         time ?: return null
 
@@ -210,7 +230,7 @@ class CSVSession(
         return session
     }
 
-    private fun getValueFor(line: List<String>, header: SDCardCSVFileFactory.Header): Double? {
+    private fun getValueFor(line: List<String>, header: Header): Double? {
         return try {
             line[header.value].toDouble()
         } catch (e: NumberFormatException) {

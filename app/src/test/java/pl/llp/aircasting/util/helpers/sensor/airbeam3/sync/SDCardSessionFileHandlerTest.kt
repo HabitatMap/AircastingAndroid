@@ -124,13 +124,13 @@ internal class SDCardSessionFileHandlerTest {
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[SDCardCSVFileFactory.Header.F.value]!![0]
+                csvSession!!.streams[CSVSession.Header.F.value]!![0]
             val secondResultFahrenheitAverage =
-                csvSession.streams[SDCardCSVFileFactory.Header.F.value]!![1]
+                csvSession.streams[CSVSession.Header.F.value]!![1]
             val firstResultRHAverage =
-                csvSession.streams[SDCardCSVFileFactory.Header.RH.value]!![0]
+                csvSession.streams[CSVSession.Header.RH.value]!![0]
             val secondResultRHAverage =
-                csvSession.streams[SDCardCSVFileFactory.Header.RH.value]!![1]
+                csvSession.streams[CSVSession.Header.RH.value]!![1]
 
             assertEquals(firstExpectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(secondExpectedAveragedFahrenheit, secondResultFahrenheitAverage.value)
@@ -175,9 +175,9 @@ internal class SDCardSessionFileHandlerTest {
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[SDCardCSVFileFactory.Header.F.value]!![0]
+                csvSession!!.streams[CSVSession.Header.F.value]!![0]
             val firstResultRHAverage =
-                csvSession.streams[SDCardCSVFileFactory.Header.RH.value]!![0]
+                csvSession.streams[CSVSession.Header.RH.value]!![0]
 
             assertEquals(expectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(expectedAveragedLatitude, firstResultFahrenheitAverage.latitude)
