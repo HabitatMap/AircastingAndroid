@@ -28,7 +28,7 @@ class CSVSession(
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[LineParameter.DATE.position]} ${lineParameters[LineParameter.TIME.position]}"
+                "${lineParameters[LineParameter.Date.position]} ${lineParameters[LineParameter.Time.position]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
@@ -110,23 +110,38 @@ class CSVSession(
         }
     }
 
-    enum class LineParameter(val position: Int) {
-        INDEX(0),
-        UUID(1),
-        DATE(2),
-        TIME(3),
-        LATITUDE(4),
-        LONGITUDE(5),
-        F(6),
-        C(7),
-        K(8),
-        RH(9),
-        PM1(10),
-        PM2_5(11),
-        PM10(12);
+    sealed class LineParameter(val position: Int) {
+        object Index : LineParameter(0)
+        object UUID : LineParameter(1)
+        object Date : LineParameter(2)
+        object Time : LineParameter(3)
+        object Latitude : LineParameter(4)
+        object Longitude : LineParameter(5)
+        object F : LineParameter(6)
+        object C : LineParameter(7)
+        object K : LineParameter(8)
+        object RH : LineParameter(9)
+        object PM1 : LineParameter(10)
+        object PM2_5 : LineParameter(11)
+        object PM10 : LineParameter(12)
 
         companion object {
-            fun fromInt(value: Int) = values().first { it.position == value }
+            fun fromInt(position: Int) = when (position) {
+                Index.position -> Index
+                UUID.position -> UUID
+                Date.position -> Date
+                Time.position -> Time
+                Latitude.position -> Latitude
+                Longitude.position -> Longitude
+                F.position -> F
+                C.position -> C
+                K.position -> K
+                RH.position -> RH
+                PM1.position -> PM1
+                PM2_5.position -> PM2_5
+                PM10.position -> PM10
+                else -> null
+            }
         }
     }
 
@@ -150,10 +165,10 @@ class CSVSession(
 
     fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
-        val latitude = getValueFor(lineParameters, LineParameter.LATITUDE)
-        val longitude = getValueFor(lineParameters, LineParameter.LONGITUDE)
+        val latitude = getValueFor(lineParameters, LineParameter.Latitude)
+        val longitude = getValueFor(lineParameters, LineParameter.Longitude)
         val dateString =
-            "${lineParameters[LineParameter.DATE.position]} ${lineParameters[LineParameter.TIME.position]}"
+            "${lineParameters[LineParameter.Date.position]} ${lineParameters[LineParameter.Time.position]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT

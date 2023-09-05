@@ -121,10 +121,10 @@ class SDCardSessionFileHandlerMobile(
         val params = CSVSession.lineParameters(line)
         val value = getValueFor(params, currentStreamLineParameter)
             ?: return null
-        val latitude = getValueFor(params, CSVSession.LineParameter.LATITUDE)
-        val longitude = getValueFor(params, CSVSession.LineParameter.LONGITUDE)
+        val latitude = getValueFor(params, CSVSession.LineParameter.Latitude)
+        val longitude = getValueFor(params, CSVSession.LineParameter.Longitude)
         val dateString =
-            "${params[CSVSession.LineParameter.DATE.position]} ${params[CSVSession.LineParameter.TIME.position]}"
+            "${params[CSVSession.LineParameter.Date.position]} ${params[CSVSession.LineParameter.Time.position]}"
         val time = DateConverter.fromString(
             dateString,
             dateFormat = CSVSession.DATE_FORMAT

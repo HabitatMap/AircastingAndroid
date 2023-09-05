@@ -31,7 +31,7 @@ abstract class SDCardSessionsProcessor(
         streamHeaderValue: Int,
         csvMeasurements: List<CSVMeasurement>
     ) {
-        val streamLineParameter = CSVSession.LineParameter.fromInt(streamHeaderValue)
+        val streamLineParameter = CSVSession.LineParameter.fromInt(streamHeaderValue) ?: return
         val csvMeasurementStream = CSVSession.fromHeader(
             streamLineParameter
         ) ?: return
