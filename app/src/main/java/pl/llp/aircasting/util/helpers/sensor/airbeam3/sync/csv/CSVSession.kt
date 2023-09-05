@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
 
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem

@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.params
 
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 
 
 class UploadFixedMeasurementsParams(

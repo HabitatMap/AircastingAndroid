@@ -13,6 +13,8 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.extensions.addHours
 import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import pl.llp.aircasting.utilities.StubData

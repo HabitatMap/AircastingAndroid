@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
 
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.util.helpers.services.AverageableMeasurement

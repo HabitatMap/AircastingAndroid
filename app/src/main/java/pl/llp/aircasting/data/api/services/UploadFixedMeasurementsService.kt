@@ -6,10 +6,9 @@ import pl.llp.aircasting.data.api.params.UploadFixedMeasurementsParams
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @UserSessionScope
 class UploadFixedMeasurementsService @Inject constructor(
