@@ -6,7 +6,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 
 class SDCardFixedSessionsProcessor(
-    mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
+    mSDCardCSVIterator: SDCardSessionFileHandler,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl
