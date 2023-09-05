@@ -34,7 +34,7 @@ class SDCardUploadFixedMeasurementsService(
             mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
 
         csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
-            val streamLineParameter = CSVSession.AB3LineParameter.fromInt(streamHeaderValue) ?: return@forEach
+            val streamLineParameter = CSVLineParameterHandler.AB3LineParameter.fromInt(streamHeaderValue) ?: return@forEach
             val csvMeasurementStream = CSVLineParameterHandler.fromHeader(
                 streamLineParameter
             )

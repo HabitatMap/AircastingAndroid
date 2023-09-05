@@ -47,7 +47,6 @@ class SDCardSessionFileHandlerMobile(
     private val sessionRepository: SessionsRepository,
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
-    // right CSVSession
 ) : SDCardSessionFileHandler {
 
     private var dbSession: SessionDBObject? = null
@@ -119,15 +118,15 @@ class SDCardSessionFileHandlerMobile(
 
     private fun getCsvMeasurement(
         line: String,
-        currentStreamLineParameter: CSVSession.AB3LineParameter
+        currentStreamLineParameter: CSVLineParameterHandler.AB3LineParameter
     ): CSVMeasurement? {
         val params = CSVLineParameterHandler.lineParameters(line)
         val value = getValueFor(params, currentStreamLineParameter)
             ?: return null
-        val latitude = getValueFor(params, CSVSession.AB3LineParameter.Latitude)
-        val longitude = getValueFor(params, CSVSession.AB3LineParameter.Longitude)
+        val latitude = getValueFor(params, CSVLineParameterHandler.AB3LineParameter.Latitude)
+        val longitude = getValueFor(params, CSVLineParameterHandler.AB3LineParameter.Longitude)
         val dateString =
-            "${params[CSVSession.AB3LineParameter.Date.position]} ${params[CSVSession.AB3LineParameter.Time.position]}"
+            "${params[CSVLineParameterHandler.AB3LineParameter.Date.position]} ${params[CSVLineParameterHandler.AB3LineParameter.Time.position]}"
         val time = DateConverter.fromString(
             dateString,
             dateFormat = CSVSession.DATE_FORMAT
@@ -137,7 +136,7 @@ class SDCardSessionFileHandlerMobile(
     }
 
 
-    private fun getValueFor(line: List<String>, lineParameter: CSVSession.AB3LineParameter): Double? {
+    private fun getValueFor(line: List<String>, lineParameter: CSVLineParameterHandler.AB3LineParameter): Double? {
         return try {
             line[lineParameter.position].toDouble()
         } catch (e: NumberFormatException) {

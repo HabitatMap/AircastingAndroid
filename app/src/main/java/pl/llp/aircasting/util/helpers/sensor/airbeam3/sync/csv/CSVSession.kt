@@ -18,49 +18,6 @@ class CSVSession(
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
     }
 
-    sealed class ABMiniLineParameter(val position: Int) {
-        object UUID : AB3LineParameter(0)
-        object Date : AB3LineParameter(1)
-        object Time : AB3LineParameter(2)
-        object PM1 : AB3LineParameter(3)
-        object PM2_5 : AB3LineParameter(4)
-    }
-
-    sealed class AB3LineParameter(val position: Int) {
-        object Index : AB3LineParameter(0)
-        object UUID : AB3LineParameter(1)
-        object Date : AB3LineParameter(2)
-        object Time : AB3LineParameter(3)
-        object Latitude : AB3LineParameter(4)
-        object Longitude : AB3LineParameter(5)
-        object F : AB3LineParameter(6)
-        object C : AB3LineParameter(7)
-        object K : AB3LineParameter(8)
-        object RH : AB3LineParameter(9)
-        object PM1 : AB3LineParameter(10)
-        object PM2_5 : AB3LineParameter(11)
-        object PM10 : AB3LineParameter(12)
-
-        companion object {
-            fun fromInt(position: Int) = when (position) {
-                Index.position -> Index
-                UUID.position -> UUID
-                Date.position -> Date
-                Time.position -> Time
-                Latitude.position -> Latitude
-                Longitude.position -> Longitude
-                F.position -> F
-                C.position -> C
-                K.position -> K
-                RH.position -> RH
-                PM1.position -> PM1
-                PM2_5.position -> PM2_5
-                PM10.position -> PM10
-                else -> null
-            }
-        }
-    }
-
     fun startTime(): Date? {
         return firstMeasurement()?.time
     }
@@ -81,10 +38,10 @@ class CSVSession(
 
     fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
-        val latitude = getValueFor(lineParameters, AB3LineParameter.Latitude)
-        val longitude = getValueFor(lineParameters, AB3LineParameter.Longitude)
+        val latitude = getValueFor(lineParameters, CSVLineParameterHandler.AB3LineParameter.Latitude)
+        val longitude = getValueFor(lineParameters, CSVLineParameterHandler.AB3LineParameter.Longitude)
         val dateString =
-            "${lineParameters[AB3LineParameter.Date.position]} ${lineParameters[AB3LineParameter.Time.position]}"
+            "${lineParameters[CSVLineParameterHandler.AB3LineParameter.Date.position]} ${lineParameters[CSVLineParameterHandler.AB3LineParameter.Time.position]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -104,7 +61,7 @@ class CSVSession(
 
     fun addMeasurement(
         measurement: CSVMeasurement,
-        streamLineParameter: AB3LineParameter
+        streamLineParameter: CSVLineParameterHandler.AB3LineParameter
     ) {
         if (!streams.containsKey(streamLineParameter.position)) {
             streams[streamLineParameter.position] = ArrayList()
@@ -117,7 +74,7 @@ class CSVSession(
         longitude: Double?,
         time: Date?,
         line: List<String>,
-        streamLineParameter: AB3LineParameter
+        streamLineParameter: CSVLineParameterHandler.AB3LineParameter
     ): CSVMeasurement? {
         time ?: return null
 
@@ -161,7 +118,7 @@ class CSVSession(
         return session
     }
 
-    private fun getValueFor(line: List<String>, lineParameter: AB3LineParameter): Double? {
+    private fun getValueFor(line: List<String>, lineParameter: CSVLineParameterHandler.AB3LineParameter): Double? {
         return try {
             line[lineParameter.position].toDouble()
         } catch (e: NumberFormatException) {

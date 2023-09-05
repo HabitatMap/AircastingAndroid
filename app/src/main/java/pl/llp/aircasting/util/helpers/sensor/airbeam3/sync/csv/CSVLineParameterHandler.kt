@@ -10,7 +10,7 @@ class CSVLineParameterHandler {
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return lineParameters(line)[CSVSession.AB3LineParameter.UUID.position]
+            return lineParameters(line)[AB3LineParameter.UUID.position]
         }
 
         fun timestampFrom(line: String?): Date? {
@@ -18,7 +18,7 @@ class CSVLineParameterHandler {
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[CSVSession.AB3LineParameter.Date.position]} ${lineParameters[CSVSession.AB3LineParameter.Time.position]}"
+                "${lineParameters[AB3LineParameter.Date.position]} ${lineParameters[AB3LineParameter.Time.position]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = CSVSession.DATE_FORMAT
@@ -33,7 +33,7 @@ class CSVLineParameterHandler {
         private const val PM_UNIT_SYMBOL = "µg/m³"
 
         val SUPPORTED_STREAMS = hashMapOf(
-            CSVSession.AB3LineParameter.F to CSVMeasurementStream(
+            AB3LineParameter.F to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-F",
                 "Temperature",
                 "F",
@@ -45,7 +45,7 @@ class CSVLineParameterHandler {
                 105,
                 135
             ),
-            CSVSession.AB3LineParameter.RH to CSVMeasurementStream(
+            AB3LineParameter.RH to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-RH",
                 "Humidity",
                 "RH",
@@ -57,7 +57,7 @@ class CSVLineParameterHandler {
                 75,
                 100
             ),
-            CSVSession.AB3LineParameter.PM1 to CSVMeasurementStream(
+            AB3LineParameter.PM1 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM1",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -69,7 +69,7 @@ class CSVLineParameterHandler {
                 55,
                 150
             ),
-            CSVSession.AB3LineParameter.PM2_5 to CSVMeasurementStream(
+            AB3LineParameter.PM2_5 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -81,7 +81,7 @@ class CSVLineParameterHandler {
                 55,
                 150
             ),
-            CSVSession.AB3LineParameter.PM10 to CSVMeasurementStream(
+            AB3LineParameter.PM10 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM10",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -95,8 +95,50 @@ class CSVLineParameterHandler {
             )
         )
 
-        fun fromHeader(streamLineParameter: CSVSession.AB3LineParameter): CSVMeasurementStream? {
+        fun fromHeader(streamLineParameter: AB3LineParameter): CSVMeasurementStream? {
             return SUPPORTED_STREAMS[streamLineParameter]
+        }
+    }
+    sealed class ABMiniLineParameter(val position: Int) {
+        object UUID : AB3LineParameter(0)
+        object Date : AB3LineParameter(1)
+        object Time : AB3LineParameter(2)
+        object PM1 : AB3LineParameter(3)
+        object PM2_5 : AB3LineParameter(4)
+    }
+
+    sealed class AB3LineParameter(val position: Int) {
+        object Index : AB3LineParameter(0)
+        object UUID : AB3LineParameter(1)
+        object Date : AB3LineParameter(2)
+        object Time : AB3LineParameter(3)
+        object Latitude : AB3LineParameter(4)
+        object Longitude : AB3LineParameter(5)
+        object F : AB3LineParameter(6)
+        object C : AB3LineParameter(7)
+        object K : AB3LineParameter(8)
+        object RH : AB3LineParameter(9)
+        object PM1 : AB3LineParameter(10)
+        object PM2_5 : AB3LineParameter(11)
+        object PM10 : AB3LineParameter(12)
+
+        companion object {
+            fun fromInt(position: Int) = when (position) {
+                Index.position -> Index
+                UUID.position -> UUID
+                Date.position -> Date
+                Time.position -> Time
+                Latitude.position -> Latitude
+                Longitude.position -> Longitude
+                F.position -> F
+                C.position -> C
+                K.position -> K
+                RH.position -> RH
+                PM1.position -> PM1
+                PM2_5.position -> PM2_5
+                PM10.position -> PM10
+                else -> null
+            }
         }
     }
 }

@@ -126,13 +126,13 @@ internal class SDCardSessionFileHandlerTest {
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[CSVSession.AB3LineParameter.F.position]!![0]
+                csvSession!!.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![0]
             val secondResultFahrenheitAverage =
-                csvSession.streams[CSVSession.AB3LineParameter.F.position]!![1]
+                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![1]
             val firstResultRHAverage =
-                csvSession.streams[CSVSession.AB3LineParameter.RH.position]!![0]
+                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![0]
             val secondResultRHAverage =
-                csvSession.streams[CSVSession.AB3LineParameter.RH.position]!![1]
+                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![1]
 
             assertEquals(firstExpectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(secondExpectedAveragedFahrenheit, secondResultFahrenheitAverage.value)
@@ -177,9 +177,9 @@ internal class SDCardSessionFileHandlerTest {
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[CSVSession.AB3LineParameter.F.position]!![0]
+                csvSession!!.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![0]
             val firstResultRHAverage =
-                csvSession.streams[CSVSession.AB3LineParameter.RH.position]!![0]
+                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![0]
 
             assertEquals(expectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(expectedAveragedLatitude, firstResultFahrenheitAverage.latitude)
