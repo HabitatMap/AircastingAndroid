@@ -20,7 +20,7 @@ class CSVSession(
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return lineParameters(line)[Header.UUID.position]
+            return lineParameters(line)[LineParameter.UUID.position]
         }
 
         fun timestampFrom(line: String?): Date? {
@@ -28,7 +28,7 @@ class CSVSession(
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[Header.DATE.position]} ${lineParameters[Header.TIME.position]}"
+                "${lineParameters[LineParameter.DATE.position]} ${lineParameters[LineParameter.TIME.position]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
@@ -43,7 +43,7 @@ class CSVSession(
         private const val PM_UNIT_SYMBOL = "µg/m³"
 
         val SUPPORTED_STREAMS = hashMapOf(
-            Header.F to CSVMeasurementStream(
+            LineParameter.F to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-F",
                 "Temperature",
                 "F",
@@ -55,7 +55,7 @@ class CSVSession(
                 105,
                 135
             ),
-            Header.RH to CSVMeasurementStream(
+            LineParameter.RH to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-RH",
                 "Humidity",
                 "RH",
@@ -67,7 +67,7 @@ class CSVSession(
                 75,
                 100
             ),
-            Header.PM1 to CSVMeasurementStream(
+            LineParameter.PM1 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM1",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -79,7 +79,7 @@ class CSVSession(
                 55,
                 150
             ),
-            Header.PM2_5 to CSVMeasurementStream(
+            LineParameter.PM2_5 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -91,7 +91,7 @@ class CSVSession(
                 55,
                 150
             ),
-            Header.PM10 to CSVMeasurementStream(
+            LineParameter.PM10 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM10",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -105,12 +105,12 @@ class CSVSession(
             )
         )
 
-        fun fromHeader(streamHeader: Header): CSVMeasurementStream? {
-            return SUPPORTED_STREAMS[streamHeader]
+        fun fromHeader(streamLineParameter: LineParameter): CSVMeasurementStream? {
+            return SUPPORTED_STREAMS[streamLineParameter]
         }
     }
 
-    enum class Header(val position: Int) {
+    enum class LineParameter(val position: Int) {
         INDEX(0),
         UUID(1),
         DATE(2),
@@ -150,10 +150,10 @@ class CSVSession(
 
     fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
-        val latitude = getValueFor(lineParameters, Header.LATITUDE)
-        val longitude = getValueFor(lineParameters, Header.LONGITUDE)
+        val latitude = getValueFor(lineParameters, LineParameter.LATITUDE)
+        val longitude = getValueFor(lineParameters, LineParameter.LONGITUDE)
         val dateString =
-            "${lineParameters[Header.DATE.position]} ${lineParameters[Header.TIME.position]}"
+            "${lineParameters[LineParameter.DATE.position]} ${lineParameters[LineParameter.TIME.position]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -173,12 +173,12 @@ class CSVSession(
 
     fun addMeasurement(
         measurement: CSVMeasurement,
-        streamHeader: Header
+        streamLineParameter: LineParameter
     ) {
-        if (!streams.containsKey(streamHeader.position)) {
-            streams[streamHeader.position] = ArrayList()
+        if (!streams.containsKey(streamLineParameter.position)) {
+            streams[streamLineParameter.position] = ArrayList()
         }
-        streams[streamHeader.position]?.add(measurement)
+        streams[streamLineParameter.position]?.add(measurement)
     }
 
     private fun buildMeasurement(
@@ -186,11 +186,11 @@ class CSVSession(
         longitude: Double?,
         time: Date?,
         line: List<String>,
-        streamHeader: Header
+        streamLineParameter: LineParameter
     ): CSVMeasurement? {
         time ?: return null
 
-        val value = getValueFor(line, streamHeader) ?: return null
+        val value = getValueFor(line, streamLineParameter) ?: return null
 
         return CSVMeasurement(
             value,
@@ -230,9 +230,9 @@ class CSVSession(
         return session
     }
 
-    private fun getValueFor(line: List<String>, header: Header): Double? {
+    private fun getValueFor(line: List<String>, lineParameter: LineParameter): Double? {
         return try {
-            line[header.position].toDouble()
+            line[lineParameter.position].toDouble()
         } catch (e: NumberFormatException) {
             null
         }
