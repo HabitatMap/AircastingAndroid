@@ -20,7 +20,7 @@ class CSVSession(
         fun uuidFrom(line: String?): String? {
             line ?: return null
 
-            return lineParameters(line)[LineParameter.UUID.position]
+            return lineParameters(line)[AB3LineParameter.UUID.position]
         }
 
         fun timestampFrom(line: String?): Date? {
@@ -28,7 +28,7 @@ class CSVSession(
 
             val lineParameters = lineParameters(line)
             val dateString =
-                "${lineParameters[LineParameter.Date.position]} ${lineParameters[LineParameter.Time.position]}"
+                "${lineParameters[AB3LineParameter.Date.position]} ${lineParameters[AB3LineParameter.Time.position]}"
             return DateConverter.fromString(
                 dateString,
                 dateFormat = DATE_FORMAT
@@ -43,7 +43,7 @@ class CSVSession(
         private const val PM_UNIT_SYMBOL = "µg/m³"
 
         val SUPPORTED_STREAMS = hashMapOf(
-            LineParameter.F to CSVMeasurementStream(
+            AB3LineParameter.F to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-F",
                 "Temperature",
                 "F",
@@ -55,7 +55,7 @@ class CSVSession(
                 105,
                 135
             ),
-            LineParameter.RH to CSVMeasurementStream(
+            AB3LineParameter.RH to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-RH",
                 "Humidity",
                 "RH",
@@ -67,7 +67,7 @@ class CSVSession(
                 75,
                 100
             ),
-            LineParameter.PM1 to CSVMeasurementStream(
+            AB3LineParameter.PM1 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM1",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -79,7 +79,7 @@ class CSVSession(
                 55,
                 150
             ),
-            LineParameter.PM2_5 to CSVMeasurementStream(
+            AB3LineParameter.PM2_5 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -91,7 +91,7 @@ class CSVSession(
                 55,
                 150
             ),
-            LineParameter.PM10 to CSVMeasurementStream(
+            AB3LineParameter.PM10 to CSVMeasurementStream(
                 "${CSVMeasurementStream.DEVICE_NAME}-PM10",
                 PM_MEASUREMENT_TYPE,
                 PM_MEASUREMENT_SHORT_TYPE,
@@ -105,25 +105,33 @@ class CSVSession(
             )
         )
 
-        fun fromHeader(streamLineParameter: LineParameter): CSVMeasurementStream? {
+        fun fromHeader(streamLineParameter: AB3LineParameter): CSVMeasurementStream? {
             return SUPPORTED_STREAMS[streamLineParameter]
         }
     }
 
-    sealed class LineParameter(val position: Int) {
-        object Index : LineParameter(0)
-        object UUID : LineParameter(1)
-        object Date : LineParameter(2)
-        object Time : LineParameter(3)
-        object Latitude : LineParameter(4)
-        object Longitude : LineParameter(5)
-        object F : LineParameter(6)
-        object C : LineParameter(7)
-        object K : LineParameter(8)
-        object RH : LineParameter(9)
-        object PM1 : LineParameter(10)
-        object PM2_5 : LineParameter(11)
-        object PM10 : LineParameter(12)
+    sealed class ABMiniLineParameter(val position: Int) {
+        object UUID : AB3LineParameter(0)
+        object Date : AB3LineParameter(1)
+        object Time : AB3LineParameter(2)
+        object PM1 : AB3LineParameter(3)
+        object PM2_5 : AB3LineParameter(4)
+    }
+
+    sealed class AB3LineParameter(val position: Int) {
+        object Index : AB3LineParameter(0)
+        object UUID : AB3LineParameter(1)
+        object Date : AB3LineParameter(2)
+        object Time : AB3LineParameter(3)
+        object Latitude : AB3LineParameter(4)
+        object Longitude : AB3LineParameter(5)
+        object F : AB3LineParameter(6)
+        object C : AB3LineParameter(7)
+        object K : AB3LineParameter(8)
+        object RH : AB3LineParameter(9)
+        object PM1 : AB3LineParameter(10)
+        object PM2_5 : AB3LineParameter(11)
+        object PM10 : AB3LineParameter(12)
 
         companion object {
             fun fromInt(position: Int) = when (position) {
@@ -165,10 +173,10 @@ class CSVSession(
 
     fun addMeasurements(line: String, measurementTime: Date? = null) {
         val lineParameters = lineParameters(line)
-        val latitude = getValueFor(lineParameters, LineParameter.Latitude)
-        val longitude = getValueFor(lineParameters, LineParameter.Longitude)
+        val latitude = getValueFor(lineParameters, AB3LineParameter.Latitude)
+        val longitude = getValueFor(lineParameters, AB3LineParameter.Longitude)
         val dateString =
-            "${lineParameters[LineParameter.Date.position]} ${lineParameters[LineParameter.Time.position]}"
+            "${lineParameters[AB3LineParameter.Date.position]} ${lineParameters[AB3LineParameter.Time.position]}"
         val time = measurementTime ?: DateConverter.fromString(
             dateString,
             dateFormat = DATE_FORMAT
@@ -188,7 +196,7 @@ class CSVSession(
 
     fun addMeasurement(
         measurement: CSVMeasurement,
-        streamLineParameter: LineParameter
+        streamLineParameter: AB3LineParameter
     ) {
         if (!streams.containsKey(streamLineParameter.position)) {
             streams[streamLineParameter.position] = ArrayList()
@@ -201,7 +209,7 @@ class CSVSession(
         longitude: Double?,
         time: Date?,
         line: List<String>,
-        streamLineParameter: LineParameter
+        streamLineParameter: AB3LineParameter
     ): CSVMeasurement? {
         time ?: return null
 
@@ -245,7 +253,7 @@ class CSVSession(
         return session
     }
 
-    private fun getValueFor(line: List<String>, lineParameter: LineParameter): Double? {
+    private fun getValueFor(line: List<String>, lineParameter: AB3LineParameter): Double? {
         return try {
             line[lineParameter.position].toDouble()
         } catch (e: NumberFormatException) {

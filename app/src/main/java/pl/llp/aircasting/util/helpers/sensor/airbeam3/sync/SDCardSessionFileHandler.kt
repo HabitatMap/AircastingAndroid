@@ -116,15 +116,15 @@ class SDCardSessionFileHandlerMobile(
 
     private fun getCsvMeasurement(
         line: String,
-        currentStreamLineParameter: CSVSession.LineParameter
+        currentStreamLineParameter: CSVSession.AB3LineParameter
     ): CSVMeasurement? {
         val params = CSVSession.lineParameters(line)
         val value = getValueFor(params, currentStreamLineParameter)
             ?: return null
-        val latitude = getValueFor(params, CSVSession.LineParameter.Latitude)
-        val longitude = getValueFor(params, CSVSession.LineParameter.Longitude)
+        val latitude = getValueFor(params, CSVSession.AB3LineParameter.Latitude)
+        val longitude = getValueFor(params, CSVSession.AB3LineParameter.Longitude)
         val dateString =
-            "${params[CSVSession.LineParameter.Date.position]} ${params[CSVSession.LineParameter.Time.position]}"
+            "${params[CSVSession.AB3LineParameter.Date.position]} ${params[CSVSession.AB3LineParameter.Time.position]}"
         val time = DateConverter.fromString(
             dateString,
             dateFormat = CSVSession.DATE_FORMAT
@@ -134,7 +134,7 @@ class SDCardSessionFileHandlerMobile(
     }
 
 
-    private fun getValueFor(line: List<String>, lineParameter: CSVSession.LineParameter): Double? {
+    private fun getValueFor(line: List<String>, lineParameter: CSVSession.AB3LineParameter): Double? {
         return try {
             line[lineParameter.position].toDouble()
         } catch (e: NumberFormatException) {
