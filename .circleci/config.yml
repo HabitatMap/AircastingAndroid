@@ -38,6 +38,7 @@ jobs:
               --device model=oriole,version=33,locale=en,orientation=portrait \
               --app ~/project/app/build/outputs/apk/debug/app-debug.apk \
               --test ~/project/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
+              --use-orchestrator
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
       - run:
           name: Install gsutil dependency and copy test results data
