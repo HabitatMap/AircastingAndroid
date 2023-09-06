@@ -83,6 +83,7 @@ class SDCardSyncService @AssistedInject constructor(
         airBeamConnector.triggerSDCardDownload()
 
         mSDCardFileService.start(
+            deviceItem = deviceItem,
             onLinesDownloaded = { step, linesCount ->
                 val event = SDCardLinesReadEvent(step, linesCount)
                 EventBus.getDefault().post(event)

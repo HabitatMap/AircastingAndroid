@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
@@ -42,7 +43,31 @@ class SDCardFileService(
 
     init {
         EventBus.getDefault().safeRegister(this)
+    }
 
+    fun start(
+        deviceItem: DeviceItem,
+        onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
+        onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
+    ) {
+        mOnLinesDownloaded = onLinesDownloaded
+        mOnDownloadFinished = onDownloadFinished
+
+        steps = ArrayList()
+        stepByFilePaths = mutableMapOf()
+        currentSessionUUID = null
+
+        handleLinesFor(deviceItem)
+    }
+
+    fun handleLinesFor(deviceItem: DeviceItem){
+        when(deviceItem.type){
+            DeviceItem.Type.AIRBEAM3 -> handleLinesForABM()
+            else -> handleLinesForABM()
+        }
+    }
+
+    fun handleLinesForAB3(){
         newLinesFlow.onEach { lines ->
             lines.forEach { line ->
                 val lineParams = CSVLineParameterHandler.lineParameters(line)
@@ -62,16 +87,29 @@ class SDCardFileService(
         }.launchIn(scope)
     }
 
-    fun start(
-        onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
-        onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
-    ) {
-        mOnLinesDownloaded = onLinesDownloaded
-        mOnDownloadFinished = onDownloadFinished
+    fun handleLinesForABM(){
+        newLinesFlow.onEach { lines ->
+            lines.forEach { line ->
+                val lineParams = CSVLineParameterHandler.lineParameters(line)
 
-        steps = ArrayList()
-        stepByFilePaths = mutableMapOf()
-        currentSessionUUID = null
+                val modifiedLine = when(lineParams.size){
+                    5 -> {
+                        currentSessionUUID = lineParams[0]
+                        createAndOpenNewFile()
+                        line
+                    }
+                    4 -> {
+                        "$currentSessionUUID,$line"
+                    }
+                    else -> null
+                }
+                try {
+                    fileWriter?.write("$modifiedLine\n")
+                } catch (e: Exception) {
+                    Log.e(TAG, e.stackTraceToString())
+                }
+            }
+        }.launchIn(scope)
     }
 
     fun deleteAllSyncFiles() {
