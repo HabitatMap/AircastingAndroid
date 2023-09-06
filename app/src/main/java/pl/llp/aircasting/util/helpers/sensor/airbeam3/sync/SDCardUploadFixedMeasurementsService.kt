@@ -2,16 +2,28 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.annotation.SuppressLint
 import android.util.Log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import java.io.File
 
-class SDCardUploadFixedMeasurementsService(
-    private val mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
-    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?
+@AssistedFactory
+interface SDCardUploadFixedMeasurementsServiceFactory {
+    fun create(
+        mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
+        csvLineParameterHandler: CSVLineParameterHandler,
+    ): SDCardUploadFixedMeasurementsService
+}
+
+class SDCardUploadFixedMeasurementsService @AssistedInject constructor(
+    @Assisted private val mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
+    private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?,
+    @Assisted private val csvLineParameterHandler: CSVLineParameterHandler,
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
@@ -33,9 +45,8 @@ class SDCardUploadFixedMeasurementsService(
         val measurementChunks =
             mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
 
-        csvSession.streams.forEach { (streamHeaderValue, csvMeasurements) ->
-            val streamLineParameter = CSVLineParameterHandler.AB3LineParameter.fromInt(streamHeaderValue) ?: return@forEach
-            val csvMeasurementStream = CSVLineParameterHandler.fromHeader(
+        csvSession.streams.forEach { (streamLineParameter, csvMeasurements) ->
+            val csvMeasurementStream = csvLineParameterHandler.csvStreamByLineParameter(
                 streamLineParameter
             )
 
@@ -63,7 +74,10 @@ class SDCardUploadFixedMeasurementsService(
                 break
             }
 
-            Log.d(TAG, "Remaining chunks: ${allStreamsChunks.map { (stream, chunks) -> "${stream.sensorName}: ${chunks.size}" }}.")
+            Log.d(
+                TAG,
+                "Remaining chunks: ${allStreamsChunks.map { (stream, chunks) -> "${stream.sensorName}: ${chunks.size}" }}."
+            )
 
             allStreamsChunks.forEach { (csvMeasurementStream, csvMeasurementsChunks) ->
                 val csvMeasurementsChunk = csvMeasurementsChunks.removeAt(0)
@@ -79,9 +93,10 @@ class SDCardUploadFixedMeasurementsService(
     }
 
     private fun chunkStream(csvMeasurements: List<CSVMeasurement>): ArrayList<List<CSVMeasurement>> {
-        return ArrayList(csvMeasurements.chunked(MEASUREMENTS_CHUNK_SIZE).map { csvMeasurementsChunk ->
-            csvMeasurementsChunk
-        })
+        return ArrayList(
+            csvMeasurements.chunked(MEASUREMENTS_CHUNK_SIZE).map { csvMeasurementsChunk ->
+                csvMeasurementsChunk
+            })
     }
 
     @SuppressLint("LongLogTag")

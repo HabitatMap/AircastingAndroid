@@ -1,8 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
+import javax.inject.Inject
 
-class ABMiniCSVLineParameterHandler : CSVLineParameterHandler() {
+class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler() {
     override val timeParameter: ABLineParameter = ABMiniLineParameter.Time
     override val dateParameter: ABLineParameter = ABMiniLineParameter.Date
     override val uuidParameter: ABLineParameter = ABMiniLineParameter.UUID

@@ -5,9 +5,9 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import java.io.File
 
 abstract class SDCardSessionsProcessor(
@@ -15,8 +15,8 @@ abstract class SDCardSessionsProcessor(
     val mSessionsRepository: SessionsRepository,
     private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,
+    private val lineParameterHandler: CSVLineParameterHandler,
 ) {
-
     suspend fun start(
         file: File,
         deviceId: String
@@ -31,11 +31,10 @@ abstract class SDCardSessionsProcessor(
     suspend fun processMeasurements(
         deviceId: String,
         sessionId: Long,
-        streamHeaderValue: Int,
+        streamLineParameter: CSVLineParameterHandler.ABLineParameter,
         csvMeasurements: List<CSVMeasurement>
     ) {
-        val streamLineParameter = CSVLineParameterHandler.AB3LineParameter.fromInt(streamHeaderValue) ?: return
-        val csvMeasurementStream = CSVLineParameterHandler.fromHeader(
+        val csvMeasurementStream = lineParameterHandler.csvStreamByLineParameter(
             streamLineParameter
         ) ?: return
 

@@ -1,22 +1,29 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor
 
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerFixed
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 
-class SDCardFixedSessionsProcessor(
-    mSDCardCSVIterator: SDCardSessionFileHandler,
+class SDCardFixedSessionsProcessor @AssistedInject constructor(
+    @Assisted mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
-    mMeasurementsRepository: MeasurementsRepositoryImpl
+    mMeasurementsRepository: MeasurementsRepositoryImpl,
+    @Assisted lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionsProcessor(
     mSDCardCSVIterator,
     mSessionsRepository,
     mMeasurementStreamsRepository,
-    mMeasurementsRepository
+    mMeasurementsRepository,
+    lineParameterHandler
 ) {
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
@@ -26,8 +33,8 @@ class SDCardFixedSessionsProcessor(
 
         sessionId ?: return
 
-        csvSession.streams.forEach { (headerKey, csvMeasurements) ->
-            processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
+        csvSession.streams.forEach { (abLineParameter, csvMeasurements) ->
+            processMeasurements(deviceId, sessionId, abLineParameter, csvMeasurements)
         }
     }
 

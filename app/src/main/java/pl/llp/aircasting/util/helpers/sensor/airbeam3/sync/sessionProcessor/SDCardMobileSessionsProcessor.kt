@@ -1,26 +1,33 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor
 
 import android.util.Log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerMobile
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 
-class SDCardMobileSessionsProcessor(
-    mSDCardCSVIterator: SDCardSessionFileHandler,
+class SDCardMobileSessionsProcessor @AssistedInject constructor(
+    @Assisted fileHandlerMobile: SDCardSessionFileHandlerMobile,
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
-    private val settings: Settings
+    private val settings: Settings,
+    @Assisted lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionsProcessor(
-    mSDCardCSVIterator,
+    fileHandlerMobile,
     mSessionsRepository,
     mMeasurementStreamsRepository,
-    mMeasurementsRepository
+    mMeasurementsRepository,
+    lineParameterHandler
 ) {
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return

@@ -15,26 +15,21 @@ open class DeviceItem(
 
     companion object {
         const val UNKNOWN_DEVICE_NAME = "Unknown"
-        private val AIRBEAM1_NAME_REGEX = "airbeam"
-        private val AIRBEAM2_NAME_REGEX = "airbeam2"
-        private val AIRBEAM3_NAME_REGEX = "airbeam3"
+        private const val AIRBEAM1_NAME_REGEX = "airbeam"
+        private const val AIRBEAM2_NAME_REGEX = "airbeam2"
+        private const val AIRBEAM3_NAME_REGEX = "airbeam3"
+        private const val AIRBEAMMINI_NAME_REGEX = "airbeammini"
 
         private fun getType(name: String?): Type {
             name ?: return Type.OTHER
 
-            if (name.contains(AIRBEAM2_NAME_REGEX, true)) {
-                return Type.AIRBEAM2
+            return when {
+                name.contains(AIRBEAM2_NAME_REGEX, true) ->Type.AIRBEAM2
+                name.contains(AIRBEAM3_NAME_REGEX, true) -> Type.AIRBEAM3
+                name.contains(AIRBEAMMINI_NAME_REGEX, true) -> Type.AIRBEAMMINI
+                name.contains(AIRBEAM1_NAME_REGEX, true) -> Type.AIRBEAM1
+                else -> Type.OTHER
             }
-
-            if (name.contains(AIRBEAM3_NAME_REGEX, true)) {
-                return Type.AIRBEAM3
-            }
-
-            if (name.contains(AIRBEAM1_NAME_REGEX, true)) {
-                return Type.AIRBEAM1
-            }
-
-            return Type.OTHER
         }
     }
 
@@ -43,7 +38,8 @@ open class DeviceItem(
         MIC(0),
         AIRBEAM1(1),
         AIRBEAM2(2),
-        AIRBEAM3(3);
+        AIRBEAM3(3),
+        AIRBEAMMINI(4);
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
@@ -53,11 +49,7 @@ open class DeviceItem(
     val bluetoothDevice get() = mBluetoothDevice
 
     fun isAirBeam(): Boolean {
-        return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3).contains(type)
-    }
-
-    fun isSyncable(): Boolean {
-        return arrayOf(Type.AIRBEAM3).contains(type)
+        return arrayOf(Type.AIRBEAM1, Type.AIRBEAM2, Type.AIRBEAM3, Type.AIRBEAMMINI).contains(type)
     }
 
     override fun toString(): String {

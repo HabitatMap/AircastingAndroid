@@ -7,15 +7,34 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerFixedFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerMobileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandlerFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
 import javax.inject.Inject
 
-class AirBeamSyncService: AirBeamService() {
+class AirBeamSyncService : AirBeamService() {
     @Inject
     lateinit var airBeamDiscoveryService: AirBeamDiscoveryService
 
     @Inject
-    lateinit var sdCardSyncService: SDCardSyncService
+    lateinit var sdCardSyncServiceFactory: SDCardSyncServiceFactory
+    @Inject
+    lateinit var fixedSessionsProcessorFactory: SDCardFixedSessionsProcessorFactory
+    @Inject
+    lateinit var mobileSessionsProcessorFactory: SDCardMobileSessionsProcessorFactory
+    @Inject
+    lateinit var fixedFileHandlerFactory: SDCardSessionFileHandlerFixedFactory
+    @Inject
+    lateinit var mobileFileHandlerFactory: SDCardSessionFileHandlerMobileFactory
+    @Inject
+    lateinit var sDCardUploadFixedMeasurementsServiceFactory: SDCardUploadFixedMeasurementsServiceFactory
+
+    private lateinit var sdCardSyncService: SDCardSyncService
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -31,6 +50,35 @@ class AirBeamSyncService: AirBeamService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         (application as AircastingApplication).userDependentComponent?.inject(this)
+        intent?.extras?.getParcelable<DeviceItem>(DEVICE_ITEM_KEY)?.let { deviceItem ->
+            val csvLineParameterHandler =
+                CSVLineParameterHandlerFactory.create(deviceItem = deviceItem)
+
+            val mobileFileHandler =
+                mobileFileHandlerFactory.create(csvLineParameterHandler)
+            val fixedFileHandler =
+                fixedFileHandlerFactory.create(csvLineParameterHandler)
+
+            val mobileSessionsProcessor = mobileSessionsProcessorFactory.create(
+                csvLineParameterHandler,
+                mobileFileHandler
+            )
+            val fixedSessionsProcessor = fixedSessionsProcessorFactory.create(
+                csvLineParameterHandler,
+                fixedFileHandler
+            )
+
+            val uploadFixedMeasurementsService = sDCardUploadFixedMeasurementsServiceFactory.create(
+                fixedFileHandler,
+                csvLineParameterHandler
+            )
+
+            sdCardSyncService = sdCardSyncServiceFactory.create(
+                mobileSessionsProcessor,
+                fixedSessionsProcessor,
+                uploadFixedMeasurementsService
+            )
+        }
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -38,7 +86,8 @@ class AirBeamSyncService: AirBeamService() {
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
+        val deviceItem =
+            intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
 
         if (deviceItem == null) {
             errorHandler.handle(AirbeamServiceError("DeviceItem passed through intent is null"))

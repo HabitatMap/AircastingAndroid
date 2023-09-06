@@ -6,7 +6,6 @@ import kotlinx.coroutines.CoroutineScope
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
-import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
@@ -22,12 +21,6 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardClearService
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardFileService
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardFixedSessionsProcessor
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardMobileSessionsProcessor
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerFixed
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerMobile
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncService
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsService
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
@@ -57,90 +50,6 @@ open class SensorsModule {
         SDCardCSVFileFactory(
             application
         )
-
-    @Provides
-    @UserSessionScope
-    fun providesFixedSDCardCSVIterator(
-        errorHandler: ErrorHandler
-    ): SDCardSessionFileHandlerFixed = SDCardSessionFileHandlerFixed(errorHandler)
-
-    @Provides
-    @UserSessionScope
-    fun providesMobileSDCardCSVIterator(
-        errorHandler: ErrorHandler,
-        sessionsRepository: SessionsRepository,
-        helper: MeasurementsAveragingHelper,
-        averagingService: AveragingService
-    ): SDCardSessionFileHandlerMobile =
-        SDCardSessionFileHandlerMobile(
-            errorHandler,
-            sessionsRepository,
-            helper,
-            averagingService
-        )
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardUploadFixedMeasurementsService(
-        sdCardCSVIterator: SDCardSessionFileHandlerFixed,
-        uploadFixedMeasurementsService: UploadFixedMeasurementsService?
-    ): SDCardUploadFixedMeasurementsService =
-        SDCardUploadFixedMeasurementsService(
-            sdCardCSVIterator,
-            uploadFixedMeasurementsService
-        )
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardMobileSessionsProcessor(
-        csvIterator: SDCardSessionFileHandlerMobile,
-        sessionsRepository: SessionsRepository,
-        measurementStreamsRepository: MeasurementStreamsRepository,
-        measurementsRepository: MeasurementsRepositoryImpl,
-        settings: Settings
-    ): SDCardMobileSessionsProcessor = SDCardMobileSessionsProcessor(
-        csvIterator,
-        sessionsRepository,
-        measurementStreamsRepository,
-        measurementsRepository,
-        settings
-    )
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardFixedSessionsProcessor(
-        csvIterator: SDCardSessionFileHandlerFixed,
-        sessionsRepository: SessionsRepository,
-        measurementStreamsRepository: MeasurementStreamsRepository,
-        measurementsRepository: MeasurementsRepositoryImpl
-    ): SDCardFixedSessionsProcessor = SDCardFixedSessionsProcessor(
-        csvIterator,
-        sessionsRepository,
-        measurementStreamsRepository,
-        measurementsRepository
-    )
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardSyncService(
-        sdCardFileService: SDCardFileService,
-        sdCardCSVFileChecker: SDCardCSVFileChecker,
-        sdCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
-        sdCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
-        sessionsSyncService: SessionsSyncService?,
-        sdCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
-        errorHandler: ErrorHandler,
-        @IoCoroutineScope coroutineScope: CoroutineScope,
-    ): SDCardSyncService = SDCardSyncService(
-        sdCardFileService,
-        sdCardCSVFileChecker,
-        sdCardMobileSessionsProcessor,
-        sdCardFixedSessionsProcessor,
-        sessionsSyncService,
-        sdCardUploadFixedMeasurementsService,
-        errorHandler,
-        coroutineScope
-    )
 
     @Provides
     @UserSessionScope

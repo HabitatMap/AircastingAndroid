@@ -13,6 +13,8 @@ import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessor
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)

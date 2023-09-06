@@ -11,7 +11,8 @@ class CSVSession(
     val uuid: String?,
     private val lineParameterHandler: CSVLineParameterHandler,
     private val averagingWindow: AveragingWindow = AveragingWindow.ZERO,
-    val streams: MutableMap<Int, ArrayList<CSVMeasurement>> = ConcurrentHashMap(),
+
+    val streams: MutableMap<CSVLineParameterHandler.ABLineParameter, ArrayList<CSVMeasurement>> = ConcurrentHashMap(),
 ) {
     companion object {
         const val DEFAULT_NAME = "Imported from SD card"
@@ -39,12 +40,12 @@ class CSVSession(
     fun addMeasurements(line: String) {
         val supportedStreamHeaders = lineParameterHandler.supportedStreams.keys
         supportedStreamHeaders.forEach { streamHeader ->
-            if (!streams.containsKey(streamHeader.position)) {
-                streams[streamHeader.position] = ArrayList()
+            if (!streams.containsKey(streamHeader)) {
+                streams[streamHeader] = ArrayList()
             }
 
             val measurement = lineParameterHandler.getCsvMeasurement(line, streamHeader, averagingWindow)
-            measurement?.let { streams[streamHeader.position]?.add(measurement) }
+            measurement?.let { streams[streamHeader]?.add(measurement) }
         }
     }
 
@@ -52,10 +53,10 @@ class CSVSession(
         measurement: CSVMeasurement,
         streamLineParameter: CSVLineParameterHandler.ABLineParameter
     ) {
-        if (!streams.containsKey(streamLineParameter.position)) {
-            streams[streamLineParameter.position] = ArrayList()
+        if (!streams.containsKey(streamLineParameter)) {
+            streams[streamLineParameter] = ArrayList()
         }
-        streams[streamLineParameter.position]?.add(measurement)
+        streams[streamLineParameter]?.add(measurement)
     }
 
     fun toSession(deviceId: String): Session? {

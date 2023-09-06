@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
@@ -7,8 +8,15 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.Date
 
-abstract class CSVLineParameterHandler {
 
+object CSVLineParameterHandlerFactory {
+    fun create(deviceItem: DeviceItem): CSVLineParameterHandler = when (deviceItem.type) {
+        DeviceItem.Type.AIRBEAMMINI -> ABMiniCSVLineParameterHandler()
+        else -> AB3CSVLineParameterHandler()
+    }
+}
+
+abstract class CSVLineParameterHandler {
     abstract val timeParameter: ABLineParameter
     abstract val dateParameter: ABLineParameter
     abstract val uuidParameter: ABLineParameter
@@ -25,16 +33,14 @@ abstract class CSVLineParameterHandler {
 
         val lineParameters = lineParameters(line)
         val dateString =
-            "${lineParameters[dateParameter.position]} $timeParameter"
+            "${lineParameters[dateParameter.position]} ${lineParameters[timeParameter.position]}"
         return DateConverter.fromString(
             dateString,
             dateFormat = CSVSession.DATE_FORMAT
         )
     }
 
-    protected fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
-
-    fun fromHeader(streamLineParameter: ABLineParameter): CSVMeasurementStream? {
+    fun csvStreamByLineParameter(streamLineParameter: ABLineParameter): CSVMeasurementStream? {
         return supportedStreams[streamLineParameter]
     }
 
@@ -46,12 +52,7 @@ abstract class CSVLineParameterHandler {
         val params = lineParameters(line)
         val value = getValueFor(params, currentStreamLineParameter)
             ?: return null
-        val dateString =
-            "${params[dateParameter.position]} ${params[timeParameter.position]}"
-        val time = DateConverter.fromString(
-            dateString,
-            dateFormat = CSVSession.DATE_FORMAT
-        ) ?: return null
+        val time = timestampFrom(line) ?: return null
 
         return CSVMeasurement(value, null, null, time, finalAveragingWindow.value)
     }
@@ -74,5 +75,7 @@ abstract class CSVLineParameterHandler {
         const val PM_MEASUREMENT_SHORT_TYPE = "PM"
         const val PM_UNIT_NAME = "microgram per cubic meter"
         const val PM_UNIT_SYMBOL = "µg/m³"
+
+        fun lineParameters(line: String): List<String> = line.split(AB_DELIMITER)
     }
 }

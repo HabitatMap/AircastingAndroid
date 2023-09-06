@@ -1,10 +1,14 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
@@ -17,17 +21,28 @@ import pl.llp.aircasting.util.exceptions.SDCardMissingSessionsSyncServiceError
 import pl.llp.aircasting.util.exceptions.SDCardSessionsFinalSyncError
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessor
 import java.io.File
 
-class SDCardSyncService(
+@AssistedFactory
+interface SDCardSyncServiceFactory {
+    fun create(
+        sDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+        sDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
+        mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?
+    ): SDCardSyncService
+}
+
+class SDCardSyncService @AssistedInject constructor(
     private val mSDCardFileService: SDCardFileService,
     private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
-    private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
-    private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
+    @Assisted private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
+    @Assisted private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
     private val mSessionsSyncService: SessionsSyncService?,
-    private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
+    @Assisted private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
     private val mErrorHandler: ErrorHandler,
-    private val coroutineScope: CoroutineScope
+    @IoCoroutineScope private val coroutineScope: CoroutineScope
 ) {
     private val TAG = "SDCardSyncService"
 
@@ -108,6 +123,7 @@ class SDCardSyncService(
                         performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
                     }
                 }
+
                 SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI ->
                     entry.value.forEach { path ->
                         // fixed sessions are handled one by one
@@ -161,7 +177,7 @@ class SDCardSyncService(
         Log.d(TAG, "Syncing mobile sessions with backend")
         sessionsSyncService.sync()
             .onSuccess { syncResult ->
-                when(syncResult) {
+                when (syncResult) {
                     is SessionsSyncService.Result.Success -> finish()
                     is SessionsSyncService.Result.Error -> {
                         mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())

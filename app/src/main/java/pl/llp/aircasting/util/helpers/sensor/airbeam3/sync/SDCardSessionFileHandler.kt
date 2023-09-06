@@ -1,6 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
 
 import android.util.Log
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -20,9 +23,14 @@ interface SDCardSessionFileHandler {
     suspend fun handle(file: File): CSVSession?
 }
 
-class SDCardSessionFileHandlerFixed(
+@AssistedFactory
+interface SDCardSessionFileHandlerFixedFactory {
+    fun create(lineParameterHandler: CSVLineParameterHandler): SDCardSessionFileHandlerFixed
+}
+
+class SDCardSessionFileHandlerFixed @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler,
-    private val lineParameterHandler: CSVLineParameterHandler,
+    @Assisted private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionFileHandler {
     override suspend fun handle(file: File): CSVSession? = try {
         val lines = file.readLines().filter {
@@ -42,12 +50,17 @@ class SDCardSessionFileHandlerFixed(
     }
 }
 
-class SDCardSessionFileHandlerMobile(
+@AssistedFactory
+interface SDCardSessionFileHandlerMobileFactory {
+    fun create(lineParameterHandler: CSVLineParameterHandler): SDCardSessionFileHandlerMobile
+}
+
+class SDCardSessionFileHandlerMobile @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler,
     private val sessionRepository: SessionsRepository,
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
-    private val lineParameterHandler: CSVLineParameterHandler,
+    @Assisted private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionFileHandler {
 
     private var dbSession: SessionDBObject? = null
