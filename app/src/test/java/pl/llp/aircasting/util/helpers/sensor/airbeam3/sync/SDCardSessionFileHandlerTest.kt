@@ -15,6 +15,7 @@ import pl.llp.aircasting.util.extensions.addSeconds
 import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.AB3CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
 import pl.llp.aircasting.utilities.StubData
@@ -25,8 +26,9 @@ internal class SDCardSessionFileHandlerTest {
     private val file = StubData.getFile("SDCardMeasurementsFromSession.csv")
     private val fileLines = file.readLines()
     private val fileLinesCount = fileLines.count()
-    private val fileFirstMeasurementTime = CSVLineParameterHandler.timestampFrom(fileLines.first())
-    private val fileLastMeasurementTime = CSVLineParameterHandler.timestampFrom(fileLines.last())
+    private val lineParameterHandler = AB3CSVLineParameterHandler()
+    private val fileFirstMeasurementTime = lineParameterHandler.timestampFrom(fileLines.first())
+    private val fileLastMeasurementTime = lineParameterHandler.timestampFrom(fileLines.last())
     private val helper = MeasurementsAveragingHelperDefault()
 
     private val streamsCount = 5
@@ -34,7 +36,7 @@ internal class SDCardSessionFileHandlerTest {
 
     @Test
     fun fixed_read_returnsSessionWithCorrectCountOfMeasurements() = runTest {
-        val iterator = SDCardSessionFileHandlerFixed(mock())
+        val iterator = SDCardSessionFileHandlerFixed(mock(), lineParameterHandler)
         val measurementsCountInFile = fileLinesCount * streamsCount
 
         val csvSession = iterator.handle(file)
@@ -46,7 +48,7 @@ internal class SDCardSessionFileHandlerTest {
     fun mobile_read_whenNoMeasurementsArePresentInDB_determinesThresholdBasedOnCSVMeasurementsOnly() =
         runTest {
             val averagingThreshold = helper.calculateAveragingWindow(fileFirstMeasurementTime!!.time, fileLastMeasurementTime!!.time).value
-            val iterator = SDCardSessionFileHandlerMobile(mock(), mock(), helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(), mock(), helper, mock(), lineParameterHandler)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -66,7 +68,7 @@ internal class SDCardSessionFileHandlerTest {
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val averagingThreshold = helper.calculateAveragingWindow(dbSession.startTime.time, fileLastMeasurementTime!!.time).value
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -86,7 +88,7 @@ internal class SDCardSessionFileHandlerTest {
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
             val averagingThreshold = helper.calculateAveragingWindow(dbSession.startTime.time, fileLastMeasurementTime!!.time).value
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
             val measurementsAveragedCountInFile =
                 fileMeasurementsCountAfterAveraging(averagingThreshold)
 
@@ -122,17 +124,17 @@ internal class SDCardSessionFileHandlerTest {
             val secondExpectedAveragedLongitude = 18.9261414
             val secondExpectedAveragedMeasurementTime =
                 calendar().addSeconds(firstExpectedAveragedMeasurementTime, AveragingWindow.FIRST.value)
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![0]
+                csvSession!!.streams[AB3CSVLineParameterHandler.AB3LineParameter.F]!![0]
             val secondResultFahrenheitAverage =
-                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![1]
+                csvSession.streams[AB3CSVLineParameterHandler.AB3LineParameter.F]!![1]
             val firstResultRHAverage =
-                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![0]
+                csvSession.streams[AB3CSVLineParameterHandler.AB3LineParameter.RH]!![0]
             val secondResultRHAverage =
-                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![1]
+                csvSession.streams[AB3CSVLineParameterHandler.AB3LineParameter.RH]!![1]
 
             assertEquals(firstExpectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(secondExpectedAveragedFahrenheit, secondResultFahrenheitAverage.value)
@@ -173,13 +175,13 @@ internal class SDCardSessionFileHandlerTest {
             val expectedAveragedRH = 49.0
             val expectedAveragedLatitude = 78.0582475
             val expectedAveragedLongitude = 90.9261414
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
 
             val csvSession = iterator.handle(file)
             val firstResultFahrenheitAverage =
-                csvSession!!.streams[CSVLineParameterHandler.AB3LineParameter.F.position]!![0]
+                csvSession!!.streams[AB3CSVLineParameterHandler.AB3LineParameter.F]!![0]
             val firstResultRHAverage =
-                csvSession.streams[CSVLineParameterHandler.AB3LineParameter.RH.position]!![0]
+                csvSession.streams[AB3CSVLineParameterHandler.AB3LineParameter.RH]!![0]
 
             assertEquals(expectedAveragedFahrenheit, firstResultFahrenheitAverage.value)
             assertEquals(expectedAveragedLatitude, firstResultFahrenheitAverage.latitude)
@@ -201,7 +203,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
 
             val csvSession = iterator.handle(file)
 
@@ -228,7 +230,7 @@ internal class SDCardSessionFileHandlerTest {
                 on { id } doReturn sessionId
             }
             whenever(sessionsRepository.getSessionByUUID(any())).thenReturn(dbSession)
-            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock())
+            val iterator = SDCardSessionFileHandlerMobile(mock(),sessionsRepository, helper, mock(), lineParameterHandler)
 
             val csvSession = iterator.handle(file)
 
