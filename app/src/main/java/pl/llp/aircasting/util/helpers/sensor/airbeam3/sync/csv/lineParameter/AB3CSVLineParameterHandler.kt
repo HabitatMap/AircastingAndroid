@@ -80,7 +80,7 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
         val params = lineParameters(line)
         val csvMeasurement = super.getCsvMeasurement(line, currentStreamLineParameter, finalAveragingWindow)
         csvMeasurement?.latitude = getValueFor(params, AB3LineParameter.Latitude)
-        csvMeasurement?.latitude = getValueFor(params, AB3LineParameter.Longitude)
+        csvMeasurement?.longitude = getValueFor(params, AB3LineParameter.Longitude)
 
         return csvMeasurement
     }
