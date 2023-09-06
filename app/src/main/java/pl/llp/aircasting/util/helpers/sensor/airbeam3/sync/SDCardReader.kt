@@ -59,11 +59,11 @@ class SDCardReader {
         return description?.contains(COUNTER_STEP_PATTERN) == true
     }
 
-    fun onMeasurementsDownloaded(data: ByteArray?) {
-        data ?: return
+    fun onMeasurementsDownloaded(dataDownloaded: ByteArray?) {
+        dataDownloaded ?: return
 
         // TODO: Add UUID to lines that don't have it
-        val lines = String(data).lines().filter { line -> !line.isBlank() }
+        val lines = String(dataDownloaded).lines().filter { it.isNotBlank() }
 
         EventBus.getDefault().post(
             SDCardReadEvent(
