@@ -1,5 +1,6 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
 
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import java.io.File
 import java.io.FileReader
 

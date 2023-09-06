@@ -14,6 +14,8 @@ class SDCardReader() {
     private var stepType: StepType? =
         StepType.MOBILE
 
+    // TODO: Add currentStep
+
     enum class StepType(val value: Int) {
         MOBILE(0),
         FIXED_WIFI(1),
@@ -62,6 +64,7 @@ class SDCardReader() {
     fun onMeasurementsDownloaded(data: ByteArray?) {
         data ?: return
 
+        // TODO: Add UUID to lines that don't have it
         val lines = String(data).lines().filter { line -> !line.isBlank() }
 
         EventBus.getDefault().post(

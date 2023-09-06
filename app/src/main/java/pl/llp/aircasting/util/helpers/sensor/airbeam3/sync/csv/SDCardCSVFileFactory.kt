@@ -1,6 +1,7 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
 
 import android.content.Context
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import java.io.File
 
 class SDCardCSVFileFactory(private val mContext: Context) {
