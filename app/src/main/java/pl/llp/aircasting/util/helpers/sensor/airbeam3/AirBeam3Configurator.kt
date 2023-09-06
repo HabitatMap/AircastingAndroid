@@ -17,7 +17,9 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
-import java.util.*
+import java.util.Date
+import java.util.TimeZone
+import java.util.UUID
 
 class AirBeam3Configurator(
     private val mContext: Context,
@@ -59,8 +61,7 @@ class AirBeam3Configurator(
 
     val hexMessagesBuilder = HexMessagesBuilder()
     val airBeam3Reader = AirBeam3Reader(mErrorHandler)
-    val sdCardReader =
-        SDCardReader()
+    val sdCardReader = SDCardReader()
 
     fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT

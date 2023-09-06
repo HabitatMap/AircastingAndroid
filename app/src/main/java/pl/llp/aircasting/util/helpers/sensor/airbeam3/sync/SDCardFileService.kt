@@ -13,7 +13,7 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVLineParameterHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException

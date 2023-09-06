@@ -4,12 +4,11 @@ import android.util.Log
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
@@ -22,14 +21,15 @@ interface SDCardSessionFileHandler {
 }
 
 class SDCardSessionFileHandlerFixed(
-    private val mErrorHandler: ErrorHandler
+    private val mErrorHandler: ErrorHandler,
+    private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionFileHandler {
     override suspend fun handle(file: File): CSVSession? = try {
         val lines = file.readLines().filter {
             !SDCardCSVFileChecker.lineIsCorrupted(it)
         }
-        val sessionUUID = CSVLineParameterHandler.uuidFrom(lines.firstOrNull())
-        val csvSession = CSVSession(sessionUUID)
+        val sessionUUID = lineParameterHandler.uuidFrom(lines.firstOrNull())
+        val csvSession = CSVSession(sessionUUID, lineParameterHandler)
         lines.forEach { line ->
             csvSession.addMeasurements(line)
         }
@@ -47,6 +47,7 @@ class SDCardSessionFileHandlerMobile(
     private val sessionRepository: SessionsRepository,
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
+    private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionFileHandler {
 
     private var dbSession: SessionDBObject? = null
@@ -58,16 +59,16 @@ class SDCardSessionFileHandlerMobile(
         val lines = file.readLines().filter {
             !SDCardCSVFileChecker.lineIsCorrupted(it)
         }
-        val sessionUUID = CSVLineParameterHandler.uuidFrom(lines.firstOrNull())
+        val sessionUUID = lineParameterHandler.uuidFrom(lines.firstOrNull())
 
         dbSession = sessionRepository.getSessionByUUID(sessionUUID)
         if (dbSession == null) Log.v(TAG, "Could not find session with uuid: $sessionUUID in DB")
         startTime = dbSession?.startTime?.time
-            ?: CSVLineParameterHandler.timestampFrom(lines.firstOrNull())?.time
+            ?: lineParameterHandler.timestampFrom(lines.firstOrNull())?.time
         finalAveragingWindow = getFinalAveragingWindow(lines)
         val averagingFrequency = finalAveragingWindow.value
         Log.d(TAG, "${dbSession?.name} final averaging frequency: $averagingFrequency")
-        csvSession = CSVSession(sessionUUID, averagingFrequency)
+        csvSession = CSVSession(sessionUUID, lineParameterHandler, finalAveragingWindow)
 
         averagingService.stopAndPerformFinalAveraging(sessionUUID, finalAveragingWindow)
 
@@ -89,7 +90,7 @@ class SDCardSessionFileHandlerMobile(
         lines: List<String>
     ): AveragingWindow {
         val firstMeasurementTime = startTime
-        val lastMeasurementTime = CSVLineParameterHandler.timestampFrom(lines.lastOrNull())?.time
+        val lastMeasurementTime = lineParameterHandler.timestampFrom(lines.lastOrNull())?.time
         Log.d(TAG, "First measurement time: $startTime")
         Log.d(TAG, "Last measurement time: $lastMeasurementTime")
         return if (firstMeasurementTime == null || lastMeasurementTime == null)
@@ -101,9 +102,9 @@ class SDCardSessionFileHandlerMobile(
     private suspend fun averageMeasurementAndAddToSession(chunk: List<String>) {
         val start = startTime ?: return
         val firstMeasurementTime = Date(start)
-        CSVLineParameterHandler.SUPPORTED_STREAMS.keys.forEach { currentStreamHeader ->
+        lineParameterHandler.supportedStreams.keys.forEach { currentStreamHeader ->
             val streamMeasurements: List<CSVMeasurement> = chunk.mapNotNull { line ->
-                getCsvMeasurement(line, currentStreamHeader)
+                lineParameterHandler.getCsvMeasurement(line, currentStreamHeader, finalAveragingWindow)
             }
             helper.averageMeasurements(
                 streamMeasurements,
@@ -113,34 +114,6 @@ class SDCardSessionFileHandlerMobile(
                 Log.d(TAG, "SD Averaged measurement: $averagedMeasurement")
                 csvSession.addMeasurement(averagedMeasurement, currentStreamHeader)
             }
-        }
-    }
-
-    private fun getCsvMeasurement(
-        line: String,
-        currentStreamLineParameter: CSVLineParameterHandler.AB3LineParameter
-    ): CSVMeasurement? {
-        val params = CSVLineParameterHandler.lineParameters(line)
-        val value = getValueFor(params, currentStreamLineParameter)
-            ?: return null
-        val latitude = getValueFor(params, CSVLineParameterHandler.AB3LineParameter.Latitude)
-        val longitude = getValueFor(params, CSVLineParameterHandler.AB3LineParameter.Longitude)
-        val dateString =
-            "${params[CSVLineParameterHandler.AB3LineParameter.Date.position]} ${params[CSVLineParameterHandler.AB3LineParameter.Time.position]}"
-        val time = DateConverter.fromString(
-            dateString,
-            dateFormat = CSVSession.DATE_FORMAT
-        ) ?: return null
-
-        return CSVMeasurement(value, latitude, longitude, time, finalAveragingWindow.value)
-    }
-
-
-    private fun getValueFor(line: List<String>, lineParameter: CSVLineParameterHandler.AB3LineParameter): Double? {
-        return try {
-            line[lineParameter.position].toDouble()
-        } catch (e: NumberFormatException) {
-            null
         }
     }
 }
