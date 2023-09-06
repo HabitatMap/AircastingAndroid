@@ -100,14 +100,14 @@ class CSVLineParameterHandler {
         }
     }
     sealed class ABMiniLineParameter(val position: Int) {
-        object UUID : AB3LineParameter(0)
-        object Date : AB3LineParameter(1)
-        object Time : AB3LineParameter(2)
-        object PM1 : AB3LineParameter(3)
-        object PM2_5 : AB3LineParameter(4)
+        object UUID : ABMiniLineParameter(0)
+        object Date : ABMiniLineParameter(1)
+        object Time : ABMiniLineParameter(2)
+        object PM1 : ABMiniLineParameter(3)
+        object PM2_5 : ABMiniLineParameter(4)
     }
 
-    sealed class AB3LineParameter(val position: Int) {
+     sealed class AB3LineParameter(val position: Int) {
         object Index : AB3LineParameter(0)
         object UUID : AB3LineParameter(1)
         object Date : AB3LineParameter(2)
