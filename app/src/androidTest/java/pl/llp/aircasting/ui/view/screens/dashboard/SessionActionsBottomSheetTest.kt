@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.fragment.app.testing.launchFragment
+import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
@@ -30,6 +31,7 @@ class SessionActionsBottomSheetTest {
     @Test
     fun testFixedSessionActionsBottomSheet_contains_createThresholdAlertButton() {
         fixedBottomSheetScenario = launchFragment(themeResId = R.style.Theme_Aircasting_Test)
+        fixedBottomSheetScenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(withId(R.id.create_threshold_alert_button))
             .check(matches(isDisplayed()))
@@ -42,6 +44,7 @@ class SessionActionsBottomSheetTest {
     @Test
     fun testSessionActionsBottomSheet_doesNotContain_createThresholdAlertButton() {
         bottomSheetScenario = launchFragment(themeResId = R.style.Theme_Aircasting_Test)
+        bottomSheetScenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(withId(R.id.create_threshold_alert_button))
             .check(doesNotExist())

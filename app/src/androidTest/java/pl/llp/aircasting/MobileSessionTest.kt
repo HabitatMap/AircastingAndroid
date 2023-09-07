@@ -188,6 +188,9 @@ class MobileSessionTest : BaseTest() {
             onView(withId(R.id.session_info)).check(matches(withText("Mobile: Phone Mic")))
         }
 
+        awaitForAssertion {
+            onView(withId(R.id.session_actions_button)).check(matches(isDisplayed()))
+        }
         onView(withId(R.id.session_actions_button)).perform(click())
 
         // edit session test

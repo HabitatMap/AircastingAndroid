@@ -4,6 +4,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import org.awaitility.core.ThrowingRunnable
@@ -24,7 +25,7 @@ fun openGraph() {
 fun expandCard() {
     clickButtonWithRetry(
         R.id.expand_session_button,
-        { onView(withId(R.id.collapse_session_button)).check(matches(isDisplayed())) })
+        { onView(withId(R.id.expand_session_button)).check(matches(isCompletelyDisplayed())) })
 }
 
 fun clickButtonWithRetry(id: Int, assertion: ThrowingRunnable, retryCount: Int = 0) {
