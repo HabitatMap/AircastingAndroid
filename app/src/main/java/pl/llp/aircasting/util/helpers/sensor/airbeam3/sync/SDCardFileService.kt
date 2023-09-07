@@ -57,59 +57,32 @@ class SDCardFileService(
         stepByFilePaths = mutableMapOf()
         currentSessionUUID = null
 
-        handleLinesFor(deviceItem)
+        newLinesFlow.onEach { lines ->
+            lines.forEach { line ->
+                try {
+                    fileWriter?.write("${checkAndModifyLineForDevice(line, deviceItem)}\n")
+                } catch (e: Exception) {
+                    Log.e(TAG, e.stackTraceToString())
+                }
+            }
+        }.launchIn(scope)
     }
 
-    fun handleLinesFor(deviceItem: DeviceItem){
-        when(deviceItem.type){
-            DeviceItem.Type.AIRBEAM3 -> handleLinesForABM()
-            else -> handleLinesForABM()
+    private fun checkAndModifyLineForDevice(line: String, deviceItem: DeviceItem): String{
+        val lineParams = CSVLineParameterHandler.lineParameters(line)
+        return when (deviceItem.type){
+            DeviceItem.Type.AIRBEAMMINI -> {
+                if(checkAndHandleSessionChanged(lineParams[0])){
+                    line
+                } else {
+                    "$currentSessionUUID$line"
+                }
+            }
+            else -> {
+                checkAndHandleSessionChanged(lineParams[1])
+                line
+            }
         }
-    }
-
-    fun handleLinesForAB3(){
-        newLinesFlow.onEach { lines ->
-            lines.forEach { line ->
-                val lineParams = CSVLineParameterHandler.lineParameters(line)
-                val uuid = lineParams[1]
-
-                if (sessionHasChanged(uuid)) {
-                    flashLinesInBufferAndCloseCurrentFile()
-                    currentSessionUUID = uuid
-                    createAndOpenNewFile()
-                }
-                try {
-                    fileWriter?.write("$line\n")
-                } catch (e: Exception) {
-                    Log.e(TAG, e.stackTraceToString())
-                }
-            }
-        }.launchIn(scope)
-    }
-
-    fun handleLinesForABM(){
-        newLinesFlow.onEach { lines ->
-            lines.forEach { line ->
-                val lineParams = CSVLineParameterHandler.lineParameters(line)
-
-                val modifiedLine = when(lineParams.size){
-                    5 -> {
-                        currentSessionUUID = lineParams[0]
-                        createAndOpenNewFile()
-                        line
-                    }
-                    4 -> {
-                        "$currentSessionUUID,$line"
-                    }
-                    else -> null
-                }
-                try {
-                    fileWriter?.write("$modifiedLine\n")
-                } catch (e: Exception) {
-                    Log.e(TAG, e.stackTraceToString())
-                }
-            }
-        }.launchIn(scope)
     }
 
     fun deleteAllSyncFiles() {
@@ -155,7 +128,14 @@ class SDCardFileService(
         mOnDownloadFinished?.invoke(stepByFilePaths)
     }
 
-    private fun sessionHasChanged(uuid: String) = uuid != currentSessionUUID
+    private fun checkAndHandleSessionChanged(uuid: String): Boolean{
+        return if(uuid.isNotBlank() && uuid != currentSessionUUID){
+            flashLinesInBufferAndCloseCurrentFile()
+            currentSessionUUID = uuid
+            createAndOpenNewFile()
+            true
+        } else false
+    }
 
     private fun flashLinesInBufferAndCloseCurrentFile() {
         try {
