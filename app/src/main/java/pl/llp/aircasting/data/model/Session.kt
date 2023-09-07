@@ -1,12 +1,20 @@
 package pl.llp.aircasting.data.model
 
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
-import pl.llp.aircasting.data.local.entity.*
+import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsDBObject
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 const val TAGS_SEPARATOR = " "
 
@@ -338,14 +346,15 @@ open class Session(
         return type == Type.MOBILE
     }
 
-    fun isAirBeam3(): Boolean {
-        return deviceType == DeviceItem.Type.AIRBEAM3
+    fun isDisconnectable(): Boolean {
+        return deviceType == DeviceItem.Type.AIRBEAM3 || deviceType == DeviceItem.Type.AIRBEAMMINI
     }
 
     fun isAirBeam(): Boolean {
         return deviceType == DeviceItem.Type.AIRBEAM3
                 || deviceType == DeviceItem.Type.AIRBEAM2
                 || deviceType == DeviceItem.Type.AIRBEAM1
+                || deviceType == DeviceItem.Type.AIRBEAMMINI
     }
 
     fun isRecording(): Boolean {

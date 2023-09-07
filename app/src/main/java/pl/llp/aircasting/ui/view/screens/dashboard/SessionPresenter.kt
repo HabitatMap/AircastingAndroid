@@ -11,7 +11,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.active.Mob
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.mobile.dormant.MobileDormantSessionActionsBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.charts.ChartData
 import pl.llp.aircasting.util.SelectedStreams
-import java.util.*
+import java.util.Date
 
 class SessionPresenter() {
     var session: Session? = null
@@ -108,7 +108,7 @@ class SessionPresenter() {
     }
 
     fun isDisconnectable(): Boolean {
-        return session?.isAirBeam3() == true
+        return session?.isDisconnectable() == true
     }
 
     fun allStreamsHaveLoaded(): Boolean {

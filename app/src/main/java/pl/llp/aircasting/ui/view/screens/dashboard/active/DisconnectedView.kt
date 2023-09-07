@@ -14,7 +14,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import kotlinx.android.synthetic.main.disconnected_view.view.*
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_description
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_finish_button
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_header
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_reconnect_button
+import kotlinx.android.synthetic.main.disconnected_view.view.reconnecting_loader
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,7 +28,13 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.*
+import pl.llp.aircasting.util.extensions.eventbus
+import pl.llp.aircasting.util.extensions.getActivity
+import pl.llp.aircasting.util.extensions.gone
+import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
+import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
@@ -83,7 +94,7 @@ class DisconnectedView(
 
         eventbus.safeRegister(this)
 
-        if (session.isAirBeam3())
+        if (session.isDisconnectable())
             bindAirBeam3(session)
         else
             bindBluetoothDevice(session)
