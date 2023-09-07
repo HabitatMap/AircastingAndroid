@@ -59,8 +59,14 @@ class SDCardFileService(
 
         newLinesFlow.onEach { lines ->
             lines.forEach { line ->
+                val lineParams = CSVLineParameterHandler.lineParameters(line)
+                if (sessionHasChanged(lineParams, deviceItem)) {
+                    flashLinesInBufferAndCloseCurrentFile()
+                    currentSessionUUID = getNewSessionUUID(lineParams, deviceItem)
+                    createAndOpenNewFile()
+                }
                 try {
-                    fileWriter?.write("${checkAndModifyLineForDevice(line, deviceItem)}\n")
+                    fileWriter?.write("${getLine(line, deviceItem)}\n")
                 } catch (e: Exception) {
                     Log.e(TAG, e.stackTraceToString())
                 }
@@ -68,22 +74,24 @@ class SDCardFileService(
         }.launchIn(scope)
     }
 
-    private fun checkAndModifyLineForDevice(line: String, deviceItem: DeviceItem): String{
-        val lineParams = CSVLineParameterHandler.lineParameters(line)
-        return when (deviceItem.type){
-            DeviceItem.Type.AIRBEAMMINI -> {
-                if(checkAndHandleSessionChanged(lineParams[0])){
-                    line
-                } else {
-                    "$currentSessionUUID$line"
-                }
-            }
-            else -> {
-                checkAndHandleSessionChanged(lineParams[1])
-                line
-            }
+    private fun getLine(line: String, deviceItem: DeviceItem) =
+        when (deviceItem.type) {
+            DeviceItem.Type.AIRBEAMMINI -> "$currentSessionUUID,$line"
+            else -> line
         }
-    }
+
+    private fun getNewSessionUUID(lineParams: List<String>, deviceItem: DeviceItem) =
+        when (deviceItem.type) {
+            DeviceItem.Type.AIRBEAMMINI -> lineParams[0]
+            else -> lineParams[1]
+        }
+
+
+    private fun sessionHasChanged(lineParams: List<String>, deviceItem: DeviceItem) =
+        when (deviceItem.type) {
+            DeviceItem.Type.AIRBEAMMINI -> lineParams.size == AIRBEAM_MINI_FULL_PARAMS_NUMBER
+            else -> lineParams[1] != currentSessionUUID
+        }
 
     fun deleteAllSyncFiles() {
         val dirs = listOf(
@@ -128,15 +136,6 @@ class SDCardFileService(
         mOnDownloadFinished?.invoke(stepByFilePaths)
     }
 
-    private fun checkAndHandleSessionChanged(uuid: String): Boolean{
-        return if(uuid.isNotBlank() && uuid != currentSessionUUID){
-            flashLinesInBufferAndCloseCurrentFile()
-            currentSessionUUID = uuid
-            createAndOpenNewFile()
-            true
-        } else false
-    }
-
     private fun flashLinesInBufferAndCloseCurrentFile() {
         try {
             fileWriter?.flush()
@@ -156,5 +155,8 @@ class SDCardFileService(
         } catch (e: Exception) {
             Log.e(TAG, e.stackTraceToString())
         }
+    }
+    companion object {
+        private const val AIRBEAM_MINI_FULL_PARAMS_NUMBER = 5
     }
 }
