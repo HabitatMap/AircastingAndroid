@@ -6,13 +6,24 @@ import android.graphics.Color
 import android.location.Location
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.activity_map.view.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.JointType
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.RoundCap
+import kotlinx.android.synthetic.main.activity_map.view.locate_button
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Measurement
@@ -254,13 +265,31 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
     private fun animateCameraToMobileSession() {
         if (mMeasurements.isEmpty()) return
         val boundingBox = SessionBoundingBox.get(mMeasurements)
-        val padding = 100 // meters
+        val padding = 100
 
-        mMap?.moveCamera(CameraUpdateFactory.newLatLngBounds(boundingBox, padding))
+        mMapFragment?.view?.let { mapView ->
+            mapView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    mapView.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-        val zoomLevel = mMap?.cameraPosition?.zoom ?: return
-        if (zoomLevel > DEFAULT_ZOOM)
-            centerMap(mMap?.cameraPosition?.target)
+                    val width = mapView.width
+                    val height = mapView.height
+
+                    mMap?.moveCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                            boundingBox,
+                            width,
+                            height,
+                            padding
+                        )
+                    )
+                    val zoomLevel = mMap?.cameraPosition?.zoom ?: return
+                    if (zoomLevel > DEFAULT_ZOOM)
+                        centerMap(mMap?.cameraPosition?.target)
+                }
+            })
+        }
     }
 
     private fun animateCameraToFixedSession() {
