@@ -59,14 +59,14 @@ class CSVSession(
         streams[streamLineParameter]?.add(measurement)
     }
 
-    fun toSession(deviceId: String): Session? {
+    fun toSession(deviceId: String, deviceType: DeviceItem.Type): Session? {
         val startTime = startTime() ?: return null
         uuid ?: return null
 
         val session = Session(
             uuid,
             deviceId,
-            DeviceItem.Type.AIRBEAM3,
+            deviceType,
             Session.Type.MOBILE,
             DEFAULT_NAME,
             ArrayList(),

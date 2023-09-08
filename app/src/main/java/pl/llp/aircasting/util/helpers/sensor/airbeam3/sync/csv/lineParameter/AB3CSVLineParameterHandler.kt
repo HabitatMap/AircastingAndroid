@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
@@ -9,6 +10,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
     override val timeParameter: ABLineParameter = AB3LineParameter.Time
     override val dateParameter: ABLineParameter = AB3LineParameter.Date
     override val uuidParameter: ABLineParameter = AB3LineParameter.UUID
+    override val deviceType: DeviceItem.Type = DeviceItem.Type.AIRBEAM3
+
     override val supportedStreams: Map<ABLineParameter, CSVMeasurementStream> = hashMapOf(
         AB3LineParameter.F to CSVMeasurementStream(
             "${CSVMeasurementStream.DEVICE_NAME}-F",

@@ -22,6 +22,8 @@ abstract class CSVLineParameterHandler {
     abstract val uuidParameter: ABLineParameter
 
     abstract val supportedStreams: Map<ABLineParameter, CSVMeasurementStream>
+    abstract val deviceType: DeviceItem.Type
+
     fun uuidFrom(line: String?): String? {
         line ?: return null
 

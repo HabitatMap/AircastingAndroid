@@ -20,7 +20,7 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val settings: Settings,
-    @Assisted lineParameterHandler: CSVLineParameterHandler,
+    @Assisted private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionsProcessor(
     fileHandlerMobile,
     mSessionsRepository,
@@ -37,7 +37,7 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
 
         if (dbSession == null) {
             Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
-            session = csvSession.toSession(deviceId) ?: return
+            session = csvSession.toSession(deviceId, lineParameterHandler.deviceType) ?: return
             sessionId = mSessionsRepository.insert(session)
         } else {
             session = Session(dbSession)
