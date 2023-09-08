@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileService
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -14,13 +14,14 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
 
-class SDCardFileService(
+abstract class SDCardFileService(
     private val scope: CoroutineScope,
     private val mCSVFileFactory: SDCardCSVFileFactory,
 ) {
@@ -32,7 +33,7 @@ class SDCardFileService(
 
     private var stepByFilePaths = mutableMapOf<SDCardReader.Step?, MutableList<String>>()
 
-    private var currentSessionUUID: String? = null
+    protected var currentSessionUUID: String? = null
     private val currentFilePath get() = "${mCSVFileFactory.getDirectory(currentStep?.type)}/$currentSessionUUID.csv"
 
     private var mOnDownloadFinished: ((measurementsPerSession: Map<SDCardReader.Step?, List<String>>) -> Unit)? =
@@ -62,11 +63,11 @@ class SDCardFileService(
                 val lineParams = CSVLineParameterHandler.lineParameters(line)
                 if (sessionHasChanged(lineParams, deviceItem)) {
                     flashLinesInBufferAndCloseCurrentFile()
-                    currentSessionUUID = getNewSessionUUID(lineParams, deviceItem)
+                    currentSessionUUID = getNewSessionUUID(lineParams)
                     createAndOpenNewFile()
                 }
                 try {
-                    fileWriter?.write("${getLine(line, deviceItem)}\n")
+                    fileWriter?.write("${getLine(line)}\n")
                 } catch (e: Exception) {
                     Log.e(TAG, e.stackTraceToString())
                 }
@@ -74,24 +75,15 @@ class SDCardFileService(
         }.launchIn(scope)
     }
 
-    private fun getLine(line: String, deviceItem: DeviceItem) =
-        when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAMMINI -> "$currentSessionUUID,$line"
-            else -> line
-        }
+    protected abstract fun getLine(line: String): String
 
-    private fun getNewSessionUUID(lineParams: List<String>, deviceItem: DeviceItem) =
-        when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAMMINI -> lineParams[0]
-            else -> lineParams[1]
-        }
+    protected abstract fun getNewSessionUUID(lineParams: List<String>): String
 
 
-    private fun sessionHasChanged(lineParams: List<String>, deviceItem: DeviceItem) =
-        when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAMMINI -> lineParams.size == 1
-            else -> lineParams[1] != currentSessionUUID
-        }
+    protected abstract fun sessionHasChanged(
+        lineParams: List<String>,
+        deviceItem: DeviceItem
+    ): Boolean
 
     fun deleteAllSyncFiles() {
         val dirs = listOf(
