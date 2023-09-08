@@ -28,12 +28,16 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
     mMeasurementsRepository,
     lineParameterHandler
 ) {
+    private var lastLat: Double? = null
+    private var lastLng: Double? = null
+
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
         val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
         val session: Session?
         val sessionId: Long
+
 
         if (dbSession == null) {
             Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
@@ -42,6 +46,10 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         } else {
             session = Session(dbSession)
             sessionId = dbSession.id
+            val measurementStreamId = mMeasurementStreamsRepository.getStreamsIdsBySessionId(sessionId).last()
+            val measurementsInDB = mMeasurementsRepository.getBySessionIdAndStreamId(sessionId, measurementStreamId)
+            lastLat = measurementsInDB.findLast { it?.latitude != null }?.latitude
+            lastLng = measurementsInDB.findLast { it?.longitude != null }?.longitude
         }
 
         Log.v(TAG, "Will save measurements: ${session.isDisconnected()}")
@@ -66,9 +74,19 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>
     ): List<CSVMeasurement> {
+
+        if(lastLat != null && lastLng != null) {
+            csvMeasurements.forEach {
+                if (it.latitude == null && it.longitude == null) {
+                    it.latitude = lastLat
+                    it.longitude = lastLng
+                }
+            }
+        }
         val lastMeasurementTime =
             mMeasurementsRepository.lastMeasurementTime(sessionId, measurementStreamId)
                 ?: return csvMeasurements
+
 
         return csvMeasurements.filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
     }
