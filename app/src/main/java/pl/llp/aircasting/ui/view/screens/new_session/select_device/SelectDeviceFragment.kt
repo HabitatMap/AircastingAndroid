@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_select_device.view.recycler_devices
 import pl.llp.aircasting.R
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 
@@ -44,6 +45,11 @@ class SelectDeviceFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         controller?.onStart()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        controller?.onPause()
     }
 
     override fun onStop() {
