@@ -34,14 +34,15 @@ interface SDCardSyncServiceFactory {
         sDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
         mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
         mSDCardCSVFileChecker: SDCardCSVFileChecker,
+        mSDCardFileService: SDCardFileService,
     ): SDCardSyncService
 }
 
 class SDCardSyncService @AssistedInject constructor(
-    private val mSDCardFileService: SDCardFileService,
     private val mSessionsSyncService: SessionsSyncService?,
     private val mErrorHandler: ErrorHandler,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
+    @Assisted private val mSDCardFileService: SDCardFileService,
     @Assisted private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     @Assisted private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
     @Assisted private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,

@@ -59,10 +59,10 @@ internal class SDCardSyncServiceTest {
         }
         val syncService = mock<SessionsSyncService>()
         val service = SDCardSyncService(
-            fileService,
             syncService,
             mock(),
             this,
+            fileService,
             fileChecker,
             mobileProcessor,
             fixedProcessor,
@@ -101,10 +101,10 @@ internal class SDCardSyncServiceTest {
                 on { areFilesCorrupted(any()) } doReturn true
             }
             val service = SDCardSyncService(
-                fileService,
                 mock(),
                 mock(),
                 this,
+                fileService,
                 fileChecker,
                 mobileProcessor,
                 fixedProcessor,
@@ -140,10 +140,10 @@ internal class SDCardSyncServiceTest {
             }
             val uploadFixedService = mock<SDCardUploadFixedMeasurementsService>()
             val service = SDCardSyncService(
-                fileService,
                 mock(),
                 mock(),
                 this,
+                fileService,
                 fileChecker,
                 mock(),
                 fixedProcessor,

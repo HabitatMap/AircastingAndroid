@@ -18,7 +18,6 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardClearService
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileService.SDCardFileService
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
@@ -30,13 +29,6 @@ import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefaul
 
 @Module
 open class SensorsModule {
-    @Provides
-    @UserSessionScope
-    fun providesSDCardDownloadService(
-        @IoCoroutineScope coroutineScope: CoroutineScope,
-        mCSVFileFactory: SDCardCSVFileFactory,
-    ): SDCardFileService = SDCardFileService(coroutineScope, mCSVFileFactory)
-
     @Provides
     @UserSessionScope
     fun providesSDCardCSVFileFactory(

@@ -20,7 +20,17 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSV
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import javax.inject.Inject
 
+class SDCardFileServiceFactory @Inject constructor(
+    private val aBMiniSDCardFileService: ABMiniSDCardFileService,
+    private val aB3SDCardFileService: AB3SDCardFileService
+) {
+    fun create(deviceType: DeviceItem.Type) = when(deviceType) {
+        DeviceItem.Type.AIRBEAMMINI -> aBMiniSDCardFileService
+        else -> aB3SDCardFileService
+    }
+}
 abstract class SDCardFileService(
     private val scope: CoroutineScope,
     private val mCSVFileFactory: SDCardCSVFileFactory,

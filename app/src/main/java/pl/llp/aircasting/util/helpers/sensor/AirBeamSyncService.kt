@@ -13,6 +13,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncService
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncServiceFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsServiceFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker.SDCardCSVFileCheckerFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileService.SDCardFileServiceFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandlerFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
@@ -40,6 +41,9 @@ class AirBeamSyncService : AirBeamService() {
     @Inject
     lateinit var sDCardUploadFixedMeasurementsServiceFactory: SDCardUploadFixedMeasurementsServiceFactory
 
+    @Inject
+    lateinit var sDCardFileServiceFactory: SDCardFileServiceFactory
+
     private lateinit var sdCardSyncService: SDCardSyncService
 
     companion object {
@@ -61,6 +65,7 @@ class AirBeamSyncService : AirBeamService() {
                 CSVLineParameterHandlerFactory.create(deviceItem.type)
             val csvFileChecker =
                 SDCardCSVFileCheckerFactory.create(deviceItem.type)
+            val sDCardFileService = sDCardFileServiceFactory.create(deviceItem.type)
 
             val mobileFileHandler =
                 mobileFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker)
@@ -85,7 +90,8 @@ class AirBeamSyncService : AirBeamService() {
                 mobileSessionsProcessor,
                 fixedSessionsProcessor,
                 uploadFixedMeasurementsService,
-                csvFileChecker
+                csvFileChecker,
+                sDCardFileService
             )
         }
 
