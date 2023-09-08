@@ -14,7 +14,7 @@ import java.io.File
 abstract class SDCardSessionsProcessor(
     private val mSDCardSessionFileHandler: SDCardSessionFileHandler,
     val mSessionsRepository: SessionsRepository,
-    private val mMeasurementStreamsRepository: MeasurementStreamsRepository,
+    val mMeasurementStreamsRepository: MeasurementStreamsRepository,
     val mMeasurementsRepository: MeasurementsRepositoryImpl,
     private val lineParameterHandler: CSVLineParameterHandler,
 ) {
