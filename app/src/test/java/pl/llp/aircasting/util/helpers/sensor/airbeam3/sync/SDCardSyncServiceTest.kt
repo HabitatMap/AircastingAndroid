@@ -13,7 +13,7 @@ import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileChecker
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessor
 import java.io.File
@@ -59,13 +59,13 @@ internal class SDCardSyncServiceTest {
         val syncService = mock<SessionsSyncService>()
         val service = SDCardSyncService(
             fileService,
+            syncService,
+            mock(),
+            this,
             fileChecker,
             mobileProcessor,
             fixedProcessor,
-            syncService,
-            mock(),
-            mock(),
-            this
+            mock()
         )
 
         service.start(abConnector, deviceItem)
@@ -101,13 +101,13 @@ internal class SDCardSyncServiceTest {
             }
             val service = SDCardSyncService(
                 fileService,
+                mock(),
+                mock(),
+                this,
                 fileChecker,
                 mobileProcessor,
                 fixedProcessor,
-                mock(),
-                mock(),
-                mock(),
-                this
+                mock()
             )
 
             service.start(abConnector, mock())
@@ -140,13 +140,13 @@ internal class SDCardSyncServiceTest {
             val uploadFixedService = mock<SDCardUploadFixedMeasurementsService>()
             val service = SDCardSyncService(
                 fileService,
+                mock(),
+                mock(),
+                this,
                 fileChecker,
                 mock(),
                 fixedProcessor,
-                mock(),
-                uploadFixedService,
-                mock(),
-                this
+                uploadFixedService
             )
 
             service.start(abConnector, deviceItem)

@@ -62,7 +62,6 @@ class SDCardReader {
     fun onMeasurementsDownloaded(dataDownloaded: ByteArray?) {
         dataDownloaded ?: return
 
-        // TODO: Add UUID to lines that don't have it
         val lines = String(dataDownloaded).lines().filter { it.isNotBlank() }
 
         EventBus.getDefault().post(

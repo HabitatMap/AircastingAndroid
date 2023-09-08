@@ -11,7 +11,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileChecker
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
@@ -26,16 +26,20 @@ interface SDCardSessionFileHandler {
 
 @AssistedFactory
 interface SDCardSessionFileHandlerFixedFactory {
-    fun create(lineParameterHandler: CSVLineParameterHandler): SDCardSessionFileHandlerFixed
+    fun create(
+        lineParameterHandler: CSVLineParameterHandler,
+        sdCardCSVFileChecker: SDCardCSVFileChecker
+    ): SDCardSessionFileHandlerFixed
 }
 
 class SDCardSessionFileHandlerFixed @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler,
     @Assisted private val lineParameterHandler: CSVLineParameterHandler,
+    @Assisted private val sdCardCSVFileChecker: SDCardCSVFileChecker,
 ) : SDCardSessionFileHandler {
     override suspend fun handle(file: File): CSVSession? = try {
         val lines = file.readLines().filter {
-            !SDCardCSVFileChecker.lineIsCorrupted(it)
+            !sdCardCSVFileChecker.lineIsCorrupted(it)
         }
         val sessionUUID = lineParameterHandler.uuidFrom(lines.firstOrNull())
         val csvSession = CSVSession(sessionUUID, lineParameterHandler)
@@ -53,7 +57,10 @@ class SDCardSessionFileHandlerFixed @AssistedInject constructor(
 
 @AssistedFactory
 interface SDCardSessionFileHandlerMobileFactory {
-    fun create(lineParameterHandler: CSVLineParameterHandler): SDCardSessionFileHandlerMobile
+    fun create(
+        lineParameterHandler: CSVLineParameterHandler,
+        sdCardCSVFileChecker: SDCardCSVFileChecker
+    ): SDCardSessionFileHandlerMobile
 }
 
 class SDCardSessionFileHandlerMobile @AssistedInject constructor(
@@ -62,6 +69,7 @@ class SDCardSessionFileHandlerMobile @AssistedInject constructor(
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
     @Assisted private val lineParameterHandler: CSVLineParameterHandler,
+    @Assisted private val sdCardCSVFileChecker: SDCardCSVFileChecker,
 ) : SDCardSessionFileHandler {
 
     private var dbSession: SessionDBObject? = null
@@ -71,7 +79,7 @@ class SDCardSessionFileHandlerMobile @AssistedInject constructor(
 
     override suspend fun handle(file: File): CSVSession? = try {
         val lines = file.readLines().filter {
-            !SDCardCSVFileChecker.lineIsCorrupted(it)
+            !sdCardCSVFileChecker.lineIsCorrupted(it)
         }
         val sessionUUID = lineParameterHandler.uuidFrom(lines.firstOrNull())
 
@@ -118,7 +126,11 @@ class SDCardSessionFileHandlerMobile @AssistedInject constructor(
         val firstMeasurementTime = Date(start)
         lineParameterHandler.supportedStreams.keys.forEach { currentStreamHeader ->
             val streamMeasurements: List<CSVMeasurement> = chunk.mapNotNull { line ->
-                lineParameterHandler.getCsvMeasurement(line, currentStreamHeader, finalAveragingWindow)
+                lineParameterHandler.getCsvMeasurement(
+                    line,
+                    currentStreamHeader,
+                    finalAveragingWindow
+                )
             }
             helper.averageMeasurements(
                 streamMeasurements,

@@ -89,7 +89,7 @@ class SDCardFileService(
 
     private fun sessionHasChanged(lineParams: List<String>, deviceItem: DeviceItem) =
         when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAMMINI -> lineParams.size == AIRBEAM_MINI_FULL_PARAMS_NUMBER
+            DeviceItem.Type.AIRBEAMMINI -> lineParams.size == 1
             else -> lineParams[1] != currentSessionUUID
         }
 
@@ -155,8 +155,5 @@ class SDCardFileService(
         } catch (e: Exception) {
             Log.e(TAG, e.stackTraceToString())
         }
-    }
-    companion object {
-        private const val AIRBEAM_MINI_FULL_PARAMS_NUMBER = 5
     }
 }

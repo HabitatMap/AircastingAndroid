@@ -1,18 +1,29 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker
 
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
 import java.io.File
 import java.io.FileReader
 
-class SDCardCSVFileChecker {
-    companion object {
-        private const val EXPECTED_FIELDS_COUNT = 13
-        private const val ACCEPTANCE_THRESHOLD = 0.8
-        fun lineIsCorrupted(line: String): Boolean {
-            val fields = line.split(",")
-            return line.isNotBlank() && fields.count() != EXPECTED_FIELDS_COUNT
-        }
+object SDCardCSVFileCheckerFactory {
+    fun create(deviceType: DeviceItem.Type): SDCardCSVFileChecker = when(deviceType) {
+        DeviceItem.Type.AIRBEAMMINI -> ABMiniSDCardCSVFileChecker()
+        else -> AB3SDCardCSVFileChecker()
     }
+}
+
+abstract class SDCardCSVFileChecker {
+    companion object {
+        private const val ACCEPTANCE_THRESHOLD = 0.8
+    }
+
+    protected abstract val expectedFieldsCount: Int
+
+    fun lineIsCorrupted(line: String): Boolean {
+        val fields = line.split(",")
+        return line.isNotBlank() && fields.count() != expectedFieldsCount
+    }
+
 
     fun areFilesCorrupted(stepsByFilePaths: Map<SDCardReader.Step?, List<String>>): Boolean {
         stepsByFilePaths.forEach { stepByPath ->

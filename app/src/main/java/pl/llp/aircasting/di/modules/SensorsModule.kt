@@ -17,10 +17,9 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileChecker
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardClearService
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardFileService
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
@@ -37,10 +36,6 @@ open class SensorsModule {
         @IoCoroutineScope coroutineScope: CoroutineScope,
         mCSVFileFactory: SDCardCSVFileFactory,
     ): SDCardFileService = SDCardFileService(coroutineScope, mCSVFileFactory)
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardCSVFileChecker(): SDCardCSVFileChecker = SDCardCSVFileChecker()
 
     @Provides
     @UserSessionScope

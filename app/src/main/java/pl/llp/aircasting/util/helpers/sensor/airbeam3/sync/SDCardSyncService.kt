@@ -21,7 +21,7 @@ import pl.llp.aircasting.util.exceptions.SDCardMissingSessionsSyncServiceError
 import pl.llp.aircasting.util.exceptions.SDCardSessionsFinalSyncError
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.SDCardCSVFileChecker
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessor
 import java.io.File
@@ -31,19 +31,20 @@ interface SDCardSyncServiceFactory {
     fun create(
         sDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
         sDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
-        mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?
+        mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
+        mSDCardCSVFileChecker: SDCardCSVFileChecker,
     ): SDCardSyncService
 }
 
 class SDCardSyncService @AssistedInject constructor(
     private val mSDCardFileService: SDCardFileService,
-    private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
+    private val mSessionsSyncService: SessionsSyncService?,
+    private val mErrorHandler: ErrorHandler,
+    @IoCoroutineScope private val coroutineScope: CoroutineScope,
+    @Assisted private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     @Assisted private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
     @Assisted private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
-    private val mSessionsSyncService: SessionsSyncService?,
     @Assisted private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
-    private val mErrorHandler: ErrorHandler,
-    @IoCoroutineScope private val coroutineScope: CoroutineScope
 ) {
     private val TAG = "SDCardSyncService"
 

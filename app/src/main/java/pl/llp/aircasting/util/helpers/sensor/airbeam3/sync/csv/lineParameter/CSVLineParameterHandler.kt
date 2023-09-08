@@ -10,7 +10,7 @@ import java.util.Date
 
 
 object CSVLineParameterHandlerFactory {
-    fun create(deviceItem: DeviceItem): CSVLineParameterHandler = when (deviceItem.type) {
+    fun create(deviceType: DeviceItem.Type): CSVLineParameterHandler = when (deviceType) {
         DeviceItem.Type.AIRBEAMMINI -> ABMiniCSVLineParameterHandler()
         else -> AB3CSVLineParameterHandler()
     }
