@@ -34,6 +34,10 @@ class SelectDeviceController(
         startScan()
     }
 
+    fun onPause(){
+        mViewMvc?.let { it.clearRecycler() }
+    }
+
     fun onStop() {
         unregisterListener(mListener)
         unRegisterBluetoothDeviceFoundReceiver()

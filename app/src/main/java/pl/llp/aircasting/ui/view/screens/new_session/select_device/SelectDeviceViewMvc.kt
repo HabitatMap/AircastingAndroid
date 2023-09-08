@@ -14,4 +14,5 @@ interface SelectDeviceViewMvc : ObservableViewMvc<SelectDeviceViewMvc.Listener> 
     fun registerOnRefreshListener(refreshListener: OnRefreshListener)
     fun bindDeviceItems(deviceItems: List<DeviceItem>)
     fun addDeviceItem(deviceItem: DeviceItem)
+    fun clearRecycler()
 }

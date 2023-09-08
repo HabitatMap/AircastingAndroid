@@ -166,6 +166,10 @@ class SelectDeviceViewMvcImpl : BaseObservableViewMvc<SelectDeviceViewMvc.Listen
         }
     }
 
+    override fun clearRecycler() {
+        mAdapter.clear()
+    }
+
     fun showRefreshButton() {
         mRefreshButton?.visibility = View.VISIBLE
     }
