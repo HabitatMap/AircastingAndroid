@@ -46,7 +46,7 @@ internal class SDCardSyncServiceTest {
             mobileStep to filePaths
         )
         val fileService = mock<SDCardFileService> {
-            on { this.start(any(), capture(onDownloadFinishedCaptor)) } doAnswer {
+            on { this.start(any(), any(), capture(onDownloadFinishedCaptor)) } doAnswer {
                 val finishedCallback = onDownloadFinishedCaptor.value
                 finishedCallback.invoke(stepsByPaths)
             }
@@ -92,7 +92,7 @@ internal class SDCardSyncServiceTest {
                 mobileStep to filePaths
             )
             val fileService = mock<SDCardFileService> {
-                on { this.start(any(), capture(onDownloadFinishedCaptor)) } doAnswer {
+                on { this.start(any(), any(), capture(onDownloadFinishedCaptor)) } doAnswer {
                     val finishedCallback = onDownloadFinishedCaptor.value
                     finishedCallback.invoke(stepsByPaths)
                 }
@@ -127,7 +127,7 @@ internal class SDCardSyncServiceTest {
                 fixedStep to filePaths
             )
             val fileService = mock<SDCardFileService> {
-                on { this.start(any(), capture(onDownloadFinishedCaptor)) } doAnswer {
+                on { this.start(any(), any(), capture(onDownloadFinishedCaptor)) } doAnswer {
                     val finishedCallback = onDownloadFinishedCaptor.value
                     finishedCallback.invoke(stepsByPaths)
                 }
