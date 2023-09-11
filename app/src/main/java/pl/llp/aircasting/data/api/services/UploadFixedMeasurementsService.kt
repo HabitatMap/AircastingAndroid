@@ -7,7 +7,7 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.CSVMeasurementStream
 import javax.inject.Inject
 
 @UserSessionScope

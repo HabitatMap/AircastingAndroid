@@ -48,7 +48,6 @@ abstract class SDCardSessionsProcessor(
         // filtering measurements to save only the ones we don't already have
         val filteredCSVMeasurements =
             filterMeasurements(sessionId, measurementStreamId, csvMeasurements)
-        // TODO: add last known location to measurements
         val measurements =
             filteredCSVMeasurements.map { csvMeasurement -> csvMeasurement.toMeasurement() }
 

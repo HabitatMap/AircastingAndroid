@@ -1,7 +1,8 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.ABMiniCSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.CSVMeasurementStream
 import javax.inject.Inject
 
 class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler() {
@@ -11,8 +12,8 @@ class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHand
     override val deviceType: DeviceItem.Type = DeviceItem.Type.AIRBEAMMINI
 
     override val supportedStreams: Map<ABLineParameter, CSVMeasurementStream> = hashMapOf(
-        ABMiniLineParameter.PM1 to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-PM1",
+        ABMiniLineParameter.PM1 to ABMiniCSVMeasurementStream(
+            "PM1",
             PM_MEASUREMENT_TYPE,
             PM_MEASUREMENT_SHORT_TYPE,
             PM_UNIT_NAME,
@@ -23,8 +24,8 @@ class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHand
             55,
             150
         ),
-        ABMiniLineParameter.PM2_5 to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
+        ABMiniLineParameter.PM2_5 to ABMiniCSVMeasurementStream(
+            "PM2.5",
             PM_MEASUREMENT_TYPE,
             PM_MEASUREMENT_SHORT_TYPE,
             PM_UNIT_NAME,

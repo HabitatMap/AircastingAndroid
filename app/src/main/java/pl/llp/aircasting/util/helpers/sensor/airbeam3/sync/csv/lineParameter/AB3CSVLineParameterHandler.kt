@@ -2,7 +2,8 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.AB3CSVMeasurementStream
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import javax.inject.Inject
 
@@ -13,8 +14,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
     override val deviceType: DeviceItem.Type = DeviceItem.Type.AIRBEAM3
 
     override val supportedStreams: Map<ABLineParameter, CSVMeasurementStream> = hashMapOf(
-        AB3LineParameter.F to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-F",
+        AB3LineParameter.F to AB3CSVMeasurementStream(
+            "F",
             "Temperature",
             "F",
             "fahrenheit",
@@ -25,8 +26,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
             105,
             135
         ),
-        AB3LineParameter.RH to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-RH",
+        AB3LineParameter.RH to AB3CSVMeasurementStream(
+            "RH",
             "Humidity",
             "RH",
             "percent",
@@ -37,8 +38,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
             75,
             100
         ),
-        AB3LineParameter.PM1 to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-PM1",
+        AB3LineParameter.PM1 to AB3CSVMeasurementStream(
+            "PM1",
             PM_MEASUREMENT_TYPE,
             PM_MEASUREMENT_SHORT_TYPE,
             PM_UNIT_NAME,
@@ -49,8 +50,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
             55,
             150
         ),
-        AB3LineParameter.PM2_5 to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-PM2.5",
+        AB3LineParameter.PM2_5 to AB3CSVMeasurementStream(
+            "PM2.5",
             PM_MEASUREMENT_TYPE,
             PM_MEASUREMENT_SHORT_TYPE,
             PM_UNIT_NAME,
@@ -61,8 +62,8 @@ class AB3CSVLineParameterHandler @Inject constructor() : CSVLineParameterHandler
             55,
             150
         ),
-        AB3LineParameter.PM10 to CSVMeasurementStream(
-            "${CSVMeasurementStream.DEVICE_NAME}-PM10",
+        AB3LineParameter.PM10 to AB3CSVMeasurementStream(
+            "PM10",
             PM_MEASUREMENT_TYPE,
             PM_MEASUREMENT_SHORT_TYPE,
             PM_UNIT_NAME,

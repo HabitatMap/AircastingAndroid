@@ -3,8 +3,8 @@ package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVSession
+import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
 import java.util.Date
 

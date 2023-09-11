@@ -1,9 +1,9 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv
+package pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.measurementStream
 
 import pl.llp.aircasting.data.model.MeasurementStream
 
-class CSVMeasurementStream(
-    val sensorName: String,
+abstract class CSVMeasurementStream(
+    val sensor: String,
     val measurementType: String,
     val measurementShortType: String,
     val unitName: String,
@@ -12,15 +12,12 @@ class CSVMeasurementStream(
     val thresholdLow: Int,
     val thresholdMedium: Int,
     val thresholdHigh: Int,
-    val thresholdVeryHigh: Int
+    val thresholdVeryHigh: Int,
+    open val deviceName: String,
 ) {
-    companion object {
-        const val DEVICE_NAME = "AirBeam3"
-    }
 
-    fun sensorPackageName(deviceId: String): String {
-        return "$DEVICE_NAME-${deviceId}"
-    }
+    val sensorName: String get() = "$deviceName-$sensor"
+    fun sensorPackageName(deviceId: String) = "$deviceName-$deviceId"
 
     fun toMeasurementStream(deviceId: String): MeasurementStream {
         return MeasurementStream(
