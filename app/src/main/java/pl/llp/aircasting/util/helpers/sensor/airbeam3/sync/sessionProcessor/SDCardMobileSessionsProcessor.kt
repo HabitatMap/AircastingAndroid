@@ -46,10 +46,9 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         } else {
             session = Session(dbSession)
             sessionId = dbSession.id
-            val measurementStreamId = mMeasurementStreamsRepository.getStreamsIdsBySessionId(sessionId).last()
-            val measurementsInDB = mMeasurementsRepository.getBySessionIdAndStreamId(sessionId, measurementStreamId)
-            lastLat = measurementsInDB.findLast { it?.latitude != null }?.latitude
-            lastLng = measurementsInDB.findLast { it?.longitude != null }?.longitude
+            val cords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
+            lastLat = cords.latitude
+            lastLng = cords.longitude
         }
 
         Log.v(TAG, "Will save measurements: ${session.isDisconnected()}")
