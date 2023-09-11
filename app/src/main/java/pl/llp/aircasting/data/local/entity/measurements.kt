@@ -31,3 +31,8 @@ data class MeasurementDBObject(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
 }
+
+data class LatLng(
+    val latitude: Double?,
+    val longitude: Double?
+)

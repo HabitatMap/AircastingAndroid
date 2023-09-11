@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.dao
 
 import androidx.room.*
+import pl.llp.aircasting.data.local.entity.LatLng
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import java.util.*
 
@@ -68,4 +69,8 @@ interface MeasurementDao {
         averagingFrequency: Int,
         time: Date
     )
+
+    @Query("SELECT latitude, longitude FROM measurements WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND session_id=:sessionId ORDER BY time LIMIT 1")
+    suspend fun lastKnownLatLng(sessionId: Long): LatLng
+
 }

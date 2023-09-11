@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.local.repository
 
 import pl.llp.aircasting.data.local.AppDatabase
+import pl.llp.aircasting.data.local.entity.LatLng
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.di.UserSessionScope
@@ -66,5 +67,9 @@ class MeasurementStreamsRepository @Inject constructor(
 
     suspend fun getStreamsIdsBySessionId(sessionId: Long): List<Long> {
         return mDatabase.measurementStreams().getStreamsIdsBySessionId(sessionId)
+    }
+
+    suspend fun getLastKnownLatLng(sessionId: Long): LatLng {
+        return mDatabase.measurements().lastKnownLatLng(sessionId)
     }
 }
