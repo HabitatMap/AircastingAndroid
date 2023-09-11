@@ -1,6 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.sync.syncing
 
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 
 interface AirbeamSyncingViewMvc {
     interface Listener {

@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.extensions.startAnimation
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardReader
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 
 class AirbeamSyncingViewMvcImpl(
     inflater: LayoutInflater,

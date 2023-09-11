@@ -2,7 +2,7 @@ package pl.llp.aircasting.data.api.params
 
 import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.model.Measurement
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.CSVMeasurement
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
 import java.util.*
 
 class MeasurementParams {

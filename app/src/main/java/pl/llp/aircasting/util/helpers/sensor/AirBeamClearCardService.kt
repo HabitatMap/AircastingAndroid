@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardClearService
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardClearService
 import javax.inject.Inject
 
 class AirBeamClearCardService: AirBeamService() {

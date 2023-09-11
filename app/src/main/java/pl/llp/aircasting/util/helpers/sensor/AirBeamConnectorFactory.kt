@@ -6,7 +6,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Connector
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.AirBeam3Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeam3Connector
 
 open class AirBeamConnectorFactory(
     private val mContext: Context,

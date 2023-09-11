@@ -7,16 +7,16 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerFixedFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSessionFileHandlerMobileFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncService
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardSyncServiceFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.SDCardUploadFixedMeasurementsServiceFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileChecker.SDCardCSVFileCheckerFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.fileService.SDCardFileServiceFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.csv.lineParameter.CSVLineParameterHandlerFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam3.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerFixedFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerMobileFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncService
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardUploadFixedMeasurementsServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileCheckerFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandlerFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
 import javax.inject.Inject
 
 class AirBeamSyncService : AirBeamService() {
