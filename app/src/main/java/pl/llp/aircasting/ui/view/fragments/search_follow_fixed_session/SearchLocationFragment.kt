@@ -18,7 +18,7 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.chip.ChipGroup
-import kotlinx.android.synthetic.main.app_bar.view.*
+import kotlinx.android.synthetic.main.app_bar.view.topAppBar
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.StringConstants

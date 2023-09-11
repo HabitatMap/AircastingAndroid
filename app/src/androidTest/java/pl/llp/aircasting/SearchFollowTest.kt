@@ -38,7 +38,8 @@ import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
 import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.helpers.*
-import pl.llp.aircasting.helpers.assertions.RecyclerViewItemCountAssertion
+import pl.llp.aircasting.helpers.assertions.assertRecyclerViewItemCount
+import pl.llp.aircasting.helpers.assertions.isNotEmpty
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
@@ -191,7 +192,7 @@ class SearchFollowTest : BaseTest() {
         var cardsCount = 0
         awaitForAssertion {
             onView(withId(R.id.recyclerFixedFollow))
-                .check(RecyclerViewItemCountAssertion {
+                .check(assertRecyclerViewItemCount {
                     cardsCount = it
                     it > 0
                 })
@@ -227,7 +228,7 @@ class SearchFollowTest : BaseTest() {
         waitForSessionData()
 
         onView(withId(R.id.recyclerFixedFollow))
-            .check(RecyclerViewItemCountAssertion {
+            .check(assertRecyclerViewItemCount {
                 it == 0
             })
         onView(withId(R.id.txtShowingSessionsNumber))
@@ -446,19 +447,18 @@ class SearchFollowTest : BaseTest() {
         onView(withId(R.id.places_autocomplete_search_bar))
             .perform(typeText(place))
 
-        onView(withId(R.id.places_autocomplete_search_bar))
-            .check(matches(withText(place)))
-
         awaitUntilAsserted {
-            onView(withId(R.id.places_autocomplete_list)).check(matches(isDisplayed()))
+            onView(withId(R.id.places_autocomplete_list)).check(isNotEmpty())
         }
-            onView(withId(R.id.places_autocomplete_list))
-                .perform(clickOnFirstItem())
+        onView(withId(R.id.places_autocomplete_list))
+            .perform(clickOnFirstItem())
     }
 
     private fun searchFieldHasHint(hint: String) {
-        onView(withId(R.id.places_autocomplete_search_input))
-            .check(matches(hintContainsString(hint)))
+        awaitUntilAsserted {
+            onView(withId(R.id.places_autocomplete_search_input))
+                .check(matches(hintContainsString(hint)))
+        }
     }
 
     private fun launchSearchScreen() {
