@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor
+package pl.llp.aircasting.util.helpers.sensor.services
 
 import android.content.Context
 import android.content.Intent

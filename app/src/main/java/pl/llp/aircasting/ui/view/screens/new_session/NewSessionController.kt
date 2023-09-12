@@ -20,7 +20,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
-import pl.llp.aircasting.services.BatteryLevelService
+import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
@@ -44,7 +44,7 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ

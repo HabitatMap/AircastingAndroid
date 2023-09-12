@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor
+package pl.llp.aircasting.util.helpers.sensor.services
 
 import android.app.NotificationChannel
 import android.app.NotificationManager

@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.services.BatteryLevelService
+import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.MOBILE_DORMANT_TAB_INDEX
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity

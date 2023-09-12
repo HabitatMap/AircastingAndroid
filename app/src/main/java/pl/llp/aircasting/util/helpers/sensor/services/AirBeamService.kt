@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor
+package pl.llp.aircasting.util.helpers.sensor.services
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +18,9 @@ import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
+import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
+import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
 import javax.inject.Inject
 
 

@@ -27,9 +27,9 @@ import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
-import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
-import pl.llp.aircasting.util.helpers.sensor.AirBeamRecordSessionService
-import pl.llp.aircasting.util.helpers.sensor.AirBeamSyncService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamClearCardService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamSyncService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import javax.inject.Scope
 

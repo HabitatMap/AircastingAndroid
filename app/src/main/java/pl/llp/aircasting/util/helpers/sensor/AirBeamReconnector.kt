@@ -13,6 +13,8 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.eventbus
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamDiscoveryService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamReconnectSessionService
 import java.util.concurrent.ConcurrentHashMap
 
 class AirBeamReconnector(

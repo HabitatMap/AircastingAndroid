@@ -31,7 +31,7 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamClearCardService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamClearCardService
 
 @AssistedFactory
 interface ClearSDCardControllerFactory {

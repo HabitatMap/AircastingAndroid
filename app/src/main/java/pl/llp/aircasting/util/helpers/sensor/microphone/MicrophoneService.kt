@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.util.helpers.sensor.SensorService
+import pl.llp.aircasting.util.helpers.sensor.services.SensorService
 import javax.inject.Inject
 
 class MicrophoneService: SensorService() {
