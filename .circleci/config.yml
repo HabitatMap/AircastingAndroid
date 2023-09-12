@@ -18,10 +18,13 @@ jobs:
           name: Store google-services.json
           command: echo $GCLOUD_SERVICES_JSON > ${HOME}/project/app/google-services.json
       - run:
-          name: Build debug APK and release APK
+          name: Build debug and test APK
           command: |
             ./gradlew :app:assembleDebug
             ./gradlew :app:assembleDebugAndroidTest
+      - run:
+          name: Run unit tests
+          command: ./gradlew :app:testDebugUnitTest
       - run:
           name: Store Google Service Account
           command: echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
