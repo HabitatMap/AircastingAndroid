@@ -17,7 +17,7 @@ import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 
-open class AirBeam3Connector(
+open class SyncableAirBeamConnector(
     private val mContext: Context,
     settings: Settings,
     private val mErrorHandler: ErrorHandler,
