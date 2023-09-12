@@ -18,7 +18,6 @@ interface FinishMobileSessionListener {
     fun onFinishMobileSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-        rootActivity.stopService(Intent(rootActivity.baseContext, BatteryLevelService::class.java))
         settings.decreaseActiveMobileSessionsCount()
 
         if (settings.mobileActiveSessionsCount() < 1)
@@ -32,7 +31,6 @@ interface FinishMobileSessionListener {
     }
 
     fun onFinishAndSyncMobileSessionConfirmed() {
-        rootActivity.stopService(Intent(rootActivity.baseContext, BatteryLevelService::class.java))
         SyncActivity.start(rootActivity)
     }
 }
