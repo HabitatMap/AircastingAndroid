@@ -5,18 +5,18 @@ import java.util.concurrent.TimeUnit
 
 object TimezoneHelper {
     fun getTimezoneOffsetInHours(): Int {
-        return TimeUnit.HOURS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.MILLISECONDS)
+        return TimeUnit.HOURS.convert(getTimezoneOffsetInMillis(), TimeUnit.MILLISECONDS)
             .toInt()
     }
 
     fun getTimezoneOffsetInSeconds(): Int {
-        return TimeUnit.SECONDS.convert(getTimezoneOffsetInMillis().toLong(), TimeUnit.MILLISECONDS)
+        return TimeUnit.SECONDS.convert(getTimezoneOffsetInMillis(), TimeUnit.MILLISECONDS)
             .toInt()
     }
 
-    fun getTimezoneOffsetInMillis(): Int {
+    private fun getTimezoneOffsetInMillis(): Long {
         val timeZone = calendar().timeZone
 
-        return timeZone.rawOffset
+        return timeZone.rawOffset.toLong()
     }
 }

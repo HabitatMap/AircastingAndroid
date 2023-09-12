@@ -1,13 +1,15 @@
 package pl.llp.aircasting.util
 
 import org.junit.Test
+import pl.llp.aircasting.util.extensions.calendar
 import kotlin.test.assertEquals
 
-class TimezoneHelperTest {
+internal class TimezoneHelperTest {
     @Test
-    fun getTimezoneOffsetInMillis() {
-        val offset = TimezoneHelper.getTimezoneOffsetInSeconds()
+    fun getTimezoneOffsetInSeconds() {
+        val expectedSecondsOffset = calendar().timeZone.rawOffset / 1000
+        val secondsOffset = TimezoneHelper.getTimezoneOffsetInSeconds()
 
-        assertEquals(3600, offset)
+        assertEquals(expectedSecondsOffset, secondsOffset)
     }
 }
