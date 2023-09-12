@@ -2,6 +2,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable
 
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.util.events.NewBatteryReadingEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
 import javax.inject.Inject
@@ -23,7 +24,17 @@ class AirBeam3Reader @Inject constructor(
         val dataString = String(value)
 
         if (dataString.isNotEmpty()) {
-            val newMeasurementEvent = responseParser.parse(dataString)
+
+            val regex = """([\d.]+)V\s+(\d+)%""".toRegex()
+            val matchResult = regex.find(dataString)
+
+            val newMeasurementEvent = if (matchResult != null){
+                val (volts, percentage) = matchResult.destructured
+                NewBatteryReadingEvent(volts.toDouble(), percentage.toInt())
+            } else {
+                responseParser.parse(dataString)
+            }
+
             newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
         }
     }
