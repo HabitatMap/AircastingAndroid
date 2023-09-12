@@ -9,7 +9,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Connector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConnector
 
 open class AirBeamConnectorFactory(
-    private val mContext: Context,
+    private val applicationContext: Context,
     private val mSettings: Settings,
     private val mErrorHandler: ErrorHandler,
     private val bluetoothManager: BluetoothManager
@@ -17,7 +17,7 @@ open class AirBeamConnectorFactory(
     open fun get(deviceItem: DeviceItem): AirBeamConnector {
         return when (deviceItem.type) {
             DeviceItem.Type.AIRBEAM3, DeviceItem.Type.AIRBEAMMINI -> SyncableAirBeamConnector(
-                mContext,
+                applicationContext,
                 mSettings,
                 mErrorHandler,
                 bluetoothManager

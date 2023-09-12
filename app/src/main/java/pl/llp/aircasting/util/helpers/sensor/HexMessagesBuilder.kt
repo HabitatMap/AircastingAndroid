@@ -2,8 +2,9 @@ package pl.llp.aircasting.util.helpers.sensor
 
 import android.util.Base64
 import pl.llp.aircasting.util.TimezoneHelper
+import javax.inject.Inject
 
-class HexMessagesBuilder {
+class HexMessagesBuilder @Inject constructor() {
     private val BEGIN_MESSAGE_CODE = 0xfe.toByte()
     private val END_MESSAGE_CODE = 0xff.toByte()
     private val BLUETOOTH_STREAMING_METHOD_CODE = 0x01.toByte()

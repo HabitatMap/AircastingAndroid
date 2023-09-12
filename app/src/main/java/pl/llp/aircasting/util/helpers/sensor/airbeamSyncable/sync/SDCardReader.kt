@@ -5,8 +5,9 @@ import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
+import javax.inject.Inject
 
-class SDCardReader {
+class SDCardReader @Inject constructor() {
     private val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
     private val CLEAR_FINISHED = "SD_DELETE_FINISH"
     private val COUNTER_STEP_PATTERN = "Count"

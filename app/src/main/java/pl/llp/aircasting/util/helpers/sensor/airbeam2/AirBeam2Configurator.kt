@@ -5,6 +5,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import java.io.OutputStream
 
+// TODO: Add to DI
 class AirBeam2Configurator(private val mSettings: Settings) {
     private val mHexMessagesBuilder = HexMessagesBuilder()
 

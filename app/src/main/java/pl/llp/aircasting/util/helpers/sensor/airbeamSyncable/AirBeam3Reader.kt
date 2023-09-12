@@ -4,6 +4,7 @@ import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
+import javax.inject.Inject
 
 /**
  * This reader will be effectively use only in MOBILE sessions
@@ -11,7 +12,7 @@ import pl.llp.aircasting.util.helpers.sensor.ResponseParser
  * No NewMeasurementEvent will be posted for FIXED sessions
  */
 
-class AirBeam3Reader(
+class AirBeam3Reader @Inject constructor(
     errorHandler: ErrorHandler
 ) {
     val responseParser = ResponseParser(errorHandler)
