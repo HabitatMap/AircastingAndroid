@@ -1,4 +1,4 @@
-package pl.llp.aircasting.services
+package pl.llp.aircasting.util.helpers.sensor.services
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -23,23 +23,23 @@ class BatteryLevelService: Service() {
     }
 
     override fun onDestroy() {
-        Log.d("BatteryService", "service destroyed")
+        Log.d("BatteryService", "Service destroyed")
         unregisterFromEventBus()
         super.onDestroy()
     }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.d("BatteryService", "service Started")
+        Log.d("BatteryService", "Service Started")
         createNotificationChannel()
-        startForeground(BATTERY_LEVEL_NOTIFICATION_ID, updateNotification(0))
+        startForeground(BATTERY_LEVEL_NOTIFICATION_ID, createNotification(0))
         registerToEventBus()
         return START_STICKY
     }
 
     private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "battery level chanel"
+            val name = "battery level chanel" //TODO(12.09.2023, Seb): replace with String resource
             val descritionText = "channel for battery level notif"
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(BATTERY_LEVEL_CHANNEL_ID, name, importance).apply { description = descritionText }
@@ -48,32 +48,28 @@ class BatteryLevelService: Service() {
         }
     }
 
-    private fun updateNotification(batteryLevel: Int): Notification{
-        Log.d("BatteryService", "notification updated")
+    private fun createNotification(batteryLevel: Int): Notification{
         val builder = NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_CHANNEL_ID)
-            .setContentTitle("Battery Level")
+            .setContentTitle("Battery Level") //TODO: stringResource
             .setContentText("$batteryLevel%")
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setSmallIcon(R.drawable.ic_airbeam3)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.drawable.aircasting)
             .setOngoing(true)
         return builder.build()
     }
 
-    companion object{
-        const val BATTERY_LEVEL_CHANNEL_ID = "BatteryLevel"
-        const val BATTERY_LEVEL_NOTIFICATION_ID = 101
-    }
 
     @Subscribe
     fun onMessageEvent(event: NewBatteryReadingEvent){
         Log.d("BatteryService", "event recived")
-        update(event.percentage)
+        updateNotification(event.percentage)
     }
 
-    private fun update(batteryLevel: Int){
+    private fun updateNotification(batteryLevel: Int){
         if (batteryLevel != battery){
+            Log.d("BatteryService", "Notification updated")
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(BATTERY_LEVEL_NOTIFICATION_ID, updateNotification(batteryLevel))
+            notificationManager.notify(BATTERY_LEVEL_NOTIFICATION_ID, createNotification(batteryLevel))
             battery = batteryLevel
         }
 
@@ -84,5 +80,9 @@ class BatteryLevelService: Service() {
 
     private fun unregisterFromEventBus() {
         EventBus.getDefault().unregister(this)
+    }
+    companion object{
+        private const val BATTERY_LEVEL_CHANNEL_ID = "BatteryLevel"
+        private const val BATTERY_LEVEL_NOTIFICATION_ID = 101
     }
 }

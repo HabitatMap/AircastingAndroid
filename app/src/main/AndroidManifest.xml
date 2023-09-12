@@ -63,18 +63,18 @@
             android:name=".util.helpers.sensor.microphone.MicrophoneService"
             android:stopWithTask="true" />
         <service
-            android:name=".util.helpers.sensor.AirBeamRecordSessionService"
+            android:name=".util.helpers.sensor.services.AirBeamRecordSessionService"
             android:stopWithTask="true" />
         <service
-            android:name=".util.helpers.sensor.AirBeamReconnectSessionService"
+            android:name=".util.helpers.sensor.services.AirBeamReconnectSessionService"
             android:stopWithTask="true" />
         <service
-            android:name=".util.helpers.sensor.AirBeamSyncService"
+            android:name=".util.helpers.sensor.services.AirBeamSyncService"
             android:stopWithTask="true" />
         <service
-            android:name=".util.helpers.sensor.AirBeamClearCardService"
+            android:name=".util.helpers.sensor.services.AirBeamClearCardService"
             android:stopWithTask="true" />
-        <service android:name=".services.BatteryLevelService"/>
+        <service android:name=".util.helpers.sensor.services.BatteryLevelService"/>
 
         <activity
             android:name=".ui.view.screens.onboarding.OnboardingActivity"
