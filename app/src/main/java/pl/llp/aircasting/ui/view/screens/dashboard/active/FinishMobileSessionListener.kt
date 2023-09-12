@@ -1,8 +1,10 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
+import android.content.Intent
 import androidx.fragment.app.FragmentActivity
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.services.BatteryLevelService
 import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Companion.MOBILE_DORMANT_TAB_INDEX
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
@@ -16,7 +18,7 @@ interface FinishMobileSessionListener {
     fun onFinishMobileSessionConfirmed(session: Session) {
         val event = StopRecordingEvent(session.uuid)
         EventBus.getDefault().post(event)
-
+        rootActivity.stopService(Intent(rootActivity.baseContext, BatteryLevelService::class.java))
         settings.decreaseActiveMobileSessionsCount()
 
         if (settings.mobileActiveSessionsCount() < 1)
@@ -30,6 +32,7 @@ interface FinishMobileSessionListener {
     }
 
     fun onFinishAndSyncMobileSessionConfirmed() {
+        rootActivity.stopService(Intent(rootActivity.baseContext, BatteryLevelService::class.java))
         SyncActivity.start(rootActivity)
     }
 }

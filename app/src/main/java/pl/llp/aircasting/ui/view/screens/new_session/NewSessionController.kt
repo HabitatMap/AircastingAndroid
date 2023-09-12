@@ -2,6 +2,7 @@ package pl.llp.aircasting.ui.view.screens.new_session
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.os.Build
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
+import pl.llp.aircasting.services.BatteryLevelService
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
@@ -331,8 +333,17 @@ class NewSessionController @AssistedInject constructor(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        if (session.type == Session.Type.MOBILE)
+        if (session.type == Session.Type.MOBILE){
             settings.increaseActiveMobileSessionsCount()
+            val intent = Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                mContextActivity.applicationContext.startForegroundService(intent)
+            }else {
+                mContextActivity.applicationContext.startService(intent)
+            }
+
+        }
+
 
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
