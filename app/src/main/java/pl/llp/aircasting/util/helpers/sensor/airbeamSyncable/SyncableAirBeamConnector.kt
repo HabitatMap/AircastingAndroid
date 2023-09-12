@@ -18,12 +18,12 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 
 open class SyncableAirBeamConnector(
-    private val mContext: Context,
+    private val applicationContext: Context,
     settings: Settings,
     private val mErrorHandler: ErrorHandler,
     private val bluetoothManager: BluetoothManager,
-    private var airBeam3Configurator: AirBeam3Configurator = AirBeam3Configurator(
-        mContext,
+    private var airBeam3Configurator: SyncableAirBeamConfigurator = SyncableAirBeamConfigurator(
+        applicationContext,
         mErrorHandler,
         settings
     )
@@ -48,7 +48,7 @@ open class SyncableAirBeamConnector(
     }
 
     private fun bleNotSupported(): Boolean {
-        val packageManager = mContext.packageManager
+        val packageManager = applicationContext.packageManager
         return !packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)
     }
 
@@ -78,7 +78,7 @@ open class SyncableAirBeamConnector(
         if (deviceItem == null) {
             mErrorHandler.handle(MissingDeviceAfterConnectionError())
         } else {
-            airBeam3Configurator.triggerSDCardDownload(deviceItem.id)
+            airBeam3Configurator.triggerSDCardDownload()
         }
     }
 
