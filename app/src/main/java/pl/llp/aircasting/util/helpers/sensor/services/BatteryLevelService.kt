@@ -39,8 +39,8 @@ class BatteryLevelService: Service() {
 
     private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "batteryLastState level chanel" //TODO(12.09.2023, Seb): replace with String resource
-            val descritionText = "channel for batteryLastState level notif"
+            val name = getString(R.string.battery_level_channel_name)
+            val descritionText = getString(R.string.battery_level_channel_desc)
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(BATTERY_LEVEL_CHANNEL_ID, name, importance).apply { description = descritionText }
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -50,7 +50,7 @@ class BatteryLevelService: Service() {
 
     private fun createNotification(contentText: String = ""): Notification{
         val builder = NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_CHANNEL_ID)
-            .setContentTitle("Battery Level") //TODO: stringResource
+            .setContentTitle(getString(R.string.battery_level_notification_title))
             .setContentText(contentText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.aircasting)
