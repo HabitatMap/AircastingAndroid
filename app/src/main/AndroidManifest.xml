@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="pl.llp.aircasting">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission
         android:name="android.permission.BLUETOOTH"
@@ -73,6 +74,7 @@
         <service
             android:name=".util.helpers.sensor.AirBeamClearCardService"
             android:stopWithTask="true" />
+        <service android:name=".services.BatteryLevelService"/>
 
         <activity
             android:name=".ui.view.screens.onboarding.OnboardingActivity"
