@@ -429,5 +429,8 @@
     <string name="save_button">Salvar</string>
     <string name="toggle_night_mode_change_caution_header">Sesión móvil activa</string>
     <string name="toggle_night_mode_change_caution_description">Advertencia: activar o desactivar el tema oscuro durante la grabación de una sesión móvil terminará las conexiones Bluetooth.</string>
+    <string name="battery_level_channel_name">Canal de nivel de batería</string>
+    <string name="battery_level_notification_title">Nivel de batería de AirBeam</string>
+    <string name="battery_level_not_available">No disponible</string>
 
 </resources>

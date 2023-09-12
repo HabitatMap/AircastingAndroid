@@ -550,5 +550,9 @@
 
     <!-- Generic -->
     <string name="save_button">Save</string>
+    <string name="battery_level_channel_name">Battery Level Channel</string>
+    <string name="battery_level_channel_desc">Channel for battery level notifications</string>
+    <string name="battery_level_notification_title">AirBeam battery level</string>
+    <string name="battery_level_not_available">Not Available</string>
 
 </resources>
