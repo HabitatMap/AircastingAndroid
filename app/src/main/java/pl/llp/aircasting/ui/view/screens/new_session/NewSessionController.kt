@@ -20,10 +20,13 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
-import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
-import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.*
+import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.AirBeamConnectedViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.SelectDeviceViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.select_device_type.SelectDeviceTypeViewMvc
@@ -44,10 +47,12 @@ import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.LocationPermissionPopUp
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
+import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
+
 @AssistedFactory
 interface NewSessionControllerFactory {
     fun create(
@@ -57,6 +62,7 @@ interface NewSessionControllerFactory {
         sessionType: Session.Type
     ): NewSessionController
 }
+
 class NewSessionController @AssistedInject constructor(
     @Assisted private val mContextActivity: AppCompatActivity,
     @Assisted mViewMvc: NewSessionViewMvc,
@@ -234,6 +240,7 @@ class NewSessionController @AssistedInject constructor(
                 if (permissionsManager.permissionsGranted(grantResults)) requestBluetoothEnable() else errorHandler.showError(
                     R.string.bluetooth_error_permissions
                 )
+
             else -> errorHandler.showError(R.string.unknown_error)
         }
     }
@@ -333,22 +340,23 @@ class NewSessionController @AssistedInject constructor(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        if (session.type == Session.Type.MOBILE){
+        if (session.type == Session.Type.MOBILE) {
             settings.increaseActiveMobileSessionsCount()
-            val intent = Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                mContextActivity.applicationContext.startForegroundService(intent)
-            }else {
-                mContextActivity.applicationContext.startService(intent)
-            }
-
+            startBatteryLevelService()
         }
-
-
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
+    }
+
+    private fun startBatteryLevelService() {
+        val intent = Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            mContextActivity.applicationContext.startForegroundService(intent)
+        } else {
+            mContextActivity.applicationContext.startService(intent)
+        }
     }
 
     fun areMapsDisabled()

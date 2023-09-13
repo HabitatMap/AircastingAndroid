@@ -83,9 +83,11 @@ class SyncableAirBeamConnector(
     override fun onDeviceConnecting(device: BluetoothDevice) {
         Log.v(TAG, "Device connecting: $device")
     }
+
     override fun onDeviceConnected(device: BluetoothDevice) {
         Log.v(TAG, "Device connected: $device")
     }
+
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceFailedToConnect"))
         val deviceItem = DeviceItem(device)
@@ -95,6 +97,7 @@ class SyncableAirBeamConnector(
     override fun onDeviceReady(device: BluetoothDevice) {
         Log.v(TAG, "Device ready: $device")
     }
+
     override fun onDeviceDisconnecting(device: BluetoothDevice) {
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnecting"))
     }

@@ -8,10 +8,15 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
-import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.events.ConfigureSession
+import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
+import pl.llp.aircasting.util.events.SendSessionAuth
+import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import java.util.*
+import java.util.Timer
+import java.util.TimerTask
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.timerTask
@@ -40,7 +45,11 @@ abstract class AirBeamConnector(
     protected abstract fun start(deviceItem: DeviceItem)
     protected abstract fun stop()
     protected abstract fun sendAuth(sessionUUID: String)
-    protected abstract fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?)
+    protected abstract fun configureSession(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?
+    )
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         mDeviceItem = deviceItem
