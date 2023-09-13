@@ -20,6 +20,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParame
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
 class SDCardFileServiceFactory @Inject constructor(
@@ -37,7 +38,7 @@ abstract class SDCardFileService(
 ) {
 
     private var fileWriter: FileWriter? = null
-    private var counter = 0
+    private var counter = AtomicInteger()
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
     private val currentStep get() = steps.lastOrNull()
 
@@ -110,7 +111,7 @@ abstract class SDCardFileService(
 
     @Subscribe
     fun onEvent(event: SDCardReadStepStartedEvent) {
-        counter = 0
+        counter.set(0)
         steps.add(event.step)
         stepByFilePaths[currentStep] = mutableListOf()
     }
@@ -124,9 +125,9 @@ abstract class SDCardFileService(
         }
 
         val linesCount = fourLinesOfMeasurements.size
-        counter += linesCount
+        counter.addAndGet(linesCount)
 
-        currentStep?.let { mOnLinesDownloaded?.invoke(it, counter) }
+        currentStep?.let { mOnLinesDownloaded?.invoke(it, counter.get()) }
     }
 
     @Subscribe
