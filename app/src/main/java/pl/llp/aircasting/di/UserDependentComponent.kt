@@ -27,10 +27,12 @@ import pl.llp.aircasting.ui.view.screens.session_view.map.MapActivity
 import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActivity
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeam3Reader
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamClearCardService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamSyncService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import javax.inject.Scope
 
 @UserSessionScope
@@ -52,6 +54,8 @@ interface UserDependentComponent {
     interface Factory {
         fun create(): UserDependentComponent
     }
+    fun inject(target: AirBeam3Reader)
+    fun inject(target: BatteryLevelService)
 
     fun inject(app: AircastingApplication)
     fun inject(activity: BaseActivity)
