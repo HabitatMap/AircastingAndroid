@@ -20,7 +20,14 @@ object CoroutineModule {
     @IoCoroutineScope
     @Provides
     fun provideIoCoroutineScope(): CoroutineScope = CoroutineScope(Dispatchers.IO)
+    @MainScope
+    @Provides
+    fun provideMainScope(): CoroutineScope = CoroutineScope(Dispatchers.Main)
 }
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class MainScope
 
 @Retention(AnnotationRetention.BINARY)
 @Qualifier

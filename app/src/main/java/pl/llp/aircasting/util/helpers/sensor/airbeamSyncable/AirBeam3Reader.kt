@@ -1,8 +1,13 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable
 
+import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.util.events.NewBatteryReadingEvent
+import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
 import javax.inject.Inject
@@ -14,9 +19,20 @@ import javax.inject.Inject
  */
 
 class AirBeam3Reader @Inject constructor(
+    context: Context,
     errorHandler: ErrorHandler
 ) {
-    val responseParser = ResponseParser(errorHandler)
+    @Inject
+    @MainScope
+    lateinit var coroutineScope: CoroutineScope
+    @Inject
+    lateinit var batteryLevelFlow: MutableSharedFlow<Int>
+
+    private val responseParser = ResponseParser(errorHandler)
+
+    init {
+        (context as AircastingApplication).userDependentComponent?.inject(this)
+    }
 
     fun run(data: Data) {
         val value = data.value ?: return
@@ -28,14 +44,18 @@ class AirBeam3Reader @Inject constructor(
             val regex = """([\d.]+)V\s+(\d+)%""".toRegex()
             val matchResult = regex.find(dataString)
 
-            val newMeasurementEvent = if (matchResult != null){
+            if (matchResult != null){
                 val (volts, percentage) = matchResult.destructured
-                NewBatteryReadingEvent(volts.toDouble(), percentage.toInt())
+                emitBatteryLevel(percentage.toInt())
             } else {
-                responseParser.parse(dataString)
+                responseParser.parse(dataString)?.let { EventBus.getDefault().post(it) }
             }
+        }
+    }
 
-            newMeasurementEvent?.let { EventBus.getDefault().post(newMeasurementEvent) }
+    private fun emitBatteryLevel(percentage: Int){
+        coroutineScope.launch {
+            batteryLevelFlow.emit(percentage)
         }
     }
 }
