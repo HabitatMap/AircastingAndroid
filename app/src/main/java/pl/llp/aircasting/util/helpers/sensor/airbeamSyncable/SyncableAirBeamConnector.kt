@@ -9,7 +9,6 @@ import no.nordicsemi.android.ble.observer.ConnectionObserver
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.MissingDeviceAfterConnectionError
@@ -17,16 +16,11 @@ import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 
-open class SyncableAirBeamConnector(
+class SyncableAirBeamConnector(
     private val applicationContext: Context,
-    settings: Settings,
     private val mErrorHandler: ErrorHandler,
-    private val bluetoothManager: BluetoothManager,
-    private var airBeam3Configurator: SyncableAirBeamConfigurator = SyncableAirBeamConfigurator(
-        applicationContext,
-        mErrorHandler,
-        settings
-    )
+    bluetoothManager: BluetoothManager,
+    private val airBeam3Configurator: SyncableAirBeamConfigurator
 ) : AirBeamConnector(bluetoothManager), ConnectionObserver {
 
     override fun start(deviceItem: DeviceItem) {

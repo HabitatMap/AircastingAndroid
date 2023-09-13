@@ -4,10 +4,13 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import java.io.OutputStream
+import javax.inject.Inject
 
 // TODO: Add to DI
-class AirBeam2Configurator(private val mSettings: Settings) {
-    private val mHexMessagesBuilder = HexMessagesBuilder()
+class AirBeam2Configurator @Inject constructor(
+    private val mSettings: Settings,
+    private val mHexMessagesBuilder: HexMessagesBuilder,
+) {
 
     fun sendAuth(sessionUUID: String, outputStream: OutputStream) {
         sendUUID(sessionUUID, outputStream)
@@ -20,10 +23,15 @@ class AirBeam2Configurator(private val mSettings: Settings) {
         wifiSSID: String?,
         wifiPassword: String?,
         outputStream: OutputStream
-    ){
-        when(session.type) {
+    ) {
+        when (session.type) {
             Session.Type.MOBILE -> configureMobileSession(outputStream)
-            Session.Type.FIXED -> configureFixedSession(session, wifiSSID, wifiPassword, outputStream)
+            Session.Type.FIXED -> configureFixedSession(
+                session,
+                wifiSSID,
+                wifiPassword,
+                outputStream
+            )
         }
     }
 
@@ -76,7 +84,10 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     ) {
         val streamingMethodMessage = when (streamingMethod) {
             Session.StreamingMethod.CELLULAR -> mHexMessagesBuilder.cellularConfigurationMessage
-            Session.StreamingMethod.WIFI -> mHexMessagesBuilder.wifiConfigurationMessage(wifiSSID!!, wifiPassword!!)
+            Session.StreamingMethod.WIFI -> mHexMessagesBuilder.wifiConfigurationMessage(
+                wifiSSID!!,
+                wifiPassword!!
+            )
         }
 
         sendMessage(streamingMethodMessage, outputStream)
@@ -90,6 +101,7 @@ class AirBeam2Configurator(private val mSettings: Settings) {
     private fun sleepFor(sleepTime: Long) {
         try {
             Thread.sleep(sleepTime)
-        } catch (ignore: InterruptedException) {}
+        } catch (ignore: InterruptedException) {
+        }
     }
 }
