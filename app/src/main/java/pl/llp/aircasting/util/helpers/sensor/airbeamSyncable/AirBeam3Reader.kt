@@ -25,13 +25,14 @@ class AirBeam3Reader @Inject constructor(
     @Inject
     @MainScope
     lateinit var coroutineScope: CoroutineScope
+
     @Inject
     lateinit var batteryLevelFlow: MutableSharedFlow<Int>
 
     private val responseParser = ResponseParser(errorHandler)
 
     init {
-        (context as AircastingApplication).userDependentComponent?.inject(this)
+        (context as AircastingApplication).userDependentComponent?.inject(this) //TODO: ?
     }
 
     fun run(data: Data) {
@@ -40,22 +41,32 @@ class AirBeam3Reader @Inject constructor(
         val dataString = String(value)
 
         if (dataString.isNotEmpty()) {
+            val batteryPercentage = getBatteryLevelOrNull(dataString)
 
-            val regex = """([\d.]+)V\s+(\d+)%""".toRegex()
-            val matchResult = regex.find(dataString)
-
-            if (matchResult != null){
-                val (volts, percentage) = matchResult.destructured
-                emitBatteryLevel(percentage.toInt())
+            if (batteryPercentage != null) {
+                updateBatteryLevel(batteryPercentage)
             } else {
-                responseParser.parse(dataString)?.let { EventBus.getDefault().post(it) }
+                postNewMeasurementEvent(dataString)
             }
         }
     }
 
-    private fun emitBatteryLevel(percentage: Int){
+    private fun getBatteryLevelOrNull(dataString: String): Int? {
+        val regex = """(\d+)%""".toRegex()
+        val matchResult = regex.find(dataString)
+        return if (matchResult != null) {
+            val (percentage) = matchResult.destructured
+            percentage.toIntOrNull()
+        } else null
+    }
+
+    private fun updateBatteryLevel(percentage: Int) {
         coroutineScope.launch {
             batteryLevelFlow.emit(percentage)
         }
+    }
+
+    private fun postNewMeasurementEvent(measurement: String) {
+        responseParser.parse(measurement)?.let { EventBus.getDefault().post(it) }
     }
 }

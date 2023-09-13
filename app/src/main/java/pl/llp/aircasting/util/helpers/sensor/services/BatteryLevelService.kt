@@ -13,13 +13,11 @@ import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
-import pl.llp.aircasting.di.modules.MainDispatcher
 import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
@@ -36,7 +34,7 @@ class BatteryLevelService : Service() {
     @Inject
     lateinit var batteryLevelFlow: MutableSharedFlow<Int>
 
-    private val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+    private lateinit var notificationManager: NotificationManager
 
     private var batteryLastState: Int = 0
     override fun onBind(p0: Intent?): IBinder? {
@@ -53,6 +51,7 @@ class BatteryLevelService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("BatteryService", "Service Started")
         (application as AircastingApplication).userDependentComponent?.inject(this)
+        notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
         startForeground(BATTERY_LEVEL_NOTIFICATION_ID, createNotification())
         observeBatteryFlow()
@@ -97,7 +96,7 @@ class BatteryLevelService : Service() {
         }
     }
 
-    private fun isOutOfHysteresis(batteryLevel: Int): Boolean{
+    private fun isOutOfHysteresis(batteryLevel: Int): Boolean {
         val upperBoundary = batteryLastState + 2
         val lowerBoundary = batteryLastState - 3
         return batteryLevel !in lowerBoundary..upperBoundary
@@ -120,7 +119,8 @@ class BatteryLevelService : Service() {
     fun onMessageEvent(event: SensorDisconnectedEvent) {
         notificationManager.notify(
             BATTERY_LEVEL_NOTIFICATION_ID,
-            createNotification(getString(R.string.battery_level_not_available)))
+            createNotification(getString(R.string.battery_level_not_available))
+        )
     }
 
 
