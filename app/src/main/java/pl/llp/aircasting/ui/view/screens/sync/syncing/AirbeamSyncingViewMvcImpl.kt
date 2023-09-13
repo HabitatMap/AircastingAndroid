@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.*
+import kotlinx.android.synthetic.main.fragment_airbeam_syncing.view.airbeam_syncing_header
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseObservableViewMvc
 import pl.llp.aircasting.util.extensions.startAnimation
@@ -43,7 +43,7 @@ class AirbeamSyncingViewMvcImpl(
     override fun updateProgress(step: SDCardReader.Step, linesRead: Int) {
         val title = context.getString(R.string.airbeam_syncing_header)
         val stepTitle = stepTitles[step.type]
-        header?.text = "${title} ${stepTitle}: \n ${linesRead}/${step.measurementsCount}"
+        header?.text = "${title} ${stepTitle}: ${linesRead}/${step.measurementsCount}"
         if (linesRead == step.measurementsCount) {
             header?.text = getString(R.string.airbeam_syncing_finalizing)
         }

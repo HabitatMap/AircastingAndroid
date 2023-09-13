@@ -10,7 +10,6 @@ import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.exceptions.BaseException
@@ -85,16 +84,9 @@ class SDCardSyncService @AssistedInject constructor(
 
         airBeamConnector.triggerSDCardDownload()
 
-        mSDCardFileService.start(
-            deviceItem = deviceItem,
-            onLinesDownloaded = { step, linesCount ->
-                val event = SDCardLinesReadEvent(step, linesCount)
-                EventBus.getDefault().post(event)
-            },
-            onDownloadFinished = { stepsByFilePaths ->
-                handleDownloadedFiles(stepsByFilePaths)
-            }
-        )
+        mSDCardFileService.start { stepsByFilePaths ->
+            handleDownloadedFiles(stepsByFilePaths)
+        }
     }
 
     private fun handleDownloadedFiles(
