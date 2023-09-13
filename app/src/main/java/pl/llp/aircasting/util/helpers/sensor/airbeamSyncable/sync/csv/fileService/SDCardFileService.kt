@@ -16,7 +16,6 @@ import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandler
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -37,10 +36,10 @@ abstract class SDCardFileService(
     private val mCSVFileFactory: SDCardCSVFileFactory,
 ) {
 
-    private var fileWriter: FileWriter? = null
-    private var counter = AtomicInteger()
+    protected var fileWriter: FileWriter? = null
+    protected var counter = AtomicInteger()
     private var steps: ArrayList<SDCardReader.Step> = ArrayList()
-    private val currentStep get() = steps.lastOrNull()
+    protected val currentStep get() = steps.lastOrNull()
 
     private var stepByFilePaths = mutableMapOf<SDCardReader.Step?, MutableList<String>>()
 
@@ -49,7 +48,6 @@ abstract class SDCardFileService(
 
     private var mOnDownloadFinished: ((measurementsPerSession: Map<SDCardReader.Step?, List<String>>) -> Unit)? =
         null
-    private var mOnLinesDownloaded: ((step: SDCardReader.Step, linesCount: Int) -> Unit)? = null
 
     private val newLinesFlow = MutableSharedFlow<List<String>>()
 
@@ -58,11 +56,8 @@ abstract class SDCardFileService(
     }
 
     fun start(
-        deviceItem: DeviceItem,
-        onLinesDownloaded: (step: SDCardReader.Step, linesCount: Int) -> Unit,
         onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
     ) {
-        mOnLinesDownloaded = onLinesDownloaded
         mOnDownloadFinished = onDownloadFinished
 
         steps = ArrayList()
@@ -70,31 +65,11 @@ abstract class SDCardFileService(
         currentSessionUUID = null
 
         newLinesFlow.onEach { lines ->
-            lines.forEach { line ->
-                val lineParams = CSVLineParameterHandler.lineParameters(line)
-                if (sessionHasChanged(lineParams, deviceItem)) {
-                    flashLinesInBufferAndCloseCurrentFile()
-                    currentSessionUUID = getNewSessionUUID(lineParams)
-                    createAndOpenNewFile()
-                }
-                try {
-                    fileWriter?.write("${getLine(line)}\n")
-                } catch (e: Exception) {
-                    Log.e(TAG, e.stackTraceToString())
-                }
-            }
+            process(lines)
         }.launchIn(scope)
     }
 
-    protected abstract fun getLine(line: String): String
-
-    protected abstract fun getNewSessionUUID(lineParams: List<String>): String
-
-
-    protected abstract fun sessionHasChanged(
-        lineParams: List<String>,
-        deviceItem: DeviceItem
-    ): Boolean
+    protected abstract fun process(lines: List<String>)
 
     fun deleteAllSyncFiles() {
         val dirs = listOf(
@@ -123,11 +98,6 @@ abstract class SDCardFileService(
         scope.launch {
             newLinesFlow.emit(fourLinesOfMeasurements)
         }
-
-        val linesCount = fourLinesOfMeasurements.size
-        counter.addAndGet(linesCount)
-
-        currentStep?.let { mOnLinesDownloaded?.invoke(it, counter.get()) }
     }
 
     @Subscribe
@@ -139,7 +109,7 @@ abstract class SDCardFileService(
         mOnDownloadFinished?.invoke(stepByFilePaths)
     }
 
-    private fun flashLinesInBufferAndCloseCurrentFile() {
+    protected fun flashLinesInBufferAndCloseCurrentFile() {
         try {
             fileWriter?.flush()
             fileWriter?.close()
@@ -148,7 +118,7 @@ abstract class SDCardFileService(
         }
     }
 
-    private fun createAndOpenNewFile() {
+    protected fun createAndOpenNewFile() {
         try {
             val file = File(currentFilePath)
             Log.v(TAG, "Creating file: $file")

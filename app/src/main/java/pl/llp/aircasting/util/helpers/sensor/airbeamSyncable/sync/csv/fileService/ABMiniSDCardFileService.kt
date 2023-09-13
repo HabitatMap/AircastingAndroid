@@ -1,17 +1,46 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService
 
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.di.modules.IoCoroutineScope
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandler
 import javax.inject.Inject
 
 class ABMiniSDCardFileService @Inject constructor(
     @IoCoroutineScope private val scope: CoroutineScope,
-    private val mCSVFileFactory: SDCardCSVFileFactory,
+    mCSVFileFactory: SDCardCSVFileFactory,
 ) : SDCardFileService(scope, mCSVFileFactory) {
-    override fun getLine(line: String) = "$currentSessionUUID,$line"
-    override fun getNewSessionUUID(lineParams: List<String>) = lineParams[0]
-    override fun sessionHasChanged(lineParams: List<String>, deviceItem: DeviceItem) =
-        lineParams.size == 1
+    override fun process(lines: List<String>) {
+        lines.forEach { line ->
+            val lineParams = CSVLineParameterHandler.lineParameters(line)
+            if (sessionHasChanged(lineParams)) {
+                flashLinesInBufferAndCloseCurrentFile()
+                currentSessionUUID = lineParams[0]
+                createAndOpenNewFile()
+                return@forEach
+            }
+            try {
+                incrementCounter()
+                fileWriter?.write("$currentSessionUUID,$line\n")
+            } catch (e: Exception) {
+                Log.e(TAG, e.stackTraceToString())
+            }
+        }
+    }
+
+    private fun incrementCounter() {
+        counter.incrementAndGet()
+        Log.d("SDSync Counter", "Step: ${currentStep?.type.toString()}\nValue: ${counter.get()} / ${currentStep?.measurementsCount}")
+
+        currentStep?.let {
+            val event = SDCardLinesReadEvent(it, counter.get())
+            EventBus.getDefault().post(event)
+        }
+    }
+
+    private fun sessionHasChanged(lineParams: List<String>) = lineParams.size == 1
 }
