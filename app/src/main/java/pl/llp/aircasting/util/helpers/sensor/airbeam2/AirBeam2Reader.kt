@@ -7,6 +7,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
 import java.io.InputStream
 import java.io.InputStreamReader
+import javax.inject.Inject
 
 /**
  * This reader will be effectively use only in MOBILE sessions
@@ -14,7 +15,7 @@ import java.io.InputStreamReader
  * No NewMeasurementEvent will be posted for FIXED sessions
  */
 
-class AirBeam2Reader(private val mErrorHandler: ErrorHandler) {
+class AirBeam2Reader @Inject constructor(private val mErrorHandler: ErrorHandler) {
     fun run(inputStream: InputStream) {
         val inputStreamReader = InputStreamReader(inputStream)
 

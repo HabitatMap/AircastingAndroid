@@ -5,21 +5,20 @@ import android.util.Log
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.*
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
 import java.io.IOException
 import java.io.OutputStream
 import java.util.*
+import javax.inject.Inject
 
-open class AirBeam2Connector(
-    mSettings: Settings,
+open class NonSyncableAirBeamConnector @Inject constructor(
     private val mErrorHandler: ErrorHandler,
     bluetoothManager: BluetoothManager,
+    private val mAirBeamConfigurator: AirBeam2Configurator,
+    private val mAirBeam2Reader: AirBeam2Reader,
 ) : AirBeamConnector(bluetoothManager) {
-    private val mAirBeamConfigurator = AirBeam2Configurator(mSettings)
-    private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
 
     private val SPP_SERIAL = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 

@@ -53,7 +53,7 @@ class SyncableAirBeamConfiguratorFactory @Inject constructor(
 }
 
 abstract class SyncableAirBeamConfigurator(
-    private val applicationContext: Context,
+    applicationContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings,
     private val hexMessagesBuilder: HexMessagesBuilder,

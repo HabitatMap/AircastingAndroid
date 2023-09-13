@@ -4,19 +4,24 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.helpers.stubDeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Reader
+import pl.llp.aircasting.util.helpers.sensor.airbeam2.NonSyncableAirBeamConnector
 
-class FakeAirBeam2Connector(
+class FakeNonSyncableAirBeamConnector(
     private val app: AircastingApplication,
-    private val mSettings: Settings,
-    private val mErrorHandler: ErrorHandler,
+    mErrorHandler: ErrorHandler,
     bluetoothManager: BluetoothManager,
-): AirBeam2Connector(mSettings, mErrorHandler, bluetoothManager) {
-    private val mAirBeam2Reader = AirBeam2Reader(mErrorHandler)
+    mAirBeamConfigurator: AirBeam2Configurator,
+    private val mAirBeam2Reader: AirBeam2Reader,
+) : NonSyncableAirBeamConnector(
+    mErrorHandler,
+    bluetoothManager,
+    mAirBeamConfigurator,
+    mAirBeam2Reader
+) {
     private var mThread: ConnectThread? = null
 
     override fun start(deviceItem: DeviceItem) {
