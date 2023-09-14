@@ -5,9 +5,10 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.AirBeamResponseParsingError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import javax.inject.Inject
 
 
-class ResponseParser(private val errorHandler: ErrorHandler) {
+class ResponseParser @Inject constructor(private val errorHandler: ErrorHandler) {
     /**
      * This has to match what Arduino produces
      * Value;Sensor package name;Sensor name;Type of measurement;Short type of measurement;Unit name;Unit symbol/abbreviation;T1;T2;T3;T4;T5

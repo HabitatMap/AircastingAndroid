@@ -1,14 +1,11 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable
 
-import android.content.Context
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.modules.MainScope
-import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
 import javax.inject.Inject
 
@@ -19,22 +16,10 @@ import javax.inject.Inject
  */
 
 class AirBeam3Reader @Inject constructor(
-    context: Context,
-    errorHandler: ErrorHandler
+    @MainScope private val coroutineScope: CoroutineScope,
+    private val batteryLevelFlow: MutableSharedFlow<Int>,
+    private val responseParser: ResponseParser
 ) {
-    @Inject
-    @MainScope
-    lateinit var coroutineScope: CoroutineScope
-
-    @Inject
-    lateinit var batteryLevelFlow: MutableSharedFlow<Int>
-
-    private val responseParser = ResponseParser(errorHandler)
-
-    init {
-        (context as AircastingApplication).userDependentComponent?.inject(this) //TODO: ?
-    }
-
     fun run(data: Data) {
         val value = data.value ?: return
 
