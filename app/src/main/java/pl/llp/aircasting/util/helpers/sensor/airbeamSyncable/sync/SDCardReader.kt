@@ -2,8 +2,6 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
-import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
-import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 
 class SDCardReader(private val sdCardFileService: SDCardFileService) {
@@ -46,7 +44,7 @@ class SDCardReader(private val sdCardFileService: SDCardFileService) {
         }
 
         if (valueString == DOWNLOAD_FINISHED) {
-            EventBus.getDefault().post(SDCardReadFinished())
+            sdCardFileService.finish()
         } else if (valueString == CLEAR_FINISHED) {
             EventBus.getDefault().post(SDCardClearFinished())
         }
@@ -64,10 +62,6 @@ class SDCardReader(private val sdCardFileService: SDCardFileService) {
 
         val lines = String(dataDownloaded).lines().filter { it.isNotBlank() }
 
-        EventBus.getDefault().post(
-            SDCardReadEvent(
-                lines
-            )
-        )
+        sdCardFileService.process(lines)
     }
 }
