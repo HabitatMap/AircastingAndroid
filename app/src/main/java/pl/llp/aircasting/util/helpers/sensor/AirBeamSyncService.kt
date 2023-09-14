@@ -13,7 +13,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServ
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardUploadFixedMeasurementsServiceFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileCheckerFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandlerFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
@@ -42,7 +42,7 @@ class AirBeamSyncService : AirBeamService() {
     lateinit var sDCardUploadFixedMeasurementsServiceFactory: SDCardUploadFixedMeasurementsServiceFactory
 
     @Inject
-    lateinit var sDCardFileServiceFactory: SDCardFileServiceFactory
+    lateinit var sDCardFileServiceProvider: SDCardFileServiceProvider
 
     private lateinit var sdCardSyncService: SDCardSyncService
 
@@ -61,17 +61,13 @@ class AirBeamSyncService : AirBeamService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         (application as AircastingApplication).userDependentComponent?.inject(this)
         intent?.extras?.getParcelable<DeviceItem>(DEVICE_ITEM_KEY)?.let { deviceItem ->
-            val csvLineParameterHandler =
-                CSVLineParameterHandlerFactory.create(deviceItem.type)
-            val csvFileChecker =
-                SDCardCSVFileCheckerFactory.create(deviceItem.type)
-            val sDCardFileService = sDCardFileServiceFactory.create(deviceItem.type)
-
+            val csvLineParameterHandler = CSVLineParameterHandlerFactory.create(deviceItem.type)
+            val csvFileChecker = SDCardCSVFileCheckerFactory.create(deviceItem.type)
+            val sDCardFileService = sDCardFileServiceProvider.get(deviceItem.type)
             val mobileFileHandler =
                 mobileFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker)
             val fixedFileHandler =
                 fixedFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker)
-
             val mobileSessionsProcessor = mobileSessionsProcessorFactory.create(
                 csvLineParameterHandler,
                 mobileFileHandler
@@ -80,7 +76,6 @@ class AirBeamSyncService : AirBeamService() {
                 csvLineParameterHandler,
                 fixedFileHandler
             )
-
             val uploadFixedMeasurementsService = sDCardUploadFixedMeasurementsServiceFactory.create(
                 fixedFileHandler,
                 csvLineParameterHandler
