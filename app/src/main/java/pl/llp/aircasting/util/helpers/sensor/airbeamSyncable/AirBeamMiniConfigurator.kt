@@ -22,6 +22,11 @@ open class AirBeamMiniConfigurator(
     airBeam3Reader,
     sdCardReader
 ) {
+    companion object {
+        private val batteryLevelCharacteristic: UUID =
+            UUID.fromString("0000ffe7-0000-1000-8000-00805f9b34fb")
+    }
+
     override val measurementsCharacteristicUUIDs: List<UUID> = listOf(
         pm1SensorCharacteristic,
         pm2_5SensorCharacteristic,

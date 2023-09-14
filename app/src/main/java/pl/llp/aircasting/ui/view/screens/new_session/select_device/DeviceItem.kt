@@ -11,7 +11,7 @@ open class DeviceItem(
     open val address: String = mBluetoothDevice?.address ?: "",
     open val id: String = name.split(":", "-").last(),
     open val type: Type = getType(name),
-    ) : Parcelable {
+) : Parcelable {
 
     companion object {
         const val UNKNOWN_DEVICE_NAME = "Unknown"
@@ -24,7 +24,7 @@ open class DeviceItem(
             name ?: return Type.OTHER
 
             return when {
-                name.contains(AIRBEAM2_NAME_REGEX, true) ->Type.AIRBEAM2
+                name.contains(AIRBEAM2_NAME_REGEX, true) -> Type.AIRBEAM2
                 name.contains(AIRBEAM3_NAME_REGEX, true) -> Type.AIRBEAM3
                 name.contains(AIRBEAMMINI_NAME_REGEX, true) -> Type.AIRBEAMMINI
                 name.contains(AIRBEAM1_NAME_REGEX, true) -> Type.AIRBEAM1
@@ -43,6 +43,7 @@ open class DeviceItem(
 
         companion object {
             fun fromInt(value: Int) = values().first { it.value == value }
+            fun isBatteryLevelAvailable(type: Type?) = type == AIRBEAMMINI
         }
     }
 
