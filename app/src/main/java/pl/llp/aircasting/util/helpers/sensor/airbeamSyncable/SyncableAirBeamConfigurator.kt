@@ -22,9 +22,8 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileServic
 import java.util.Date
 import java.util.TimeZone
 import java.util.UUID
-import javax.inject.Inject
 
-class SyncableAirBeamConfiguratorFactory @Inject constructor(
+open class SyncableAirBeamConfiguratorFactory(
     private val applicationContext: Context,
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings,
@@ -33,7 +32,7 @@ class SyncableAirBeamConfiguratorFactory @Inject constructor(
     private val sdCardFileServiceProvider: SDCardFileServiceProvider
 ) {
     private lateinit var sdCardReader: SDCardReader
-    fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
+    open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
         sdCardReader = SDCardReader(
             sdCardFileServiceProvider.get(type)
         )
@@ -147,7 +146,7 @@ abstract class SyncableAirBeamConfigurator(
         configureMobileSession(location, dateString)
     }
 
-    fun triggerSDCardDownload() {
+    open fun triggerSDCardDownload() {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()

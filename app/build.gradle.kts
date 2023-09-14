@@ -93,6 +93,7 @@ dependencies {
     implementation("com.google.android.material:material:1.4.0")
     kapt(AppDependencies.kaptLibraries)
     kaptAndroidTest(AppDependencies.kaptAndroidTestLibraries)
+    kaptTest(AppDependencies.kaptTestLibraries)
     androidTestImplementation(AppDependencies.androidTestImplementation)
     testImplementation(AppDependencies.testImplementation)
     debugImplementation(AppDependencies.debugImplementation)

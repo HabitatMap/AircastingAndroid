@@ -43,7 +43,8 @@ import javax.inject.Scope
         ViewModelModule::class,
         CoroutineModule::class,
         FragmentModule::class,
-        RepositoryModule::class
+        RepositoryModule::class,
+        SyncModule::class,
     ]
 )
 interface UserDependentComponent {
@@ -99,6 +100,7 @@ interface UserDependentComponent {
     fun inject(activity: AirBeamSyncService)
     fun inject(activity: AirBeamClearCardService)
 }
+
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
 annotation class UserSessionScope
