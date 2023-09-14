@@ -24,6 +24,7 @@ open class AirBeamMiniConfigurator(
 ) {
     override val measurementsCharacteristicUUIDs: List<UUID> = listOf(
         pm1SensorCharacteristic,
-        pm2_5SensorCharacteristic
+        pm2_5SensorCharacteristic,
+        batteryLevelCharacteristic,
     )
 }
