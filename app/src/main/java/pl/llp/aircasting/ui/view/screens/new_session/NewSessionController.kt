@@ -342,7 +342,7 @@ class NewSessionController @AssistedInject constructor(
     override fun onStartRecordingClicked(session: Session) {
         if (session.type == Session.Type.MOBILE) {
             settings.increaseActiveMobileSessionsCount()
-            startBatteryLevelService()
+            if (DeviceItem.Type.isBatteryLevelAvailable(session.deviceType)) startBatteryLevelService()
         }
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)

@@ -90,10 +90,6 @@ abstract class SyncableAirBeamConfigurator(
         @JvmStatic
         protected val pm2_5SensorCharacteristic: UUID =
             UUID.fromString("0000ffe5-0000-1000-8000-00805f9b34fb")
-
-        @JvmStatic
-        protected val batteryLevelCharacteristic: UUID =
-            UUID.fromString("0000ffe7-0000-1000-8000-00805f9b34fb")
     }
 
     // have notifications about new measurements

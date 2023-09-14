@@ -37,6 +37,5 @@ open class AirBeam3Configurator(
         pm1SensorCharacteristic,
         pm2_5SensorCharacteristic,
         pm10SensorCharacteristic,
-        batteryLevelCharacteristic,
     )
 }
