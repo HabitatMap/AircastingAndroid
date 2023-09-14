@@ -67,10 +67,10 @@
     <string name="delete_streams_subtitle">¿Qué transmisiones le gustaría eliminar?</string>
     <string name="are_you_sure">¿Está seguro?</string>
 
-    <string name="disconnected_view_airbeam3_header">Su AirBeam3 está ahora en modo independiente</string>
-    <string name="disconnected_view_airbeam3_description">AirBeam3 ahora está grabando usando su tarjeta SD. Las medidas se mostrarán aquí después de la sincronización.</string>
-    <string name="disconnected_view_airbeam3_sync_button">Terminar de grabar &amp; sync</string>
-    <string name="disconnected_view_airbeam3_finish_button">Terminar de grabar &amp; no sync</string>
+    <string name="disconnected_view_airbeamSyncable_header">Su AirBeam3 está ahora en modo independiente</string>
+    <string name="disconnected_view_airbeamSyncable_description">AirBeam3 ahora está grabando usando su tarjeta SD. Las medidas se mostrarán aquí después de la sincronización.</string>
+    <string name="disconnected_view_airbeamSyncable_sync_button">Terminar de grabar &amp; sync</string>
+    <string name="disconnected_view_airbeamSyncable_finish_button">Terminar de grabar &amp; no sync</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Enciende WIFI</string>

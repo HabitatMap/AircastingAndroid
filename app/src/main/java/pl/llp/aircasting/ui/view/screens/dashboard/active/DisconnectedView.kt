@@ -95,7 +95,7 @@ class DisconnectedView(
         eventbus.safeRegister(this)
 
         if (session.isDisconnectable())
-            bindAirBeam3(session)
+            bindSyncableAirBeam(session)
         else
             bindBluetoothDevice(session)
 
@@ -138,12 +138,12 @@ class DisconnectedView(
         }
     }
 
-    private fun bindAirBeam3(session: Session) {
-        mHeader?.text = mContext.getString(R.string.disconnected_view_airbeam3_header)
-        mDescription?.text = mContext.getString(R.string.disconnected_view_airbeam3_description)
-        mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_airbeam3_sync_button)
+    private fun bindSyncableAirBeam(session: Session) {
+        mHeader?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_header)
+        mDescription?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_description)
+        mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_sync_button)
         mSecondaryButton?.text =
-            mContext.getString(R.string.disconnected_view_airbeam3_finish_button)
+            mContext.getString(R.string.disconnected_view_airbeamSyncable_finish_button)
 
         mPrimaryButton?.setOnClickListener {
             FinishAndSyncSessionConfirmationDialog(

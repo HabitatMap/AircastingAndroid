@@ -67,10 +67,10 @@
     <string name="delete_streams_subtitle">Quels flux souhaitez-vous supprimer?</string>
     <string name="are_you_sure">Êtes-vous sûr?</string>
 
-    <string name="disconnected_view_airbeam3_header">Votre AirBeam3 est maintenant\nen mode autonome</string>
-    <string name="disconnected_view_airbeam3_description">AirBeam3 enregistre maintenant à l\'aide de sa carte SD. Les mesures seront affichées ici après la synchronisation.</string>
-    <string name="disconnected_view_airbeam3_sync_button">Terminer l\'enregistrement &amp; synchroniser</string>
-    <string name="disconnected_view_airbeam3_finish_button">Terminer l\'enregistrement &amp; ne pas synchroniser</string>
+    <string name="disconnected_view_airbeamSyncable_header">Votre AirBeam3 est maintenant\nen mode autonome</string>
+    <string name="disconnected_view_airbeamSyncable_description">AirBeam3 enregistre maintenant à l\'aide de sa carte SD. Les mesures seront affichées ici après la synchronisation.</string>
+    <string name="disconnected_view_airbeamSyncable_sync_button">Terminer l\'enregistrement &amp; synchroniser</string>
+    <string name="disconnected_view_airbeamSyncable_finish_button">Terminer l\'enregistrement &amp; ne pas synchroniser</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Activer le Wi-Fi</string>

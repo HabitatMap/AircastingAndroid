@@ -75,10 +75,10 @@
     <string name="delete_streams_subtitle">Which streams would you like to delete?</string>
     <string name="are_you_sure">Are you sure?</string>
 
-    <string name="disconnected_view_airbeam3_header">Your AirBeam3 is now\nin stand-alone mode</string>
-    <string name="disconnected_view_airbeam3_description">AirBeam3 is now recording using its SD card. The measurements will be displayed here after syncing.</string>
-    <string name="disconnected_view_airbeam3_sync_button">Finish recording &amp; sync</string>
-    <string name="disconnected_view_airbeam3_finish_button">Finish recording &amp; don\'t sync</string>
+    <string name="disconnected_view_airbeamSyncable_header">Your AirBeam is now\nin stand-alone mode</string>
+    <string name="disconnected_view_airbeamSyncable_description">AirBeam is now recording using its SD card. The measurements will be displayed here after syncing.</string>
+    <string name="disconnected_view_airbeamSyncable_sync_button">Finish recording &amp; sync</string>
+    <string name="disconnected_view_airbeamSyncable_finish_button">Finish recording &amp; don\'t sync</string>
 
     <!--  Dialogs -->
     <string name="turn_on_wifi_dialog_header">Turn on WIFI</string>
