@@ -82,11 +82,11 @@ class SDCardSyncService @AssistedInject constructor(
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
 
-        airBeamConnector.triggerSDCardDownload()
-
-        mSDCardFileService.start { stepsByFilePaths ->
+        mSDCardFileService.setup { stepsByFilePaths ->
             handleDownloadedFiles(stepsByFilePaths)
         }
+
+        airBeamConnector.triggerSDCardDownload()
     }
 
     private fun handleDownloadedFiles(

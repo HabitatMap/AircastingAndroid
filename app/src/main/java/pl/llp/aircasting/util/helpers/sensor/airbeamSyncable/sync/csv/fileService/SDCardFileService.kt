@@ -1,19 +1,9 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
-import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
-import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
 import java.io.File
@@ -33,7 +23,6 @@ class SDCardFileServiceProvider @Inject constructor(
     }
 }
 abstract class SDCardFileService(
-    private val scope: CoroutineScope,
     private val mCSVFileFactory: SDCardCSVFileFactory,
 ) {
 
@@ -50,13 +39,9 @@ abstract class SDCardFileService(
     private var mOnDownloadFinished: ((measurementsPerSession: Map<SDCardReader.Step?, List<String>>) -> Unit)? =
         null
 
-    private val newLinesFlow = MutableSharedFlow<List<String>>()
+    abstract fun process(lines: List<String>)
 
-    init {
-        EventBus.getDefault().safeRegister(this)
-    }
-
-    fun start(
+    fun setup(
         onDownloadFinished: (stepByFilePaths: Map<SDCardReader.Step?, List<String>>) -> Unit
     ) {
         mOnDownloadFinished = onDownloadFinished
@@ -64,13 +49,8 @@ abstract class SDCardFileService(
         steps = ArrayList()
         stepByFilePaths = mutableMapOf()
         currentSessionUUID = null
-
-        newLinesFlow.onEach { lines ->
-            process(lines)
-        }.launchIn(scope)
     }
 
-    protected abstract fun process(lines: List<String>)
 
     fun deleteAllSyncFiles() {
         val dirs = listOf(
@@ -91,17 +71,7 @@ abstract class SDCardFileService(
         stepByFilePaths[currentStep] = mutableListOf()
     }
 
-    @Subscribe
-    fun onEvent(event: SDCardReadEvent) {
-        val fourLinesOfMeasurements = event.lines
-
-        scope.launch {
-            newLinesFlow.emit(fourLinesOfMeasurements)
-        }
-    }
-
-    @Subscribe
-    fun onEvent(event: SDCardReadFinished) {
+    fun finish() {
         Log.d(TAG, "Sync finished")
 
         flashLinesInBufferAndCloseCurrentFile()
