@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
 import android.util.Log
+import androidx.test.espresso.idling.CountingIdlingResource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -36,6 +37,8 @@ interface SDCardSyncServiceFactory {
         mSDCardFileService: SDCardFileService,
     ): SDCardSyncService
 }
+
+val sdSyncFinishedCountingIdleResource = CountingIdlingResource("DebugSDSync")
 
 class SDCardSyncService @AssistedInject constructor(
     private val mSessionsSyncService: SessionsSyncService?,
@@ -85,7 +88,7 @@ class SDCardSyncService @AssistedInject constructor(
         mSDCardFileService.setup { stepsByFilePaths ->
             handleDownloadedFiles(stepsByFilePaths)
         }
-
+        sdSyncFinishedCountingIdleResource.increment()
         airBeamConnector.triggerSDCardDownload()
     }
 
@@ -101,6 +104,7 @@ class SDCardSyncService @AssistedInject constructor(
             saveMeasurements(stepsByFilePaths)
             syncMobileSessionWithBackendAndFinish()
         }
+        sdSyncFinishedCountingIdleResource.decrement()
     }
 
     private fun clearSDCard() {

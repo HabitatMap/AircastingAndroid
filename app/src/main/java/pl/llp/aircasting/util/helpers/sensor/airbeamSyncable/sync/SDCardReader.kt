@@ -1,10 +1,11 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
+import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 
-class SDCardReader(private val sdCardFileService: SDCardFileService) {
+open class SDCardReader(private val sdCardFileService: SDCardFileService) {
     companion object {
         private const val DOWNLOAD_FINISHED = "SD_SYNC_FINISH"
         private const val CLEAR_FINISHED = "SD_DELETE_FINISH"

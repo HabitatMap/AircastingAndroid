@@ -198,6 +198,12 @@ object AppDependencies {
         add(daggerCompiler)
         add(daggerAndroidProcessor)
     }
+    val kaptTestLibraries = arrayListOf<String>().apply {
+        add(roomDBCompiler)
+        add(roomDBTest)
+        add(daggerCompiler)
+        add(daggerAndroidProcessor)
+    }
     val androidTestImplementation = arrayListOf<String>().apply {
         add(mockitoAndroid)
         add(roomDBCompiler)
@@ -244,6 +250,12 @@ fun DependencyHandler.kapt(list: List<String>) {
 fun DependencyHandler.kaptAndroidTest(list: List<String>) {
     list.forEach { dependency ->
         add("kaptAndroidTest", dependency)
+    }
+}
+
+fun DependencyHandler.kaptTest(list: List<String>) {
+    list.forEach { dependency ->
+        add("kaptTest", dependency)
     }
 }
 

@@ -1,0 +1,5 @@
+1;AirBeam2:0018961070D6;AirBeam2-F;Temperature;F;degrees Fahrenheit;F;15;45;75;100;135
+2;AirBeam2:0018961070D6;AirBeam2-RH;Humidity;RH;percent;%;0;25;50;75;100
+3;AirBeam2:0018961070D6;AirBeam2-PM1;Particulate Matter;PM;micrograms per cubic meter;µg/m³;0;12;35;55;150
+4;AirBeam2:0018961070D6;AirBeam2-PM2.5;Particulate Matter;PM;micrograms per cubic meter;µg/m³;0;12;35;55;150
+5;AirBeam2:0018961070D6;AirBeam2-PM10;Particulate Matter;PM;micrograms per cubic meter;µg/m³;0;20;50;100;200

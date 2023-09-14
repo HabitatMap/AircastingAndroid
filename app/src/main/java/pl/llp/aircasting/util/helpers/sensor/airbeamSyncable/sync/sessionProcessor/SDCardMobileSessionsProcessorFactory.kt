@@ -9,13 +9,13 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParame
 interface SDCardMobileSessionsProcessorFactory {
     fun create(
         lineParameterHandler: CSVLineParameterHandler,
-        fileHandlerMobile: SDCardSessionFileHandlerMobile
+        fileHandler: SDCardSessionFileHandlerMobile
     ): SDCardMobileSessionsProcessor
 }
 @AssistedFactory
 interface SDCardFixedSessionsProcessorFactory {
     fun create(
         lineParameterHandler: CSVLineParameterHandler,
-        fileHandlerMobile: SDCardSessionFileHandlerFixed
+        fileHandler: SDCardSessionFileHandlerFixed
     ): SDCardFixedSessionsProcessor
 }

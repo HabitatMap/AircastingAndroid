@@ -9,7 +9,8 @@ import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import java.io.File
 import java.io.FileReader
-import java.util.*
+import java.util.Date
+import java.util.LinkedList
 
 object StubData {
     fun measurementsFrom(file: File): MutableList<Measurement> {
