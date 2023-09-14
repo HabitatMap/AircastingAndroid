@@ -13,7 +13,6 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
-import pl.llp.aircasting.util.events.sdcard.SDCardReadStepStartedEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
@@ -86,10 +85,9 @@ abstract class SDCardFileService(
         }
     }
 
-    @Subscribe
-    fun onEvent(event: SDCardReadStepStartedEvent) {
+    fun transitionTo(step: SDCardReader.Step) {
         counter.set(0)
-        steps.add(event.step)
+        steps.add(step)
         stepByFilePaths[currentStep] = mutableListOf()
     }
 
