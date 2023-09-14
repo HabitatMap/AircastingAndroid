@@ -36,6 +36,7 @@ open class AirBeam3Configurator(
         humiditySensorCharacteristic,
         pm1SensorCharacteristic,
         pm2_5SensorCharacteristic,
-        pm10SensorCharacteristic
+        pm10SensorCharacteristic,
+        batteryLevelCharacteristic,
     )
 }
