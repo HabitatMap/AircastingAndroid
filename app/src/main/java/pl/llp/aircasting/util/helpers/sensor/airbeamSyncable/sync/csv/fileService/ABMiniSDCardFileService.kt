@@ -4,12 +4,14 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandler
 import javax.inject.Inject
 
+@UserSessionScope
 class ABMiniSDCardFileService @Inject constructor(
     @IoCoroutineScope private val scope: CoroutineScope,
     mCSVFileFactory: SDCardCSVFileFactory,

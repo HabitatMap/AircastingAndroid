@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.sdcard.SDCardReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardReadFinished
@@ -22,11 +23,12 @@ import java.io.IOException
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 
-class SDCardFileServiceFactory @Inject constructor(
+@UserSessionScope
+class SDCardFileServiceProvider @Inject constructor(
     private val aBMiniSDCardFileService: ABMiniSDCardFileService,
     private val aB3SDCardFileService: AB3SDCardFileService
 ) {
-    fun create(deviceType: DeviceItem.Type) = when(deviceType) {
+    fun get(deviceType: DeviceItem.Type) = when(deviceType) {
         DeviceItem.Type.AIRBEAMMINI -> aBMiniSDCardFileService
         else -> aB3SDCardFileService
     }

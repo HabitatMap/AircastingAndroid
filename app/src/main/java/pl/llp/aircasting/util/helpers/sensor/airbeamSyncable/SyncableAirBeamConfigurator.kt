@@ -18,6 +18,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import java.util.Date
 import java.util.TimeZone
 import java.util.UUID
@@ -29,26 +30,32 @@ class SyncableAirBeamConfiguratorFactory @Inject constructor(
     private val mSettings: Settings,
     private val hexMessagesBuilder: HexMessagesBuilder,
     private val airBeam3Reader: AirBeam3Reader,
-    private val sdCardReader: SDCardReader,
+    private val sdCardFileServiceProvider: SDCardFileServiceProvider
 ) {
-    fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
-        DeviceItem.Type.AIRBEAMMINI -> AirBeamMiniConfigurator(
-            applicationContext,
-            mErrorHandler,
-            mSettings,
-            hexMessagesBuilder,
-            airBeam3Reader,
-            sdCardReader
+    private lateinit var sdCardReader: SDCardReader
+    fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
+        sdCardReader = SDCardReader(
+            sdCardFileServiceProvider.get(type)
         )
+        return when (type) {
+            DeviceItem.Type.AIRBEAMMINI -> AirBeamMiniConfigurator(
+                applicationContext,
+                mErrorHandler,
+                mSettings,
+                hexMessagesBuilder,
+                airBeam3Reader,
+                sdCardReader
+            )
 
-        else -> AirBeam3Configurator(
-            applicationContext,
-            mErrorHandler,
-            mSettings,
-            hexMessagesBuilder,
-            airBeam3Reader,
-            sdCardReader
-        )
+            else -> AirBeam3Configurator(
+                applicationContext,
+                mErrorHandler,
+                mSettings,
+                hexMessagesBuilder,
+                airBeam3Reader,
+                sdCardReader
+            )
+        }
     }
 }
 
