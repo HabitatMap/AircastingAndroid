@@ -37,6 +37,7 @@ class BatteryLevelService : Service() {
     private lateinit var notificationManager: NotificationManager
 
     private var batteryLastState: Int = 0
+    private var lowBatteryNotificationSend = false
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
@@ -74,23 +75,41 @@ class BatteryLevelService : Service() {
         }
     }
 
-    private fun createNotification(contentText: String = ""): Notification {
+    private fun getNotification(batteryLevel: Int): Notification {
+        val notificationText = if (batteryLevel <= BATTERY_LOW_ALERT_LEVEL) {
+            getString(R.string.battery_level_low, batteryLevel)
+        } else {
+            "$batteryLevel%"
+        }
+
+        return if (isLowBatteryNotificationToSend(batteryLevel)){
+            createNotification(notificationText, lowBatteryAlert = true)
+        } else {
+            createNotification(notificationText)
+        }
+    }
+
+    private fun createNotification(
+        contentText: String = "",
+        lowBatteryAlert: Boolean = false
+    ): Notification {
         val builder = NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_CHANNEL_ID)
             .setContentTitle(getString(R.string.battery_level_notification_title))
             .setContentText(contentText)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.aircasting)
             .setOngoing(true)
+
+        if (lowBatteryAlert) builder.setDefaults(NotificationCompat.DEFAULT_SOUND)
         return builder.build()
     }
-
     private fun updateNotification(batteryLevel: Int) {
         if (isOutOfHysteresis(batteryLevel)) {
             Log.d("BatteryService", "Notification updated")
-
+            val notification = getNotification(batteryLevel)
             notificationManager.notify(
                 BATTERY_LEVEL_NOTIFICATION_ID,
-                createNotification("$batteryLevel%")
+                notification
             )
             batteryLastState = batteryLevel
         }
@@ -101,6 +120,21 @@ class BatteryLevelService : Service() {
         val lowerBoundary = batteryLastState - 3
         return batteryLevel !in lowerBoundary..upperBoundary
     }
+
+    private fun isLowBatteryNotificationToSend(percentage: Int): Boolean {
+        return when {
+            percentage <= BATTERY_LOW_ALERT_LEVEL && !lowBatteryNotificationSend -> {
+                lowBatteryNotificationSend = true
+                true
+            }
+            percentage > BATTERY_ALERT_RESET_LEVEL -> {
+                lowBatteryNotificationSend = false
+                false
+            }
+            else -> false
+        }
+    }
+
 
     fun observeBatteryFlow() {
         coroutineScope.launch {
@@ -135,5 +169,7 @@ class BatteryLevelService : Service() {
     companion object {
         private const val BATTERY_LEVEL_CHANNEL_ID = "BatteryLevel"
         private const val BATTERY_LEVEL_NOTIFICATION_ID = 101
+        private const val BATTERY_LOW_ALERT_LEVEL = 15
+        private const val BATTERY_ALERT_RESET_LEVEL = 20
     }
 }
