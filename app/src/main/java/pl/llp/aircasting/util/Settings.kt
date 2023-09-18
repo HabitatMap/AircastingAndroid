@@ -21,6 +21,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val BACKEND_PORT_KEY = "backend_port"
         private const val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
         private const val APP_RESTARTED = "app_restarted"
+        private const val NOTIFICATION_DIALOG_DISMISSED = "notif_dialog_dismissed"
 
         private const val FOLLOWED_SESSIONS_COUNT_KEY = "followed_sesions_number"
         const val MOBILE_ACTIVE_SESSIONS_COUNT_KEY = "mobile_active_sessions"
@@ -45,6 +46,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_KEEP_SCREEN_ON = false
         private const val DEFAULT_FOLLOWED_SESSIONS_COUNT = 0
         private const val DEFAULT_ONBOARDING_DISPLAYED = false
+        private const val DEFAULT_NOTIFICATIONS_DIALOG_DISSMISSED = false
     }
 
     protected open val DEFAULT_BACKEND_URL = ApiConstants.baseUrl
@@ -109,6 +111,10 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         return getBooleanFromSettings(KEEP_SCREEN_ON_KEY, DEFAULT_KEEP_SCREEN_ON)
     }
 
+    fun isNotificationDialogDismissed(): Boolean {
+        return getBooleanFromSettings(NOTIFICATION_DIALOG_DISMISSED, DEFAULT_NOTIFICATIONS_DIALOG_DISSMISSED)
+    }
+
     fun followedSessionsCount(): Int {
         val followedSessionsCount =
             getIntFromSettings(FOLLOWED_SESSIONS_COUNT_KEY, DEFAULT_FOLLOWED_SESSIONS_COUNT)
@@ -158,6 +164,11 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
 
     fun isUsingSatelliteView(): Boolean {
         return getBooleanFromSettings(USE_SATELLITE_VIEW, false)
+    }
+
+    fun toggleNotificationDialogDismissed() {
+        val enabled = !isNotificationDialogDismissed()
+        saveToSettings(NOTIFICATION_DIALOG_DISMISSED, enabled)
     }
 
     fun toggleUsingSatelliteView() {
