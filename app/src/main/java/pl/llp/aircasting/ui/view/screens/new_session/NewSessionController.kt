@@ -1,6 +1,8 @@
 package pl.llp.aircasting.ui.view.screens.new_session
 
+import android.app.Activity.NOTIFICATION_SERVICE
 import android.app.Activity.RESULT_OK
+import android.app.NotificationManager
 import android.content.Intent
 import android.os.Build
 import android.view.WindowManager
@@ -22,6 +24,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
+import pl.llp.aircasting.ui.view.screens.new_session.confirmation.NotificationPermissionDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.AirBeamConnectedViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnAirBeamViewMvc
@@ -342,12 +345,30 @@ class NewSessionController @AssistedInject constructor(
     override fun onStartRecordingClicked(session: Session) {
         if (session.type == Session.Type.MOBILE) {
             settings.increaseActiveMobileSessionsCount()
-            if (DeviceItem.Type.isBatteryLevelAvailable(session.deviceType)) startBatteryLevelService()
-        }
+            if (DeviceItem.Type.isBatteryLevelAvailable(session.deviceType)) {
+                checkPermissionsAndStartBatteryService(session)
+            } else startRecording(session)
+        } else startRecording(session)
+    }
+
+    private fun startRecording(session: Session) {
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
+    }
+
+    private fun checkPermissionsAndStartBatteryService(session: Session) {
+        if (areNotificationsEnabled()) {
+            startBatteryLevelService()
+            startRecording(session)
+        } else {
+            if (settings.isNotificationDialogDismissed()) {
+                startRecording(session)
+            } else {
+                showNotifPermissionsDialog(this::openNotificationSettings) { startRecording(session) }
+            }
+        }
     }
 
     private fun startBatteryLevelService() {
@@ -398,4 +419,34 @@ class NewSessionController @AssistedInject constructor(
             mContextActivity
         ) else goToFirstStep()
     }
+
+    private fun areNotificationsEnabled(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val notificationManager =
+                mContextActivity.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.areNotificationsEnabled()
+        } else true
+    }
+
+    private fun openNotificationSettings() {
+        val intent = Intent().apply {
+            action = "android.settings.APP_NOTIFICATION_SETTINGS"
+
+            // For Android Oreo and later
+            putExtra("android.provider.extra.APP_PACKAGE", mContextActivity.packageName)
+
+            // For pre-Android Oreo
+            putExtra("app_package", mContextActivity.packageName)
+            putExtra("app_uid", mContextActivity.applicationInfo.uid)
+        }
+
+        startActivity(mContextActivity, intent, null)
+    }
+
+    private fun showNotifPermissionsDialog(onAccept: () -> Unit, onDecline: () -> Unit) {
+        NotificationPermissionDialog(mFragmentManager, onAccept) {
+            settings.toggleNotificationDialogDismissed()
+        }
+    }
+
 }
