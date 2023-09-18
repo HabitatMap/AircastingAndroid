@@ -1,13 +1,13 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
 import android.util.Log
-import androidx.test.espresso.idling.CountingIdlingResource
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -25,6 +25,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecke
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessor
+import pl.llp.aircasting.util.sdSyncFinishedCountingIdleResource
 import java.io.File
 
 @AssistedFactory
@@ -37,8 +38,6 @@ interface SDCardSyncServiceFactory {
         mSDCardFileService: SDCardFileService,
     ): SDCardSyncService
 }
-
-val sdSyncFinishedCountingIdleResource = CountingIdlingResource("DebugSDSync")
 
 class SDCardSyncService @AssistedInject constructor(
     private val mSessionsSyncService: SessionsSyncService?,
@@ -81,6 +80,7 @@ class SDCardSyncService @AssistedInject constructor(
 
     fun start(airBeamConnector: AirBeamConnector, deviceItem: DeviceItem) {
         Log.d(TAG, "Downloading measurements from SD card")
+        if (BuildConfig.DEBUG) sdSyncFinishedCountingIdleResource.increment()
 
         mAirBeamConnector = airBeamConnector
         mDeviceItem = deviceItem
@@ -88,7 +88,7 @@ class SDCardSyncService @AssistedInject constructor(
         mSDCardFileService.setup { stepsByFilePaths ->
             handleDownloadedFiles(stepsByFilePaths)
         }
-        sdSyncFinishedCountingIdleResource.increment()
+
         airBeamConnector.triggerSDCardDownload()
     }
 
@@ -104,7 +104,7 @@ class SDCardSyncService @AssistedInject constructor(
             saveMeasurements(stepsByFilePaths)
             syncMobileSessionWithBackendAndFinish()
         }
-        sdSyncFinishedCountingIdleResource.decrement()
+        if (BuildConfig.DEBUG) sdSyncFinishedCountingIdleResource.decrement()
     }
 
     private fun clearSDCard() {

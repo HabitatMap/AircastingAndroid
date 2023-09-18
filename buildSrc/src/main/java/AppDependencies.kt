@@ -115,8 +115,6 @@ object AppDependencies {
     private const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espresso}"
     private const val espressoIntents =
         "androidx.test.espresso:espresso-intents:${Versions.espresso}"
-    private const val espressoIdlingResource =
-        "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
     private const val espressoContrib =
         "androidx.test.espresso:espresso-contrib:${Versions.espressoContrib}"
     private const val awaitility = "org.awaitility:awaitility:${Versions.awaitility}"
@@ -131,6 +129,8 @@ object AppDependencies {
         "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
     private const val fragmentTesting =
         "androidx.fragment:fragment-testing:${Versions.fragmentTesting}"
+    private const val espressoIdlingResource =
+        "androidx.test.espresso:espresso-idling-resource:${Versions.espresso}"
 
     val appLibraries = arrayListOf<String>().apply {
         add(kotlinStdLib)
@@ -149,7 +149,6 @@ object AppDependencies {
         add(lifeCycleViewModelKTX)
         add(lifeCycleLiveDataKTX)
         add(espressoContrib)
-        add(espressoIdlingResource)
         add(constraintLayout)
         add(swipRefreshLayout)
         add(recycleView)
@@ -229,6 +228,7 @@ object AppDependencies {
     val debugImplementation = arrayListOf<String>().apply {
         add(leakCanary)
         add(fragmentTesting)
+        add(espressoIdlingResource)
     }
     val androidTestUtil = arrayListOf<String>().apply {
         add(orchestrator)

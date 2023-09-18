@@ -26,8 +26,8 @@ class TestSyncableAirBeamConfiguratorFactory(
     airBeam3Reader,
     sdCardFileServiceProvider
 ) {
-    override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator =
-        TestABMiniConfigurator(
+    override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
+        DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
             applicationContext,
             mErrorHandler,
             mSettings,
@@ -37,4 +37,16 @@ class TestSyncableAirBeamConfiguratorFactory(
                 sdCardFileServiceProvider.get(type)
             )
         )
+
+        else -> TestAB3Configurator(
+            applicationContext,
+            mErrorHandler,
+            mSettings,
+            hexMessagesBuilder,
+            airBeam3Reader,
+            SDCardReader(
+                sdCardFileServiceProvider.get(type)
+            )
+        )
+    }
 }

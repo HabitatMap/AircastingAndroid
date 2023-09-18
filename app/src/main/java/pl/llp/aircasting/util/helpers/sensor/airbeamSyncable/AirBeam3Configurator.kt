@@ -7,7 +7,7 @@ import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import java.util.UUID
 
-class AirBeam3Configurator(
+open class AirBeam3Configurator(
     applicationContext: Context,
     mErrorHandler: ErrorHandler,
     mSettings: Settings,
