@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.util.helpers.sensor.ResponseParser
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 class AirBeam3Reader @Inject constructor(
     @MainScope private val coroutineScope: CoroutineScope,
-    private val batteryLevelFlow: MutableSharedFlow<Int>,
+    @BatteryLevelFlow private val batteryLevelFlow: MutableSharedFlow<Int>,
     private val responseParser: ResponseParser
 ) {
     fun run(data: Data) {
