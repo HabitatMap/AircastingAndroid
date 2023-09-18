@@ -72,10 +72,10 @@ class BatteryLevelService : Service() {
 
             val alertChannel = NotificationChannel(
                 BATTERY_LEVEL_ALERT_CHANNEL_ID,
-                "alert",
+                getString(R.string.battery_level_alert_channel_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
-                description = "chanel for alert"
+                description = getString(R.string.battery_level_alert_channel_desc)
             }
 
             val notificationManager =

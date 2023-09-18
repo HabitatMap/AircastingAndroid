@@ -555,5 +555,7 @@
     <string name="battery_level_notification_title">AirBeam battery level</string>
     <string name="battery_level_not_available">Not Available</string>
     <string name="battery_level_low">Battery low: %1$d%% Charge your Airbeam.</string>
+    <string name="battery_level_alert_channel_name">Battery level alerts</string>
+    <string name="battery_level_alert_channel_desc">"Channel for AirBeam low battery warning notifications "</string>
 
 </resources>
