@@ -76,6 +76,7 @@ abstract class SDCardFileService(
 
         flashLinesInBufferAndCloseCurrentFile()
 
+        // TODO: mOnDownloadFinished is null in the end for some reason
         mOnDownloadFinished?.invoke(stepByFilePaths)
     }
 
