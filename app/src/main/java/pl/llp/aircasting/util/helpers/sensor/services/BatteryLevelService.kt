@@ -11,6 +11,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -18,6 +19,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
+import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
@@ -32,9 +34,11 @@ class BatteryLevelService : Service() {
     lateinit var coroutineScope: CoroutineScope
 
     @Inject
+    @BatteryLevelFlow
     lateinit var batteryLevelFlow: MutableSharedFlow<Int>
 
     private lateinit var notificationManager: NotificationManager
+    private lateinit var job: Job
 
     private var batteryLastState: Int = 0
     private var lowBatteryNotificationSend = false
@@ -45,7 +49,7 @@ class BatteryLevelService : Service() {
     override fun onDestroy() {
         Log.d("BatteryService", "Service destroyed")
         unregisterFromEventBus()
-        coroutineScope.cancel()
+        job.cancel()
         super.onDestroy()
     }
 
@@ -160,8 +164,8 @@ class BatteryLevelService : Service() {
     }
 
 
-    fun observeBatteryFlow() {
-        coroutineScope.launch {
+    private fun observeBatteryFlow() {
+        job = coroutineScope.launch {
             batteryLevelFlow.collect {
                 updateNotification(it)
             }

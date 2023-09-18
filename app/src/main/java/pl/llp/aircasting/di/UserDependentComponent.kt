@@ -47,6 +47,7 @@ import javax.inject.Scope
         FragmentModule::class,
         RepositoryModule::class,
         SyncModule::class,
+        FlowModule::class,
     ]
 )
 interface UserDependentComponent {

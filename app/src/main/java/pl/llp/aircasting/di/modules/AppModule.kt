@@ -14,11 +14,6 @@ import javax.inject.Singleton
 
 @Module
 class AppModule(private val app: AircastingApplication) {
-
-    @Provides
-    @Singleton
-    fun provideBatteryLevelFlow(): MutableSharedFlow<Int> = MutableSharedFlow()
-
     @Provides
     @Singleton
     fun provideContext(): Context = app.applicationContext
