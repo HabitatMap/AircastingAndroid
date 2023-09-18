@@ -53,25 +53,36 @@ class BatteryLevelService : Service() {
         Log.d("BatteryService", "Service Started")
         (application as AircastingApplication).userDependentComponent?.inject(this)
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannel()
+        createNotificationChannels()
         startForeground(BATTERY_LEVEL_NOTIFICATION_ID, createNotification())
         observeBatteryFlow()
         registerToEventBus()
         return START_STICKY
     }
 
-    private fun createNotificationChannel() {
+    private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = getString(R.string.battery_level_channel_name)
-            val descriptionText = getString(R.string.battery_level_channel_desc)
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel(BATTERY_LEVEL_CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+            val silentChannel = NotificationChannel(
+                BATTERY_LEVEL_CHANNEL_ID,
+                getString(R.string.battery_level_channel_name),
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = getString(R.string.battery_level_channel_desc)
             }
+
+            val alertChannel = NotificationChannel(
+                BATTERY_LEVEL_ALERT_CHANNEL_ID,
+                "alert",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                description = "chanel for alert"
+            }
+
             val notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(silentChannel)
+            notificationManager.createNotificationChannel(alertChannel)
         }
     }
 
@@ -82,7 +93,7 @@ class BatteryLevelService : Service() {
             "$batteryLevel%"
         }
 
-        return if (isLowBatteryNotificationToSend(batteryLevel)){
+        return if (isLowBatteryNotificationToSend(batteryLevel)) {
             createNotification(notificationText, lowBatteryAlert = true)
         } else {
             createNotification(notificationText)
@@ -93,16 +104,27 @@ class BatteryLevelService : Service() {
         contentText: String = "",
         lowBatteryAlert: Boolean = false
     ): Notification {
-        val builder = NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_CHANNEL_ID)
+
+        val builder = if (lowBatteryAlert) {
+            NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_ALERT_CHANNEL_ID)
+                .setDefaults(NotificationCompat.DEFAULT_SOUND)
+                .setDefaults(NotificationCompat.DEFAULT_VIBRATE)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+        } else {
+            NotificationCompat.Builder(applicationContext, BATTERY_LEVEL_CHANNEL_ID)
+                .setDefaults(0)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+        }
+
+        builder
             .setContentTitle(getString(R.string.battery_level_notification_title))
             .setContentText(contentText)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSmallIcon(R.drawable.aircasting)
             .setOngoing(true)
 
-        if (lowBatteryAlert) builder.setDefaults(NotificationCompat.DEFAULT_SOUND)
         return builder.build()
     }
+
     private fun updateNotification(batteryLevel: Int) {
         if (isOutOfHysteresis(batteryLevel)) {
             Log.d("BatteryService", "Notification updated")
@@ -127,10 +149,12 @@ class BatteryLevelService : Service() {
                 lowBatteryNotificationSend = true
                 true
             }
+
             percentage > BATTERY_ALERT_RESET_LEVEL -> {
                 lowBatteryNotificationSend = false
                 false
             }
+
             else -> false
         }
     }
@@ -168,6 +192,7 @@ class BatteryLevelService : Service() {
 
     companion object {
         private const val BATTERY_LEVEL_CHANNEL_ID = "BatteryLevel"
+        private const val BATTERY_LEVEL_ALERT_CHANNEL_ID = "BatteryAlert"
         private const val BATTERY_LEVEL_NOTIFICATION_ID = 101
         private const val BATTERY_LOW_ALERT_LEVEL = 15
         private const val BATTERY_ALERT_RESET_LEVEL = 20
