@@ -446,7 +446,8 @@ class NewSessionController @AssistedInject constructor(
     private fun showNotifPermissionsDialog(onAccept: () -> Unit, onDecline: () -> Unit) {
         NotificationPermissionDialog(mFragmentManager, onAccept) {
             settings.toggleNotificationDialogDismissed()
-        }
+            onDecline()
+        }.show()
     }
 
 }
