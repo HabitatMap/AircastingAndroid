@@ -99,6 +99,30 @@ class SDCardSyncServiceIntegratedTest {
     }
 
     @Test
+    fun `ABMini SD Sync assigns last known location to SD measurements`() = runTest {
+        val deviceType = DeviceItem.Type.AIRBEAMMINI
+        val sdCardSyncService = setupAndReturnSdCardSyncService(deviceType)
+        setupDBWithStubDataABMini()
+        val deviceItem: DeviceItem = mock {
+            on(it.id) doReturn DEVICE_ID
+            on(it.type) doReturn deviceType
+        }
+
+        sdCardSyncService.start(mock(), deviceItem)
+        syncableAirBeamConfigurator.triggerSDCardDownload()
+        waitForSdSyncToFinish()
+
+        measurementsRepository.getAllByStreamId(pm1Id).forEach { savedMeasurement ->
+            assertEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
+            assertEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+        }
+        measurementsRepository.getAllByStreamId(pm2_5Id).forEach { savedMeasurement ->
+            assertEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
+            assertEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+        }
+    }
+
+    @Test
     fun `ABMini SD Sync saves measurements to DB`() = runTest {
         val deviceType = DeviceItem.Type.AIRBEAMMINI
         val sdCardSyncService = setupAndReturnSdCardSyncService(deviceType)
@@ -116,13 +140,6 @@ class SDCardSyncServiceIntegratedTest {
         assertEquals(bleCount, measurementsRepository.getAllByStreamId(pm2_5Id).size)
     }
 
-    private suspend fun setupDBWithStubDataABMini() {
-        sessionId = sessionsRepository.insert(ABMiniDBStub.session)
-        pm1Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm1Stream)
-        pm2_5Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm2_5Stream)
-        measurementsRepository.insert(pm1Id, sessionId, ABMiniDBStub.measurement)
-        measurementsRepository.insert(pm2_5Id, sessionId, ABMiniDBStub.measurement)
-    }
 
     @Test
     fun `AB3 SD Sync saves measurements to DB`() = runTest {
@@ -140,6 +157,17 @@ class SDCardSyncServiceIntegratedTest {
 
         assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm1Id).size)
         assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm2_5Id).size)
+        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm10Id).size)
+        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(fId).size)
+        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(rhId).size)
+    }
+
+    private suspend fun setupDBWithStubDataABMini() {
+        sessionId = sessionsRepository.insert(ABMiniDBStub.session)
+        pm1Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm1Stream)
+        pm2_5Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm2_5Stream)
+        measurementsRepository.insert(pm1Id, sessionId, ABMiniDBStub.measurement)
+        measurementsRepository.insert(pm2_5Id, sessionId, ABMiniDBStub.measurement)
     }
 
     private suspend fun waitForSdSyncToFinish() {
