@@ -12,7 +12,6 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -97,11 +96,7 @@ class BatteryLevelService : Service() {
             "$batteryLevel%"
         }
 
-        return if (isLowBatteryNotificationToSend(batteryLevel)) {
-            createNotification(notificationText, lowBatteryAlert = true)
-        } else {
-            createNotification(notificationText)
-        }
+        return createNotification(notificationText, isLowBatteryNotificationRequired(batteryLevel))
     }
 
     private fun createNotification(
@@ -147,7 +142,7 @@ class BatteryLevelService : Service() {
         return batteryLevel !in lowerBoundary..upperBoundary
     }
 
-    private fun isLowBatteryNotificationToSend(percentage: Int): Boolean {
+    private fun isLowBatteryNotificationRequired(percentage: Int): Boolean {
         return when {
             percentage <= BATTERY_LOW_ALERT_LEVEL && !lowBatteryNotificationSend -> {
                 lowBatteryNotificationSend = true

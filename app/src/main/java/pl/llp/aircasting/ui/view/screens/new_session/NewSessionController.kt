@@ -343,31 +343,31 @@ class NewSessionController @AssistedInject constructor(
     }
 
     override fun onStartRecordingClicked(session: Session) {
-        if (session.type == Session.Type.MOBILE) {
-            settings.increaseActiveMobileSessionsCount()
-            if (DeviceItem.Type.isBatteryLevelAvailable(session.deviceType)) {
-                checkPermissionsAndStartBatteryService(session)
-            } else startRecording(session)
-        } else startRecording(session)
+        when {
+            session.type != Session.Type.MOBILE -> startRecording(session)
+            DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> handleBatteryServicePermissionsAndStartRecording(
+                session
+            )
+        }
     }
 
     private fun startRecording(session: Session) {
+        if (session.type == Session.Type.MOBILE) settings.increaseActiveMobileSessionsCount()
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()
     }
 
-    private fun checkPermissionsAndStartBatteryService(session: Session) {
-        if (areNotificationsEnabled()) {
-            startBatteryLevelService()
-            startRecording(session)
-        } else {
-            if (settings.isNotificationDialogDismissed()) {
+    private fun handleBatteryServicePermissionsAndStartRecording(session: Session) {
+        when {
+            areNotificationsEnabled() -> {
+                startBatteryLevelService()
                 startRecording(session)
-            } else {
-                showNotifPermissionsDialog(this::openNotificationSettings) { startRecording(session) }
             }
+
+            settings.isNotificationDialogDismissed() -> startRecording(session)
+            else -> showNotificationPermissionsDialog() { startRecording(session) }
         }
     }
 
@@ -443,11 +443,15 @@ class NewSessionController @AssistedInject constructor(
         startActivity(mContextActivity, intent, null)
     }
 
-    private fun showNotifPermissionsDialog(onAccept: () -> Unit, onDecline: () -> Unit) {
-        NotificationPermissionDialog(mFragmentManager, onAccept) {
-            settings.toggleNotificationDialogDismissed()
-            onDecline()
-        }.show()
+    private fun showNotificationPermissionsDialog(onDecline: () -> Unit) {
+        NotificationPermissionDialog(
+            mFragmentManager = mFragmentManager,
+            okButtonCallback = this::openNotificationSettings,
+            dismissButtonCallback = {
+                settings.toggleNotificationDialogDismissed()
+                onDecline()
+            }
+        ).show()
     }
 
 }
