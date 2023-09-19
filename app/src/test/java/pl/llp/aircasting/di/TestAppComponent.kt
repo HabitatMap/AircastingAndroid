@@ -5,6 +5,7 @@ import dagger.Subcomponent
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.ApiModule
 import pl.llp.aircasting.di.modules.CoroutineModule
+import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.ViewModelModule
@@ -36,6 +37,7 @@ interface TestAppComponent : AppComponent {
         RepositoryModule::class,
         TestPermissionsModule::class,
         TestSyncModule::class,
+        FlowModule::class,
     ]
 )
 
