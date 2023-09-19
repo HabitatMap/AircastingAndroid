@@ -558,6 +558,6 @@
     <string name="battery_level_alert_channel_name">Battery level alerts</string>
     <string name="battery_level_alert_channel_desc">"Channel for AirBeam low battery warning notifications "</string>
     <string name="notification_permission_dialog_title">Enable notifications for Aircasting</string>
-    <string name="notification_permission_dialog_desc">Notifications will display battery level of your AirBeam and will alert you when AirBeam needs charging</string>
+    <string name="notification_permission_dialog_desc">Notifications will display battery level of your AirBeam and will alert You when AirBeam needs charging.</string>
 
 </resources>
