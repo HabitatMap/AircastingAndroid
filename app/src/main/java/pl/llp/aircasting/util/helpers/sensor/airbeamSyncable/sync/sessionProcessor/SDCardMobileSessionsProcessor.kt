@@ -8,6 +8,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerMobile
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
@@ -28,9 +29,6 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
     mMeasurementsRepository,
     lineParameterHandler
 ) {
-    private var lastLat: Double? = null
-    private var lastLng: Double? = null
-
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
@@ -46,9 +44,6 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         } else {
             session = Session(dbSession)
             sessionId = dbSession.id
-            val cords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
-            lastLat = cords.latitude
-            lastLng = cords.longitude
         }
 
         Log.v(TAG, "Will save measurements: ${session.isDisconnected()}")
@@ -73,14 +68,8 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         measurementStreamId: Long,
         csvMeasurements: List<CSVMeasurement>
     ): List<CSVMeasurement> {
-
-        if(lastLat != null && lastLng != null) {
-            csvMeasurements.forEach {
-                if (it.latitude == null && it.longitude == null) {
-                    it.latitude = lastLat
-                    it.longitude = lastLng
-                }
-            }
+        if (lineParameterHandler.deviceType == DeviceItem.Type.AIRBEAMMINI) {
+            assignLastKnownLocationToCSVMeasurements(sessionId, csvMeasurements)
         }
         val lastMeasurementTime =
             mMeasurementsRepository.lastMeasurementTime(sessionId, measurementStreamId)
@@ -88,5 +77,20 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
 
 
         return csvMeasurements.filter { csvMeasurement -> csvMeasurement.time > lastMeasurementTime }
+    }
+
+    private suspend fun assignLastKnownLocationToCSVMeasurements(
+        sessionId: Long,
+        csvMeasurements: List<CSVMeasurement>
+    ) {
+        val cords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
+        val lastLat = cords.latitude
+        val lastLng = cords.longitude
+        if (lastLat != null && lastLng != null) {
+            csvMeasurements.forEach {
+                it.latitude = lastLat
+                it.longitude = lastLng
+            }
+        }
     }
 }
