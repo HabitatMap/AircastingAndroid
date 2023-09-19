@@ -348,6 +348,7 @@ class NewSessionController @AssistedInject constructor(
             DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> handleBatteryServicePermissionsAndStartRecording(
                 session
             )
+            else -> startRecording(session)
         }
     }
 

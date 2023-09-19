@@ -5,7 +5,6 @@ import dagger.Provides
 import kotlinx.coroutines.flow.MutableSharedFlow
 import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Qualifier
-import javax.inject.Singleton
 
 @Module
 class FlowModule {
