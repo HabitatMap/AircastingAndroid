@@ -70,7 +70,7 @@ interface MeasurementDao {
         time: Date
     )
 
-    @Query("SELECT latitude, longitude FROM measurements WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND session_id=:sessionId ORDER BY time LIMIT 1")
+    @Query("SELECT latitude, longitude FROM measurements WHERE latitude IS NOT NULL AND longitude IS NOT NULL AND session_id=:sessionId ORDER BY time DESC LIMIT 1")
     suspend fun lastKnownLatLng(sessionId: Long): LatLng
 
 }
