@@ -113,13 +113,13 @@ class SDCardSyncServiceIntegratedTest {
         syncableAirBeamConfigurator.triggerSDCardDownload()
         waitForSdSyncToFinish()
 
-        measurementsRepository.getAllByStreamId(pm1Id).forEach { savedMeasurement ->
-            assertEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+        measurementsRepository.getAllByStreamId(pm1Id).drop(1).forEach { savedMeasurement ->
+            assertEquals(ABMiniDBStub.measurement2.latitude, savedMeasurement.latitude)
+            assertEquals(ABMiniDBStub.measurement2.longitude, savedMeasurement.longitude)
         }
-        measurementsRepository.getAllByStreamId(pm2_5Id).forEach { savedMeasurement ->
-            assertEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+        measurementsRepository.getAllByStreamId(pm2_5Id).drop(1).forEach { savedMeasurement ->
+            assertEquals(ABMiniDBStub.measurement2.latitude, savedMeasurement.latitude)
+            assertEquals(ABMiniDBStub.measurement2.longitude, savedMeasurement.longitude)
         }
     }
 
@@ -141,36 +141,36 @@ class SDCardSyncServiceIntegratedTest {
         assertEquals(AB3DBStub.measurement.latitude, pm2_5measurementFromActiveSession.latitude)
         assertEquals(AB3DBStub.measurement.longitude, pm2_5measurementFromActiveSession.longitude)
         measurementsRepository.getAllByStreamId(pm2_5Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
         }
         val pm1measurementFromActiveSession = measurementsRepository.getAllByStreamId(pm1Id).first()
         assertEquals(AB3DBStub.measurement.latitude, pm1measurementFromActiveSession.latitude)
         assertEquals(AB3DBStub.measurement.longitude, pm1measurementFromActiveSession.longitude)
         measurementsRepository.getAllByStreamId(pm1Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
         }
         val pm10measurementFromActiveSession = measurementsRepository.getAllByStreamId(pm10Id).first()
         assertEquals(AB3DBStub.measurement.latitude, pm10measurementFromActiveSession.latitude)
         assertEquals(AB3DBStub.measurement.longitude, pm10measurementFromActiveSession.longitude)
         measurementsRepository.getAllByStreamId(pm10Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
         }
         val rhMeasurementFromActiveSession = measurementsRepository.getAllByStreamId(rhId).first()
         assertEquals(AB3DBStub.measurement.latitude, rhMeasurementFromActiveSession.latitude)
         assertEquals(AB3DBStub.measurement.longitude, rhMeasurementFromActiveSession.longitude)
         measurementsRepository.getAllByStreamId(rhId).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
         }
         val fMeasurementFromActiveSession = measurementsRepository.getAllByStreamId(fId).first()
         assertEquals(AB3DBStub.measurement.latitude, fMeasurementFromActiveSession.latitude)
         assertEquals(AB3DBStub.measurement.longitude, fMeasurementFromActiveSession.longitude)
         measurementsRepository.getAllByStreamId(fId).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement.longitude, savedMeasurement.longitude)
+            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
         }
     }
 
@@ -218,8 +218,10 @@ class SDCardSyncServiceIntegratedTest {
         sessionId = sessionsRepository.insert(ABMiniDBStub.session)
         pm1Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm1Stream)
         pm2_5Id = streamsRepository.insert(sessionId, ABMiniDBStub.pm2_5Stream)
-        measurementsRepository.insert(pm1Id, sessionId, ABMiniDBStub.measurement)
-        measurementsRepository.insert(pm2_5Id, sessionId, ABMiniDBStub.measurement)
+        measurementsRepository.insert(pm1Id, sessionId, ABMiniDBStub.measurement1)
+        measurementsRepository.insert(pm2_5Id, sessionId, ABMiniDBStub.measurement1)
+        measurementsRepository.insert(pm1Id, sessionId, ABMiniDBStub.measurement2)
+        measurementsRepository.insert(pm2_5Id, sessionId, ABMiniDBStub.measurement2)
     }
 
     private suspend fun waitForSdSyncToFinish() {
@@ -283,7 +285,7 @@ class SDCardSyncServiceIntegratedTest {
                 dateFormat = CSVSession.DATE_FORMAT
             )!!,
         )
-        val measurement = Measurement(
+        val measurement1 = Measurement(
             value = 11.0,
             time = DateConverter.fromString(
                 "09/15/2023 09:52:48",
@@ -291,6 +293,15 @@ class SDCardSyncServiceIntegratedTest {
             )!!,
             latitude = 0.0,
             longitude = 1.0,
+        )
+        val measurement2 = Measurement(
+            value = 11.0,
+            time = DateConverter.fromString(
+                "09/15/2023 09:52:49",
+                dateFormat = CSVSession.DATE_FORMAT
+            )!!,
+            latitude = 10.0,
+            longitude = 5.0,
         )
         val pm2_5Stream = MeasurementStream(
             sensorPackageName = "AirBeamMini:246f28c47698",
