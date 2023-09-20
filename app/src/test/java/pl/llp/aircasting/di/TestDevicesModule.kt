@@ -8,11 +8,11 @@ import pl.llp.aircasting.di.mocks.FakeAudioReader
 import pl.llp.aircasting.di.modules.SensorsModule
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Configurator
-import pl.llp.aircasting.util.helpers.sensor.airbeam2.AirBeam2Reader
-import pl.llp.aircasting.util.helpers.sensor.airbeam2.NonSyncableAirBeamConnector
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConfiguratorFactory
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnectorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.configurator.AirBeam2Configurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.reader.AirBeam2Reader
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 
 @Module(includes = [SensorsModule::class])
@@ -27,7 +27,7 @@ open class TestDevicesModule {
         mAirBeamConfigurator: AirBeam2Configurator,
         mAirBeam2Reader: AirBeam2Reader,
         syncableAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory,
-        nonSyncableAirBeamConnector: NonSyncableAirBeamConnector,
+        airBeam2Connector: AirBeam2Connector,
     ): AirBeamConnectorFactory {
         return FakeAirBeamConnectorFactory(
             app,
@@ -36,7 +36,7 @@ open class TestDevicesModule {
             mAirBeamConfigurator,
             mAirBeam2Reader,
             syncableAirBeamConfiguratorFactory,
-            nonSyncableAirBeamConnector
+            airBeam2Connector
         )
     }
 

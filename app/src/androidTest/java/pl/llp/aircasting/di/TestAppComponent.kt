@@ -12,15 +12,12 @@ import pl.llp.aircasting.SearchFollowTest
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.ApiModule
 import pl.llp.aircasting.di.modules.AppModule
-import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.CoroutineModule
 import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.SyncModule
 import pl.llp.aircasting.di.modules.ViewModelModule
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeam3Reader
-import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import javax.inject.Singleton
 
 @Singleton

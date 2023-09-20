@@ -16,7 +16,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NoteCreatedEvent
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 
 class MobileActiveMapController(
     activity: AppCompatActivity,

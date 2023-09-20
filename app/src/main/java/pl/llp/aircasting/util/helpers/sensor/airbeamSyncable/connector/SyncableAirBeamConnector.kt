@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable
+package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector
 
 import android.bluetooth.BluetoothDevice
 import android.content.Context
@@ -14,7 +14,8 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.MissingDeviceAfterConnectionError
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
 
 class SyncableAirBeamConnector(
     private val applicationContext: Context,

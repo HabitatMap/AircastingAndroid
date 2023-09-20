@@ -4,7 +4,7 @@ import android.util.Log
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.util.events.sdcard.SDCardClearFinished
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.extensions.safeRegister
 
 class SDCardClearService {

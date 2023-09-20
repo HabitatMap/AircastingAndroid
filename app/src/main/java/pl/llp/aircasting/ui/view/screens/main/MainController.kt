@@ -29,7 +29,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.goToMobileActiveTab
 import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.extensions.safeRegister
-import pl.llp.aircasting.util.helpers.sensor.SessionManager
+import pl.llp.aircasting.util.helpers.sensor.common.SessionManager
 
 @AssistedFactory
 interface MainControllerFactory {

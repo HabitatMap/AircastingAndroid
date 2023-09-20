@@ -36,7 +36,7 @@ import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
 import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import javax.inject.Inject
 
 class DisconnectedView(

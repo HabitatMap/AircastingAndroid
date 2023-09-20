@@ -6,9 +6,9 @@ import dagger.Provides
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnectorFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeam2.NonSyncableAirBeamConnector
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConfiguratorFactory
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnectorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 
 @Module(includes = [SensorsModule::class])
@@ -20,14 +20,14 @@ open class DevicesModule {
         applicationContext: Context,
         mErrorHandler: ErrorHandler,
         bluetoothManager: BluetoothManager,
-        nonSyncableAirBeamConnector: NonSyncableAirBeamConnector,
+        airBeam2Connector: AirBeam2Connector,
         syncableAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory,
     ): AirBeamConnectorFactory =
         AirBeamConnectorFactory(
             applicationContext,
             mErrorHandler,
             bluetoothManager,
-            nonSyncableAirBeamConnector,
+            airBeam2Connector,
             syncableAirBeamConfiguratorFactory
         )
 

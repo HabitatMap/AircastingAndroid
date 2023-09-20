@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable
+package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -7,7 +7,7 @@ import no.nordicsemi.android.ble.data.Data
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.MainScope
-import pl.llp.aircasting.util.helpers.sensor.ResponseParser
+import pl.llp.aircasting.util.helpers.sensor.common.ResponseParser
 import javax.inject.Inject
 
 /**
@@ -16,7 +16,7 @@ import javax.inject.Inject
  * No NewMeasurementEvent will be posted for FIXED sessions
  */
 
-class AirBeam3Reader @Inject constructor(
+class SyncableAirBeamReader @Inject constructor(
     @MainScope private val coroutineScope: CoroutineScope,
     @BatteryLevelFlow private val batteryLevelFlow: MutableSharedFlow<Int>,
     private val responseParser: ResponseParser

@@ -1,10 +1,10 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam2
+package pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.reader
 
 import com.google.common.io.CharStreams
 import com.google.common.io.LineProcessor
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.ResponseParser
+import pl.llp.aircasting.util.helpers.sensor.common.ResponseParser
 import java.io.InputStream
 import java.io.InputStreamReader
 import javax.inject.Inject

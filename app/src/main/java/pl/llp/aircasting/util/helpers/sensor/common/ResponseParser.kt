@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor
+package pl.llp.aircasting.util.helpers.sensor.common
 
 import android.util.Log
 import pl.llp.aircasting.data.api.util.TAG

@@ -22,8 +22,8 @@ import pl.llp.aircasting.di.DaggerTestAppComponent
 import pl.llp.aircasting.di.TestAppModule
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConfigurator
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConfiguratorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest.ABMiniStubData.bleCount
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileCheckerFactory

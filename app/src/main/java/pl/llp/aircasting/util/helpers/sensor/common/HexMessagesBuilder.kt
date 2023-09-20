@@ -1,4 +1,4 @@
-package pl.llp.aircasting.util.helpers.sensor
+package pl.llp.aircasting.util.helpers.sensor.common
 
 import android.util.Base64
 import pl.llp.aircasting.util.TimezoneHelper

@@ -12,7 +12,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionsTab
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import javax.inject.Inject
 
 class MapControllerFactory @Inject constructor(

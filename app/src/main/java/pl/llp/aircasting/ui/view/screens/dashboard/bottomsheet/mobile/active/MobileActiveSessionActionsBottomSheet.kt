@@ -13,7 +13,7 @@ import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
 import javax.inject.Inject
 

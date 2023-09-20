@@ -3,11 +3,11 @@ package pl.llp.aircasting.di.mocks.sdSync
 import android.content.Context
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeam3Configurator
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeam3Reader
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.AirBeamMiniConfigurator
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.SyncableAirBeamConfigurator
+import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeam3Configurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniConfigurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest
 
@@ -17,10 +17,10 @@ abstract class TestSyncableABConfigurator(
     mErrorHandler: ErrorHandler,
     mSettings: Settings,
     hexMessagesBuilder: HexMessagesBuilder,
-    airBeam3Reader: AirBeam3Reader,
+    syncableAirBeamReader: SyncableAirBeamReader,
     sdCardReader: SDCardReader,
 ) : SyncableAirBeamConfigurator(
-    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, airBeam3Reader, sdCardReader
+    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, syncableAirBeamReader, sdCardReader
 )
 
 class TestAB3Configurator(
@@ -28,10 +28,10 @@ class TestAB3Configurator(
     mErrorHandler: ErrorHandler,
     mSettings: Settings,
     hexMessagesBuilder: HexMessagesBuilder,
-    airBeam3Reader: AirBeam3Reader,
+    syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
 ) : AirBeam3Configurator(
-    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, airBeam3Reader, sdCardReader
+    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, syncableAirBeamReader, sdCardReader
 ) {
     companion object {
         private const val BLE_META_DATA =
@@ -58,10 +58,10 @@ class TestABMiniConfigurator(
     mErrorHandler: ErrorHandler,
     mSettings: Settings,
     hexMessagesBuilder: HexMessagesBuilder,
-    airBeam3Reader: AirBeam3Reader,
+    syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
 ) : AirBeamMiniConfigurator(
-    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, airBeam3Reader, sdCardReader
+    applicationContext, mErrorHandler, mSettings, hexMessagesBuilder, syncableAirBeamReader, sdCardReader
 ) {
     companion object {
         private const val BLE_META_DATA =

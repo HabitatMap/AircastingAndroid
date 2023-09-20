@@ -16,7 +16,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamDiscoveryService
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardClearService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler

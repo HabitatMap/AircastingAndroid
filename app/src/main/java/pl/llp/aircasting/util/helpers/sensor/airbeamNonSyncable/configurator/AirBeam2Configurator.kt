@@ -1,8 +1,8 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam2
+package pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.configurator
 
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.helpers.sensor.HexMessagesBuilder
+import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import java.io.OutputStream
 import javax.inject.Inject
 

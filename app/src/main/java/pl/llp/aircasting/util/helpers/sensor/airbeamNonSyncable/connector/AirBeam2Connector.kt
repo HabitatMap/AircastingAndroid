@@ -1,19 +1,26 @@
-package pl.llp.aircasting.util.helpers.sensor.airbeam2
+package pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector
 
 import android.bluetooth.BluetoothSocket
 import android.util.Log
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.exceptions.*
+import pl.llp.aircasting.util.exceptions.AirBeam2ConfiguringFailed
+import pl.llp.aircasting.util.exceptions.AirBeam2ConnectionCloseFailed
+import pl.llp.aircasting.util.exceptions.AirBeamConnectionOpenFailed
+import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
+import pl.llp.aircasting.util.exceptions.UnknownError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.configurator.AirBeam2Configurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.reader.AirBeam2Reader
 import java.io.IOException
 import java.io.OutputStream
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
-open class NonSyncableAirBeamConnector @Inject constructor(
+open class AirBeam2Connector @Inject constructor(
     private val mErrorHandler: ErrorHandler,
     bluetoothManager: BluetoothManager,
     private val mAirBeamConfigurator: AirBeam2Configurator,

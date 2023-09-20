@@ -18,7 +18,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.LocationChanged
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.location.LocationHelper
-import pl.llp.aircasting.util.helpers.sensor.AirBeamReconnector
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 
 open class MapController(
     rootActivity: AppCompatActivity,
