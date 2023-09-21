@@ -387,6 +387,7 @@ open class Session(
 
     fun defaultNumberOfStreams(): Int = when (deviceType) {
         DeviceItem.Type.MIC, DeviceItem.Type.OTHER -> 1
+        DeviceItem.Type.AIRBEAMMINI -> 2
         else -> 5
     }
 
