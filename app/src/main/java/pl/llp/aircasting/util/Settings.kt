@@ -22,6 +22,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val ONBOARDING_DISPLAYED_KEY = "onboarding_displayed"
         private const val APP_RESTARTED = "app_restarted"
         private const val NOTIFICATION_DIALOG_DISMISSED = "notif_dialog_dismissed"
+        private const val BATTERY_LEVEL_SERVICE_RESTART = "batt_level_service_started"
 
         private const val FOLLOWED_SESSIONS_COUNT_KEY = "followed_sesions_number"
         const val MOBILE_ACTIVE_SESSIONS_COUNT_KEY = "mobile_active_sessions"
@@ -47,6 +48,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_FOLLOWED_SESSIONS_COUNT = 0
         private const val DEFAULT_ONBOARDING_DISPLAYED = false
         private const val DEFAULT_NOTIFICATIONS_DIALOG_DISSMISSED = false
+        private const val DEFAULT_BATTERY_LEVEL_SERVICE_RESTART = false
     }
 
     protected open val DEFAULT_BACKEND_URL = ApiConstants.baseUrl
@@ -85,6 +87,10 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
 
     fun isDormantStreamAlertEnabled(): Boolean {
         return getBooleanFromSettings(DORMANT_STREAM_ALERT_KEY, DEFAULT_DORMANT_STREAM_ALERT)
+    }
+
+    fun isBatteryLevelRestart(): Boolean {
+        return getBooleanFromSettings(BATTERY_LEVEL_SERVICE_RESTART, DEFAULT_BATTERY_LEVEL_SERVICE_RESTART)
     }
 
     fun areMapsDisabled(): Boolean {
@@ -169,6 +175,10 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
     fun toggleNotificationDialogDismissed() {
         val enabled = !isNotificationDialogDismissed()
         saveToSettings(NOTIFICATION_DIALOG_DISMISSED, enabled)
+    }
+
+    fun setBatteryServiceRestart(restart: Boolean){
+        saveToSettings(BATTERY_LEVEL_SERVICE_RESTART, restart)
     }
 
     fun toggleUsingSatelliteView() {

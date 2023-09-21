@@ -20,6 +20,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.MainScope
+import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.safeRegister
@@ -35,6 +36,9 @@ class BatteryLevelService : Service() {
     @Inject
     @BatteryLevelFlow
     lateinit var batteryLevelFlow: MutableSharedFlow<Int>
+
+    @Inject
+    lateinit var settings: Settings
 
     private lateinit var notificationManager: NotificationManager
     private lateinit var job: Job
@@ -169,15 +173,13 @@ class BatteryLevelService : Service() {
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
+        settings.setBatteryServiceRestart(false)
         stopService(Intent(applicationContext, BatteryLevelService::class.java))
     }
 
     @Subscribe
     fun onMessageEvent(event: SensorDisconnectedEvent) {
-        notificationManager.notify(
-            BATTERY_LEVEL_NOTIFICATION_ID,
-            createNotification(getString(R.string.battery_level_not_available))
-        )
+        stopService(Intent(applicationContext, BatteryLevelService::class.java))
     }
 
 
@@ -192,7 +194,7 @@ class BatteryLevelService : Service() {
     companion object {
         private const val BATTERY_LEVEL_CHANNEL_ID = "BatteryLevel"
         private const val BATTERY_LEVEL_ALERT_CHANNEL_ID = "BatteryAlert"
-        private const val BATTERY_LEVEL_NOTIFICATION_ID = 101
+        private const val BATTERY_LEVEL_NOTIFICATION_ID = 102
         private const val BATTERY_LOW_ALERT_LEVEL = 15
         private const val BATTERY_ALERT_RESET_LEVEL = 20
     }
