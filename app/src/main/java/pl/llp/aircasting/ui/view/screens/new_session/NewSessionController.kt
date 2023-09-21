@@ -373,6 +373,7 @@ class NewSessionController @AssistedInject constructor(
     }
 
     private fun startBatteryLevelService() {
+        settings.setBatteryServiceRestart(true)
         val intent = Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mContextActivity.applicationContext.startForegroundService(intent)

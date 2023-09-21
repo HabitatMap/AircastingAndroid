@@ -136,7 +136,7 @@ abstract class SyncableAirBeamConfigurator(
         }
     }
 
-    fun reconnectMobileSession() {
+    open fun reconnectMobileSession() {
         val location = Session.Location.get(LocationHelper.lastLocation())
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
         Log.d(
