@@ -43,4 +43,23 @@ class UploadFixedMeasurementsParams(
             )
         }
     }
+
+    override fun toString(): String {
+        return "UploadFixedMeasurementsParams(\n" +
+                "$session_uuid,\n" +
+                "$sensor_package_name,\n" +
+                "$sensor_name,\n" +
+                "$measurement_type,\n" +
+                "$measurement_short_type,\n" +
+                "$unit_name,\n" +
+                "$unit_symbol,\n" +
+                "$threshold_very_high,\n" +
+                "$threshold_high,\n" +
+                "$threshold_medium,\n" +
+                "$threshold_low,\n" +
+                "$threshold_very_low,\n" +
+                "$measurements,\n" +
+                ")"
+
+    }
 }

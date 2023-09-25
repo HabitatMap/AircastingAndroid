@@ -83,13 +83,12 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         sessionId: Long,
         csvMeasurements: List<CSVMeasurement>
     ) {
-        val cords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
-        val lastLat = cords.latitude
-        val lastLng = cords.longitude
-        if (lastLat != null && lastLng != null) {
+        val lastCords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
+
+        if (lastCords?.latitude != null && lastCords.longitude != null) {
             csvMeasurements.forEach {
-                it.latitude = lastLat
-                it.longitude = lastLng
+                it.latitude = lastCords.latitude
+                it.longitude = lastCords.longitude
             }
         }
     }

@@ -3,7 +3,7 @@ package pl.llp.aircasting.data.api.params
 import pl.llp.aircasting.data.api.util.Constants
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
-import java.util.*
+import java.util.Date
 
 class MeasurementParams {
     constructor(measurement: Measurement) {
@@ -27,4 +27,8 @@ class MeasurementParams {
     val milliseconds: Int
     val time: Date
     val value: Double?
+
+    override fun toString(): String {
+        return "MeasurementParams($value,$longitude,$latitude,$milliseconds,$time,$value)"
+    }
 }

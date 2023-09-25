@@ -69,7 +69,7 @@ class MeasurementStreamsRepository @Inject constructor(
         return mDatabase.measurementStreams().getStreamsIdsBySessionId(sessionId)
     }
 
-    suspend fun getLastKnownLatLng(sessionId: Long): LatLng {
+    suspend fun getLastKnownLatLng(sessionId: Long): LatLng? {
         return mDatabase.measurements().lastKnownLatLng(sessionId)
     }
 }
