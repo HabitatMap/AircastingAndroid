@@ -4,11 +4,17 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.AppDatabase
-import pl.llp.aircasting.data.local.entity.*
+import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.LatLng
+import pl.llp.aircasting.data.local.entity.SessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 @UserSessionScope
@@ -177,6 +183,12 @@ class SessionsRepository @Inject constructor(
 
     suspend fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
+    }
+
+    suspend fun getLocation(uuid: String?): LatLng? {
+        uuid ?: return null
+
+        return mDatabase.sessions().getLocation(uuid)
     }
 
     fun loadMobileActiveSessionsWithMeasurementsList(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {

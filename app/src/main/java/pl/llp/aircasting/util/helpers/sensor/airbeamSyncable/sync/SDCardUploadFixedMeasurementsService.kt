@@ -6,10 +6,12 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.services.UploadFixedMeasurementsService
+import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.measurementStream.CSVMeasurementStream
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.measurementStream.CSVMeasurementStream
 import java.io.File
 
 @AssistedFactory
@@ -24,6 +26,7 @@ class SDCardUploadFixedMeasurementsService @AssistedInject constructor(
     @Assisted private val mSDCardCSVIterator: SDCardSessionFileHandlerFixed,
     private val mUploadFixedMeasurementsService: UploadFixedMeasurementsService?,
     @Assisted private val csvLineParameterHandler: CSVLineParameterHandler,
+    private val sessionsRepository: SessionsRepository
 ) {
     private val MEASUREMENTS_CHUNK_SIZE = 31 * 24 * 60 // about a month of data
     private val TAG = "SDCardUploadFixedMeasurements"
@@ -41,7 +44,7 @@ class SDCardUploadFixedMeasurementsService @AssistedInject constructor(
     }
 
     // chunking here is kind of complicated, but it's needed this way, otherwise streams got dupplicated in a backend
-    private fun chunkSession(csvSession: CSVSession): Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>> {
+    private suspend fun chunkSession(csvSession: CSVSession): Map<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>> {
         val measurementChunks =
             mutableMapOf<CSVMeasurementStream, ArrayList<List<CSVMeasurement>>>()
 
@@ -51,12 +54,28 @@ class SDCardUploadFixedMeasurementsService @AssistedInject constructor(
             )
 
             if (csvMeasurementStream != null) {
-                val csvMeasurementsChunk = chunkStream(csvMeasurements)
+                val measurementsWithLocation = assignGeolocationIfMissing(csvMeasurements, csvSession.uuid)
+                val csvMeasurementsChunk = chunkStream(measurementsWithLocation)
                 measurementChunks[csvMeasurementStream] = csvMeasurementsChunk
             }
         }
 
         return measurementChunks
+    }
+
+    private suspend fun assignGeolocationIfMissing(csvMeasurements: ArrayList<CSVMeasurement>, uuid: String?): List<CSVMeasurement> {
+        val sessionLocation = sessionsRepository.getLocation(uuid)
+        val latitude = sessionLocation?.latitude ?: Session.Location.DEFAULT_LOCATION.latitude
+        val longitude = sessionLocation?.longitude ?: Session.Location.DEFAULT_LOCATION.longitude
+        val modifiedMeasurements = csvMeasurements.map { measurement ->
+            if (measurement.latitude == null)
+                measurement.latitude = latitude
+            if (measurement.longitude == null)
+                measurement.longitude = longitude
+
+            measurement
+        }
+        return modifiedMeasurements
     }
 
     @SuppressLint("LongLogTag")

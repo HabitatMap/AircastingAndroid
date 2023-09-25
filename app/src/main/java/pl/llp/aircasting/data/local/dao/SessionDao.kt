@@ -147,4 +147,7 @@ interface SessionDao {
 
     @Query("UPDATE sessions SET averaging_frequency=:averagingFrequency WHERE id=:sessionId")
     suspend fun updateAveragingFrequency(sessionId: Long, averagingFrequency: Int)
+
+    @Query("SELECT latitude, longitude FROM sessions WHERE uuid=:uuid")
+    suspend fun getLocation(uuid: String): LatLng?
 }
