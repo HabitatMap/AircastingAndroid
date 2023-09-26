@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Build
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
+import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import java.util.UUID
 
@@ -40,7 +40,7 @@ open class AirBeamMiniConfigurator(
     override fun reconnectMobileSession() {
         super.reconnectMobileSession()
 
-        if(mSettings.isBatteryLevelRestart()) {
+        if(mSettings.isBatteryLevelRestartRequired()) {
             val intent = Intent(applicationContext, BatteryLevelService::class.java)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 applicationContext.startForegroundService(intent)

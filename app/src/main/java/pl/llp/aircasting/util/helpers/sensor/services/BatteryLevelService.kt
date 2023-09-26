@@ -173,7 +173,7 @@ class BatteryLevelService : Service() {
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
-        settings.setBatteryServiceRestart(false)
+        settings.setBatteryServiceRestartRequired(false)
         stopService(Intent(applicationContext, BatteryLevelService::class.java))
     }
 
