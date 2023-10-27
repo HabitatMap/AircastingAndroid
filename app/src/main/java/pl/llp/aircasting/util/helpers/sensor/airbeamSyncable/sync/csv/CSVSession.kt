@@ -15,7 +15,7 @@ class CSVSession(
     val streams: MutableMap<CSVLineParameterHandler.ABLineParameter, ArrayList<CSVMeasurement>> = ConcurrentHashMap(),
 ) {
     companion object {
-        const val DEFAULT_NAME = "Imported from SD card"
+        const val DEFAULT_NAME = "Imported from AirBeam storage"
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
     }
 
