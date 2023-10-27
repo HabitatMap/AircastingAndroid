@@ -68,7 +68,7 @@
     <string name="are_you_sure">Êtes-vous sûr?</string>
 
     <string name="disconnected_view_airbeamSyncable_header">Votre AirBeam3 est maintenant\nen mode autonome</string>
-    <string name="disconnected_view_airbeamSyncable_description">AirBeam3 enregistre maintenant à l\'aide de sa carte SD. Les mesures seront affichées ici après la synchronisation.</string>
+    <string name="disconnected_view_airbeamSyncable_description">AirBeam enregistre maintenant en utilisant son stockage. Les mesures seront affichées ici après synchronisation</string>
     <string name="disconnected_view_airbeamSyncable_sync_button">Terminer l\'enregistrement &amp; synchroniser</string>
     <string name="disconnected_view_airbeamSyncable_finish_button">Terminer l\'enregistrement &amp; ne pas synchroniser</string>
 
@@ -87,9 +87,9 @@
     <string name="mobile_session_start_title">Séance mobile</string>
     <string name="mobile_session_start_desc">pour se déplacer</string>
     <string name="or">ou</string>
-    <string name="sync_title">Synchroniser les données depuis\nAirBeam3</string>
-    <string name="sync_description">si vous avez enregistré avec AirBeam3</string>
-    <string name="clear_card_title">Effacer la carte SD</string>
+    <string name="sync_title">Synchronisez le stockage de données</string>
+    <string name="sync_description">si vous avez enregistré avec AirBeam3 ou AirBeam Mini</string>
+    <string name="clear_card_title">Effacez le stockage de données AirBeam.</string>
     <string name="clear_card_description">Ceci est un bouton temporaire à des fins de test</string>
 
     <!-- more info modal -->
@@ -241,11 +241,11 @@
 
     <!-- Finish and sync session dialog -->
     <string name="dialog_finish_and_sync_recording_header_part1">Terminer l\'enregistrement</string>
-    <string name="dialog_finish_and_sync_recording_header_part3">et synchroniser depuis la carte SD ?</string>
+    <string name="dialog_finish_and_sync_recording_header_part3">Et synchronisez à partir du stockage ?</string>
     <string name="dialog_finish_and_sync_recording_text_part1">La séance sera déplacée à</string>
     <string name="dialog_finish_and_sync_recording_text_part2">Mobile Dormant</string>
     <string name="dialog_finish_and_sync_recording_text_part3">et vous ne pourrez pas y ajouter de nouvelles mesures.</string>
-    <string name="dialog_finish_and_sync_recording_text_part4">La carte SD sera ensuite effacée.</string>
+    <string name="dialog_finish_and_sync_recording_text_part4">Le stockage sera vidé par la suite.</string>
     <string name="finish_recording_and_sync">Terminer l\'enregistrement &amp; synchroniser</string>
 
     <!-- Chart -->
@@ -265,22 +265,22 @@
     <string name="application_version">Version de l\'application:</string>
     <string name="version">version</string>
     <string name="use_24_hour_format">Utiliser le format 24 heures</string>
-    <string name="clear_sd_card">Effacer la carte SD</string>
+    <string name="clear_sd_card">Effacez le stockage de données AirBeam.</string>
     <string name="your_privacy">Votre vie privée</string>
 
     <!-- Clearing SD Card -->
     <string name="restart_airbeam_header">Redémarrez votre AirBeam</string>
     <string name="restart_airbeam_description">Éteignez votre AirBeam puis rallumez-le.</string>
     <string name="sd_card_clear_select_device_header">Sélectionnez l\'appareil que vous souhaitez effacer</string>
-    <string name="sd_card_clearing_header">Effacer la carte SD</string>
+    <string name="sd_card_clearing_header">Effacement du stockage de données.</string>
     <string name="sd_card_clearing_description">Cela devrait prendre moins de 10 secondes.</string>
-    <string name="sd_card_cleared_header">Carte SD effacée</string>
-    <string name="sd_card_cleared_description">La carte SD à l\'intérieur de votre AirBeam3 a été effacée avec succès.</string>
+    <string name="sd_card_cleared_header">Données effacées</string>
+    <string name="sd_card_cleared_description">Le stockage dans votre AirBeam a été vidé avec succès</string>
     <string name="sd_card_cleared_continue_button">Continuez</string>
 
     <!-- Sync -->
     <string name="refreshing_sessions_header">Séances de mise à jour</string>
-    <string name="refreshing_sessions_description">Les sessions doivent être mises à jour avant la synchronisation de la carte SD. Assurez-vous que votre appareil est connecté à Internet.</string>
+    <string name="refreshing_sessions_description">Les sessions doivent être mises à jour avant de synchroniser à partir du stockage.</string>
     <string name="refreshed_sessions_header_successful">Succès</string>
     <string name="refreshed_sessions_description_successful">Les sessions ont été mises à jour avec succès.</string>
     <string name="refreshed_sessions_header_error">Quelque chose s\'est mal passé</string>
@@ -291,11 +291,11 @@
     <string name="airbeam_syncing_description">Gardez votre AirBeam près de votre Android. Branchez votre AirBeam pour accélérer la synchronisation.</string>
     <string name="airbeam_syncing_finalizing">Finalisation…</string>
     <string name="airbeam_syncing_finished_header">Synchronisation terminée</string>
-    <string name="airbeam_syncing_finished_description">Les données de votre AirBeam3 ont été synchronisées avec succès avec l\'application. La carte SD a été effacée.</string>
+    <string name="airbeam_syncing_finished_description">Les données de votre AirBeam ont été synchronisées avec succès avec l\'application. La carte SD a été effacée.</string>
     <string name="sync_error_header">Quelque chose s\'est mal passé</string>
     <string name="sync_unknown_error">Une erreur inattendue s\'est produite. Veuillez contacter l\'assistance.</string>
-    <string name="sync_unavailable_dialog_header">Synchronisation de la carte SD indisponible</string>
-    <string name="sync_unavailable_dialog_description">Pour utiliser l\'AirBeam3 en mode autonome et synchroniser la carte SD,\nAndroid 8 ou supérieur + Bluetooth 5 sont requis</string>
+    <string name="sync_unavailable_dialog_header">Synchronisation du stockage indisponible</string>
+    <string name="sync_unavailable_dialog_description">Pour utiliser l\'AirBeam en mode autonome et synchroniser la carte SD, Android 8 ou supérieur + Bluetooth 5 sont requis</string>
     <string name="sync_unavailable_dialog_continue_button">Continuez</string>
 
     <!-- My account -->
@@ -335,7 +335,7 @@
 
     <!-- Did you know box -->
     <string name="did_you_know">Le saviez-vous?</string>
-    <string name="did_you_know_box_tip_1">AirBeam3 est résistant aux intempéries. Pour garder un œil sur la qualité de votre air extérieur 24 heures sur 24, 7 jours sur 7, accrochez-en un à l\'extérieur de votre maison et enregistrez une session fixe.</string>
+    <string name="did_you_know_box_tip_1">AirBeam3 et AirBeam Mini résistent aux intempéries. Accrochez-les à l\'extérieur et enregistrez une session fixe pour surveiller la qualité de votre air 24/7</string>
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
