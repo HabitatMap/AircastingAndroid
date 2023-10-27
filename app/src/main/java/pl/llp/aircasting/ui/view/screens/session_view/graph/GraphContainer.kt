@@ -316,7 +316,6 @@ class GraphContainer(
 
     override fun onChartScale(me: MotionEvent?, scaleX: Float, scaleY: Float) {
         updateGraphOnGesture()
-        drawSession()
     }
 
     override fun onChartGestureStart(
