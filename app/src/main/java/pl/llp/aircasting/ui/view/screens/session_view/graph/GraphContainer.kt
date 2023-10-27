@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.github.mikephil.charting.components.LimitLine
@@ -29,6 +30,7 @@ import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.view.screens.session_view.graph.TargetZoneCombinedChart.TargetZone
 import pl.llp.aircasting.util.MeasurementColor
+import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.isSDKLessThanN
 import java.util.*
@@ -54,6 +56,7 @@ class GraphContainer(
     private var mGraph: TargetZoneCombinedChart?
     private val mFromLabel: TextView?
     private val mToLabel: TextView?
+    private var loader: ImageView?
 
     private var mGraphDataGenerator: GraphDataGenerator
 
@@ -71,6 +74,7 @@ class GraphContainer(
         mGraph = rootView?.graph
         mFromLabel = rootView?.from_label
         mToLabel = rootView?.to_label
+        loader = rootView?.loader as ImageView
         mGraphDataGenerator = GraphDataGenerator(mContext!!)
         hideGraph()
         setupGraph()
@@ -394,12 +398,15 @@ class GraphContainer(
         mGraph?.visibility = View.VISIBLE
         mFromLabel?.visibility = View.VISIBLE
         mToLabel?.visibility = View.VISIBLE
+        loader?.visibility = View.GONE
     }
 
     private fun hideGraph() {
         mGraph?.visibility = View.GONE
         mFromLabel?.visibility = View.GONE
         mToLabel?.visibility = View.GONE
+        loader?.visibility = View.VISIBLE
+        loader?.startAnimation()
     }
 
     private fun sessionMeasurementsFrequency(): Int {
