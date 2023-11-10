@@ -87,8 +87,8 @@
     <string name="mobile_session_start_title">Sesión móvil</string>
     <string name="mobile_session_start_desc">para moverse</string>
     <string name="or">O</string>
-    <string name="sync_title">Sincroniza el almacenamiento de datos</string>
-    <string name="sync_description">de usted grabado con AirBeam3 o AirBeam Mini</string>
+    <string name="sync_title">Sincronización de almacenamiento</string>
+    <string name="sync_description">para AirBeam3 y AirBeam Mini</string>
     <string name="clear_card_title">Borrar el almacenamiento de datos de AirBeam</string>
     <string name="clear_card_description">This is temporary button for the testing purposes</string>
 

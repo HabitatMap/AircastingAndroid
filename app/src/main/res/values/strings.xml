@@ -95,8 +95,8 @@
     <string name="mobile_session_start_title">Mobile session</string>
     <string name="mobile_session_start_desc">for moving around</string>
     <string name="or">or</string>
-    <string name="sync_title">Sync data storage</string>
-    <string name="sync_description">if you recorded with AirBeam3 or AirBeam Mini</string>
+    <string name="sync_title">Sync storage</string>
+    <string name="sync_description">for AirBeam3 or AirBeam Mini</string>
     <string name="clear_card_title">Clear AirBeam data storage</string>
     <string name="clear_card_description">This is temporary button for the testing purposes</string>
 
