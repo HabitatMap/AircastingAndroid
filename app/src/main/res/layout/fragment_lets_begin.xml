@@ -207,7 +207,7 @@
                     android:maxHeight="200dp"
                     android:paddingStart="@dimen/keyline_4"
                     android:paddingEnd="@dimen/keyline_4"
-                    android:paddingBottom="@dimen/keyline_5">
+                    android:paddingBottom="@dimen/keyline_8">
 
                     <TextView
                         android:id="@+id/sync_title"
