@@ -3,6 +3,7 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.api.services.FixedSessionUploadService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
@@ -10,6 +11,7 @@ import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsReposito
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
@@ -49,8 +51,9 @@ open class SensorsModule {
         sessionsRepository: SessionsRepository,
         airBeamDiscoveryService: AirBeamDiscoveryService,
         @IoCoroutineScope coroutineScope: CoroutineScope,
+        @AirbeamConnectionStatusFlow connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>,
     ): AirBeamReconnector =
-        AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService, coroutineScope)
+        AirBeamReconnector(application, sessionsRepository, airBeamDiscoveryService, coroutineScope, connectionStatusFlow = connectionStatusFlow)
 
     @Provides
     @UserSessionScope
