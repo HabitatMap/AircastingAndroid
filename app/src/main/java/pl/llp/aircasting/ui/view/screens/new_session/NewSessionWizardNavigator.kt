@@ -125,4 +125,11 @@ class NewSessionWizardNavigator(
         fragment.session = session
         goToFragment(fragment)
     }
+
+    fun isConnectingAirbeamFragmentVisible(): Boolean {
+        for (fragment in mFragmentManager.fragments) {
+            if (fragment is ConnectingAirBeamFragment) return fragment.isVisible
+        }
+        return false
+    }
 }
