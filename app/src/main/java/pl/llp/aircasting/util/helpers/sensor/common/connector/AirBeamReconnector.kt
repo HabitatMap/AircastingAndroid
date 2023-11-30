@@ -3,11 +3,13 @@ package pl.llp.aircasting.util.helpers.sensor.common.connector
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
@@ -23,6 +25,7 @@ class AirBeamReconnector(
     private val mAirBeamDiscoveryService: AirBeamDiscoveryService,
     private val coroutineScope: CoroutineScope,
     private val sessionUuidByStandaloneMode: MutableMap<String, Boolean> = ConcurrentHashMap(),
+    private val connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>,
 ) {
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
@@ -46,6 +49,7 @@ class AirBeamReconnector(
         finallyCallback: (() -> Unit)? = null,
     ) {
         eventbus.safeRegister(this)
+        observeConnectionStatus()
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
@@ -132,11 +136,13 @@ class AirBeamReconnector(
             }
         }
     }
-
-    @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
+    fun observeConnectionStatus() = coroutineScope.launch {
+        connectionStatusFlow.collect {
+            if (it.isConnected) onConnectedSuccesful()
+        }
+    }
+    private fun onConnectedSuccesful() {
         updateSessionStatus(mSession, Session.Status.RECORDING)
-
         finalizeReconnection()
     }
 

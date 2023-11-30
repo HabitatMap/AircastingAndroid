@@ -14,14 +14,19 @@ import androidx.lifecycle.lifecycleScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
+import pl.llp.aircasting.di.modules.AirbeamConnectionStatusFlow
+import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.NotificationPermissionDialog
@@ -37,7 +42,6 @@ import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDeta
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
 import pl.llp.aircasting.util.events.StartRecordingEvent
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
@@ -77,6 +81,10 @@ class NewSessionController @AssistedInject constructor(
     private val settings: Settings,
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
+    @MainScope
+    private val coroutineScope: CoroutineScope,
+    @AirbeamConnectionStatusFlow
+    private val connectionStatus: MutableStateFlow<AirbeamConnectionStatus?>,
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -96,7 +104,7 @@ class NewSessionController @AssistedInject constructor(
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
         setupProgressMax()
-
+        observeConnectionStatus()
         if (permissionsManager.locationPermissionsGranted(mContextActivity) || areMapsDisabled()) goToFirstStep() else showLocationPermissionPopUp()
     }
 
@@ -348,6 +356,7 @@ class NewSessionController @AssistedInject constructor(
             DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> handleBatteryServicePermissionsAndStartRecording(
                 session
             )
+
             else -> startRecording(session)
         }
     }
@@ -395,15 +404,20 @@ class NewSessionController @AssistedInject constructor(
         wizardNavigator.goToSessionDetails(sessionUUID, sessionType, deviceItem, this)
     }
 
-    @Subscribe
-    fun onMessageEvent(event: AirBeamConnectionSuccessfulEvent) {
-        val deviceItem = event.deviceItem
-        val sessionUUID = event.sessionUUID
+    fun observeConnectionStatus() = coroutineScope.launch {
+        connectionStatus.collect {
+            it?.let { status ->
+                val connected =
+                    !status.sessionUUID.isNullOrBlank() && status.deviceItem != null && status.isConnected
+                if (connected) onConnected(status.deviceItem!!, status.sessionUUID!!)
+            }
+        }
+    }
 
-        sessionUUID
-            ?: return // it should not happen in the new session wizard flow, but checking just for sure...
-
-        wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
+    fun onConnected(deviceItem: DeviceItem, sessionUUID: String) {
+        if (wizardNavigator.isConnectingAirbeamFragmentVisible()) {
+            wizardNavigator.goToAirBeamConnected(deviceItem, sessionUUID, this)
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
