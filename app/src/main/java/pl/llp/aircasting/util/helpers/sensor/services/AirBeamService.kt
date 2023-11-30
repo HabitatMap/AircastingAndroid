@@ -2,6 +2,7 @@ package pl.llp.aircasting.util.helpers.sensor.services
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -9,11 +10,12 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.AirbeamConnectionStatusFlow
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.AirBeamConnectionSuccessfulEvent
 import pl.llp.aircasting.util.events.SensorDisconnectedEvent
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -45,6 +47,10 @@ abstract class AirBeamService : SensorService(),
     @IoCoroutineScope
     lateinit var coroutineScope: CoroutineScope
 
+    @Inject
+    @AirbeamConnectionStatusFlow
+    lateinit var connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>
+
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         Log.d(TAG, "Creating AirBeamConnector")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
@@ -68,24 +74,36 @@ abstract class AirBeamService : SensorService(),
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        val event = AirBeamConnectionSuccessfulEvent(deviceItem, sessionUUID)
-        EventBus.getDefault().post(event)
+        updateConnectionStatus(true, deviceItem, sessionUUID)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionSuccessful"))
     }
 
     override fun onDisconnect(deviceId: String) {
         Log.d(TAG, "Disconnecting and stopping service")
+        updateConnectionStatus(false)
         stopSelf()
     }
 
     override fun onConnectionFailed(deviceItem: DeviceItem) {
+        updateConnectionStatus(false)
         val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionFailed"))
     }
 
+    private fun updateConnectionStatus(
+        isConnected: Boolean,
+        deviceItem: DeviceItem? = null,
+        sessionUUID: String? = null,
+    ) {
+        coroutineScope.launch {
+            connectionStatusFlow.emit(AirbeamConnectionStatus(deviceItem, sessionUUID, isConnected))
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedEvent) {
+        updateConnectionStatus(false)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
 
         event.sessionUUID?.let { sessionUUID ->
