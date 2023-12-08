@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
@@ -9,9 +11,29 @@ plugins {
     kotlin("kapt")
 }
 
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+val keystorePath: String? = localProperties.getProperty("keystore.path")
+val keystorePassword: String? = localProperties.getProperty("keystore.password")
+val keystoreAlias: String? = localProperties.getProperty("keystore.alias")
+val keyPasswordFromFile: String? = localProperties.getProperty("key.password")
+
 android {
     compileSdk = AppConfig.compileSdk
     buildToolsVersion = AppConfig.buildToolsVersion
+
+    signingConfigs {
+        create("release") {
+            storeFile = keystorePath?.let { file(it) }
+            storePassword = keystorePassword
+            keyAlias = keystoreAlias
+            keyPassword = keyPasswordFromFile
+        }
+    }
 
     defaultConfig {
         applicationId = "pl.llp.aircasting"
@@ -33,6 +55,7 @@ android {
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
+            signingConfig = signingConfigs.getByName("release")
         }
         getByName("release") {
             isMinifyEnabled = false
@@ -41,6 +64,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
