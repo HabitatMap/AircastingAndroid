@@ -55,7 +55,6 @@ android {
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
-            signingConfig = signingConfigs.getByName("release")
         }
         getByName("release") {
             isMinifyEnabled = false
