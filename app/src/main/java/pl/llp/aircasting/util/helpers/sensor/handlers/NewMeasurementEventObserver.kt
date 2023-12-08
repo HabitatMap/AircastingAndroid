@@ -17,8 +17,6 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.extensions.addSeconds
-import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.truncateTo
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.*
@@ -79,7 +77,7 @@ class NewMeasurementEventObserverImpl(
 
     private fun creationTime(numberOfStreams: Int): Date {
         if (allMeasurementsFromSetReceived(numberOfStreams))
-            timestamp = calendar().addSeconds(timestamp, 1) ?: timestamp
+            timestamp = Date().truncateTo(SECOND)
         return timestamp
     }
 
