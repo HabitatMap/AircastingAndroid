@@ -30,7 +30,9 @@ interface FinishMobileSessionListener {
             rootActivity.finish()
     }
 
-    fun onFinishAndSyncMobileSessionConfirmed() {
+    fun onFinishAndSyncMobileSessionConfirmed(session: Session) {
+        val event = StopRecordingEvent(session.uuid)
+        EventBus.getDefault().post(event)
         SyncActivity.start(rootActivity)
     }
 }
