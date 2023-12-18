@@ -19,6 +19,12 @@ class FlowModule {
     @AirbeamConnectionStatusFlow
     @UserSessionScope
     fun provideAirbeamConnectionStatusFlow(): MutableStateFlow<AirbeamConnectionStatus?> = MutableStateFlow(null)
+
+    @Provides
+    @SyncActiveFlow
+    @UserSessionScope
+    fun provideSyncActiveFlow(): MutableSharedFlow<Boolean> = MutableSharedFlow()
+
 }
 
 @Retention(AnnotationRetention.BINARY)
@@ -28,3 +34,7 @@ annotation class BatteryLevelFlow
 @Retention(AnnotationRetention.BINARY)
 @Qualifier
 annotation class AirbeamConnectionStatusFlow
+
+@Retention(AnnotationRetention.BINARY)
+@Qualifier
+annotation class SyncActiveFlow
