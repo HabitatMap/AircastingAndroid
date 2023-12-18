@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -20,6 +21,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.SyncActiveFlow
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOffLocationServicesViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.connect_airbeam.TurnOnBluetoothViewMvc
@@ -62,6 +64,8 @@ class SyncController @AssistedInject constructor(
     private val mErrorHandler: ErrorHandler,
     private val mSettings: Settings,
     private val mSessionsSyncService: SessionsSyncService,
+    @SyncActiveFlow
+    private val syncActiveFlow: MutableSharedFlow<Boolean>,
 ) : RefreshedSessionsViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
@@ -79,7 +83,7 @@ class SyncController @AssistedInject constructor(
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
-
+        stopReconnectionAttempts()
         setupProgressBarMax()
 
         if (mPermissionsManager.locationPermissionsGranted(mRootActivity)) {
@@ -87,6 +91,10 @@ class SyncController @AssistedInject constructor(
         } else {
             showLocationPermissionPopUp()
         }
+    }
+
+    private fun stopReconnectionAttempts() = mRootActivity.lifecycleScope.launch {
+        syncActiveFlow.emit(true)
     }
 
     private fun showLocationPermissionPopUp() {
@@ -296,6 +304,7 @@ class SyncController @AssistedInject constructor(
         Log.d("WakeLock", "Released wakelock: ${!wakeLock.isHeld}")
         mErrorHandler.handle(SDCardSyncError("syncFinished in syncController"))
         mRootActivity.lifecycleScope.launchWhenResumed {
+            syncActiveFlow.emit(false)
             mWizardNavigator.goToAirbeamSynced(this@SyncController)
         }
     }
