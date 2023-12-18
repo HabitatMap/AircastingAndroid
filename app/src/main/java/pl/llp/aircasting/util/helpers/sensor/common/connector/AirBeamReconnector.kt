@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.common.connector
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
@@ -11,6 +12,7 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.SyncActiveFlow
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.*
 import pl.llp.aircasting.util.extensions.eventbus
@@ -26,6 +28,8 @@ class AirBeamReconnector(
     private val coroutineScope: CoroutineScope,
     private val sessionUuidByStandaloneMode: MutableMap<String, Boolean> = ConcurrentHashMap(),
     private val connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>,
+    @SyncActiveFlow
+    private val syncStatusFlow: MutableSharedFlow<Boolean>,
 ) {
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
@@ -50,6 +54,7 @@ class AirBeamReconnector(
     ) {
         eventbus.safeRegister(this)
         observeConnectionStatus()
+        observeSyncStatus()
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
@@ -136,7 +141,7 @@ class AirBeamReconnector(
             }
         }
     }
-    fun observeConnectionStatus() = coroutineScope.launch {
+    private fun observeConnectionStatus() = coroutineScope.launch {
         connectionStatusFlow.collect {
             if (it.isConnected) onConnectedSuccesful()
         }
@@ -144,6 +149,12 @@ class AirBeamReconnector(
     private fun onConnectedSuccesful() {
         updateSessionStatus(mSession, Session.Status.RECORDING)
         finalizeReconnection()
+    }
+
+    private fun observeSyncStatus() = coroutineScope.launch {
+        syncStatusFlow.collect { isSyncActive ->
+            if (isSyncActive) finalizeReconnection()
+        }
     }
 
     @Subscribe
