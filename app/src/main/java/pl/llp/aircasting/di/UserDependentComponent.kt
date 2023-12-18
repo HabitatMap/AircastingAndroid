@@ -32,6 +32,7 @@ import pl.llp.aircasting.util.helpers.sensor.services.AirBeamClearCardService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamSyncService
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamReconnectSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import javax.inject.Scope
 
@@ -104,6 +105,7 @@ interface UserDependentComponent {
     fun inject(activity: AirBeamRecordSessionService)
     fun inject(activity: AirBeamSyncService)
     fun inject(activity: AirBeamClearCardService)
+    fun inject(activity: AirBeamReconnectSessionService)
 }
 
 @Scope
