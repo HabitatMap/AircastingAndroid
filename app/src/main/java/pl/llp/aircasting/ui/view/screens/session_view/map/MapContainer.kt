@@ -171,16 +171,18 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
 
-        var i = 0
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(
                 mContext,
                 measurement,
                 mSessionPresenter?.selectedSensorThreshold()
             )
-            latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
-            mMeasurementPoints.add(latestPoint)
-            i += 1
+            val measurementLocation = LatLng(measurement.latitude!!, measurement.longitude!!)
+            if (!Session.Location.FAKE_LOCATION.equals(measurementLocation)) {
+                latestPoint = measurementLocation
+            }
+
+            latestPoint?.let { mMeasurementPoints.add(it) }
         }
         mMeasurementsLineOptions.addAll(mMeasurementPoints)
         mMeasurementsLine = mMap?.addPolyline(mMeasurementsLineOptions)
