@@ -2,6 +2,7 @@ package pl.llp.aircasting.data.model
 
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.LatLng
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithNotesDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
@@ -214,9 +215,11 @@ open class Session(
         }
 
         override fun equals(other: Any?): Boolean {
-            if (other == null || other !is Location) return false
-
-            return latitude == other.latitude && longitude == other.longitude
+            return when (other){
+                is Location -> latitude == other.latitude && longitude == other.longitude
+                is LatLng -> latitude == other.latitude && longitude == other.longitude
+                else -> false
+            }
         }
 
         override fun hashCode(): Int {
