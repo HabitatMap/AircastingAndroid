@@ -170,6 +170,12 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
         var latestPoint: LatLng? = null
         var latestColor: Int? = null
+        val isFixed = mSessionPresenter?.isFixed() ?: false
+
+        if (isFixed) {
+            val measurement = mMeasurements.first { it.latitude != null && it.longitude != null }
+            latestPoint = LatLng(measurement.latitude!!, measurement.longitude!!)
+        }
 
         for (measurement in mMeasurements) {
             latestColor = MeasurementColor.forMap(
@@ -177,9 +183,12 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
                 measurement,
                 mSessionPresenter?.selectedSensorThreshold()
             )
-            val measurementLocation = LatLng(measurement.latitude!!, measurement.longitude!!)
-            if (!Session.Location.FAKE_LOCATION.equals(measurementLocation)) {
-                latestPoint = measurementLocation
+            if (!isFixed) {
+                val measurementLocation = LatLng(measurement.latitude!!, measurement.longitude!!)
+
+                if (!Session.Location.FAKE_LOCATION.equals(measurementLocation)) {
+                    latestPoint = measurementLocation
+                }
             }
 
             latestPoint?.let { mMeasurementPoints.add(it) }
