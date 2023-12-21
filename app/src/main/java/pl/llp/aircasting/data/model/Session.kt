@@ -215,7 +215,7 @@ open class Session(
         }
 
         override fun equals(other: Any?): Boolean {
-            return when (other){
+            return when (other) {
                 is Location -> latitude == other.latitude && longitude == other.longitude
                 is LatLng -> latitude == other.latitude && longitude == other.longitude
                 else -> false
