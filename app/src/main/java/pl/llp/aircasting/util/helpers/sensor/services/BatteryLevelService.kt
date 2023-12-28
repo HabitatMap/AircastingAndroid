@@ -12,7 +12,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -35,7 +35,7 @@ class BatteryLevelService : Service() {
 
     @Inject
     @BatteryLevelFlow
-    lateinit var batteryLevelFlow: MutableSharedFlow<Int>
+    lateinit var batteryLevelFlow: SharedFlow<Int>
 
     @Inject
     lateinit var settings: Settings
