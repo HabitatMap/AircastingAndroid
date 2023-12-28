@@ -15,7 +15,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -84,7 +84,7 @@ class NewSessionController @AssistedInject constructor(
     @MainScope
     private val coroutineScope: CoroutineScope,
     @AirbeamConnectionStatusFlow
-    private val connectionStatus: MutableStateFlow<AirbeamConnectionStatus?>,
+    private val connectionStatus: StateFlow<AirbeamConnectionStatus?>,
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
