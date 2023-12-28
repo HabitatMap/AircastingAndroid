@@ -3,8 +3,8 @@ package pl.llp.aircasting.util.helpers.sensor.common.connector
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
@@ -29,7 +29,7 @@ class AirBeamReconnector(
     private val sessionUuidByStandaloneMode: MutableMap<String, Boolean> = ConcurrentHashMap(),
     private val connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>,
     @SyncActiveFlow
-    private val syncStatusFlow: MutableSharedFlow<Boolean>,
+    private val syncStatusFlow: SharedFlow<Boolean>,
 ) {
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null

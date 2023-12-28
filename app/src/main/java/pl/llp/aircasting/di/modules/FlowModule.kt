@@ -4,12 +4,14 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Qualifier
 
 @Module
 class FlowModule {
+    private val syncActiveFlow = MutableSharedFlow<Boolean>()
     @Provides
     @BatteryLevelFlow
     @UserSessionScope
@@ -23,7 +25,12 @@ class FlowModule {
     @Provides
     @SyncActiveFlow
     @UserSessionScope
-    fun provideSyncActiveFlow(): MutableSharedFlow<Boolean> = MutableSharedFlow()
+    fun provideMutableSyncActiveFlow() = syncActiveFlow
+
+    @Provides
+    @SyncActiveFlow
+    @UserSessionScope
+    fun provideSyncActiveFlow() = syncActiveFlow.asSharedFlow()
 
 }
 
