@@ -1,8 +1,8 @@
 package pl.llp.aircasting.data.model
 
+import com.google.android.gms.maps.model.LatLng
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
-import pl.llp.aircasting.data.local.entity.LatLng
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithNotesDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
@@ -215,11 +215,9 @@ open class Session(
         }
 
         override fun equals(other: Any?): Boolean {
-            return when (other) {
-                is Location -> latitude == other.latitude && longitude == other.longitude
-                is LatLng -> latitude == other.latitude && longitude == other.longitude
-                else -> false
-            }
+            if (other == null || other !is Location) return false
+
+            return latitude == other.latitude && longitude == other.longitude
         }
 
         override fun hashCode(): Int {
@@ -231,6 +229,8 @@ open class Session(
         override fun toString(): String {
             return "Location(latitude=$latitude, longitude=$longitude)"
         }
+
+        fun toLatLng() = LatLng(latitude, longitude)
     }
 
     val type get() = mType
