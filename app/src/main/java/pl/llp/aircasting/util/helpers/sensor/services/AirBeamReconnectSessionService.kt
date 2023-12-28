@@ -6,7 +6,7 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.AircastingApplication
@@ -21,7 +21,7 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     @Inject
     @SyncActiveFlow
-    lateinit var syncActiveFlow: MutableSharedFlow<Boolean>
+    lateinit var syncActiveFlow: SharedFlow<Boolean>
 
     @Inject
     @MainScope
