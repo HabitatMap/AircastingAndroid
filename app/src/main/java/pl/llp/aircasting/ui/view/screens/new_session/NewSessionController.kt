@@ -260,7 +260,6 @@ class NewSessionController @AssistedInject constructor(
         when (requestCode) {
             ResultCodes.AIRCASTING_REQUEST_LOCATION_ENABLE -> onLocationEnableCheck(resultCode)
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> onBluetoothEnableCheck(resultCode)
-            else -> errorHandler.showError(R.string.unknown_error)
         }
     }
 
