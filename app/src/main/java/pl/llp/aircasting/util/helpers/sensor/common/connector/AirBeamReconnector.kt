@@ -143,10 +143,12 @@ class AirBeamReconnector(
     }
     private fun observeConnectionStatus() = coroutineScope.launch {
         connectionStatusFlow.collect {
-            if (it.isConnected) onConnectedSuccesful()
+            val correctSesssionConnected = it.isConnected && it.sessionUUID == mSession?.uuid
+            if (correctSesssionConnected) onConnectedSuccessful()
+            else if (it.isConnected) finalizeReconnection()
         }
     }
-    private fun onConnectedSuccesful() {
+    private fun onConnectedSuccessful() {
         updateSessionStatus(mSession, Session.Status.RECORDING)
         finalizeReconnection()
     }

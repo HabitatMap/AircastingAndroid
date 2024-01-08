@@ -89,6 +89,8 @@ abstract class AirBeamConnector(
     fun disconnect() {
         unregisterFromEventBus()
 
+        mTimerTask?.cancel()
+
         if (!cancelStarted.get()) {
             cancelStarted.set(true)
             connectionStarted.set(false)
@@ -105,6 +107,7 @@ abstract class AirBeamConnector(
         mDeviceItem = deviceItem
         deviceAddressByDeviceItem[deviceItem.address] = deviceItem
         connectionEstablished.set(true)
+        mTimerTask?.cancel()
         mListener?.onConnectionSuccessful(deviceItem, mSessionUUID)
     }
 
