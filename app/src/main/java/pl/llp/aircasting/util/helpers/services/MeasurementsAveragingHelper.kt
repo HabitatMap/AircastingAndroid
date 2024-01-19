@@ -10,9 +10,9 @@ import kotlin.math.abs
 import kotlin.math.round
 
 enum class AveragingWindow(val value: Int) {
-    ZERO(1),
-    FIRST(5),
-    SECOND(60);
+    ZERO(120),
+    FIRST(120),
+    SECOND(120);
 
     val seconds: Long = value * 1000L
 }
