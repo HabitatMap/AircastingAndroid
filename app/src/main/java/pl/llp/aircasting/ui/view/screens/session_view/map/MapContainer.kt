@@ -186,7 +186,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
             if (!isFixed) {
                 val measurementLocation = LatLng(measurement.latitude!!, measurement.longitude!!)
 
-                if (Session.Location.FAKE_LOCATION.toLatLng() != measurementLocation) {
+                if (Session.Location.FAKE_LOCATION.toGmsLatLng() != measurementLocation) {
                     latestPoint = measurementLocation
                 }
             }

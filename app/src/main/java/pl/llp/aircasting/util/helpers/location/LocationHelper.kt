@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.data.local.entity.LatLng
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.events.LocationChanged
 
@@ -115,3 +116,5 @@ class LocationHelper(mContext: Context) {
         return locationRequest
     }
 }
+
+fun Location.toLatLng() = LatLng(latitude, longitude)

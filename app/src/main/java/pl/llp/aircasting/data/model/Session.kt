@@ -230,7 +230,8 @@ open class Session(
             return "Location(latitude=$latitude, longitude=$longitude)"
         }
 
-        fun toLatLng() = LatLng(latitude, longitude)
+        fun toGmsLatLng() = LatLng(latitude, longitude)
+        fun toLatLng() = pl.llp.aircasting.data.local.entity.LatLng(latitude, longitude)
     }
 
     val type get() = mType

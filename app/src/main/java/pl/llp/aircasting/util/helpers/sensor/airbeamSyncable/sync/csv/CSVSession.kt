@@ -1,10 +1,11 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv
 
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.Session.Location.Companion.DEFAULT_LOCATION
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandler
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
-import java.util.Date
 import java.util.concurrent.ConcurrentHashMap
 
 class CSVSession(
@@ -17,18 +18,6 @@ class CSVSession(
     companion object {
         const val DEFAULT_NAME = "Imported from AirBeam storage"
         const val DATE_FORMAT = "MM/dd/yyyy HH:mm:ss"
-    }
-
-    fun startTime(): Date? {
-        return firstMeasurement()?.time
-    }
-
-    fun latitude(): Double? {
-        return firstMeasurement()?.latitude
-    }
-
-    fun longitude(): Double? {
-        return firstMeasurement()?.longitude
     }
 
     private fun firstMeasurement(): CSVMeasurement? {
@@ -60,7 +49,7 @@ class CSVSession(
     }
 
     fun toSession(deviceId: String, deviceType: DeviceItem.Type): Session? {
-        val startTime = startTime() ?: return null
+        val startTime = firstMeasurement()?.time ?: return null
         uuid ?: return null
 
         val session = Session(
@@ -74,15 +63,17 @@ class CSVSession(
             startTime
         )
 
-        val latitude = latitude()
-        val longitude = longitude()
-        if (latitude != null && longitude != null) {
-            val location = Session.Location(latitude, longitude)
-            session.location = location
+        val latitude = firstMeasurement()?.latitude
+            ?: LocationHelper.lastLocation()?.latitude
+            ?: DEFAULT_LOCATION.latitude
+        val longitude = firstMeasurement()?.longitude
+            ?: LocationHelper.lastLocation()?.longitude
+            ?: DEFAULT_LOCATION.longitude
+        val location = Session.Location(latitude, longitude)
+        session.location = location
 
-            if (location == Session.Location.FAKE_LOCATION) {
-                session.locationless = true
-            }
+        if (location == Session.Location.FAKE_LOCATION) {
+            session.locationless = true
         }
 
         return session

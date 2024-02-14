@@ -8,8 +8,11 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.Session.Location.Companion.DEFAULT_LOCATION
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.location.toLatLng
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerMobile
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVSession
@@ -84,12 +87,12 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
         csvMeasurements: List<CSVMeasurement>
     ) {
         val lastCords = mMeasurementStreamsRepository.getLastKnownLatLng(sessionId)
+            ?: LocationHelper.lastLocation()?.toLatLng()
+            ?: DEFAULT_LOCATION.toLatLng()
 
-        if (lastCords?.latitude != null && lastCords.longitude != null) {
-            csvMeasurements.forEach {
-                it.latitude = lastCords.latitude
-                it.longitude = lastCords.longitude
-            }
+        csvMeasurements.forEach {
+            it.latitude = lastCords.latitude
+            it.longitude = lastCords.longitude
         }
     }
 }
