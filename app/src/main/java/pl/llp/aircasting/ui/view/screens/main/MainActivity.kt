@@ -3,11 +3,8 @@ package pl.llp.aircasting.ui.view.screens.main
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.MapsInitializer.Renderer
-import com.google.android.gms.maps.OnMapsSdkInitializedCallback
 import com.google.android.libraries.places.api.Places
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.BuildConfig
@@ -24,7 +21,7 @@ import pl.llp.aircasting.util.extensions.goToMobileDormantTab
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
+class MainActivity : BaseActivity() {
     @Inject
     lateinit var controllerFactory: MainControllerFactory
     var controller: MainController? = null
@@ -64,8 +61,7 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
         DateConverter.setup(settings)
         TemperatureConverter.setup(settings)
 
-        //New map renderer
-        MapsInitializer.initialize(applicationContext, null, this)
+        MapsInitializer.initialize(applicationContext)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
@@ -103,12 +99,5 @@ class MainActivity : BaseActivity(), OnMapsSdkInitializedCallback {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         controller?.onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    override fun onMapsSdkInitialized(renderer: Renderer) {
-        when (renderer) {
-            Renderer.LATEST -> Log.d("MapsDemo", "The latest version of the renderer is used.")
-            Renderer.LEGACY -> Log.d("MapsDemo", "The legacy version of the renderer is used.")
-        }
     }
 }
