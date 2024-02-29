@@ -61,7 +61,7 @@ class MainActivity : BaseActivity() {
         DateConverter.setup(settings)
         TemperatureConverter.setup(settings)
 
-        MapsInitializer.initialize(applicationContext)
+        MapsInitializer.initialize(applicationContext, MapsInitializer.Renderer.LEGACY, null)
         Places.initialize(applicationContext, BuildConfig.PLACES_API_KEY)
 
         view = MainViewMvcImpl(layoutInflater, null, this)
