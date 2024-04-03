@@ -23,9 +23,23 @@ class MyAccountViewModel @Inject constructor(
         logoutService.logout()
     }
 
-    fun deleteAccount() = viewModelScope.launch {
-        logoutService.deleteAccount()
+    fun deleteAccountSendEmail() = viewModelScope.launch {
+        print("MArta")
+        logoutService.deleteAccountSendEmail()
             .onSuccess {
+
+                Log.v("DeleteAccountEmailSent", "success")
+
+            }
+            .onFailure {
+                errorHandler.handleAndDisplay(Account.DeleteError(it))
+            }
+    }
+
+    fun deleteAccountConfirmCode() = viewModelScope.launch {
+        logoutService.deleteAccountConfirmCode()
+            .onSuccess {
+                // wat?
                 if (it.body()?.success == false) return@onSuccess
 
                 logoutService.logout(true)
@@ -36,4 +50,6 @@ class MyAccountViewModel @Inject constructor(
                 errorHandler.handleAndDisplay(Account.DeleteError(it))
             }
     }
+
+
 }

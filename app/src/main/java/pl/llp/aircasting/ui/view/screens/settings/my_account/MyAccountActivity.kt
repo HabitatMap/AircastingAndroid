@@ -57,7 +57,19 @@ class MyAccountActivity : BaseActivity() {
     private fun showAreYouSureDialog() {
         ConfirmDangerActionDialog(
             supportFragmentManager,
-            okCallback = viewModel::deleteAccount
+            okCallback = {
+                print("MArta")
+                viewModel::deleteAccountSendEmail
+                //showDeleteConfirmationCodeDialog()
+            }
+        ).show()
+    }
+
+    private fun showDeleteConfirmationCodeDialog() {
+        ConfirmDangerActionDialog(
+            supportFragmentManager,
+            "Second Title",
+            okCallback = viewModel::deleteAccountConfirmCode
         ).show()
     }
 }
