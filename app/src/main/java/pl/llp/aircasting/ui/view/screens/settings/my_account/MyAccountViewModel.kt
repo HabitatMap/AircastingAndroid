@@ -40,8 +40,6 @@ class MyAccountViewModel @Inject constructor(
                 .onFailure {
                     errorHandler.handleAndDisplay(Account.DeleteError(it))
                 }
-        } ?: run {
-            // Should never happen
         }
     }
 }
