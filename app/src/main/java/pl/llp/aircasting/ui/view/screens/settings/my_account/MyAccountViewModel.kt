@@ -26,12 +26,7 @@ class MyAccountViewModel @Inject constructor(
     fun deleteAccountSendEmail() = viewModelScope.launch {
         logoutService.deleteAccountSendEmail()
             .onSuccess {
-
-                Log.v("marta", "marta")
-
-            }
-            .onFailure {
-                errorHandler.handleAndDisplay(Account.DeleteError(it))
+                Log.v("DeleteAccountSendEmail", "success")
             }
     }
 
@@ -39,16 +34,14 @@ class MyAccountViewModel @Inject constructor(
         code?.let {
             logoutService.deleteAccountConfirmCode(code)
                 .onSuccess {
-                    // czemu 401 dawało on success?
                     logoutService.logout(true)
                     Log.v("DeleteAccount", "success")
-
                 }
                 .onFailure {
                     errorHandler.handleAndDisplay(Account.DeleteError(it))
                 }
         } ?: run {
-            // display error? shouldn't happen?
+            // Should never happen
         }
     }
 }

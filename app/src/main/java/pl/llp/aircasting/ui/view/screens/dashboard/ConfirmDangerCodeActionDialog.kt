@@ -31,7 +31,10 @@ open class ConfirmDangerCodeActionDialog(
     }
 
     private fun okButtonClicked() {
-        okCallback(mView.plain_text_input.text.toString())
-        dismiss()
+        val code = mView.plain_text_input.text.toString()
+        if (code.length == 4 ){
+            okCallback(code)
+            dismiss()
+        }
     }
 }

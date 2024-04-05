@@ -14,7 +14,6 @@ import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerCodeActionDialog
 import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
-import android.util.Log
 
 
 class MyAccountActivity : BaseActivity() {
@@ -58,7 +57,6 @@ class MyAccountActivity : BaseActivity() {
     }
 
     private fun showAreYouSureDialog() {
-        Log.e("Marta", "marta");
         ConfirmDangerActionDialog(
             supportFragmentManager,
             okCallback = {
