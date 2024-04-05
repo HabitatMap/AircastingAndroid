@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background">
+
+    <TextView
+        android:id="@+id/confirmation_dialog_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline1"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_m"
+        app:lineHeight="@dimen/keyline_6"
+        tools:text="@string/my_account_delete_confirmation_code"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6" />
+
+    <EditText
+        android:id="@+id/plain_text_input"
+        android:theme="@style/Widget.Aircasting.CodeInput"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        tools:text="1234"
+        android:hint="0000"
+        android:textColorHint="#00FFFFFF"
+        android:inputType="number"
+        android:importantForAutofill="no"
+        android:maxLength="4"
+        android:layout_gravity="center"/>
+
+    <Button
+        android:id="@+id/ok_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/ok" />
+
+    <Button
+        android:id="@+id/cancel_button"
+        style="@style/Widget.Aircasting.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/moderat_trial_bold"
+        android:textSize="@dimen/button_text_size"
+        android:text="@string/cancel"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_6" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

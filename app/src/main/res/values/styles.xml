@@ -595,6 +595,10 @@
         <item name="android:textColor">@color/aircasting_grey_700</item>
     </style>
 
+    <style name="Widget.Aircasting.CodeInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorControlActivated">@color/aircasting_grey_700</item>
+    </style>
+
     <style name="Widget.Aircasting.TextInputLayoutFilledBox" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
         <item name="boxStrokeColor">@color/aircasting_grey_100</item>

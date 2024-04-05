@@ -24,11 +24,10 @@ class MyAccountViewModel @Inject constructor(
     }
 
     fun deleteAccountSendEmail() = viewModelScope.launch {
-        print("MArta")
         logoutService.deleteAccountSendEmail()
             .onSuccess {
 
-                Log.v("DeleteAccountEmailSent", "success")
+                Log.v("marta", "marta")
 
             }
             .onFailure {

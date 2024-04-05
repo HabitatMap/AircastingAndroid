@@ -11,8 +11,11 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerCodeActionDialog
 import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
+import android.util.Log
+
 
 class MyAccountActivity : BaseActivity() {
 
@@ -55,20 +58,20 @@ class MyAccountActivity : BaseActivity() {
     }
 
     private fun showAreYouSureDialog() {
+        Log.e("Marta", "marta");
         ConfirmDangerActionDialog(
             supportFragmentManager,
             okCallback = {
-                print("MArta")
-                viewModel::deleteAccountSendEmail
-                //showDeleteConfirmationCodeDialog()
+                viewModel.deleteAccountSendEmail()
+                showDeleteConfirmationCodeDialog()
             }
         ).show()
     }
 
     private fun showDeleteConfirmationCodeDialog() {
-        ConfirmDangerActionDialog(
+        ConfirmDangerCodeActionDialog(
             supportFragmentManager,
-            "Second Title",
+            viewModel.userName,
             okCallback = viewModel::deleteAccountConfirmCode
         ).show()
     }

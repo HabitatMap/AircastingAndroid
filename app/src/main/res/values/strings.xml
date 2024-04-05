@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">AirCasting</string>
 
     <!-- Sign in -->
@@ -314,6 +314,7 @@
     <string name="my_account_sign_out">Sign out</string>
     <string name="my_account_delete_account">Delete Account</string>
     <string name="my_account_info">You are currently logged in as\n%1$s</string>
+    <string name="my_account_delete_confirmation_code" tools:ignore="MissingTranslation">We have sent an email to \n%1$s \nwith a verification code. To complete account deletion, enter the 4-digit verification code below. This action will delete all data associated with the account and cannot be reversed</string>
 
     <!--  Sensor services -->
     <string name="service_notification_title">AirCasting is recording a session</string>
