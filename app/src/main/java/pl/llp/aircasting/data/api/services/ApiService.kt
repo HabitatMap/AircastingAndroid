@@ -99,12 +99,11 @@ interface ApiService {
     @POST(urlCreateThresholdAlert)
     suspend fun createThresholdAlert(@Body body: CreateThresholdAlertBody): CreateThresholdAlertResponse
 
-
     @POST(urlDeleteAccountSendEmail)
     suspend fun deleteAccountSendEmail(): Response<DeleteAccountSendEmailResponse?>
 
     @POST(urlDeleteAccountConfirmationCode)
-    suspend fun deleteAccountConfirmCode(): Response<DeleteAccountResponse?>
+    suspend fun deleteAccountConfirmCode(@Body body: DeleteAccountConfirmationCodeBody): Response<DeleteAccountResponse?>
 
     /* DELETE Requests */
     @DELETE(urlDeleteThresholdAlert)

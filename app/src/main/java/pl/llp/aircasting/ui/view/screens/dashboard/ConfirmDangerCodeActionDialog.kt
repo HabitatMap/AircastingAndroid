@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.dashboard
 import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.confirm_code_dialog.view.plain_text_input
 import kotlinx.android.synthetic.main.confirmation_dialog.view.*
 import kotlinx.android.synthetic.main.network_password_dialog.view.ok_button
 import kotlinx.android.synthetic.main.session_actions_modifiable.view.cancel_button
@@ -12,7 +13,7 @@ import pl.llp.aircasting.ui.view.common.BaseDialog
 open class ConfirmDangerCodeActionDialog(
     private val mFragmentManager: FragmentManager?,
     private val email: String? = "",
-    private val okCallback: () -> (Unit),
+    private val okCallback: (String) -> (Unit),
 ) : BaseDialog(mFragmentManager) {
     constructor() : this(null, null, {})
 
@@ -30,7 +31,7 @@ open class ConfirmDangerCodeActionDialog(
     }
 
     private fun okButtonClicked() {
-        okCallback()
+        okCallback(mView.plain_text_input.text.toString())
         dismiss()
     }
 }

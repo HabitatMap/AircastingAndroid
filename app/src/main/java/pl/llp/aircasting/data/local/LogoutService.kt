@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.params.DeleteAccountConfirmationCodeBody
 import pl.llp.aircasting.data.api.params.DeleteAccountResponse
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.Authenticated
@@ -46,9 +47,8 @@ class LogoutService @Inject constructor(
     }
 
 
-    suspend fun deleteAccountConfirmCode(): Result<Response<DeleteAccountResponse?>> {
-        // TODO: tu bedzie inny response
-        return runCatching { apiService.deleteAccountConfirmCode() }
+    suspend fun deleteAccountConfirmCode(code: String): Result<Response<DeleteAccountResponse?>> {
+        return runCatching { apiService.deleteAccountConfirmCode(DeleteAccountConfirmationCodeBody(code)) }
     }
 
     private suspend fun finaliseLogout() {

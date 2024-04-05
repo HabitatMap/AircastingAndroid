@@ -72,7 +72,7 @@ class MyAccountActivity : BaseActivity() {
         ConfirmDangerCodeActionDialog(
             supportFragmentManager,
             viewModel.userName,
-            okCallback = viewModel::deleteAccountConfirmCode
+            okCallback = { viewModel.deleteAccountConfirmCode(it) }
         ).show()
     }
 }

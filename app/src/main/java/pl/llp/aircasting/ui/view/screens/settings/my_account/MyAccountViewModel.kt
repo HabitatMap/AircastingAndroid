@@ -35,20 +35,20 @@ class MyAccountViewModel @Inject constructor(
             }
     }
 
-    fun deleteAccountConfirmCode() = viewModelScope.launch {
-        logoutService.deleteAccountConfirmCode()
-            .onSuccess {
-                // wat?
-                if (it.body()?.success == false) return@onSuccess
+    fun deleteAccountConfirmCode(code: String?) = viewModelScope.launch {
+        code?.let {
+            logoutService.deleteAccountConfirmCode(code)
+                .onSuccess {
+                    // czemu 401 dawało on success?
+                    logoutService.logout(true)
+                    Log.v("DeleteAccount", "success")
 
-                logoutService.logout(true)
-                Log.v("DeleteAccount", "success")
-
-            }
-            .onFailure {
-                errorHandler.handleAndDisplay(Account.DeleteError(it))
-            }
+                }
+                .onFailure {
+                    errorHandler.handleAndDisplay(Account.DeleteError(it))
+                }
+        } ?: run {
+            // display error? shouldn't happen?
+        }
     }
-
-
 }
