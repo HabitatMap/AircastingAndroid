@@ -3,6 +3,7 @@ package pl.llp.aircasting.di.modules
 import dagger.Module
 import dagger.Provides
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.api.interceptor.NetworkConnectionInterceptor
 import pl.llp.aircasting.data.api.services.ApiService
 import pl.llp.aircasting.data.api.services.ApiServiceFactory
 import pl.llp.aircasting.data.api.services.NonAuthenticated
@@ -22,8 +23,11 @@ open class NonAuthenticatedModule {
 class ApiServiceFactoryModule {
     @Provides
     @Singleton
-    fun providesApiServiceFactory(settings: Settings): ApiServiceFactory =
-        ApiServiceFactory(settings)
+    fun providesApiServiceFactory(
+        settings: Settings,
+        networkConnectionInterceptor: NetworkConnectionInterceptor
+    ): ApiServiceFactory =
+        ApiServiceFactory(settings, networkConnectionInterceptor)
 }
 
 @Module(includes = [NonAuthenticatedModule::class])

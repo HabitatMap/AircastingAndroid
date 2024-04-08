@@ -7,6 +7,9 @@ abstract class BaseException(
     val messageToDisplay: String? get() = mMessageToDisplay
 }
 
+class InternetUnavailableException :
+    BaseException(null, "You are not connected to the internet")
+
 class BluetoothNotSupportedException :
     BaseException(null, "Bluetooth is not supported on this device")
 

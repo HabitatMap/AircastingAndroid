@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.flow.MutableSharedFlow
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.factories.FragmentsFactory
 import pl.llp.aircasting.util.exceptions.ErrorHandler

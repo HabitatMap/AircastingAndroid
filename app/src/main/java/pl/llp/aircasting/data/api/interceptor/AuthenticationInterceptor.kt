@@ -1,4 +1,4 @@
-package pl.llp.aircasting.data.api.services
+package pl.llp.aircasting.data.api.interceptor
 
 import okhttp3.Interceptor
 

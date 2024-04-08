@@ -6,6 +6,7 @@ import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import pl.llp.aircasting.data.api.interceptor.NetworkConnectionInterceptor
 import pl.llp.aircasting.util.Settings
 import kotlin.test.assertEquals
 
@@ -18,7 +19,7 @@ class ApiServiceFactoryTest {
             on { getBackendUrl() } doReturn modifiedUrl
             on { getBackendPort() } doReturn port
         }
-        val factory = Factory(settings)
+        val factory = Factory(settings, mock())
 
         val result = factory.baseUrl()
 
@@ -29,7 +30,10 @@ class ApiServiceFactoryTest {
     }
 }
 
-class Factory(settings: Settings) : ApiServiceFactory(settings) {
+class Factory(
+    settings: Settings,
+    networkConnectionInterceptor: NetworkConnectionInterceptor,
+) : ApiServiceFactory(settings, networkConnectionInterceptor) {
     public override fun baseUrl(): HttpUrl {
         return super.baseUrl()
     }
