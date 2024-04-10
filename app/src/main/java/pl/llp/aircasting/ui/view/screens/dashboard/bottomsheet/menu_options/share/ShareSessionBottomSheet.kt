@@ -143,7 +143,7 @@ class ShareSessionBottomSheet(
         val session = mSession ?: return
 
         val emailInput = emailInput?.text.toString().trim()
-        if (session.locationless && !isValidEmail(emailInput)) {
+        if (!session.locationless && !isValidEmail(emailInput)) {
             showError()
             return
         }
@@ -162,7 +162,7 @@ class ShareSessionBottomSheet(
 
         CSVGenerationService(
             session,
-            requireActivity().applicationContext,
+            requireActivity(),
             CSVHelper(),
             mErrorHandler
         ).start()
