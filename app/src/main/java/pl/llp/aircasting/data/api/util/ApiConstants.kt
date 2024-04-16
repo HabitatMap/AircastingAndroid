@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.util
 
 object ApiConstants {
-    const val baseUrl = "http://23.92.17.56"
+    const val baseUrl = "http://aircasting.org"
 
     /* GET Requests */
     const val urlSessionInGivenLocation = "/api/fixed/active/sessions.json"
@@ -23,8 +23,8 @@ object ApiConstants {
     const val urlUploadFixedMeasurements = "/api/realtime/measurements"
     const val urlUpdateUserSettings = "/api/user/settings"
     const val urlCreateThresholdAlert = "api/fixed/threshold_alerts"
-    const val urlDeleteAccountSendEmail = "/api/user/send_acc_delete_email"
-    const val urlDeleteAccountConfirmationCode = "/api/user/delete_acc_with_confirmation"
+    const val urlDeleteAccountSendEmail = "/api/user/delete_account_send_code"
+    const val urlDeleteAccountConfirmationCode = "/api/user/delete_account_confirm"
 
     /* DELETE Requests */
     const val urlDeleteThresholdAlert = "api/fixed/threshold_alerts/{id}"
