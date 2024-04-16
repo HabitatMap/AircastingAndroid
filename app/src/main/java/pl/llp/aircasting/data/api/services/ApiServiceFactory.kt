@@ -8,6 +8,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
+import pl.llp.aircasting.data.api.interceptor.AuthenticationInterceptor
+import pl.llp.aircasting.data.api.interceptor.NetworkConnectionInterceptor
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.Settings
 import retrofit2.Retrofit
@@ -16,7 +18,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 
 open class ApiServiceFactory(
-    private val settings: Settings
+    private val settings: Settings,
+    private val networkConnectionInterceptor: NetworkConnectionInterceptor,
 ) {
 
     @NonAuthenticated
@@ -38,7 +41,7 @@ open class ApiServiceFactory(
     fun getAuthenticated(authToken: String?): ApiService {
         if (authToken == null) {
             Log.e(TAG, "Auth token was null")
-            return getApiService(emptyList())
+            return getNonAuthenticated()
         }
         Log.e(TAG, "Auth token was NOT null")
 
@@ -60,7 +63,7 @@ open class ApiServiceFactory(
         return baseUrl.toHttpUrl()
     }
 
-    private fun getApiService(interceptors: List<Interceptor>): ApiService {
+    private fun getApiService(additionalInterceptors: List<Interceptor>): ApiService {
         val logging = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
             logging.level = HttpLoggingInterceptor.Level.BODY
@@ -70,7 +73,8 @@ open class ApiServiceFactory(
 
         val httpClientBuilder = OkHttpClient.Builder()
         httpClientBuilder.addInterceptor(logging)
-        interceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
+        httpClientBuilder.addInterceptor(networkConnectionInterceptor)
+        additionalInterceptors.forEach { interceptor -> httpClientBuilder.addInterceptor(interceptor) }
 
         val httpClient = httpClientBuilder
             .readTimeout(READ_TIMEOUT_SECONDS, TimeUnit.SECONDS)

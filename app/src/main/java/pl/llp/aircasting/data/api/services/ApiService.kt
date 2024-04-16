@@ -21,6 +21,8 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUser
+import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteAccountSendEmail
+import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteAccountConfirmationCode
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -97,10 +99,14 @@ interface ApiService {
     @POST(urlCreateThresholdAlert)
     suspend fun createThresholdAlert(@Body body: CreateThresholdAlertBody): CreateThresholdAlertResponse
 
+    @POST(urlDeleteAccountSendEmail)
+    suspend fun deleteAccountSendEmail(): Response<DeleteAccountSendEmailResponse?>
+
+    @POST(urlDeleteAccountConfirmationCode)
+    suspend fun deleteAccountConfirmCode(@Body body: DeleteAccountConfirmationCodeBody): Response<DeleteAccountResponse?>
+
     /* DELETE Requests */
     @DELETE(urlDeleteThresholdAlert)
     suspend fun deleteThresholdAlert(@Path("id") id: Int)
 
-    @DELETE(urlUser)
-    suspend fun deleteAccount(): Response<DeleteAccountResponse?>
 }

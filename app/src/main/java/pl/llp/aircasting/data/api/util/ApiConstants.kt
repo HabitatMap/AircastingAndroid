@@ -23,6 +23,8 @@ object ApiConstants {
     const val urlUploadFixedMeasurements = "/api/realtime/measurements"
     const val urlUpdateUserSettings = "/api/user/settings"
     const val urlCreateThresholdAlert = "api/fixed/threshold_alerts"
+    const val urlDeleteAccountSendEmail = "/api/user/delete_account_send_code"
+    const val urlDeleteAccountConfirmationCode = "/api/user/delete_account_confirm"
 
     /* DELETE Requests */
     const val urlDeleteThresholdAlert = "api/fixed/threshold_alerts/{id}"

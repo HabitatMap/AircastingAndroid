@@ -11,8 +11,10 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.data.local.LogoutService
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerActionDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.ConfirmDangerCodeActionDialog
 import pl.llp.aircasting.util.extensions.setupAppBar
 import javax.inject.Inject
+
 
 class MyAccountActivity : BaseActivity() {
 
@@ -57,7 +59,18 @@ class MyAccountActivity : BaseActivity() {
     private fun showAreYouSureDialog() {
         ConfirmDangerActionDialog(
             supportFragmentManager,
-            okCallback = viewModel::deleteAccount
+            okCallback = {
+                viewModel.deleteAccountSendEmail()
+                showDeleteConfirmationCodeDialog()
+            }
+        ).show()
+    }
+
+    private fun showDeleteConfirmationCodeDialog() {
+        ConfirmDangerCodeActionDialog(
+            supportFragmentManager,
+            viewModel.userName,
+            okCallback = { viewModel.deleteAccountConfirmCode(it) }
         ).show()
     }
 }

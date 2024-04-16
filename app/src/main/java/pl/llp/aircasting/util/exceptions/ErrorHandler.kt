@@ -8,6 +8,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.util.extensions.showToast
@@ -45,8 +47,10 @@ class ErrorHandler(private val mContext: Context) : Handler(Looper.getMainLooper
     }
 
     fun showError(message: String?) {
-        message?.let {
-            mContext.showToast(it, Toast.LENGTH_LONG)
+        MainScope().launch {
+            message?.let {
+                mContext.showToast(it, Toast.LENGTH_LONG)
+            }
         }
     }
 

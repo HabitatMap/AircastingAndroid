@@ -8,6 +8,6 @@ import com.google.gson.annotations.SerializedName
 data class DeleteAccountResponse(
     @SerializedName("error")
     val error: String?,
-    @SerializedName("success")
-    val success: Boolean?
+    @SerializedName("message")
+    val message: String?
 )
