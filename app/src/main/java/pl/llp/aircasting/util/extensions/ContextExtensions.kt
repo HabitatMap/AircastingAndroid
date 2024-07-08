@@ -17,8 +17,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
@@ -73,7 +80,9 @@ fun FragmentActivity.showBatteryOptimizationHelperDialog() {
 }
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, message, duration).show()
+    MainScope().launch {
+        Toast.makeText(this@showToast, message, duration).show()
+    }
 }
 
 val Context.isConnected: Boolean
@@ -90,6 +99,7 @@ val Context.isConnected: Boolean
                     else -> false
                 }
             }
+
             else -> {
                 // For older APIs
                 val nwInfo = connectivityManager.activeNetworkInfo ?: return false
