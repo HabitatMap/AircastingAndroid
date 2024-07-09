@@ -144,7 +144,7 @@ class MobileSessionTest : BaseTest() {
     fun testMicrophoneMobileSessionRecording() {
         val updateResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.buildJson(emptyMap<String, String>()))
+            .setBody(JsonHelper.buildJson(emptyMap<String, String>()))
 
         MockWebServerDispatcher.set(
             mapOf(

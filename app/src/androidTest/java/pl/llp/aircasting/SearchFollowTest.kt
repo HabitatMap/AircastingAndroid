@@ -19,24 +19,42 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.isA
+import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf.allOf
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
 import pl.llp.aircasting.data.local.AppDatabase
-import pl.llp.aircasting.helpers.*
+import pl.llp.aircasting.helpers.JsonHelper
+import pl.llp.aircasting.helpers.MockWebServerDispatcher
 import pl.llp.aircasting.helpers.assertions.assertRecyclerViewItemCount
 import pl.llp.aircasting.helpers.assertions.isNotEmpty
+import pl.llp.aircasting.helpers.awaitForAssertion
+import pl.llp.aircasting.helpers.awaitUntilAsserted
+import pl.llp.aircasting.helpers.clickOnFirstItem
+import pl.llp.aircasting.helpers.hintContainsString
+import pl.llp.aircasting.helpers.textContainsString
+import pl.llp.aircasting.helpers.waitAndRetry
+import pl.llp.aircasting.helpers.waitFor
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
@@ -106,11 +124,11 @@ class SearchFollowTest : BaseTest() {
         super.setup()
         val newYorkResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("NewYork.json"))
+            .setBody(JsonHelper.readFile("NewYork.json"))
 
         val newYorkDownloadSessionResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("HabitatMap-WiFi.json"))
+            .setBody(JsonHelper.readFile("HabitatMap-WiFi.json"))
 
         MockWebServerDispatcher.setNotFullPath(
             mapOf(
@@ -195,7 +213,7 @@ class SearchFollowTest : BaseTest() {
         )
         val noSessionsAreaResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("NoSessionsArea.json"))
+            .setBody(JsonHelper.readFile("NoSessionsArea.json"))
 
         MockWebServerDispatcher.setNotFullPath(
             mapOf(
