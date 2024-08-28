@@ -22,6 +22,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
@@ -31,8 +32,10 @@ import org.hamcrest.core.AllOf.allOf
 import org.junit.*
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
 import pl.llp.aircasting.data.api.util.StringConstants.openAQ
+import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
 import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.helpers.*
 import pl.llp.aircasting.helpers.assertions.assertRecyclerViewItemCount
@@ -138,8 +141,23 @@ class SearchFollowTest : BaseTest() {
 
         onView(withId(R.id.places_autocomplete_search_input))
             .check(matches(isDisplayed()))
+        onView(withId(R.id.chipGroupFirstLevel))
+            .check(matches(isDisplayed()))
 
         mainActivityScenario.close()
+    }
+
+    @Test
+    fun whenChangingParameter_secondChipGroupIsDisplayed() {
+        launchSearchScreen()
+
+        onView(withId(R.id.ozone_chip))
+            .perform(click())
+
+        onView(withId(R.id.chipGroupSecondLevelTwo))
+            .check(matches(isDisplayed()))
+
+        searchScenario.close()
     }
 
     @Test
@@ -160,6 +178,9 @@ class SearchFollowTest : BaseTest() {
             .perform(click())
 
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, airbeam)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, openAQ)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, purpleAir)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
 
         mainActivityScenario.close()
     }
@@ -220,6 +241,7 @@ class SearchFollowTest : BaseTest() {
     fun whenGoingBackFromMapScreen_searchScreenRetainsAddress() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, airbeam)
         goToMapScreen()
         Espresso.pressBack()
 
@@ -245,6 +267,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
 
@@ -290,6 +313,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, openAQ)
         goToMapScreen()
         waitForSessionData()
 
@@ -349,6 +373,7 @@ class SearchFollowTest : BaseTest() {
         sensor: String
     ) {
         searchForPlace(place)
+        selectSensor(parameter, sensor)
 
         goToMapScreen()
 
@@ -371,6 +396,39 @@ class SearchFollowTest : BaseTest() {
     private fun displayedMeasurementTypeMatches(type: String) {
         onView(withId(R.id.txtShowing))
             .check(matches(textContainsString(type)))
+    }
+
+    private fun selectSensor(parameter: String, sensor: String) {
+        awaitUntilAsserted {
+            onView(
+                allOf(
+                    isA(Chip::class.java),
+                    withParent(withId(R.id.chipGroupFirstLevel)),
+                    textContainsString(parameter)
+                )
+            ).check(matches(isDisplayed()))
+        }
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                withParent(withId(R.id.chipGroupFirstLevel)),
+                textContainsString(parameter)
+            )
+        )
+            .perform(click())
+
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                anyOf(
+                    withParent(withId(R.id.chipGroupSecondLevelOne)),
+                    withParent(withId(R.id.chipGroupSecondLevelTwo))
+                ),
+                textContainsString(sensor),
+                isDisplayed()
+            )
+        )
+            .perform(click())
     }
 
     private fun goBack() {
