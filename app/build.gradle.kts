@@ -33,16 +33,9 @@ android {
             keyAlias = keystoreAlias
             keyPassword = keyPasswordFromFile
         }
-        create("debugSigned") {
-            storeFile = keystorePath?.let { file(it) }
-            storePassword = keystorePassword
-            keyAlias = keystoreAlias
-            keyPassword = keyPasswordFromFile
-        }
     }
 
     defaultConfig {
-        testInstrumentationRunnerArguments += mapOf()
         applicationId = "pl.llp.aircasting"
         minSdk = AppConfig.minSdk
         targetSdk = AppConfig.targetSdk
@@ -61,12 +54,6 @@ android {
 
     buildTypes {
         getByName("debug") {
-            manifestPlaceholders += mapOf()
-            manifestPlaceholders["crashlyticsCollectionEnabled"] = false
-        }
-        create("signedDebug") {
-            isDebuggable = true
-            signingConfig = signingConfigs.getByName("debugSigned")
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
