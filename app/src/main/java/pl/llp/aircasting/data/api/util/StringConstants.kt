@@ -6,7 +6,7 @@ object StringConstants {
     const val airbeam2sensorName = "airbeam2-pm2.5"
     const val airbeam3sensorName = "airbeam3-pm2.5"
     const val governmentSensorNamePM = "government-pm2.5"
-    const val governmentSensorNameOzone = "government-o3"
+    const val governmentSensorNameOzone = "government-ozone"
     const val governmentSensorNameNitrogenDioxide = "government-no2"
 
     const val measurementTypePM = "Particulate Matter"
