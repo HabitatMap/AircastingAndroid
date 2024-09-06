@@ -7,8 +7,11 @@ enum class ParticulateMatter : SensorInformation {
     AIRBEAM3 {
         override fun getSensorName(): String = StringConstants.airbeam3sensorName
     },
-    GOVERNMENT {
-        override fun getSensorName(): String = StringConstants.governmentSensorNamePM
+    OPEN_AQ {
+        override fun getSensorName(): String = StringConstants.openAQsensorNamePM
+    },
+    PURPLE_AIR {
+        override fun getSensorName(): String = StringConstants.purpleAirSensorName
     };
 
     override fun getMeasurementType(): String = StringConstants.measurementTypePM

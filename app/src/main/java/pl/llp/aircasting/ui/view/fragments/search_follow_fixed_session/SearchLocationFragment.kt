@@ -17,7 +17,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.material.chip.ChipGroup
 import kotlinx.android.synthetic.main.app_bar.view.topAppBar
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
@@ -30,7 +29,10 @@ import pl.llp.aircasting.util.extensions.initializePlacesApi
 import pl.llp.aircasting.util.extensions.setHintStyle
 import pl.llp.aircasting.util.extensions.visible
 import javax.inject.Inject
-
+/*
+* due to openAQ and PurpleAir revoking free access to their API
+* option to select them was removed (8th of Dec, 2023)
+*/
 class SearchLocationFragment @Inject constructor(
     factory: ViewModelProvider.Factory
 ) : Fragment() {
@@ -41,8 +43,6 @@ class SearchLocationFragment @Inject constructor(
         factoryProducer = { factory }
     )
     private var placesClient: PlacesClient? = null
-    private var txtSelectedParameter: String = StringConstants.measurementTypePM
-    private var txtSelectedSensor: String = StringConstants.airbeam2sensorName
 
     @Inject
     lateinit var mSettings: Settings
@@ -73,69 +73,8 @@ class SearchLocationFragment @Inject constructor(
 
     private fun setupUI() {
         binding.apply {
-            chipGroupFirstLevel.setOnCheckedStateChangeListener { chipGroup, _ ->
-                onFirstChipGroupSelected(
-                    chipGroup
-                )
-            }
-            chipGroupSecondLevelOne.setOnCheckedStateChangeListener { chipGroup, _ ->
-                onChipGroupSecondLevelSelected(
-                    chipGroup
-                )
-            }
-            chipGroupSecondLevelTwo.setOnCheckedStateChangeListener { chipGroup, _ ->
-                onChipGroupSecondLevelTwoSelected(
-                    chipGroup
-                )
-            }
-
             binding.appBarSearch.topAppBar.setNavigationOnClickListener { activity?.finish() }
             btnContinue.setOnClickListener { goToSearchResult() }
-        }
-    }
-
-    private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
-        when (chipGroup.checkedChipId) {
-            binding.particulateMatterChip.id -> {
-                binding.chipGroupSecondLevelOne.visible()
-                binding.chipGroupSecondLevelTwo.gone()
-
-                txtSelectedParameter = StringConstants.measurementTypePM
-                txtSelectedSensor = StringConstants.airbeam2sensorName
-            }
-            binding.ozoneChip.id -> {
-                binding.chipGroupSecondLevelOne.gone()
-                binding.chipGroupSecondLevelTwo.visible()
-
-                txtSelectedParameter = StringConstants.measurementTypeOzone
-                txtSelectedSensor = StringConstants.governmentSensorNameOzone
-            }
-            else -> {
-                binding.chipGroupSecondLevelOne.gone()
-                binding.chipGroupSecondLevelTwo.visible()
-
-                txtSelectedParameter = StringConstants.measurementTypeNitrogenDioxide
-                txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
-            }
-        }
-    }
-
-    private fun onChipGroupSecondLevelSelected(chipGroup: ChipGroup) {
-        txtSelectedParameter = StringConstants.measurementTypePM
-        txtSelectedSensor = when (chipGroup.checkedChipId) {
-            binding.airbeamChip.id -> StringConstants.airbeam2sensorName
-            binding.govtChip.id -> StringConstants.governmentSensorNamePM
-            else -> StringConstants.airbeam2sensorName
-        }
-    }
-
-    private fun onChipGroupSecondLevelTwoSelected(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == binding.govtSecondChip.id) {
-            if (txtSelectedParameter == StringConstants.measurementTypeOzone) {
-                txtSelectedSensor = StringConstants.governmentSensorNameOzone
-            } else {
-                txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
-            }
         }
     }
 
@@ -219,8 +158,8 @@ class SearchLocationFragment @Inject constructor(
     private fun goToSearchResult() {
         val args = bundleOf(
             "address" to address,
-            "txtParameter" to txtSelectedParameter,
-            "txtSensor" to txtSelectedSensor,
+            "txtParameter" to StringConstants.measurementTypePM,
+            "txtSensor" to StringConstants.airbeam2sensorName,
             "lat" to mLat,
             "lng" to mLng
         )

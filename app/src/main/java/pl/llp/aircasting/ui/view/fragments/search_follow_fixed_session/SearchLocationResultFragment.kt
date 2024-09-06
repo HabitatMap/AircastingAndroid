@@ -33,7 +33,6 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
-import pl.llp.aircasting.data.api.util.NitrogenDioxide
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -295,9 +294,9 @@ class SearchLocationResultFragment @Inject constructor(
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
             StringConstants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
-            StringConstants.governmentSensorNamePM -> ParticulateMatter.GOVERNMENT
-            StringConstants.governmentSensorNameOzone -> Ozone.GOVERNMENT
-            StringConstants.governmentSensorNameNitrogenDioxide -> NitrogenDioxide.GOVERNMENT
+            StringConstants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
+            StringConstants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
+            StringConstants.openAQsensorNameOzone -> Ozone.OPEN_AQ
             else -> ParticulateMatter.AIRBEAM2
         }
     }
@@ -305,9 +304,9 @@ class SearchLocationResultFragment @Inject constructor(
     private fun getSensor(): String {
         return when (txtSensor) {
             StringConstants.airbeam2sensorName -> StringConstants.airbeam
-            StringConstants.governmentSensorNamePM -> StringConstants.govt
-            StringConstants.governmentSensorNameOzone -> StringConstants.govt
-            StringConstants.governmentSensorNameNitrogenDioxide -> StringConstants.govt
+            StringConstants.openAQsensorNamePM -> StringConstants.openAQ
+            StringConstants.purpleAirSensorName -> StringConstants.purpleAir
+            StringConstants.openAQsensorNameOzone -> StringConstants.openAQ
             else -> StringConstants.airbeam
         }
     }
