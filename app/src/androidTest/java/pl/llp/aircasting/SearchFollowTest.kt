@@ -44,8 +44,8 @@ import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
-import pl.llp.aircasting.data.api.util.StringConstants.openAQ
-import pl.llp.aircasting.data.api.util.StringConstants.purpleAir
+import pl.llp.aircasting.data.api.util.StringConstants.govt
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeNitrogenDioxide
 import pl.llp.aircasting.data.local.AppDatabase
 import pl.llp.aircasting.helpers.JsonHelper
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
@@ -118,7 +118,7 @@ class SearchFollowTest : BaseTest() {
         "lat" to "40.692985",
         "lng" to "-73.964609",
         "txtParameter" to measurementTypePM,
-        "txtSensor" to openAQ
+        "txtSensor" to govt
     )
 
     @Before
@@ -196,9 +196,9 @@ class SearchFollowTest : BaseTest() {
             .perform(click())
 
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, airbeam)
-        searchAndValidateDisplayedParameters(newYork, measurementTypePM, openAQ)
-        searchAndValidateDisplayedParameters(newYork, measurementTypePM, purpleAir)
-        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, openAQ)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, govt)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeNitrogenDioxide, govt)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, govt)
 
         mainActivityScenario.close()
     }
@@ -285,7 +285,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
-        selectSensor(measurementTypePM, openAQ)
+        selectSensor(measurementTypePM, govt)
         goToMapScreen()
         waitForSessionData()
 
@@ -331,7 +331,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
-        selectSensor(measurementTypePM, openAQ)
+        selectSensor(measurementTypePM, govt)
         goToMapScreen()
         waitForSessionData()
 

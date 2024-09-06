@@ -27,14 +27,14 @@ android {
     buildToolsVersion = AppConfig.buildToolsVersion
 
     signingConfigs {
-        getByName("debug") {
+        create("release") {
             storeFile = keystorePath?.let { file(it) }
             storePassword = keystorePassword
             keyAlias = keystoreAlias
             keyPassword = keyPasswordFromFile
         }
-        create("release") {
-            storeFile = keystorePath?.let { file(it) }
+        create("debugSigned") {
+            storeFile = file(keystorePath?.let { file(it) })
             storePassword = keystorePassword
             keyAlias = keystoreAlias
             keyPassword = keyPasswordFromFile
