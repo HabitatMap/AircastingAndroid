@@ -34,7 +34,7 @@ android {
             keyPassword = keyPasswordFromFile
         }
         create("debugSigned") {
-            storeFile = file(keystorePath?.let { file(it) })
+            storeFile = keystorePath?.let { file(it) }
             storePassword = keystorePassword
             keyAlias = keystoreAlias
             keyPassword = keyPasswordFromFile
@@ -51,7 +51,6 @@ android {
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
         resourceConfigurations.addAll(arrayOf("en", "fr", "sp"))
-        signingConfig = signingConfigs.getByName("debug")
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -62,8 +61,13 @@ android {
 
     buildTypes {
         getByName("debug") {
+            manifestPlaceholders += mapOf()
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
-            signingConfig = signingConfigs.getByName("release")
+        }
+        create("signedDebug") {
+            isDebuggable = true
+            signingConfig = signingConfigs.getByName("debugSigned")
+            manifestPlaceholders["crashlyticsCollectionEnabled"] = false
         }
         getByName("release") {
             isMinifyEnabled = false
