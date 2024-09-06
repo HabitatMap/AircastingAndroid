@@ -95,24 +95,28 @@ class SearchLocationFragment @Inject constructor(
     }
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == binding.particulateMatterChip.id) {
-            binding.chipGroupSecondLevelOne.visible()
-            binding.chipGroupSecondLevelTwo.gone()
+        when (chipGroup.checkedChipId) {
+            binding.particulateMatterChip.id -> {
+                binding.chipGroupSecondLevelOne.visible()
+                binding.chipGroupSecondLevelTwo.gone()
 
-            txtSelectedParameter = StringConstants.measurementTypePM
-            txtSelectedSensor = StringConstants.airbeam2sensorName
-        } else if (chipGroup.checkedChipId == binding.ozoneChip.id) {
-            binding.chipGroupSecondLevelOne.gone()
-            binding.chipGroupSecondLevelTwo.visible()
+                txtSelectedParameter = StringConstants.measurementTypePM
+                txtSelectedSensor = StringConstants.airbeam2sensorName
+            }
+            binding.ozoneChip.id -> {
+                binding.chipGroupSecondLevelOne.gone()
+                binding.chipGroupSecondLevelTwo.visible()
 
-            txtSelectedParameter = StringConstants.measurementTypeOzone
-            txtSelectedSensor = StringConstants.governmentSensorNameOzone
-        } else {
-            binding.chipGroupSecondLevelOne.gone()
-            binding.chipGroupSecondLevelTwo.visible()
+                txtSelectedParameter = StringConstants.measurementTypeOzone
+                txtSelectedSensor = StringConstants.governmentSensorNameOzone
+            }
+            else -> {
+                binding.chipGroupSecondLevelOne.gone()
+                binding.chipGroupSecondLevelTwo.visible()
 
-            txtSelectedParameter = StringConstants.measurementTypeNitrogenDioxide
-            txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
+                txtSelectedParameter = StringConstants.measurementTypeNitrogenDioxide
+                txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
+            }
         }
     }
 
