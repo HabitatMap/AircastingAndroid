@@ -503,6 +503,7 @@
     <string name="search_session_query_hint">Session location</string>
     <string name="search_session_parameters_header">Which parameter are you interested in?</string>
     <string name="ozone">Ozone</string>
+    <string name="nitrogen_dioxide">Nitrogen Dioxide</string>
     <string name="humidity">Humidity</string>
     <string name="temperature">Temperature</string>
     <string name="particulate_matter">Particulate matter</string>
@@ -511,8 +512,7 @@
     <string name="showing_results_for" translatable="false">Results for:</string>
     <string name="which_sensor_are_you_interested_in" translatable="false">Which sensor are you interested in?</string>
     <string name="airbeam" translatable="false">AirBeam</string>
-    <string name="openaq" translatable="false">OpenAQ</string>
-    <string name="purpleair" translatable="false">PurpleAir</string>
+    <string name="govt" translatable="false">Govt</string>
     <string name="using_txt">using:</string>
     <string name="unauth">Unauthorized</string>
     <string name="not_found">Not found</string>

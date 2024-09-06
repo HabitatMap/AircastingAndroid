@@ -95,6 +95,15 @@
                 android:text="@string/ozone"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/nitrogen_dioxide_chip"
+                style="@style/Widget.Aircasting.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nitrogen_dioxide"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
         </com.google.android.material.chip.ChipGroup>
 
         <TextView
@@ -127,25 +136,18 @@
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:checked="true"
                 android:text="@string/airbeam"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/openAQFirstChip"
+                android:id="@+id/govt_chip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/openaq"
+                android:checked="false"
+                android:text="@string/govt"
                 app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/purple_air_chip"
-                style="@style/Widget.Aircasting.Chip.Filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/purpleair"
-                app:layout_constraintEnd_toStartOf="@id/ozone_chip" />
 
         </com.google.android.material.chip.ChipGroup>
 
@@ -165,12 +167,12 @@
             app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/openAQSecondChip"
+                android:id="@+id/govtSecondChip"
                 style="@style/Widget.Aircasting.Chip.Filter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="@string/openaq"
+                android:text="@string/govt"
                 app:layout_constraintEnd_toEndOf="parent" />
         </com.google.android.material.chip.ChipGroup>
 
