@@ -5,12 +5,13 @@ object StringConstants {
     /* Strings for constructing requests */
     const val airbeam2sensorName = "airbeam2-pm2.5"
     const val airbeam3sensorName = "airbeam3-pm2.5"
-    const val openAQsensorNamePM = "openaq-pm2.5"
-    const val purpleAirSensorName = "purpleair-pm2.5"
-    const val openAQsensorNameOzone = "openaq-o3"
+    const val governmentSensorNamePM = "government-pm2.5"
+    const val governmentSensorNameOzone = "government-ozone"
+    const val governmentSensorNameNitrogenDioxide = "government-no2"
 
     const val measurementTypePM = "Particulate Matter"
     const val measurementTypeOzone = "Ozone"
+    const val measurementTypeNitrogenDioxide = "Nitrogen Dioxide"
 
     const val nanoGrammsPerCubicMeter = "µg/m³"
     const val partsPerBillion = "ppb"
@@ -24,8 +25,7 @@ object StringConstants {
 
     /* Sensors names */
     const val airbeam = "AirBeam"
-    const val purpleAir = "PurpleAir"
-    const val openAQ = "OpenAQ"
+    const val govt = "Govt"
 
     const val C = "C"
     const val F = "F"

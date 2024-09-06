@@ -8,6 +8,7 @@ import org.mockito.kotlin.*
 import pl.llp.aircasting.data.api.response.StreamOfGivenSessionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.services.ApiService
+import pl.llp.aircasting.data.api.util.NitrogenDioxide
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.model.GeoSquare
@@ -111,12 +112,12 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     }
 
     @Test
-    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterOpenAQSensor() {
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterGovernmentSensor() {
         // given
-        val expectedSensorName = "openaq-pm2.5"
+        val expectedSensorName = "government-pm2.5"
         val expectedUnitSymbol = "µg/m³"
         val expectedMeasurementType = "Particulate Matter"
-        val sensor = ParticulateMatter.OPEN_AQ
+        val sensor = ParticulateMatter.GOVERNMENT
 
         // when
         val result =
@@ -132,33 +133,33 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     }
 
     @Test
-    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterPurpleAirSensor() {
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenOzoneGovernmentSensor() {
         // given
-        val expectedSensorName = "purpleair-pm2.5"
-        val expectedUnitSymbol = "µg/m³"
-        val expectedMeasurementType = "Particulate Matter"
-        val sensor = ParticulateMatter.PURPLE_AIR
-
-        // when
-        val result =
-            ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
-
-        // then
-        val resultObject = JsonParser.parseString(result).asJsonObject
-        assertTrue {
-            resultObject.get("sensor_name").asString == expectedSensorName &&
-                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
-                    resultObject.get("measurement_type").asString == expectedMeasurementType
-        }
-    }
-
-    @Test
-    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenOzoneOpenAQSensor() {
-        // given
-        val expectedSensorName = "openaq-o3"
+        val expectedSensorName = "government-ozone"
         val expectedUnitSymbol = "ppb"
         val expectedMeasurementType = "Ozone"
-        val sensor = Ozone.OPEN_AQ
+        val sensor = Ozone.GOVERNMENT
+
+        // when
+        val result =
+            ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(testSquare, sensor)
+
+        // then
+        val resultObject = JsonParser.parseString(result).asJsonObject
+        assertTrue {
+            resultObject.get("sensor_name").asString == expectedSensorName &&
+                    resultObject.get("unit_symbol").asString == expectedUnitSymbol &&
+                    resultObject.get("measurement_type").asString == expectedMeasurementType
+        }
+    }
+
+    @Test
+    fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenNitrogenDioxideGovernmentSensor() {
+        // given
+        val expectedSensorName = "government-no2"
+        val expectedUnitSymbol = "ppb"
+        val expectedMeasurementType = "Nitrogen Dioxide"
+        val sensor = NitrogenDioxide.GOVERNMENT
 
         // when
         val result =
