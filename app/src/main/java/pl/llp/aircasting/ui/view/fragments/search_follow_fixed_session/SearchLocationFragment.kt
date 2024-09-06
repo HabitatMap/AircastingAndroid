@@ -42,7 +42,7 @@ class SearchLocationFragment @Inject constructor(
     )
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
-    private var txtSelectedSensor: String = StringConstants.openAQsensorNamePM
+    private var txtSelectedSensor: String = StringConstants.airbeam2sensorName
 
     @Inject
     lateinit var mSettings: Settings
@@ -95,18 +95,24 @@ class SearchLocationFragment @Inject constructor(
     }
 
     private fun onFirstChipGroupSelected(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == binding.ozoneChip.id) {
-            binding.chipGroupSecondLevelOne.gone()
-            binding.chipGroupSecondLevelTwo.visible()
-
-            txtSelectedParameter = StringConstants.measurementTypeOzone
-            txtSelectedSensor = StringConstants.openAQsensorNameOzone
-        } else {
+        if (chipGroup.checkedChipId == binding.particulateMatterChip.id) {
             binding.chipGroupSecondLevelOne.visible()
             binding.chipGroupSecondLevelTwo.gone()
 
             txtSelectedParameter = StringConstants.measurementTypePM
-            txtSelectedSensor = StringConstants.openAQsensorNamePM
+            txtSelectedSensor = StringConstants.airbeam2sensorName
+        } else if (chipGroup.checkedChipId == binding.ozoneChip.id) {
+            binding.chipGroupSecondLevelOne.gone()
+            binding.chipGroupSecondLevelTwo.visible()
+
+            txtSelectedParameter = StringConstants.measurementTypeOzone
+            txtSelectedSensor = StringConstants.governmentSensorNameOzone
+        } else {
+            binding.chipGroupSecondLevelOne.gone()
+            binding.chipGroupSecondLevelTwo.visible()
+
+            txtSelectedParameter = StringConstants.measurementTypeNitrogenDioxide
+            txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
         }
     }
 
@@ -114,16 +120,18 @@ class SearchLocationFragment @Inject constructor(
         txtSelectedParameter = StringConstants.measurementTypePM
         txtSelectedSensor = when (chipGroup.checkedChipId) {
             binding.airbeamChip.id -> StringConstants.airbeam2sensorName
-            binding.openAQFirstChip.id -> StringConstants.openAQsensorNamePM
-            binding.purpleAirChip.id -> StringConstants.purpleAirSensorName
-            else -> StringConstants.openAQsensorNamePM
+            binding.govtChip.id -> StringConstants.governmentSensorNamePM
+            else -> StringConstants.airbeam2sensorName
         }
     }
 
     private fun onChipGroupSecondLevelTwoSelected(chipGroup: ChipGroup) {
-        if (chipGroup.checkedChipId == binding.openAQSecondChip.id) {
-            txtSelectedParameter = StringConstants.measurementTypeOzone
-            txtSelectedSensor = StringConstants.openAQsensorNameOzone
+        if (chipGroup.checkedChipId == binding.govtSecondChip.id) {
+            if (txtSelectedParameter == StringConstants.measurementTypeOzone) {
+                txtSelectedSensor = StringConstants.governmentSensorNameOzone
+            } else {
+                txtSelectedSensor = StringConstants.governmentSensorNameNitrogenDioxide
+            }
         }
     }
 
