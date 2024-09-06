@@ -27,6 +27,12 @@ android {
     buildToolsVersion = AppConfig.buildToolsVersion
 
     signingConfigs {
+        getByName("debug") {
+            storeFile = keystorePath?.let { file(it) }
+            storePassword = keystorePassword
+            keyAlias = keystoreAlias
+            keyPassword = keyPasswordFromFile
+        }
         create("release") {
             storeFile = keystorePath?.let { file(it) }
             storePassword = keystorePassword
@@ -36,6 +42,7 @@ android {
     }
 
     defaultConfig {
+        testInstrumentationRunnerArguments += mapOf()
         applicationId = "pl.llp.aircasting"
         minSdk = AppConfig.minSdk
         targetSdk = AppConfig.targetSdk
@@ -44,6 +51,7 @@ android {
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
         testInstrumentationRunnerArguments["clearPackageData"] = "true"
         resourceConfigurations.addAll(arrayOf("en", "fr", "sp"))
+        signingConfig = signingConfigs.getByName("debug")
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -55,6 +63,7 @@ android {
     buildTypes {
         getByName("debug") {
             manifestPlaceholders["crashlyticsCollectionEnabled"] = false
+            signingConfig = signingConfigs.getByName("release")
         }
         getByName("release") {
             isMinifyEnabled = false
