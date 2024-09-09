@@ -45,22 +45,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
         sensorInfo: SensorInformation
     ): Resource<SessionsInRegionsResponse> {
         return try {
-            val response =
-                /* This is a temporary workaround, as AB3 sensorInfo has not been provided here
-                * The class should not care about sensor names, they should be provided to it from the ViewModel
-                *  */
-                if (sensorIsAirBeam(sensorInfo)) {
-                    val ab2 =
-                        apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
-                    val ab3 = apiService.getSessionsInRegion(
-                        constructAndGetJsonWith(
-                            square,
-                            ParticulateMatter.AIRBEAM
-                        )
-                    )
-                    combineResponses(ab2, ab3)
-                } else
-                    apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
+            val response = apiService.getSessionsInRegion(constructAndGetJsonWith(square, sensorInfo))
             responseHandler.handleSuccess(response)
         } catch (e: Exception) {
             responseHandler.handleException(e)

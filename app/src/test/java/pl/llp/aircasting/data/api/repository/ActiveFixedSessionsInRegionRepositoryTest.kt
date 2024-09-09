@@ -30,7 +30,6 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     private val sessionsInRegionResponse = StubData.getJson("SessionsCracow.json")
     private val streamOfGivenSessionResponse = StubData.getJson("StreamSensorNameHabitatMap.json")
 
-    @Ignore("Repository calls getSessionsInRegion 2 times to combine AB3 and AB2 sessions. This will need to be transferred to ViewModel")
     @Test
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
@@ -93,7 +92,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     @Test
     fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterAirbeamSensor() {
         // given
-        val expectedSensorName = "airbeam2-pm2.5"
+        val expectedSensorName = "airbeam-pm2.5"
         val expectedUnitSymbol = "µg/m³"
         val expectedMeasurementType = "Particulate Matter"
         val sensor = ParticulateMatter.AIRBEAM
