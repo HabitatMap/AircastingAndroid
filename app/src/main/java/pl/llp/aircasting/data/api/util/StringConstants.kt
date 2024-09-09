@@ -3,8 +3,7 @@ package pl.llp.aircasting.data.api.util
 object StringConstants {
 
     /* Strings for constructing requests */
-    const val airbeam2sensorName = "airbeam2-pm2.5"
-    const val airbeam3sensorName = "airbeam3-pm2.5"
+    const val airbeamSensorName = "airbeam-pm2.5"
     const val governmentSensorNamePM = "government-pm2.5"
     const val governmentSensorNameOzone = "government-ozone"
     const val governmentSensorNameNitrogenDioxide = "government-no2"
@@ -12,6 +11,7 @@ object StringConstants {
     const val measurementTypePM = "Particulate Matter"
     const val measurementTypeOzone = "Ozone"
     const val measurementTypeNitrogenDioxide = "Nitrogen Dioxide"
+
 
     const val nanoGrammsPerCubicMeter = "µg/m³"
     const val partsPerBillion = "ppb"

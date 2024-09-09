@@ -55,7 +55,7 @@ class ActiveFixedSessionsInRegionRepository @Inject constructor(
                     val ab3 = apiService.getSessionsInRegion(
                         constructAndGetJsonWith(
                             square,
-                            ParticulateMatter.AIRBEAM3
+                            ParticulateMatter.AIRBEAM
                         )
                     )
                     combineResponses(ab2, ab3)

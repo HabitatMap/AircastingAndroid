@@ -42,7 +42,7 @@ class SearchLocationFragment @Inject constructor(
     )
     private var placesClient: PlacesClient? = null
     private var txtSelectedParameter: String = StringConstants.measurementTypePM
-    private var txtSelectedSensor: String = StringConstants.airbeam2sensorName
+    private var txtSelectedSensor: String = StringConstants.airbeamSensorName
 
     @Inject
     lateinit var mSettings: Settings
@@ -101,7 +101,7 @@ class SearchLocationFragment @Inject constructor(
                 binding.chipGroupSecondLevelTwo.gone()
 
                 txtSelectedParameter = StringConstants.measurementTypePM
-                txtSelectedSensor = StringConstants.airbeam2sensorName
+                txtSelectedSensor = StringConstants.airbeamSensorName
             }
             binding.ozoneChip.id -> {
                 binding.chipGroupSecondLevelOne.gone()
@@ -123,9 +123,9 @@ class SearchLocationFragment @Inject constructor(
     private fun onChipGroupSecondLevelSelected(chipGroup: ChipGroup) {
         txtSelectedParameter = StringConstants.measurementTypePM
         txtSelectedSensor = when (chipGroup.checkedChipId) {
-            binding.airbeamChip.id -> StringConstants.airbeam2sensorName
+            binding.airbeamChip.id -> StringConstants.airbeamSensorName
             binding.govtChip.id -> StringConstants.governmentSensorNamePM
-            else -> StringConstants.airbeam2sensorName
+            else -> StringConstants.airbeamSensorName
         }
     }
 
