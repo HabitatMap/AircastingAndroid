@@ -294,17 +294,17 @@ class SearchLocationResultFragment @Inject constructor(
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            StringConstants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
+            StringConstants.airbeamSensorName -> ParticulateMatter.AIRBEAM
             StringConstants.governmentSensorNamePM -> ParticulateMatter.GOVERNMENT
             StringConstants.governmentSensorNameOzone -> Ozone.GOVERNMENT
             StringConstants.governmentSensorNameNitrogenDioxide -> NitrogenDioxide.GOVERNMENT
-            else -> ParticulateMatter.AIRBEAM2
+            else -> ParticulateMatter.AIRBEAM
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            StringConstants.airbeam2sensorName -> StringConstants.airbeam
+            StringConstants.airbeamSensorName -> StringConstants.airbeam
             StringConstants.governmentSensorNamePM -> StringConstants.govt
             StringConstants.governmentSensorNameOzone -> StringConstants.govt
             StringConstants.governmentSensorNameNitrogenDioxide -> StringConstants.govt

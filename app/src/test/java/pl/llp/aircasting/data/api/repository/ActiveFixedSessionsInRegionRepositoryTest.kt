@@ -30,7 +30,6 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     private val sessionsInRegionResponse = StubData.getJson("SessionsCracow.json")
     private val streamOfGivenSessionResponse = StubData.getJson("StreamSensorNameHabitatMap.json")
 
-    @Ignore("Repository calls getSessionsInRegion 2 times to combine AB3 and AB2 sessions. This will need to be transferred to ViewModel")
     @Test
     fun whenGivenCoordinates_shouldCallToApi(): Unit = runBlocking {
         // given
@@ -40,7 +39,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiServiceFactory, mockHandler)
 
         // when
-        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiServiceFactory).getSessionsInRegion(anyOrNull())
@@ -52,7 +51,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
             // given
             val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
                 testSquare,
-                ParticulateMatter.AIRBEAM2
+                ParticulateMatter.AIRBEAM
             )
             val jsonObject = JsonParser.parseString(json).asJsonObject
 
@@ -77,7 +76,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
 
         val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
             testSquare,
-            ParticulateMatter.AIRBEAM2
+            ParticulateMatter.AIRBEAM
         )
         val jsonObject = JsonParser.parseString(json).asJsonObject
 
@@ -93,10 +92,10 @@ class ActiveFixedSessionsInRegionRepositoryTest {
     @Test
     fun constructAndGetJsonWith_shouldHaveRightQueryParameters_whenGivenParticulateMatterAirbeamSensor() {
         // given
-        val expectedSensorName = "airbeam2-pm2.5"
+        val expectedSensorName = "airbeam-pm2.5"
         val expectedUnitSymbol = "µg/m³"
         val expectedMeasurementType = "Particulate Matter"
-        val sensor = ParticulateMatter.AIRBEAM2
+        val sensor = ParticulateMatter.AIRBEAM
 
         // when
         val result =
@@ -179,7 +178,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         // when
         val json = ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
             testSquare,
-            ParticulateMatter.AIRBEAM2
+            ParticulateMatter.AIRBEAM
         )
 
         // then
@@ -195,7 +194,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiServiceFactory, mockHandler)
 
         // when
-        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
+        repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         verify(mockApiServiceFactory).getSessionsInRegion(
@@ -203,7 +202,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
                 equals(
                     ActiveFixedSessionsInRegionRepository.constructAndGetJsonWith(
                         testSquare,
-                        ParticulateMatter.AIRBEAM2
+                        ParticulateMatter.AIRBEAM
                     )
                 )
             }
@@ -315,7 +314,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val expected = Status.SUCCESS
 
         // when
-        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertEquals(expected, result.status)
@@ -333,7 +332,7 @@ class ActiveFixedSessionsInRegionRepositoryTest {
         val repository = ActiveFixedSessionsInRegionRepository(mockApiServiceFactory, mockHandler)
 
         // when
-        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM2)
+        val result = repository.getSessionsFromRegion(testSquare, ParticulateMatter.AIRBEAM)
 
         // then
         assertNotNull(result.data)
