@@ -237,7 +237,7 @@ class SDCardSyncServiceIntegratedTest {
         val lineParameterHandler = CSVLineParameterHandlerFactory.create(deviceType)
         val fileChecker = SDCardCSVFileCheckerFactory.create(deviceType)
         val mobileSessionFileHandler =
-            mSDCardSessionFileHandlerMobileFactory.create(lineParameterHandler, fileChecker)
+            mSDCardSessionFileHandlerMobileFactory.create(lineParameterHandler, fileChecker, deviceType)
         val sdCardMobileSessionsProcessor = mSDCardMobileSessionsProcessorFactory.create(
             lineParameterHandler,
             mobileSessionFileHandler

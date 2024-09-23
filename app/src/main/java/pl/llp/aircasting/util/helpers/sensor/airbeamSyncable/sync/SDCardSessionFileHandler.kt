@@ -7,6 +7,7 @@ import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardMeasurementsParsingError
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVMeasurement
@@ -59,7 +60,8 @@ class SDCardSessionFileHandlerFixed @AssistedInject constructor(
 interface SDCardSessionFileHandlerMobileFactory {
     fun create(
         lineParameterHandler: CSVLineParameterHandler,
-        sdCardCSVFileChecker: SDCardCSVFileChecker
+        sdCardCSVFileChecker: SDCardCSVFileChecker,
+        deviceType: DeviceItem.Type
     ): SDCardSessionFileHandlerMobile
 }
 
@@ -68,6 +70,7 @@ class SDCardSessionFileHandlerMobile @AssistedInject constructor(
     private val sessionRepository: SessionsRepository,
     private val helper: MeasurementsAveragingHelper,
     private val averagingService: AveragingService,
+    @Assisted private val deviceType: DeviceItem.Type,
     @Assisted private val lineParameterHandler: CSVLineParameterHandler,
     @Assisted private val sdCardCSVFileChecker: SDCardCSVFileChecker,
 ) : SDCardSessionFileHandler {
@@ -115,7 +118,7 @@ class SDCardSessionFileHandlerMobile @AssistedInject constructor(
         val lastMeasurementTime = lineParameterHandler.timestampFrom(lines.lastOrNull())?.time
         Log.d(TAG, "First measurement time: $startTime")
         Log.d(TAG, "Last measurement time: $lastMeasurementTime")
-        return if (firstMeasurementTime == null || lastMeasurementTime == null)
+        return if (deviceType == DeviceItem.Type.AIRBEAMMINI || firstMeasurementTime == null || lastMeasurementTime == null)
             AveragingWindow.ZERO
         else
             helper.calculateAveragingWindow(firstMeasurementTime, lastMeasurementTime)
