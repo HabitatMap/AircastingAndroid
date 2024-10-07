@@ -19,24 +19,46 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.anyOf
+import org.hamcrest.Matchers.isA
+import org.hamcrest.Matchers.not
 import org.hamcrest.core.AllOf.allOf
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.BeforeClass
+import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.data.api.util.StringConstants.airbeam
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeOzone
 import pl.llp.aircasting.data.api.util.StringConstants.measurementTypePM
-import pl.llp.aircasting.data.api.util.StringConstants.openAQ
+import pl.llp.aircasting.data.api.util.StringConstants.govt
+import pl.llp.aircasting.data.api.util.StringConstants.measurementTypeNitrogenDioxide
 import pl.llp.aircasting.data.local.AppDatabase
-import pl.llp.aircasting.helpers.*
+import pl.llp.aircasting.helpers.JsonHelper
+import pl.llp.aircasting.helpers.MockWebServerDispatcher
 import pl.llp.aircasting.helpers.assertions.assertRecyclerViewItemCount
 import pl.llp.aircasting.helpers.assertions.isNotEmpty
+import pl.llp.aircasting.helpers.awaitForAssertion
+import pl.llp.aircasting.helpers.awaitUntilAsserted
+import pl.llp.aircasting.helpers.clickOnFirstItem
+import pl.llp.aircasting.helpers.hintContainsString
+import pl.llp.aircasting.helpers.textContainsString
+import pl.llp.aircasting.helpers.waitAndRetry
+import pl.llp.aircasting.helpers.waitFor
 import pl.llp.aircasting.ui.view.adapters.FixedFollowAdapter
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
@@ -97,7 +119,7 @@ class SearchFollowTest : BaseTest() {
         "lat" to "40.692985",
         "lng" to "-73.964609",
         "txtParameter" to measurementTypePM,
-        "txtSensor" to openAQ
+        "txtSensor" to govt
     )
 
     @Before
@@ -106,11 +128,11 @@ class SearchFollowTest : BaseTest() {
         super.setup()
         val newYorkResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("NewYork.json"))
+            .setBody(JsonHelper.readFile("NewYork.json"))
 
         val newYorkDownloadSessionResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("HabitatMap-WiFi.json"))
+            .setBody(JsonHelper.readFile("HabitatMap-WiFi.json"))
 
         MockWebServerDispatcher.setNotFullPath(
             mapOf(
@@ -138,8 +160,23 @@ class SearchFollowTest : BaseTest() {
 
         onView(withId(R.id.places_autocomplete_search_input))
             .check(matches(isDisplayed()))
+        onView(withId(R.id.chipGroupFirstLevel))
+            .check(matches(isDisplayed()))
 
         mainActivityScenario.close()
+    }
+
+    @Test
+    fun whenChangingParameter_secondChipGroupIsDisplayed() {
+        launchSearchScreen()
+
+        onView(withId(R.id.ozone_chip))
+            .perform(click())
+
+        onView(withId(R.id.chipGroupSecondLevelTwo))
+            .check(matches(isDisplayed()))
+
+        searchScenario.close()
     }
 
     @Test
@@ -160,6 +197,9 @@ class SearchFollowTest : BaseTest() {
             .perform(click())
 
         searchAndValidateDisplayedParameters(newYork, measurementTypePM, airbeam)
+        searchAndValidateDisplayedParameters(newYork, measurementTypePM, govt)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeNitrogenDioxide, govt)
+        searchAndValidateDisplayedParameters(newYork, measurementTypeOzone, govt)
 
         mainActivityScenario.close()
     }
@@ -195,7 +235,7 @@ class SearchFollowTest : BaseTest() {
         )
         val noSessionsAreaResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.readFile("NoSessionsArea.json"))
+            .setBody(JsonHelper.readFile("NoSessionsArea.json"))
 
         MockWebServerDispatcher.setNotFullPath(
             mapOf(
@@ -220,6 +260,7 @@ class SearchFollowTest : BaseTest() {
     fun whenGoingBackFromMapScreen_searchScreenRetainsAddress() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, airbeam)
         goToMapScreen()
         Espresso.pressBack()
 
@@ -245,6 +286,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, govt)
         goToMapScreen()
         waitForSessionData()
 
@@ -290,6 +332,7 @@ class SearchFollowTest : BaseTest() {
         searchActivityScenario = ActivityScenario.launch(searchIntent)
 
         searchForPlace(newYork)
+        selectSensor(measurementTypePM, govt)
         goToMapScreen()
         waitForSessionData()
 
@@ -349,6 +392,7 @@ class SearchFollowTest : BaseTest() {
         sensor: String
     ) {
         searchForPlace(place)
+        selectSensor(parameter, sensor)
 
         goToMapScreen()
 
@@ -371,6 +415,39 @@ class SearchFollowTest : BaseTest() {
     private fun displayedMeasurementTypeMatches(type: String) {
         onView(withId(R.id.txtShowing))
             .check(matches(textContainsString(type)))
+    }
+
+    private fun selectSensor(parameter: String, sensor: String) {
+        awaitUntilAsserted {
+            onView(
+                allOf(
+                    isA(Chip::class.java),
+                    withParent(withId(R.id.chipGroupFirstLevel)),
+                    textContainsString(parameter)
+                )
+            ).check(matches(isDisplayed()))
+        }
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                withParent(withId(R.id.chipGroupFirstLevel)),
+                textContainsString(parameter)
+            )
+        )
+            .perform(click())
+
+        onView(
+            allOf(
+                isA(Chip::class.java),
+                anyOf(
+                    withParent(withId(R.id.chipGroupSecondLevelOne)),
+                    withParent(withId(R.id.chipGroupSecondLevelTwo))
+                ),
+                textContainsString(sensor),
+                isDisplayed()
+            )
+        )
+            .perform(click())
     }
 
     private fun goBack() {

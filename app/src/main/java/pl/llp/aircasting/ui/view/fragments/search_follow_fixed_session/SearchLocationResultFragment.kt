@@ -33,6 +33,7 @@ import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.api.response.search.SessionInRegionResponse
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
+import pl.llp.aircasting.data.api.util.NitrogenDioxide
 import pl.llp.aircasting.data.api.util.Ozone
 import pl.llp.aircasting.data.api.util.ParticulateMatter
 import pl.llp.aircasting.data.api.util.SensorInformation
@@ -293,20 +294,20 @@ class SearchLocationResultFragment @Inject constructor(
 
     private fun getSensorInfo(): SensorInformation {
         return when (txtSensor) {
-            StringConstants.airbeam2sensorName -> ParticulateMatter.AIRBEAM2
-            StringConstants.openAQsensorNamePM -> ParticulateMatter.OPEN_AQ
-            StringConstants.purpleAirSensorName -> ParticulateMatter.PURPLE_AIR
-            StringConstants.openAQsensorNameOzone -> Ozone.OPEN_AQ
-            else -> ParticulateMatter.AIRBEAM2
+            StringConstants.airbeamSensorName -> ParticulateMatter.AIRBEAM
+            StringConstants.governmentSensorNamePM -> ParticulateMatter.GOVERNMENT
+            StringConstants.governmentSensorNameOzone -> Ozone.GOVERNMENT
+            StringConstants.governmentSensorNameNitrogenDioxide -> NitrogenDioxide.GOVERNMENT
+            else -> ParticulateMatter.AIRBEAM
         }
     }
 
     private fun getSensor(): String {
         return when (txtSensor) {
-            StringConstants.airbeam2sensorName -> StringConstants.airbeam
-            StringConstants.openAQsensorNamePM -> StringConstants.openAQ
-            StringConstants.purpleAirSensorName -> StringConstants.purpleAir
-            StringConstants.openAQsensorNameOzone -> StringConstants.openAQ
+            StringConstants.airbeamSensorName -> StringConstants.airbeam
+            StringConstants.governmentSensorNamePM -> StringConstants.govt
+            StringConstants.governmentSensorNameOzone -> StringConstants.govt
+            StringConstants.governmentSensorNameNitrogenDioxide -> StringConstants.govt
             else -> StringConstants.airbeam
         }
     }

@@ -43,7 +43,7 @@ class LoginTest : BaseTest() {
         val loginResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(
-                Util.buildJson(
+                JsonHelper.buildJson(
                     mapOf(
                         "email" to "ania@example.org",
                         "username" to "ania",
@@ -54,7 +54,7 @@ class LoginTest : BaseTest() {
 
         val syncResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.buildJson(emptyMap<String, String>()))
+            .setBody(JsonHelper.buildJson(emptyMap<String, String>()))
 
         MockWebServerDispatcher.set(
             mapOf(

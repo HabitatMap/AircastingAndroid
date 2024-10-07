@@ -65,7 +65,7 @@ class AirBeamSyncService : AirBeamService() {
             val csvFileChecker = SDCardCSVFileCheckerFactory.create(deviceItem.type)
             val sDCardFileService = sDCardFileServiceProvider.get(deviceItem.type)
             val mobileFileHandler =
-                mobileFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker)
+                mobileFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker, deviceItem.type)
             val fixedFileHandler =
                 fixedFileHandlerFactory.create(csvLineParameterHandler, csvFileChecker)
             val mobileSessionsProcessor = mobileSessionsProcessorFactory.create(

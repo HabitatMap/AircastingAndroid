@@ -1,16 +1,20 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
+import android.os.Build
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.IdlingRegistry
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.*
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
@@ -40,6 +44,7 @@ import kotlin.test.assertNotEquals
 private const val DEVICE_ID = "246f28c47698"
 
 @OptIn(ExperimentalCoroutinesApi::class)
+@Config(sdk = [Build.VERSION_CODES.S])
 @RunWith(RobolectricTestRunner::class)
 class SDCardSyncServiceIntegratedTest {
 
@@ -232,7 +237,7 @@ class SDCardSyncServiceIntegratedTest {
         val lineParameterHandler = CSVLineParameterHandlerFactory.create(deviceType)
         val fileChecker = SDCardCSVFileCheckerFactory.create(deviceType)
         val mobileSessionFileHandler =
-            mSDCardSessionFileHandlerMobileFactory.create(lineParameterHandler, fileChecker)
+            mSDCardSessionFileHandlerMobileFactory.create(lineParameterHandler, fileChecker, deviceType)
         val sdCardMobileSessionsProcessor = mSDCardMobileSessionsProcessorFactory.create(
             lineParameterHandler,
             mobileSessionFileHandler
