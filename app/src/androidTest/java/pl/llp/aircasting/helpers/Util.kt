@@ -1,43 +1,47 @@
 package pl.llp.aircasting.helpers
 
-import com.google.gson.Gson
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStreamReader
+import android.view.View
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.matcher.ViewMatchers
+import org.awaitility.Awaitility
+import org.awaitility.core.ThrowingRunnable
+import org.hamcrest.Matcher
+import pl.llp.aircasting.helpers.matchers.HintContainsStringMatcher
+import pl.llp.aircasting.helpers.matchers.TextContainsStringMatcher
+import pl.llp.aircasting.helpers.matchers.TextIsNumerical
+import java.util.concurrent.TimeUnit
 
-object Util {
+fun hintContainsString(string: String): Matcher<in View> = HintContainsStringMatcher(string)
+fun textContainsString(string: String): Matcher<in View> = TextContainsStringMatcher(string)
+fun textIsNumerical(): Matcher<in View> = TextIsNumerical()
 
-    private val gson = Gson()
-
-    fun buildJson(body: Any): String {
-        return gson.toJson(body)
-    }
-
-    @Throws(IOException::class)
-    fun readFile(jsonFileName: String): String {
-        val inputStream = this::class.java
-            .getResourceAsStream("/assets/$jsonFileName")
-            ?: throw NullPointerException(
-                "Have you added the local resource correctly?, "
-                        + "Hint: name it as: " + jsonFileName
-            )
-        val stringBuilder = StringBuilder()
-        var inputStreamReader: InputStreamReader? = null
-        try {
-            inputStreamReader = InputStreamReader(inputStream)
-            val bufferedReader = BufferedReader(inputStreamReader)
-            var character: Int = bufferedReader.read()
-            while (character != -1) {
-                stringBuilder.append(character.toChar())
-                character = bufferedReader.read()
-            }
-        } catch (exception: IOException) {
-            exception.printStackTrace()
-        } finally {
-            inputStream.close()
-            inputStreamReader?.close()
+fun waitFor(delay: Long): ViewAction {
+    return object : ViewAction {
+        override fun getConstraints(): Matcher<View> = ViewMatchers.isRoot()
+        override fun getDescription(): String = "wait for $delay milliseconds"
+        override fun perform(uiController: UiController, v: View?) {
+            uiController.loopMainThreadForAtLeast(delay)
         }
-        return stringBuilder.toString()
     }
 }
 
+fun waitAndRetry(assertion: ThrowingRunnable) =
+    Awaitility.await()
+        .pollDelay(500, TimeUnit.MILLISECONDS)
+        .atMost(6, TimeUnit.SECONDS)
+        .untilAsserted(assertion)
+
+fun awaitForAssertion(assertion: ThrowingRunnable) =
+    Awaitility.await()
+        .atMost(8, TimeUnit.SECONDS)
+        .with().pollInterval(1, TimeUnit.SECONDS)
+        .pollDelay(500, TimeUnit.MILLISECONDS)
+        .untilAsserted(assertion)
+
+fun awaitUntilAsserted(assertion: ThrowingRunnable) =
+    Awaitility.await()
+        .atMost(30, TimeUnit.SECONDS)
+        .with().pollInterval(1, TimeUnit.SECONDS)
+        .pollDelay(500, TimeUnit.MILLISECONDS)
+        .untilAsserted(assertion)
