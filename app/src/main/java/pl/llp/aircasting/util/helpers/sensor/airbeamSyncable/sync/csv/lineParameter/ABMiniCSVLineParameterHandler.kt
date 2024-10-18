@@ -19,7 +19,7 @@ class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHand
             PM_UNIT_NAME,
             PM_UNIT_SYMBOL,
             0,
-            12,
+            9,
             35,
             55,
             150
@@ -31,7 +31,7 @@ class ABMiniCSVLineParameterHandler @Inject constructor() : CSVLineParameterHand
             PM_UNIT_NAME,
             PM_UNIT_SYMBOL,
             0,
-            12,
+            9,
             35,
             55,
             150
