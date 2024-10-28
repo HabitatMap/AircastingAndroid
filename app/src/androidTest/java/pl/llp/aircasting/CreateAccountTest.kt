@@ -15,7 +15,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import pl.llp.aircasting.helpers.MockWebServerDispatcher
-import pl.llp.aircasting.helpers.Util
+import pl.llp.aircasting.helpers.JsonHelper
 import pl.llp.aircasting.helpers.awaitForAssertion
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.util.Settings
@@ -65,7 +65,7 @@ class CreateAccountTest : BaseTest() {
         val createAccountResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
             .setBody(
-                Util.buildJson(
+                JsonHelper.buildJson(
                     mapOf(
                         "email" to "maria@example.org",
                         "username" to "maria",
@@ -76,7 +76,7 @@ class CreateAccountTest : BaseTest() {
 
         val syncResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.buildJson(emptyMap<String, String>()))
+            .setBody(JsonHelper.buildJson(emptyMap<String, String>()))
 
         MockWebServerDispatcher.set(
             mapOf(
@@ -94,7 +94,7 @@ class CreateAccountTest : BaseTest() {
         val createAccountErrorResponse = MockResponse()
             .setResponseCode(422)
             .setBody(
-                Util.buildJson(
+                JsonHelper.buildJson(
                     mapOf(
                         "email" to listOf("can't be blank")
                     )
@@ -103,7 +103,7 @@ class CreateAccountTest : BaseTest() {
 
         val syncResponse = MockResponse()
             .setResponseCode(HttpURLConnection.HTTP_OK)
-            .setBody(Util.buildJson(emptyMap<String, String>()))
+            .setBody(JsonHelper.buildJson(emptyMap<String, String>()))
 
         MockWebServerDispatcher.set(
             mapOf(
