@@ -28,12 +28,18 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
+
     <uses-feature
         android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
         android:required="false" />
 
     <application
@@ -61,20 +67,32 @@
 
         <service
             android:name=".util.helpers.sensor.microphone.MicrophoneService"
-            android:stopWithTask="true" />
-        <service
-            android:name=".util.helpers.sensor.services.AirBeamRecordSessionService"
+            android:foregroundServiceType="connectedDevice"
             android:stopWithTask="true" />
         <service
             android:name=".util.helpers.sensor.services.AirBeamReconnectSessionService"
+            android:foregroundServiceType="connectedDevice"
             android:stopWithTask="true" />
         <service
             android:name=".util.helpers.sensor.services.AirBeamSyncService"
+            android:foregroundServiceType="connectedDevice"
             android:stopWithTask="true" />
         <service
             android:name=".util.helpers.sensor.services.AirBeamClearCardService"
+            android:foregroundServiceType="connectedDevice"
             android:stopWithTask="true" />
-        <service android:name=".util.helpers.sensor.services.BatteryLevelService"/>
+        <service android:name=".util.helpers.sensor.services.BatteryLevelService"
+            android:foregroundServiceType="connectedDevice"
+            />
+        <service
+            android:name=".util.helpers.sensor.services.SensorService"
+            android:foregroundServiceType="connectedDevice"
+            tools:node="merge" />
+        <service
+            android:name=".util.helpers.sensor.services.AirBeamRecordSessionService"
+            android:foregroundServiceType="connectedDevice"
+            android:stopWithTask="true"
+            tools:node="merge" />
 
         <activity
             android:name=".ui.view.screens.onboarding.OnboardingActivity"
