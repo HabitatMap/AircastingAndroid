@@ -42,6 +42,8 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        createNotificationChannel()
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = if (isSDKGreaterOrEqualToM())
             PendingIntent.getActivity(
@@ -76,9 +78,7 @@ abstract class SensorService : Service() {
         Log.d("SERVICE", "SET TYPE")
 
         registerToEventBus()
-
         startSensor(intent)
-        createNotificationChannel()
 
         return START_REDELIVER_INTENT
     }
