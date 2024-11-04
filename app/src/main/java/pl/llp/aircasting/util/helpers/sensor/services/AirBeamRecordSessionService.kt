@@ -1,11 +1,18 @@
 package pl.llp.aircasting.util.helpers.sensor.services
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.Parcelable
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.R
+import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
 
 open class AirBeamRecordSessionService: AirBeamService() {
     var mIntent: Intent? = null
