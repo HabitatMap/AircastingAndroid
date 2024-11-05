@@ -5,7 +5,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -39,10 +42,8 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        registerToEventBus()
-
-        startSensor(intent)
         createNotificationChannel()
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = if (isSDKGreaterOrEqualToM())
             PendingIntent.getActivity(
@@ -56,7 +57,6 @@ abstract class SensorService : Service() {
             notificationIntent,
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.app_name))
             .setContentText(notificationMessage())
@@ -64,7 +64,21 @@ abstract class SensorService : Service() {
             .setContentIntent(pendingIntent)
             .build()
 
-        startForeground(1, notification)
+        Log.d("SERVICE", "SETTING TYPE")
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            Log.d("SERVICE", "GOING WITHOUT TYPE")
+            startForeground(1, notification)
+        } else {
+            Log.d("SERVICE", "GOING WITH TYPE")
+            startForeground(1, notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            )
+        }
+        Log.d("SERVICE", "SET TYPE")
+
+        registerToEventBus()
+        startSensor(intent)
 
         return START_REDELIVER_INTENT
     }
