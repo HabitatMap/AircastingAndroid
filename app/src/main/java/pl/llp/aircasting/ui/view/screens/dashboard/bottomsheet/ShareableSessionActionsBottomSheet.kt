@@ -26,3 +26,16 @@ abstract class ShareableSessionActionsBottomSheet(private val session: Session?)
         }
     }
 }
+
+abstract class NonShareableSessionActionsBottomSheet() : BottomSheet() {
+    override fun layoutId(): Int {
+        return R.layout.session_action_fixed_unmodifiable_unshareable
+    }
+
+    override fun setup() {
+        val cancelButton = contentView?.cancel_button
+        cancelButton?.setOnClickListener {
+            dismiss()
+        }
+    }
+}
