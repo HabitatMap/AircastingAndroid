@@ -68,6 +68,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         if (deviceItem.type == DeviceItem.Type.AIRBEAMMINI) {
             streamingMethodHeader?.visibility = View.GONE
             streamingMethodToggle?.visibility = View.GONE
+            
         }
 
         sessionNameInputLayout = rootView?.findViewById(R.id.session_name)
