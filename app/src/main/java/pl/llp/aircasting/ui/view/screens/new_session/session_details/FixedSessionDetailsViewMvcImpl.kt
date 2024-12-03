@@ -42,6 +42,8 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
     private var selectedNetworkItem: RecyclerViewNetworkItem? = null
     private var selectedNetworkPassword: String? = null
     private var sessionNameInputLayout: TextInputLayout? = null
+    private var streamingMethodHeader: TextView? = null
+    private var streamingMethodToggle: MaterialButtonToggleGroup? = null
 
     constructor(
         inflater: LayoutInflater,
@@ -58,6 +60,15 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         val indoorToggle = rootView?.findViewById<MaterialButtonToggleGroup>(R.id.indoor_toggle)
         indoorToggle?.addOnButtonCheckedListener { _, checkedId, isChecked ->
             indoor = (checkedId == R.id.indoor_button && isChecked)
+        }
+
+        streamingMethodHeader = rootView?.findViewById(R.id.streaming_method_toggle_header)
+        streamingMethodToggle = rootView?.findViewById(R.id.streaming_method_toggle)
+
+        if (deviceItem.type == DeviceItem.Type.AIRBEAMMINI) {
+            streamingMethodHeader?.visibility = View.GONE
+            streamingMethodToggle?.visibility = View.GONE
+            
         }
 
         sessionNameInputLayout = rootView?.findViewById(R.id.session_name)
