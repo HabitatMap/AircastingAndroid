@@ -169,7 +169,7 @@ open class ChartAveragesCreator {
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
         val lastMeasurementTime = stream.measurements.maxOf { it.time }
         val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
-        return Date(lastMeasurementHour.time - 1)
+        return Date(lastMeasurementHour.time)
     }
 
     private fun groupMeasurementsByHours(
