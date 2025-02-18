@@ -12,10 +12,7 @@ import java.util.*
 * Also, we do not tweak the hours here, as the measurements' hours already represent the passed hour
 *  */
 class OpenAQChartAveragesCreator : ChartAveragesCreator() {
-    override fun modifyHours(date: Date, hours: Int): Date {
-        return date
-    }
-
+// Delete that thing
     override fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
         return stream.measurements.maxOf { it.time }
     }

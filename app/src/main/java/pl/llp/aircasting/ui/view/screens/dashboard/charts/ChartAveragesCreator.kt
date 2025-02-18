@@ -135,11 +135,8 @@ open class ChartAveragesCreator {
     /* We tweak the hours forward by one, as on UI they are supposed to represent the passed hour
     * So measurements from 6:00:00 till 6:59:59 are represented on UI as 7:00 timestamp
     *  */
-    protected open fun modifyHours(date: Date, hours: Int = 1): Date {
-        val calendar = Calendar.getInstance()
-        calendar.time = date
-        calendar.add(Calendar.HOUR_OF_DAY, hours)
-        return calendar.time
+    protected open fun modifyHours(date: Date): Date {
+        return date
     }
 
     private fun getXvalueBasedOnTimeDifference(
@@ -167,9 +164,7 @@ open class ChartAveragesCreator {
     * As their last hour of measurements is not complete, we cut off all the measurements from it.
     *  */
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
-        val lastMeasurementTime = stream.measurements.maxOf { it.time }
-        val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
-        return Date(lastMeasurementHour.time)
+        return stream.measurements.maxOf { it.time }
     }
 
     private fun groupMeasurementsByHours(
