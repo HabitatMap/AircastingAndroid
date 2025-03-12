@@ -11,7 +11,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         val timeStampsSetter = UTCTimeStampsSetter()
 
         return when {
-            isFromOpenAQ(stream) -> OpenAQChartAveragesCreator().getFixedEntries(
+            isFullHours(stream) -> OpenAQChartAveragesCreator().getFixedEntries(
                 stream,
                 timeStampsSetter
             )
@@ -23,9 +23,10 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         }
     }
 
-    private fun isFromOpenAQ(stream: MeasurementStream?) =
+    private fun isFullHours(stream: MeasurementStream?) =
         stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNamePM, true) == true ||
-                stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNameOzone, true) == true
+                stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNameOzone, true) == true ||
+                stream?.sensorName?.startsWith("Government") == true
 
     inner class UTCTimeStampsSetter : TimeStampsSetter() {
         override fun setStartEndTimeToDisplay(start: Date, end: Date, timeZone: TimeZone) {
