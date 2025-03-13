@@ -351,7 +351,7 @@
     <string name="onboarding_bottomsheet_page3_description1">En mode mobile, l\'AirBeam capture les expositions personnelles.</string>
     <string name="onboarding_bottomsheet_page3_description2">En mode fixe, il peut être installé à l\'intérieur ou à l\'extérieur pour garder un œil sur les niveaux de pollution dans votre maison, votre bureau, votre jardin ou votre quartier 24h/24 et 7j/7.</string>
     <string name="onboarding_page4_header">Votre vie privée</string>
-    <string name="onboarding_page4_description">Review our commitment to preserving your privacy and accept our privacy policy.</string>
+    <string name="onboarding_page4_description">AirCasting collecte des données de localisation pour suivre la qualité de l\'air, même lorsque l\'application est en arrière-plan. Consultez notre engagement envers la protection de votre vie privée et acceptez notre politique de confidentialité.</string>
     <string name="accept_button_onboarding">J\'accepte</string>
 
     <string name="bluetooth_failed_connection_alert_header">La connexion Bluetooth a échoué</string>

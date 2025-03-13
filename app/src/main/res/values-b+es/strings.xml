@@ -369,7 +369,7 @@
     <string name="onboarding_bottomsheet_page3_description1">En modo móvil, The AirBeam captura exposiciones personales.</string>
     <string name="onboarding_bottomsheet_page3_description2">En modo fijo, se puede instalar en interiores o exteriores para controlar los niveles de contaminación en su hogar, oficina, patio trasero o vecindario todos los días a todas horas</string>
     <string name="onboarding_page4_header">Tu privacidad</string>
-    <string name="onboarding_page4_description">Revisa nuestro compromiso de preservar tu privacidad y acepta nuestra política de privacidad</string>
+    <string name="onboarding_page4_description">AirCasting recopila datos de ubicación para permitir el seguimiento de la calidad del aire incluso cuando la aplicación está en segundo plano. Revise nuestro compromiso con la protección de su privacidad y acepte nuestra política de privacidad.</string>
     <string name="accept_button_onboarding">Acceptar</string>
     <string name="errors_location_background_services_required">Sin usar la ubicación en el permiso de fondo, es posible que la aplicación no funcione correctamente en los dispositivos Android más nuevos.</string>
     <string name="bluetooth_error_permissions">Sin permisos de Bluetooth, no podrá ver los dispositivos disponibles</string>

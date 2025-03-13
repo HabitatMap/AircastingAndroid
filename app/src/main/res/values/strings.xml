@@ -366,7 +366,7 @@
     <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
     <string name="onboarding_bottomsheet_page3_description2">In fixed mode, it can be installed indoors or outdoors to keep tabs on pollution levels in your home, office, backyard, or neighborhood 24/7.</string>
     <string name="onboarding_page4_header">Your privacy</string>
-    <string name="onboarding_page4_description">Review our commitment to preserving your privacy and accept our privacy policy.</string>
+    <string name="onboarding_page4_description">AirCasting collects location data to enable air quality tracking even when the app is in the background. Review our commitment to preserving your privacy and accept our privacy policy.</string>
     <string name="accept_button_onboarding">Accept</string>
     <string name="onboarding_bottomsheet_page4_header" translatable="false">Our privacy policy</string>
     <string name="onboarding_bottomsheet_page4_paragraph_header" translatable="false">HabitatMap protects the personal data of AirCasting mobile application users, and fulfills conditions deriving from the law, especially from the Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 on the protection of natural persons with regard to the processing of personal data and on the free movement of such data, and repealing Directive 95/46/EC (GDPR). HabitatMap protects the security of the data of AirCasting app users using appropriate technical, logistical, administrative, and physical protection measures. AirCasting ensures that its employees and contractors are given training in protection of personal data.
