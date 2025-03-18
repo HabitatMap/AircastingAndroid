@@ -1,15 +1,16 @@
 package pl.llp.aircasting.di.mocks.sdSync
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
+import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 
 class TestSyncableAirBeamConfiguratorFactory(
     private val applicationContext: Context,
@@ -17,14 +18,16 @@ class TestSyncableAirBeamConfiguratorFactory(
     private val mSettings: Settings,
     private val hexMessagesBuilder: HexMessagesBuilder,
     private val syncableAirBeamReader: SyncableAirBeamReader,
-    private val sdCardFileServiceProvider: SDCardFileServiceProvider
+    private val sdCardFileServiceProvider: SDCardFileServiceProvider,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
     mSettings,
     hexMessagesBuilder,
     syncableAirBeamReader,
-    sdCardFileServiceProvider
+    sdCardFileServiceProvider,
+    ioDispatcher
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
@@ -35,7 +38,8 @@ class TestSyncableAirBeamConfiguratorFactory(
             syncableAirBeamReader,
             SDCardReader(
                 sdCardFileServiceProvider.get(type)
-            )
+            ),
+            ioDispatcher
         )
 
         else -> TestAB3Configurator(
@@ -46,7 +50,8 @@ class TestSyncableAirBeamConfiguratorFactory(
             syncableAirBeamReader,
             SDCardReader(
                 sdCardFileServiceProvider.get(type)
-            )
+            ),
+            ioDispatcher
         )
     }
 }

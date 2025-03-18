@@ -4,13 +4,13 @@ import dagger.Component
 import dagger.Subcomponent
 import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.ApiModule
-import pl.llp.aircasting.di.modules.CoroutineModule
 import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.ViewModelModule
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest
 import javax.inject.Singleton
+
 @Singleton
 @Component(
     modules = [
@@ -32,7 +32,7 @@ interface TestAppComponent : AppComponent {
         ApiModule::class,
         TestNewSessionWizardModule::class,
         ViewModelModule::class,
-        CoroutineModule::class,
+        TestCoroutineModule::class,
         FragmentModule::class,
         RepositoryModule::class,
         TestPermissionsModule::class,
