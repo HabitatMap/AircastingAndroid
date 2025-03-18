@@ -7,13 +7,8 @@ import androidx.core.content.ContextCompat
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardClearService
-import javax.inject.Inject
 
-class AirBeamClearCardService: AirBeamService() {
-
-    @Inject
-    lateinit var sdCardClearService: SDCardClearService
+class AirBeamClearCardService : AirBeamService() {
 
     companion object {
         val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -36,7 +31,8 @@ class AirBeamClearCardService: AirBeamService() {
     override fun startSensor(intent: Intent?) {
         intent ?: return
 
-        val deviceItem = intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
+        val deviceItem =
+            intent.getParcelableExtra<DeviceItem>(AirBeamRecordSessionService.DEVICE_ITEM_KEY)
 
         if (deviceItem == null) {
             errorHandler.handle(AirbeamServiceError("DeviceItem passed through intent is null"))
@@ -46,7 +42,8 @@ class AirBeamClearCardService: AirBeamService() {
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        val airBeamConnector = mAirBeamConnector ?: return
-        sdCardClearService.run(airBeamConnector)
+        mAirBeamConnector.apply {
+            clearSDCard()
+        }
     }
 }

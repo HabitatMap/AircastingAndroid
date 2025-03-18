@@ -18,14 +18,13 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.services.AirBeamDiscoveryService
-import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardClearService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneReader
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamDiscoveryService
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
@@ -40,10 +39,6 @@ open class SensorsModule {
         SDCardCSVFileFactory(
             application
         )
-
-    @Provides
-    @UserSessionScope
-    fun providesSDCardClearService(): SDCardClearService = SDCardClearService()
 
     @Provides
     @UserSessionScope
