@@ -57,7 +57,7 @@ open class AirBeam2Connector @Inject constructor(
         // AirBeam2 can't do sync
     }
 
-    override fun clearSDCard() {
+    override suspend fun clearSDCard() {
         // AirBeam2 don't have SD card
     }
 

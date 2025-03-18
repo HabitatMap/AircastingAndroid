@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
@@ -42,8 +43,12 @@ class AirBeamClearCardService : AirBeamService() {
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        mAirBeamConnector.apply {
-            clearSDCard()
+        coroutineScope.launch {
+            mAirBeamConnector.apply {
+                clearSDCard()
+                onDisconnected(deviceItem, false)
+                disconnect()
+            }
         }
     }
 }

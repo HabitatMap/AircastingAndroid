@@ -20,11 +20,11 @@ import pl.llp.aircasting.util.exceptions.SDCardMissingSDCardUploadFixedMeasureme
 import pl.llp.aircasting.util.exceptions.SDCardMissingSessionsSyncServiceError
 import pl.llp.aircasting.util.exceptions.SDCardSessionsFinalSyncError
 import pl.llp.aircasting.util.exceptions.SDCardSyncError
-import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.sdSyncFinishedCountingIdleResource
 import java.io.File
 
@@ -107,7 +107,7 @@ class SDCardSyncService @AssistedInject constructor(
         if (BuildConfig.DEBUG) sdSyncFinishedCountingIdleResource.decrement()
     }
 
-    private fun clearSDCard() {
+    private suspend fun clearSDCard() {
         Log.d(TAG, "Clearing SD card")
         mAirBeamConnector?.clearSDCard()
     }

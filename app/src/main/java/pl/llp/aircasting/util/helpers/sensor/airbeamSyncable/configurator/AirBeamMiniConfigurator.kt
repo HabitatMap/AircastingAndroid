@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
@@ -18,13 +19,15 @@ open class AirBeamMiniConfigurator(
     hexMessagesBuilder: HexMessagesBuilder,
     syncableAirBeamReader: SyncableAirBeamReader,
     sdCardReader: SDCardReader,
+    ioDispatcher: CoroutineDispatcher,
 ) : SyncableAirBeamConfigurator(
     applicationContext,
     mErrorHandler,
     mSettings,
     hexMessagesBuilder,
     syncableAirBeamReader,
-    sdCardReader
+    sdCardReader,
+    ioDispatcher
 ) {
     companion object {
         private val batteryLevelCharacteristic: UUID =

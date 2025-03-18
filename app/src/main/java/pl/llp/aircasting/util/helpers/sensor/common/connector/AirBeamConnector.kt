@@ -72,7 +72,7 @@ abstract class AirBeamConnector(
 
     abstract fun reconnectMobileSession()
     abstract fun triggerSDCardDownload()
-    abstract fun clearSDCard()
+    abstract suspend fun clearSDCard()
 
     private var mTimerTask: TimerTask? = null
 

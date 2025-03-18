@@ -1,11 +1,12 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
+import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import java.util.UUID
 
 open class AirBeam3Configurator(
@@ -15,13 +16,15 @@ open class AirBeam3Configurator(
     hexMessagesBuilder: HexMessagesBuilder,
     syncableAirBeamReader: SyncableAirBeamReader,
     sdCardReader: SDCardReader,
+    ioDispatcher: CoroutineDispatcher,
 ) : SyncableAirBeamConfigurator(
     applicationContext,
     mErrorHandler,
     mSettings,
     hexMessagesBuilder,
     syncableAirBeamReader,
-    sdCardReader
+    sdCardReader,
+    ioDispatcher
 ) {
     companion object {
         private val temperatureSensorCharacteristic =

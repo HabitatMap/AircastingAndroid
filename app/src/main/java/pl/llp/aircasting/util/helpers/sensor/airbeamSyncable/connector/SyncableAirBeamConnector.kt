@@ -14,8 +14,8 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.MissingDeviceAfterConnectionError
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 
 class SyncableAirBeamConnector(
     private val applicationContext: Context,
@@ -77,7 +77,7 @@ class SyncableAirBeamConnector(
         }
     }
 
-    override fun clearSDCard() {
+    override suspend fun clearSDCard() {
         airBeam3Configurator.clearSDCard()
     }
 
