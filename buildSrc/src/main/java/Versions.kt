@@ -37,6 +37,7 @@ object Versions {
     // Tests
     const val espresso = "3.5.0-alpha07"
     const val mockito = "4.6.0"
+    const val mockk = "1.12.4"
     const val junit = "4.13.2"
     const val kotlinJunit = "1.6.20"
     const val mockitoKotlin = "4.0.0"

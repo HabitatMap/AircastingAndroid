@@ -1,11 +1,11 @@
 package pl.llp.aircasting.di.mocks.sdSync
 
 import android.content.Context
-import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeam3Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniConfigurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.RequestQueueCall
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest
@@ -19,7 +19,7 @@ class TestAB3Configurator(
     hexMessagesBuilder: HexMessagesBuilder,
     syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
-    ioDispatcher: CoroutineDispatcher,
+    await: RequestQueueCall,
 ) : AirBeam3Configurator(
     applicationContext,
     mErrorHandler,
@@ -27,7 +27,7 @@ class TestAB3Configurator(
     hexMessagesBuilder,
     syncableAirBeamReader,
     sdCardReader,
-    ioDispatcher
+    await
 ) {
     companion object {
         private const val BLE_META_DATA =
@@ -56,7 +56,7 @@ class TestABMiniConfigurator(
     hexMessagesBuilder: HexMessagesBuilder,
     syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
-    ioDispatcher: CoroutineDispatcher,
+    await: RequestQueueCall,
 ) : AirBeamMiniConfigurator(
     applicationContext,
     mErrorHandler,
@@ -64,7 +64,7 @@ class TestABMiniConfigurator(
     hexMessagesBuilder,
     syncableAirBeamReader,
     sdCardReader,
-    ioDispatcher
+    await
 ) {
     companion object {
         private const val BLE_META_DATA =

@@ -5,8 +5,6 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.content.Context
 import android.util.Log
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
@@ -17,7 +15,9 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.AirBeam3ConfiguringFailed
+import pl.llp.aircasting.util.exceptions.AirBeam3ConfiguringFailed.Type.SD_CARD
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.exceptions.UnknownError
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
@@ -34,7 +34,7 @@ open class SyncableAirBeamConfiguratorFactory(
     private val hexMessagesBuilder: HexMessagesBuilder,
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardFileServiceProvider: SDCardFileServiceProvider,
-    private val ioDispatcher: CoroutineDispatcher,
+    private val await: RequestQueueCall,
 ) {
     private lateinit var sdCardReader: SDCardReader
     open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
@@ -49,7 +49,7 @@ open class SyncableAirBeamConfiguratorFactory(
                 hexMessagesBuilder,
                 syncableAirBeamReader,
                 sdCardReader,
-                ioDispatcher,
+                await,
             )
 
             else -> AirBeam3Configurator(
@@ -59,7 +59,7 @@ open class SyncableAirBeamConfiguratorFactory(
                 hexMessagesBuilder,
                 syncableAirBeamReader,
                 sdCardReader,
-                ioDispatcher,
+                await,
             )
         }
     }
@@ -72,7 +72,7 @@ abstract class SyncableAirBeamConfigurator(
     private val hexMessagesBuilder: HexMessagesBuilder,
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
-    private val ioDispatcher: CoroutineDispatcher,
+    private val await: RequestQueueCall,
 ) : BleManager(applicationContext) {
     companion object {
         val SERVICE_UUID: UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
@@ -167,21 +167,17 @@ abstract class SyncableAirBeamConfigurator(
     suspend fun clearSDCard() {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
-        withContext(ioDispatcher) {
-            try {
+        try {
+            await(
                 beginAtomicRequestQueue()
                     .add(clearSDCardModeRequest())
                     .add(sleep(500))
-                    .await()
+            )
 
-            } catch (e: RequestFailedException) {
-                mErrorHandler.handle(
-                    AirBeam3ConfiguringFailed(
-                        "clear SD card mode",
-                        e.status
-                    )
-                )
-            }
+        } catch (e: RequestFailedException) {
+            mErrorHandler.handle(AirBeam3ConfiguringFailed(SD_CARD, e.status))
+        } catch (e: Exception) {
+            mErrorHandler.handle(UnknownError(e))
         }
     }
 

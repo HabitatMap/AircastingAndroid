@@ -19,11 +19,11 @@ class AudioReaderError(errorCode: Int) :
         "Unexpected error while reading audio"
     )
 
-class UnknownError(cause: Exception) :
-    BaseException(cause, "Something went wrong, please contact our support")
+data class UnknownError(val mCause: Exception) :
+    BaseException(mCause, "Something went wrong, please contact our support")
 
 class NullError(something: String) :
-        BaseException(null, "$something was null")
+    BaseException(null, "$something was null")
 
 class AirBeamConnectionOpenFailed(cause: Exception) :
     BaseException(cause)
@@ -37,8 +37,12 @@ class AirBeam2ConnectionCloseFailed(cause: Exception) :
 class BLENotSupported :
     BaseException(null, "BLE is not supported by this device.")
 
-class AirBeam3ConfiguringFailed(type: String, status: Int) :
-    BaseException(null, "Configuration of $type failed with status code: $status.")
+data class AirBeam3ConfiguringFailed(val type: String, val status: Int) :
+    BaseException(null, "Configuration of $type failed with status code: $status.") {
+    object Type {
+        const val SD_CARD = "clear SD card mode"
+    }
+}
 
 class InternalAPIError :
     BaseException(null, "Something went wrong, please contact our support.")

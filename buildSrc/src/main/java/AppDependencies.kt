@@ -126,6 +126,8 @@ object AppDependencies {
     private const val mockitoAndroid = "org.mockito:mockito-android:${Versions.mockito}"
     private const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}"
 
+    private const val mockk = "io.mockk:mockk:${Versions.mockk}"
+
     /* Debug only */
     private const val leakCanary =
         "com.squareup.leakcanary:leakcanary-android:${Versions.leakCanary}"
@@ -210,6 +212,7 @@ object AppDependencies {
         add(roomDBTest)
         add(espressoCore)
         add(mockitoKotlin)
+        add(mockk)
         add(espressoIntents)
         add(testCoreKTX)
         add(testExtJunitKTX)
@@ -223,6 +226,7 @@ object AppDependencies {
         add(mockitoCore)
         add(junit)
         add(mockitoKotlin)
+        add(mockk)
         add(kotlinJunit)
         add(robolectric)
     }

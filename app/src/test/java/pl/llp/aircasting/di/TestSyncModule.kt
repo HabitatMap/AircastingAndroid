@@ -3,11 +3,10 @@ package pl.llp.aircasting.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.di.mocks.sdSync.TestSyncableAirBeamConfiguratorFactory
-import pl.llp.aircasting.di.modules.IoDispatcher
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.RequestQueueCall
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
@@ -24,7 +23,7 @@ object TestSyncModule {
         hexMessagesBuilder: HexMessagesBuilder,
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        await: RequestQueueCall.Await,
     ): SyncableAirBeamConfiguratorFactory = TestSyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -32,6 +31,6 @@ object TestSyncModule {
         hexMessagesBuilder,
         syncableAirBeamReader,
         sdCardFileServiceProvider,
-        ioDispatcher
+        await
     )
 }

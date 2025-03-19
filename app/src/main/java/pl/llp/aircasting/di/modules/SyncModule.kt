@@ -3,10 +3,10 @@ package pl.llp.aircasting.di.modules
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.RequestQueueCall
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
@@ -23,7 +23,7 @@ object SyncModule {
         hexMessagesBuilder: HexMessagesBuilder,
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
-        @IoDispatcher ioDispatcher: CoroutineDispatcher,
+        await: RequestQueueCall.Await,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -31,6 +31,6 @@ object SyncModule {
         hexMessagesBuilder,
         syncableAirBeamReader,
         sdCardFileServiceProvider,
-        ioDispatcher
+        await
     )
 }

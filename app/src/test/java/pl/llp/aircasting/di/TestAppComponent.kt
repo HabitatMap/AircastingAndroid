@@ -8,6 +8,7 @@ import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.ViewModelModule
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorTest
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest
 import javax.inject.Singleton
 
@@ -47,4 +48,5 @@ interface TestUserDependentComponent : UserDependentComponent {
         fun create(): TestUserDependentComponent
     }
     fun inject(test: SDCardSyncServiceIntegratedTest)
+    fun inject(test: SyncableAirBeamConfiguratorTest)
 }
