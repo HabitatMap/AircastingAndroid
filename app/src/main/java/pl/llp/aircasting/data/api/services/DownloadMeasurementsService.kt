@@ -74,7 +74,7 @@ class DownloadMeasurementsService @Inject constructor(
         return Session(dbSessionWithMeasurements).hasMeasurements()
     }
 
-    suspend fun downloadMeasurementsForFixed(
+    private suspend fun downloadMeasurementsForFixed(
         session: Session,
         sessionId: Long,
     ) = withContext(dispatcher) {

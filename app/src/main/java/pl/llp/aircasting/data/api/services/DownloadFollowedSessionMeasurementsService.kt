@@ -23,12 +23,12 @@ class DownloadFollowedSessionMeasurementsService @Inject constructor(
         val dbSessions = sessionsRepository.followedSessions()
         dbSessions.forEach { dbSession ->
             val session = Session(dbSession)
-            downloadMeasurements(dbSession.id, session)
+            downloadMeasurements(session)
         }
         _downloadStatus.emit(OperationStatus.Idle)
     }
 
-    private suspend fun downloadMeasurements(sessionId: Long, session: Session) {
-        downloadMeasurementsService.downloadMeasurementsForFixed(session, sessionId)
+    private suspend fun downloadMeasurements(session: Session) {
+        downloadMeasurementsService.downloadMeasurements(session)
     }
 }

@@ -1,7 +1,11 @@
 package pl.llp.aircasting.data.api.services
 
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
@@ -48,11 +52,11 @@ class PeriodicallyDownloadFixedSessionMeasurementsService @Inject constructor(
         val dbSessions = sessionsRepository.fixedSessions()
         dbSessions.forEach { dbSession ->
             val session = Session(dbSession)
-            downloadMeasurements(dbSession.id, session)
+            downloadMeasurements(session)
         }
     }
 
-    private suspend fun downloadMeasurements(sessionId: Long, session: Session) {
-        downloadMeasurementsService.downloadMeasurementsForFixed(session, sessionId)
+    private suspend fun downloadMeasurements(session: Session) {
+        downloadMeasurementsService.downloadMeasurements(session)
     }
 }
