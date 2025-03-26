@@ -3,10 +3,8 @@ package pl.llp.aircasting.data.api.services
 import android.database.sqlite.SQLiteConstraintException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
-import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -21,7 +19,6 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
-import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @UserSessionScope
@@ -137,14 +134,13 @@ class DownloadMeasurementsService @Inject constructor(
         streams: HashMap<String, SessionStreamWithMeasurementsResponse>
     ) {
         val localStreams = measurementStreamsRepository.getSessionStreams(sessionId)
-        val backendStreams = streams.values.map {
-            MeasurementStreamDBObject(
-                sessionId,
-                it as SessionStreamResponse
-            )
-        }
-        val deletedStreams = localStreams.filterNot { it in backendStreams }
-        measurementStreamsRepository.delete(deletedStreams)
+        val localSensors = localStreams.map { it.sensorName }
+        val backendSensors = streams.values.map { it.sensorName }
+
+        val sensorsToDelete = localSensors.filterNot { it in backendSensors }
+        val streamsToDelete = localStreams.filter { it.sensorName in sensorsToDelete }
+
+        measurementStreamsRepository.delete(streamsToDelete)
     }
 
     private suspend fun saveStreamData(
