@@ -1,9 +1,14 @@
 package pl.llp.aircasting.data.local.entity
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import java.util.*
+import java.util.Date
 
 @Entity(
     tableName = "sessions",
@@ -34,7 +39,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "averaging_frequency") val averagingFrequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
     @ColumnInfo(name = "username") val username: String? = null,
-    @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean? = false
+    @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
