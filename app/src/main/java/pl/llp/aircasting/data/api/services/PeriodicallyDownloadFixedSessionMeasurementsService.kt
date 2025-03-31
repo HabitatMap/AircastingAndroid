@@ -51,12 +51,12 @@ class PeriodicallyDownloadFixedSessionMeasurementsService @Inject constructor(
     private suspend fun downloadMeasurements() {
         val dbSessions = sessionsRepository.fixedSessions()
         dbSessions.forEach { dbSession ->
-            val session = Session(dbSession)
-            downloadMeasurements(session)
+            downloadMeasurements(dbSession.uuid)
         }
     }
 
-    private suspend fun downloadMeasurements(session: Session) {
-        downloadMeasurementsService.downloadMeasurements(session)
+    // todo: safe to replace session
+    private suspend fun downloadMeasurements(uuid: String) {
+        downloadMeasurementsService.downloadMeasurements(uuid)
     }
 }

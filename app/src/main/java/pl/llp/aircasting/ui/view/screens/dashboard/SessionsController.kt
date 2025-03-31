@@ -90,6 +90,7 @@ abstract class SessionsController(
     }
 
     private suspend fun reloadSession(session: Session) {
+        // TODO: first()?
         mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).collect { dbSession ->
             dbSession?.let {
                 val reloadedSession = Session(it)
@@ -102,11 +103,11 @@ abstract class SessionsController(
     override fun onExpandSessionCard(session: Session) {
         mViewMvc?.showLoaderFor(session)
         mSessionsViewModel.viewModelScope.launch {
-            mDownloadMeasurementsService.downloadMeasurements(session)
+            mDownloadMeasurementsService.downloadMeasurements(session.uuid)
             reloadSession(session)
         }
     }
-
+    // TODO: safe to replace Session
     suspend fun getReloadedSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
         mSessionsViewModel.reloadSessionWithMeasurements(uuid).firstOrNull()
 }

@@ -18,7 +18,15 @@ import java.util.Locale
 import java.util.UUID
 
 const val TAGS_SEPARATOR = " "
-
+/**
+ * The class is in the process of refactoring. We are moving its responsibilities to
+ * Room created DB data classes like [SessionDBObject][pl.llp.aircasting.data.local.entity.SessionDBObject]
+ * or [SessionWithStreamsAndMeasurementsDBObject][pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject]
+ * The idea is to not use this class at all in the future, and not having to deal with data duality -
+ * the app has to deal with keeping its variable fields up to date as well as keeping the corresponding
+ * DB data up to date - which creates great possibility of data inconsistency.
+ * We want to have the data from the DB as a SSOT, which will be streamed reactively using kotlin flows.
+ * */
 open class Session(
     val uuid: String,
     val deviceId: String?,
@@ -61,7 +69,7 @@ open class Session(
         sessionDBObject.is_indoor,
         averagingFrequency = sessionDBObject.averagingFrequency,
         order = sessionDBObject.session_order,
-        isExternal = sessionDBObject.isExternal == true
+        isExternal = sessionDBObject.isExternal
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)

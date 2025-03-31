@@ -86,6 +86,16 @@ class SessionsRepository @Inject constructor(
         }
     }
 
+
+    suspend fun update(session: SessionDBObject) {
+        session.endTime?.let {
+            mDatabase.sessions().update(
+                session.uuid, session.name, session.tags,
+                it, session.status, session.version, session.urlLocation
+            )
+        }
+    }
+
     suspend fun mobileSessionAlreadyExistsForDeviceId(deviceId: String): Boolean {
         return mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
             deviceId,

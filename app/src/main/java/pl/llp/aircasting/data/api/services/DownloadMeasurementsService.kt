@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -19,6 +20,7 @@ import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
+import java.util.Date
 import javax.inject.Inject
 
 @UserSessionScope
@@ -31,78 +33,73 @@ class DownloadMeasurementsService @Inject constructor(
     private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
 ) {
-    suspend fun downloadMeasurements(session: Session) {
-        val dbSession = sessionsRepository.getSessionWithMeasurementsByUUID(session.uuid)
-        dbSession?.let {
-            downloadMeasurements(session, dbSession)
-        }
+    suspend fun downloadMeasurements(uuid: String) {
+        sessionsRepository.getSessionWithMeasurementsByUUID(uuid)
+            ?.let { dbSession ->
+                downloadMeasurements(dbSession)
+            }
     }
 
     private suspend fun downloadMeasurements(
-        session: Session,
         dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) {
-        when (session.type) {
-            Session.Type.MOBILE -> downloadMeasurementsForMobile(
-                session,
-                dbSessionWithMeasurements
-            )
-            Session.Type.FIXED -> downloadMeasurementsForFixed(
-                session,
-                dbSessionWithMeasurements.session.id
-            )
+        when (dbSessionWithMeasurements.session.type) {
+            Session.Type.MOBILE -> downloadMeasurementsForMobile(dbSessionWithMeasurements)
+            Session.Type.FIXED -> downloadMeasurementsForFixed(dbSessionWithMeasurements.session)
         }
     }
 
     private suspend fun downloadMeasurementsForMobile(
-        session: Session,
-        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        sessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) = withContext(dispatcher) {
-        val sessionId = dbSessionWithMeasurements.session.id
-
-        runCatching {
-            apiService.downloadSessionWithMeasurements(session.uuid)
-        }.onSuccess {
-            val saveMeasurements = !hasMeasurements(dbSessionWithMeasurements)
-            updateSessionData(it, session, sessionId, saveMeasurements)
-        }.onFailure {
-            errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+        sessionWithMeasurements.apply {
+            runCatching {
+                apiService.downloadSessionWithMeasurements(session.uuid)
+            }.onSuccess {
+                updateSessionData(
+                    it,
+                    session,
+                    session.id,
+                    saveMeasurements = sessionWithMeasurements.hasMeasurements
+                )
+            }.onFailure {
+                errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+            }
         }
     }
 
-    private fun hasMeasurements(dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject): Boolean {
-        return Session(dbSessionWithMeasurements).hasMeasurements()
-    }
-
     private suspend fun downloadMeasurementsForFixed(
-        session: Session,
-        sessionId: Long,
+        session: SessionDBObject,
     ) = withContext(dispatcher) {
-        val lastMeasurementSyncTimeString = lastMeasurementTimeString(sessionId, session)
-
+        val lastMeasurementSyncTimeString =
+            lastMeasurementTimeString(session.id, session.endTime, session.isExternal)
         runCatching {
             apiService.downloadFixedMeasurements(
                 session.uuid,
                 lastMeasurementSyncTimeString
             )
         }.onSuccess {
-            updateSessionData(it, session, sessionId)
+            updateSessionData(it, session, session.id)
         }.onFailure {
             errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
         }
     }
 
-    private suspend fun lastMeasurementTimeString(sessionId: Long, session: Session): String {
+    private suspend fun lastMeasurementTimeString(
+        sessionId: Long,
+        endTime: Date?,
+        isExternal: Boolean
+    ): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
-            LastMeasurementSyncCalculator.calculate(session.endTime, lastMeasurementTime)
+            LastMeasurementSyncCalculator.calculate(endTime, lastMeasurementTime)
 
-        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, session.isExternal)
+        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, isExternal)
     }
 
     private suspend fun updateSessionData(
         response: SessionWithMeasurementsResponse,
-        session: Session,
+        session: SessionDBObject,
         sessionId: Long,
         saveMeasurements: Boolean = true,
     ) {
@@ -113,7 +110,7 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun saveSessionMeasurements(
         response: SessionWithMeasurementsResponse,
-        session: Session,
+        session: SessionDBObject,
         sessionId: Long
     ) {
         response.streams.let { streams ->
@@ -145,7 +142,7 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun saveStreamData(
         streamResponse: SessionStreamWithMeasurementsResponse,
-        session: Session,
+        session: SessionDBObject,
         sessionId: Long
     ) {
         val stream = MeasurementStream(streamResponse)
@@ -169,7 +166,7 @@ class DownloadMeasurementsService @Inject constructor(
         // Because of that when we launch the app after some time of inactivity we have to insert all
         // new measurements for following session to active_measurements_table apart from the basic measurements db table
 
-        if (session.isFixed() && session.followedAt != null) {
+        if (session.isFixed && session.isFollowed) {
             activeMeasurementsRepository.createOrReplaceMultipleRows(
                 streamId,
                 sessionId,
@@ -178,8 +175,16 @@ class DownloadMeasurementsService @Inject constructor(
         }
     }
 
-    private suspend fun updateSessionEndTime(session: Session, endTimeString: String?) {
-        if (endTimeString != null) session.endTime = DateConverter.fromString(endTimeString)
-        sessionsRepository.update(session)
+    private suspend fun updateSessionEndTime(
+        dbSession: SessionDBObject,
+        endTimeString: String?
+    ) {
+        endTimeString?.let {
+            dbSession.copy(
+                endTime = DateConverter.fromString(endTimeString)
+            ).let {
+                sessionsRepository.update(it)
+            }
+        }
     }
 }
