@@ -125,6 +125,7 @@ object AppDependencies {
     private const val mockitoCore = "org.mockito:mockito-core:${Versions.mockito}"
     private const val mockitoAndroid = "org.mockito:mockito-android:${Versions.mockito}"
     private const val mockitoKotlin = "org.mockito.kotlin:mockito-kotlin:${Versions.mockitoKotlin}"
+    private const val fixture = "com.appmattus.fixture:fixture:${Versions.fixture}"
 
     private const val mockk = "io.mockk:mockk:${Versions.mockk}"
 
@@ -212,6 +213,7 @@ object AppDependencies {
         add(roomDBTest)
         add(espressoCore)
         add(mockitoKotlin)
+        add(fixture)
         add(mockk)
         add(espressoIntents)
         add(testCoreKTX)
@@ -226,6 +228,7 @@ object AppDependencies {
         add(mockitoCore)
         add(junit)
         add(mockitoKotlin)
+        add(fixture)
         add(mockk)
         add(kotlinJunit)
         add(robolectric)

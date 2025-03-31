@@ -50,6 +50,7 @@ object Versions {
     const val leakCanary = "2.9.1"
     const val testRunner = "1.4.0"
     const val orchestrator = "1.4.1"
+    const val fixture = "1.5.31"
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.2.0"
