@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.response.SessionStreamWithMeasurementsResponse
 import pl.llp.aircasting.data.api.response.SessionWithMeasurementsResponse
+import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -41,11 +42,11 @@ class DownloadMeasurementsService @Inject constructor(
     }
 
     private suspend fun downloadMeasurements(
-        dbSessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        sessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) {
-        when (dbSessionWithMeasurements.session.type) {
-            Session.Type.MOBILE -> downloadMeasurementsForMobile(dbSessionWithMeasurements)
-            Session.Type.FIXED -> downloadMeasurementsForFixed(dbSessionWithMeasurements.session)
+        when (sessionWithMeasurements.session.type) {
+            Session.Type.MOBILE -> downloadMeasurementsForMobile(sessionWithMeasurements)
+            Session.Type.FIXED -> downloadMeasurementsForFixed(sessionWithMeasurements)
         }
     }
 
@@ -55,12 +56,11 @@ class DownloadMeasurementsService @Inject constructor(
         sessionWithMeasurements.apply {
             runCatching {
                 apiService.downloadSessionWithMeasurements(session.uuid)
-            }.onSuccess {
+            }.onSuccess { response ->
                 updateSessionData(
-                    it,
-                    session,
-                    session.id,
-                    saveMeasurements = sessionWithMeasurements.hasMeasurements
+                    response,
+                    sessionWithMeasurements,
+                    shouldSaveMeasurements = hasNoMeasurements
                 )
             }.onFailure {
                 errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
@@ -69,19 +69,21 @@ class DownloadMeasurementsService @Inject constructor(
     }
 
     private suspend fun downloadMeasurementsForFixed(
-        session: SessionDBObject,
+        sessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) = withContext(dispatcher) {
-        val lastMeasurementSyncTimeString =
-            lastMeasurementTimeString(session.id, session.endTime, session.isExternal)
-        runCatching {
-            apiService.downloadFixedMeasurements(
-                session.uuid,
-                lastMeasurementSyncTimeString
-            )
-        }.onSuccess {
-            updateSessionData(it, session, session.id)
-        }.onFailure {
-            errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+        sessionWithMeasurements.apply {
+            val lastMeasurementSyncTimeString =
+                lastMeasurementTimeString(session.id, session.endTime, session.isExternal)
+            runCatching {
+                apiService.downloadFixedMeasurements(
+                    session.uuid,
+                    lastMeasurementSyncTimeString
+                )
+            }.onSuccess {
+                updateSessionData(it, sessionWithMeasurements)
+            }.onFailure {
+                errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
+            }
         }
     }
 
@@ -99,25 +101,30 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun updateSessionData(
         response: SessionWithMeasurementsResponse,
-        session: SessionDBObject,
-        sessionId: Long,
-        saveMeasurements: Boolean = true,
+        sessionWithStreamsAndMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        shouldSaveMeasurements: Boolean = true,
     ) {
-        deleteLocalStreamsNotPresentInResponse(sessionId, response.streams)
-        if (saveMeasurements)
-            saveSessionMeasurements(response, session, sessionId)
+        sessionWithStreamsAndMeasurements.apply {
+            deleteLocalStreamsNotPresentInResponse(
+                streams.map { it.stream },
+                response.streams.values.map { it.sensorName })
+            if (shouldSaveMeasurements)
+                saveSessionMeasurements(
+                    response,
+                    session
+                )
+        }
     }
 
     private suspend fun saveSessionMeasurements(
         response: SessionWithMeasurementsResponse,
-        session: SessionDBObject,
-        sessionId: Long
+        session: SessionDBObject
     ) {
         response.streams.let { streams ->
             val streamResponses = streams.values
             try {
                 streamResponses.forEach { streamResponse ->
-                    saveStreamData(streamResponse, session, sessionId)
+                    saveStreamData(streamResponse, session)
                 }
                 updateSessionEndTime(session, response.end_time)
             } catch (e: SQLiteConstraintException) {
@@ -127,12 +134,10 @@ class DownloadMeasurementsService @Inject constructor(
     }
 
     private suspend fun deleteLocalStreamsNotPresentInResponse(
-        sessionId: Long,
-        streams: HashMap<String, SessionStreamWithMeasurementsResponse>
+        localStreams: List<MeasurementStreamDBObject>,
+        backendSensors: List<String>,
     ) {
-        val localStreams = measurementStreamsRepository.getSessionStreams(sessionId)
         val localSensors = localStreams.map { it.sensorName }
-        val backendSensors = streams.values.map { it.sensorName }
 
         val sensorsToDelete = localSensors.filterNot { it in backendSensors }
         val streamsToDelete = localStreams.filter { it.sensorName in sensorsToDelete }
@@ -142,17 +147,16 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun saveStreamData(
         streamResponse: SessionStreamWithMeasurementsResponse,
-        session: SessionDBObject,
-        sessionId: Long
+        session: SessionDBObject
     ) {
         val stream = MeasurementStream(streamResponse)
         val streamId = measurementStreamsRepository.getIdOrInsert(
-            sessionId,
+            session.id,
             stream
         )
         val averagingFrequency = MeasurementsAveragingHelperDefault().calculateAveragingWindow(
             session.startTime.time,
-            measurementsRepository.lastMeasurementTime(sessionId)?.time
+            measurementsRepository.lastMeasurementTime(session.id)?.time
                 ?: session.startTime.time
         ).value
         val measurements = MeasurementsFactory.get(
@@ -160,7 +164,7 @@ class DownloadMeasurementsService @Inject constructor(
             averagingFrequency,
             session.isExternal
         )
-        measurementsRepository.insertAll(streamId, sessionId, measurements)
+        measurementsRepository.insertAll(streamId, session.id, measurements)
 
         // We are using active_session_measurements table for following sessions to optimize the app's performance
         // Because of that when we launch the app after some time of inactivity we have to insert all
@@ -169,7 +173,7 @@ class DownloadMeasurementsService @Inject constructor(
         if (session.isFixed && session.isFollowed) {
             activeMeasurementsRepository.createOrReplaceMultipleRows(
                 streamId,
-                sessionId,
+                session.id,
                 measurements
             )
         }
