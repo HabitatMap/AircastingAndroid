@@ -10,9 +10,8 @@ import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
-import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoDispatcher
@@ -20,7 +19,7 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.exceptions.DBInsertException
 import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
-import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelperDefault
+import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import java.util.Date
 import javax.inject.Inject
 
@@ -30,9 +29,10 @@ class DownloadMeasurementsService @Inject constructor(
     private val errorHandler: ErrorHandler,
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
-    private val measurementsRepository: MeasurementsRepositoryImpl,
+    private val measurementsRepository: MeasurementsRepository,
     private val activeMeasurementsRepository: ActiveSessionMeasurementsRepository,
     @IoDispatcher private val dispatcher: CoroutineDispatcher,
+    private val averagingHelper: MeasurementsAveragingHelper,
 ) {
     suspend fun downloadMeasurements(uuid: String) {
         sessionsRepository.getSessionWithMeasurementsByUUID(uuid)
@@ -149,12 +149,12 @@ class DownloadMeasurementsService @Inject constructor(
         streamResponse: SessionStreamWithMeasurementsResponse,
         session: SessionDBObject
     ) {
-        val stream = MeasurementStream(streamResponse)
+        val stream = MeasurementStreamDBObject(session.id, streamResponse)
         val streamId = measurementStreamsRepository.getIdOrInsert(
             session.id,
             stream
         )
-        val averagingFrequency = MeasurementsAveragingHelperDefault().calculateAveragingWindow(
+        val averagingFrequency = averagingHelper.calculateAveragingWindow(
             session.startTime.time,
             measurementsRepository.lastMeasurementTime(session.id)?.time
                 ?: session.startTime.time

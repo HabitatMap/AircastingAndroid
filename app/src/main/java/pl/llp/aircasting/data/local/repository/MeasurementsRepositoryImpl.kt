@@ -7,18 +7,68 @@ import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
-import java.util.*
+import java.util.Date
 import javax.inject.Inject
 
 interface MeasurementsRepository {
-    suspend fun insert(measurementStreamId: Long, sessionId: Long, measurement: Measurement): Long
+    suspend fun insertAll(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurements: List<Measurement>
+    )
+
+    suspend fun insert(
+        measurementStreamId: Long,
+        sessionId: Long,
+        measurement: Measurement
+    ): Long
+
+    suspend fun lastMeasurementTime(sessionId: Long?): Date?
+
+    suspend fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date?
+
+    suspend fun lastTimeOfMeasurementWithAveragingFrequency(
+        sessionId: Long?,
+        frequency: Int?
+    ): Date?
+
+    suspend fun getLastMeasurementsForStream(
+        streamId: Long,
+        limit: Int
+    ): List<MeasurementDBObject?>
+
+    suspend fun getBySessionIdAndStreamId(
+        sessionId: Long,
+        measurementStreamId: Long
+    ): List<MeasurementDBObject?>
+
+    suspend fun deleteMeasurementsOlderThan(
+        streamId: Long,
+        lastExpectedMeasurementTime: Date
+    )
+
+    suspend fun getMeasurementsToAverage(
+        streamId: Long,
+        averagingWindow: AveragingWindow
+    ): List<MeasurementDBObject>
+
+    suspend fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>)
+
+    suspend fun averageMeasurement(
+        measurementId: Long,
+        value: Double,
+        averagingFrequency: Int,
+        time: Date?
+    )
+
+    suspend fun getAllByStreamId(streamId: Long): List<MeasurementDBObject>
 }
 
 @UserSessionScope
 class MeasurementsRepositoryImpl @Inject constructor(
     private val mDatabase: AppDatabase
 ) : MeasurementsRepository {
-    suspend fun insertAll(
+    override suspend fun insertAll(
         measurementStreamId: Long,
         sessionId: Long,
         measurements: List<Measurement>
@@ -56,19 +106,19 @@ class MeasurementsRepositoryImpl @Inject constructor(
         return mDatabase.measurements().insert(measurementDBObject)
     }
 
-    suspend fun lastMeasurementTime(sessionId: Long?): Date? {
+    override suspend fun lastMeasurementTime(sessionId: Long?): Date? {
         sessionId ?: return null
 
         val measurement = mDatabase.measurements().lastForSession(sessionId)
         return measurement?.time
     }
 
-    suspend fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
+    override suspend fun lastMeasurementTime(sessionId: Long, measurementStreamId: Long): Date? {
         val measurement = mDatabase.measurements().lastForStream(sessionId, measurementStreamId)
         return measurement?.time
     }
 
-    suspend fun lastTimeOfMeasurementWithAveragingFrequency(
+    override suspend fun lastTimeOfMeasurementWithAveragingFrequency(
         sessionId: Long?,
         frequency: Int?
     ): Date? {
@@ -78,39 +128,39 @@ class MeasurementsRepositoryImpl @Inject constructor(
             .lastTimeOfMeasurementWithAveragingFrequency(sessionId, frequency)
     }
 
-    suspend fun getLastMeasurementsForStream(
+    override suspend fun getLastMeasurementsForStream(
         streamId: Long,
         limit: Int
     ): List<MeasurementDBObject?> {
         return mDatabase.measurements().getLastMeasurements(streamId, limit)
     }
 
-    suspend fun getBySessionIdAndStreamId(
+    override suspend fun getBySessionIdAndStreamId(
         sessionId: Long,
         measurementStreamId: Long
     ): List<MeasurementDBObject?> {
         return mDatabase.measurements().getBySessionIdAndStreamId(sessionId, measurementStreamId)
     }
 
-    suspend fun deleteMeasurementsOlderThan(
+    override suspend fun deleteMeasurementsOlderThan(
         streamId: Long,
         lastExpectedMeasurementTime: Date
     ) {
         mDatabase.measurements().deleteInTransaction(streamId, lastExpectedMeasurementTime)
     }
 
-    suspend fun getMeasurementsToAverage(
+    override suspend fun getMeasurementsToAverage(
         streamId: Long,
         averagingWindow: AveragingWindow
     ): List<MeasurementDBObject> {
         return mDatabase.measurements().getMeasurementsToAverage(streamId, averagingWindow.value)
     }
 
-    suspend fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
+    override suspend fun deleteMeasurements(streamId: Long, measurementsIds: List<Long>) {
         mDatabase.measurements().deleteInTransaction(streamId, measurementsIds)
     }
 
-    suspend fun averageMeasurement(
+    override suspend fun averageMeasurement(
         measurementId: Long,
         value: Double,
         averagingFrequency: Int,
@@ -123,7 +173,7 @@ class MeasurementsRepositoryImpl @Inject constructor(
         mDatabase.measurements().averageMeasurement(measurementId, value, averagingFrequency, time)
     }
 
-    suspend fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {
+    override suspend fun getAllByStreamId(streamId: Long): List<MeasurementDBObject> {
         return mDatabase.measurements().getByStreamId(streamId)
     }
 }

@@ -16,8 +16,18 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.*
-import pl.llp.aircasting.data.local.repository.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.capture
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.Settings
@@ -71,7 +81,7 @@ class NewMeasurementEventObserverImplTest {
         whenever(sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId))
             .thenReturn(sessionId)
         val streamId = 1L
-        whenever(measurementStreamsRepository.getIdOrInsert(any(), any()))
+        whenever(measurementStreamsRepository.getIdOrInsert(any(), any<MeasurementStream>()))
             .thenReturn(streamId)
         val event = newMeasurementEvent(deviceId = deviceId)
         val stream = MeasurementStream(event)
@@ -105,17 +115,15 @@ class NewMeasurementEventObserverImplTest {
         whenever(sessionsRepository.getMobileActiveSessionIdByDeviceId(deviceId))
             .thenReturn(sessionId)
         val streamId = 1L
-        whenever(measurementStreamsRepository.getIdOrInsert(any(), any()))
+        whenever(measurementStreamsRepository.getIdOrInsert(any(), any<MeasurementStream>()))
             .thenReturn(streamId)
         val db = mutableListOf<Measurement>()
-        measurementsRepository = object : MeasurementsRepository {
-            override suspend fun insert(
-                measurementStreamId: Long,
-                sessionId: Long,
-                measurement: Measurement
-            ): Long {
-                db.add(measurement)
-                return db.indexOf(measurement).toLong()
+        measurementsRepository = mock<MeasurementsRepository> {
+            on(it.insert(any(), any(), any())) doAnswer { invocation ->
+                (invocation.arguments[2] as Measurement).let { measurement ->
+                    db.add(measurement)
+                    db.indexOf(measurement).toLong()
+                }
             }
         }
         observer = NewMeasurementEventObserverImpl(

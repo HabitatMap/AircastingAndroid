@@ -39,7 +39,7 @@ data class SessionDBObject(
     @ColumnInfo(name = "averaging_frequency") val averagingFrequency: Int = 1,
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
     @ColumnInfo(name = "username") val username: String? = null,
-    @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean,
+    @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
 ) {
 
@@ -94,20 +94,21 @@ data class SessionWithStreamsAndMeasurementsDBObject(
     val streams: List<StreamWithMeasurementsDBObject>
 ) {
     val hasMeasurements get() = measurementsCount > 0
+    val hasNoMeasurements get() = !hasMeasurements
     val measurementsCount get() = streams.sumOf { stream -> stream.measurements.size }
 }
 
-open class StreamWithMeasurementsDBObject {
+open class StreamWithMeasurementsDBObject(
     @Embedded
-    lateinit var stream: MeasurementStreamDBObject
+    val stream: MeasurementStreamDBObject,
 
     @Relation(
         parentColumn = "id",
         entityColumn = "measurement_stream_id",
         entity = MeasurementDBObject::class
     )
-    lateinit var measurements: List<MeasurementDBObject>
-}
+    val measurements: List<MeasurementDBObject>,
+)
 
 class StreamWithLastMeasurementsDBObject {
     @Embedded

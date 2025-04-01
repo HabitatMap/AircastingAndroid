@@ -37,6 +37,13 @@ class MeasurementStreamsRepository @Inject constructor(
         return mDatabase.measurementStreams().insert(streamDBObject)
     }
 
+    suspend fun getIdOrInsert(sessionId: Long, measurementStream: MeasurementStreamDBObject): Long {
+        return mDatabase.measurementStreams()
+            .loadStreamBySessionIdAndSensorName(sessionId, measurementStream.sensorName)
+            ?.id
+            ?: mDatabase.measurementStreams().insert(measurementStream)
+    }
+
     suspend fun insert(sessionId: Long, streams: List<MeasurementStream>) {
         streams.forEach { stream ->
             val streamDBObject = MeasurementStreamDBObject(sessionId, stream)

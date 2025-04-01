@@ -1,6 +1,10 @@
 package pl.llp.aircasting.data.local.entity
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import pl.llp.aircasting.data.api.response.SessionStreamResponse
 import pl.llp.aircasting.data.model.MeasurementStream
 
@@ -31,10 +35,9 @@ data class MeasurementStreamDBObject(
     @ColumnInfo(name = "threshold_medium") val thresholdMedium: Int,
     @ColumnInfo(name = "threshold_high") val thresholdHigh: Int,
     @ColumnInfo(name = "threshold_very_high") val thresholdVeryHigh: Int,
-    @ColumnInfo(name = "deleted") var deleted: Boolean
+    @ColumnInfo(name = "deleted") var deleted: Boolean,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0
 ) {
-    @PrimaryKey(autoGenerate = true)
-    var id: Long = 0
 
     constructor(sessionId: Long, measurementStream: MeasurementStream) : this(
         sessionId,

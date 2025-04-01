@@ -3,8 +3,8 @@ package pl.llp.aircasting.util.helpers.services
 import android.util.Log
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.extensions.truncateTo
-import java.util.*
 import java.util.Calendar.SECOND
+import java.util.Date
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.round

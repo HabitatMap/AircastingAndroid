@@ -1,7 +1,7 @@
 package pl.llp.aircasting.data.api.response
 
 class SessionStreamWithMeasurementsResponse(
-    sensor_name: String,
+    sensorName: String,
     sensor_package_name: String,
     unit_name: String,
     measurement_type: String,
@@ -15,7 +15,7 @@ class SessionStreamWithMeasurementsResponse(
     deleted: Boolean,
     val measurements: List<MeasurementResponse>
 ): SessionStreamResponse(
-    sensor_name,
+    sensorName,
     sensor_package_name,
     unit_name,
     measurement_type,

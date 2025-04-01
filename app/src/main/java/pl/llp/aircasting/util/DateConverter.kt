@@ -1,7 +1,9 @@
 package pl.llp.aircasting.util
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class DateConverter private constructor(settings: Settings) {
     companion object {
