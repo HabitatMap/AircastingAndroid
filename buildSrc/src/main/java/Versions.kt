@@ -51,6 +51,7 @@ object Versions {
     const val testRunner = "1.4.0"
     const val orchestrator = "1.4.1"
     const val fixture = "1.2.0"
+    const val turbine = "0.12.0"
 
     const val playServicesLocation = "19.0.1"
     const val playServicesMaps = "18.2.0"

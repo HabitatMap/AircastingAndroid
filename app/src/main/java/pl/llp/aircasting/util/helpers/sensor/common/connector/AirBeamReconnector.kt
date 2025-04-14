@@ -3,8 +3,9 @@ package pl.llp.aircasting.util.helpers.sensor.common.connector
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.api.util.LogKeys.bluetoothReconnection
@@ -14,7 +15,11 @@ import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.modules.SyncActiveFlow
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
+import pl.llp.aircasting.util.events.AirBeamDiscoveryFailedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.StandaloneModeEvent
+import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.eventbus
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamDiscoveryService
@@ -27,7 +32,7 @@ class AirBeamReconnector(
     private val mAirBeamDiscoveryService: AirBeamDiscoveryService,
     private val coroutineScope: CoroutineScope,
     private val sessionUuidByStandaloneMode: MutableMap<String, Boolean> = ConcurrentHashMap(),
-    private val connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>,
+    private val connectionStatusFlow: StateFlow<AirbeamConnectionStatus?>,
     @SyncActiveFlow
     private val syncStatusFlow: SharedFlow<Boolean>,
 ) {
@@ -142,7 +147,7 @@ class AirBeamReconnector(
         }
     }
     private fun observeConnectionStatus() = coroutineScope.launch {
-        connectionStatusFlow.collect {
+        connectionStatusFlow.filterNotNull().collect {
             val correctSesssionConnected = it.isConnected && it.sessionUUID == mSession?.uuid
             if (correctSesssionConnected) onConnectedSuccessful()
             else if (it.isConnected) finalizeReconnection()

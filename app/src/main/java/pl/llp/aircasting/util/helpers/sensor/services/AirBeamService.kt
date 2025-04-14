@@ -49,7 +49,7 @@ abstract class AirBeamService : SensorService(),
 
     @Inject
     @AirbeamConnectionStatusFlow
-    lateinit var connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus>
+    lateinit var connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus?>
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         Log.d(TAG, "Creating AirBeamConnector")
