@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsController
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvcImpl
 
-class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager) :
+class RefreshedSessionsFragment :
     BaseFragment<RefreshedSessionsViewMvcImpl, RefreshedSessionsController>(),
     BaseWizardNavigator.BackPressedListener {
     lateinit var listener: RefreshedSessionsViewMvc.Listener
@@ -24,7 +23,7 @@ class RefreshedSessionsFragment(private val mFragmentManager: FragmentManager) :
         savedInstanceState: Bundle?
     ): View? {
         view = RefreshedSessionsViewMvcImpl(layoutInflater, null, success)
-        controller = RefreshedSessionsController(mFragmentManager, view)
+        controller = RefreshedSessionsController(parentFragmentManager, view)
 
         return view?.rootView
     }
