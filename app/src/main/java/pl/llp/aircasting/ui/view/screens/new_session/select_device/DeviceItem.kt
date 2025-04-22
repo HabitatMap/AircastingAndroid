@@ -2,10 +2,12 @@ package pl.llp.aircasting.ui.view.screens.new_session.select_device
 
 import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 open class DeviceItem(
+    @IgnoredOnParcel
     private val mBluetoothDevice: BluetoothDevice? = null,
     open val name: String = mBluetoothDevice?.name ?: UNKNOWN_DEVICE_NAME,
     open val address: String = mBluetoothDevice?.address ?: "",
