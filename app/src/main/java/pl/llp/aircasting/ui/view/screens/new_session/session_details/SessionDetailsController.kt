@@ -1,9 +1,6 @@
 package pl.llp.aircasting.ui.view.screens.new_session.session_details
 
-import android.content.Context
-
 open class SessionDetailsController(
-    private val mContext: Context?,
     private var mViewMvc: SessionDetailsViewMvc?
 ) {
 

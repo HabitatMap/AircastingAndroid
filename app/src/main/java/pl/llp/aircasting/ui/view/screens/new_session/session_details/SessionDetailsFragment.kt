@@ -30,7 +30,7 @@ class SessionDetailsFragment : Fragment() {
             .userDependentComponent?.inject(this)
 
         view = SessionDetailsViewFactory.get(inflater, container, childFragmentManager, deviceItem, sessionUUID, sessionType)
-        controller = sessionDetailsControllerFactory.get(activity, view, sessionType, childFragmentManager)
+        controller = sessionDetailsControllerFactory.get(this, view, sessionType, childFragmentManager)
         controller?.onCreate()
 
         return view?.rootView

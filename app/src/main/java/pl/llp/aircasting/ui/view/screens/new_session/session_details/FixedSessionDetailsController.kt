@@ -6,25 +6,26 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.wifi.WifiManager
 import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.NewSessionViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.TurnOnWifiDialog
+import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
 
 class FixedSessionDetailsController(
-    private val mContextActivity: FragmentActivity?,
+    private val fragment: Fragment?,
     private val mViewMvc: FixedSessionDetailsViewMvc?,
     private val mFragmentManager: FragmentManager
-): SessionDetailsController(mContextActivity, mViewMvc),
+): SessionDetailsController(mViewMvc),
     FixedSessionDetailsViewMvc.OnStreamingMethodChangedListener,
     FixedSessionDetailsViewMvc.OnRefreshNetworksListener,
     NewSessionViewMvc.TurnOnWifiDialogListener
 {
-
+    private var startForResult: ActivityResultLauncher<Intent>? = null
     private var mWifiManager: WifiManager? = null
 
     inner class WifiReceiver: BroadcastReceiver() {
@@ -41,15 +42,17 @@ class FixedSessionDetailsController(
                 }
             }
 
-            mContextActivity?.unregisterReceiver(this)
+            fragment?.activity?.unregisterReceiver(this)
         }
 
     }
 
     override fun onCreate() {
         super.onCreate()
-
-        mWifiManager = mContextActivity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+        startForResult = fragment?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            scanForNetworks()
+        }
+        mWifiManager = fragment?.activity?.applicationContext?.getSystemService(Context.WIFI_SERVICE) as? WifiManager
 
         mViewMvc?.registerOnStreamingMethodChangedListener(this)
         mViewMvc?.registerOnRefreshNetworksListener(this)
@@ -82,14 +85,10 @@ class FixedSessionDetailsController(
         val wifiReceiver = WifiReceiver()
         val intentFilter = IntentFilter()
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-        mContextActivity?.registerReceiver(wifiReceiver, intentFilter)
+        fragment?.activity?.registerReceiver(wifiReceiver, intentFilter)
     }
 
     override fun turnOnWifiClicked() {
-        val startForResult = mContextActivity?.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            scanForNetworks()
-        }
-
         if (isSDKGreaterOrEqualToQ()) {
             val intent = Intent(Settings.Panel.ACTION_WIFI)
             startForResult?.launch(intent)
