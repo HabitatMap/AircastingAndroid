@@ -42,14 +42,12 @@ android {
     }
 
     defaultConfig {
-        testInstrumentationRunnerArguments += mapOf()
         applicationId = "pl.llp.aircasting"
         minSdk = AppConfig.minSdk
         targetSdk = AppConfig.targetSdk
         versionCode = AppConfig.versionCode
         versionName = AppConfig.versionName
         testInstrumentationRunner = AppConfig.androidTestInstrumentation
-        testInstrumentationRunnerArguments["clearPackageData"] = "true"
         resourceConfigurations.addAll(arrayOf("en", "fr", "sp"))
 
         javaCompileOptions {
@@ -100,7 +98,7 @@ android {
         animationsDisabled = true
         unitTests.isReturnDefaultValues = true
         unitTests.isIncludeAndroidResources = true
-        execution = "ANDROID_TEST_ORCHESTRATOR"
+        execution = "ANDROIDX_TEST_ORCHESTRATOR"
     }
 
     compileOptions {

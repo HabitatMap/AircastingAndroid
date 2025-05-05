@@ -5,10 +5,18 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import pl.llp.aircasting.data.local.entity.*
+import androidx.room.Transaction
+import pl.llp.aircasting.data.local.entity.CompleteSessionDBObject
+import pl.llp.aircasting.data.local.entity.LatLng
+import pl.llp.aircasting.data.local.entity.SessionDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndLastMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndMeasurementsDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsAndNotesDBObject
+import pl.llp.aircasting.data.local.entity.SessionWithStreamsDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import java.util.*
+import java.util.Date
 
 @Dao
 interface SessionDao {
@@ -36,6 +44,7 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadSessionWithNotesByUUID(uuid: String): LiveData<SessionWithStreamsAndNotesDBObject?>
 
+    @Transaction
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     fun loadLiveDataSessionForUploadByUUID(uuid: String): LiveData<CompleteSessionDBObject?>
 
@@ -51,15 +60,18 @@ interface SessionDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(session: SessionDBObject): Long
 
+    @Transaction
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
+    @Transaction
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun sessionWithNotes(uuid: String): SessionWithNotesDBObject?
 
+    @Transaction
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadCompleteSession(uuid: String): CompleteSessionDBObject?
 
