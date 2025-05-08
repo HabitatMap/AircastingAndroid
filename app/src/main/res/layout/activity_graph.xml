@@ -31,8 +31,8 @@
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/session_details"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/app_bar_layout"
         app:srcCompat="@drawable/ic_more_horizontal"
         app:tint="@color/aircasting_grey_700" />
 

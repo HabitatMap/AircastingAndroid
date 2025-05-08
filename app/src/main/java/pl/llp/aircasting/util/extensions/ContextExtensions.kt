@@ -28,6 +28,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
@@ -81,23 +82,23 @@ fun FragmentActivity.showBatteryOptimizationHelperDialog() {
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     MainScope().launch {
-        Toast.makeText(this@showToast, message, duration).show()
+        if (AppLifecycleObserver.isAppInForeground)
+            Toast.makeText(this@showToast, message, duration).show()
     }
 }
 
-val Context.isConnected: Boolean
+val Context?.isConnected: Boolean
     get() {
+        if (this == null) return false
+
         val connectivityManager =
             this.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         return when {
             isSDKGreaterOrEqualToM() -> {
-                val nw = connectivityManager.activeNetwork ?: return false
-                val actNw = connectivityManager.getNetworkCapabilities(nw) ?: return false
-                when {
-                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                    actNw.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                    else -> false
-                }
+                val network = connectivityManager.activeNetwork ?: return false
+                val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
             }
 
             else -> {
@@ -107,6 +108,8 @@ val Context.isConnected: Boolean
             }
         }
     }
+
+val Context?.isNotConnected get() = !isConnected
 
 fun MarkerOptions.icon(context: Context, @DrawableRes vectorDrawable: Int): MarkerOptions {
     this.icon(ContextCompat.getDrawable(context, vectorDrawable)?.run {

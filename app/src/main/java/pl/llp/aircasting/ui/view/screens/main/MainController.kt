@@ -13,7 +13,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import pl.llp.aircasting.data.api.services.ConnectivityManager
+import pl.llp.aircasting.data.api.services.ConnectivityReceiver
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
@@ -42,7 +42,7 @@ class MainController @AssistedInject constructor(
     @Assisted private val rootActivity: AppCompatActivity,
     private val mSettings: Settings,
     private val mSessionManager: SessionManager,
-    private val mConnectivityManager: ConnectivityManager,
+    private val mConnectivityReceiver: ConnectivityReceiver,
     private val mErrorHandler: ErrorHandler,
     private val sessionSyncService: SessionsSyncService,
 ) {
@@ -102,16 +102,16 @@ class MainController @AssistedInject constructor(
     }
 
     private fun registerConnectivityManager() {
-        Log.w(TAG, "Registering connectivity manager: $mConnectivityManager")
-        val filter = IntentFilter(ConnectivityManager.ACTION)
-        mConnectivityManager.let { rootActivity.registerReceiver(it, filter) }
+        Log.w(TAG, "Registering connectivity manager: $mConnectivityReceiver")
+        val filter = IntentFilter(ConnectivityReceiver.ACTION)
+        mConnectivityReceiver.let { rootActivity.registerReceiver(it, filter) }
         isReceiverRegistered = true
     }
 
     private fun unregisterConnectivityManager() {
-        Log.w(TAG, "Unregistering connectivity manager: $mConnectivityManager")
+        Log.w(TAG, "Unregistering connectivity manager: $mConnectivityReceiver")
         if (isReceiverRegistered) {
-            mConnectivityManager.let { rootActivity.unregisterReceiver(it) }
+            mConnectivityReceiver.let { rootActivity.unregisterReceiver(it) }
             isReceiverRegistered = false
         }
     }

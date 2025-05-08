@@ -2,13 +2,13 @@ package pl.llp.aircasting.ui.view.screens.search
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentFactory
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.databinding.ActivitySearchFixedSessionsBinding
 import pl.llp.aircasting.ui.view.common.BaseActivity
+import pl.llp.aircasting.ui.view.common.setContentViewWithDataBinding
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class SearchFixedSessionActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_search_fixed_sessions)
+        binding = setContentViewWithDataBinding(R.layout.activity_search_fixed_sessions)
 
         setupFactory()
         showSearchFragment(savedInstanceState)

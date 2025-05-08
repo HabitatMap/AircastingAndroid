@@ -12,27 +12,22 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.extensions.isConnected
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @UserSessionScope
-class ConnectivityManager @Inject constructor(
+class ConnectivityReceiver @Inject constructor(
     private val sessionSyncService: SessionsSyncService,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
 ) : BroadcastReceiver() {
 
     companion object {
         const val ACTION = ConnectivityManager.CONNECTIVITY_ACTION
-
-        fun isConnected(context: Context?): Boolean {
-            return context?.isConnected ?: false
-        }
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "On receive triggered\n" +
                 "Context: $context\n" +
-                "${!isInitialStickyBroadcast}, ${isConnected(context)}")
-        if (!isInitialStickyBroadcast && isConnected(context)) {
+                "${!isInitialStickyBroadcast}, ${context.isConnected}")
+        if (!isInitialStickyBroadcast && context.isConnected) {
             Log.d(TAG, "Launching sync")
             coroutineScope.launch {
                 sessionSyncService.sync()

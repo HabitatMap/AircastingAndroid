@@ -6,12 +6,18 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.cancel_button
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.close_button
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.delete_note_button
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.edit_note_loader
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.note_image
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.note_input
+import kotlinx.android.synthetic.main.edit_note_bottom_sheet.view.save_changes_button
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.ConnectivityManager
 import pl.llp.aircasting.data.model.Note
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
+import pl.llp.aircasting.util.extensions.isNotConnected
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
@@ -75,7 +81,7 @@ class EditNoteBottomSheet(
     }
 
     private fun saveChanges() {
-        if (!ConnectivityManager.isConnected(context)) {
+        if (context.isNotConnected) {
             context?.apply {
                 showToast(
                     getString(R.string.errors_network_required_edit),
