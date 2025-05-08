@@ -15,9 +15,15 @@ class NetworkConnectionInterceptor @Inject constructor(
     private val errorHandler: ErrorHandler,
     private val context: AircastingApplication
 ) : Interceptor {
+    private companion object {
+        var hasShownNoConnectivityMessage = false
+        var lastErrorTime = 0L
+        const val ERROR_THROTTLE_MS = 5000L
+    }
+
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!context.isConnected) {
-            errorHandler.handleAndDisplay(InternetUnavailableException())
+            showErrorMessageIfNotShownYet()
             return Response.Builder()
                 .request(chain.request())
                 .protocol(Protocol.HTTP_1_1)
@@ -27,5 +33,14 @@ class NetworkConnectionInterceptor @Inject constructor(
                 .build()
         }
         return chain.proceed(chain.request())
+    }
+
+    private fun showErrorMessageIfNotShownYet() {
+        val currentTime = System.currentTimeMillis()
+        if (!hasShownNoConnectivityMessage || currentTime - lastErrorTime > ERROR_THROTTLE_MS) {
+            errorHandler.handleAndDisplay(InternetUnavailableException())
+            hasShownNoConnectivityMessage = true
+            lastErrorTime = currentTime
+        }
     }
 }

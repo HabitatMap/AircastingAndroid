@@ -28,6 +28,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
 import pl.llp.aircasting.ui.view.common.BatteryAlertDialog
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToM
@@ -81,7 +82,8 @@ fun FragmentActivity.showBatteryOptimizationHelperDialog() {
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_SHORT) {
     MainScope().launch {
-        Toast.makeText(this@showToast, message, duration).show()
+        if (AppLifecycleObserver.isAppInForeground)
+            Toast.makeText(this@showToast, message, duration).show()
     }
 }
 
