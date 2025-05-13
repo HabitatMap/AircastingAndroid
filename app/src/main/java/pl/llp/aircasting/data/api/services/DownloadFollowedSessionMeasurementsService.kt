@@ -4,7 +4,6 @@ package pl.llp.aircasting.data.api.services
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.OperationStatus
 import javax.inject.Inject
@@ -27,7 +26,6 @@ class DownloadFollowedSessionMeasurementsService @Inject constructor(
         _downloadStatus.emit(OperationStatus.Idle)
     }
 
-    // todo: safe to replace Session
     private suspend fun downloadMeasurements(uuid: String) {
         downloadMeasurementsService.downloadMeasurements(uuid)
     }

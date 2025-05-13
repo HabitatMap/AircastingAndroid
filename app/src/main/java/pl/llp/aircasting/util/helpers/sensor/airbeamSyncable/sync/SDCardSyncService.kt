@@ -100,7 +100,7 @@ class SDCardSyncService @AssistedInject constructor(
         if (mSDCardCSVFileChecker.areFilesCorrupted(stepsByFilePaths)) {
             terminateSync()
         } else {
-            clearSDCard()
+//            clearSDCard()
             saveMeasurements(stepsByFilePaths)
             syncMobileSessionWithBackendAndFinish()
         }

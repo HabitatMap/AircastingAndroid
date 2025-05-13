@@ -2,14 +2,27 @@ package pl.llp.aircasting.ui.view.screens.dashboard.active
 
 import android.app.Activity
 import android.app.Dialog
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
+import androidx.exifinterface.media.ExifInterface
 import androidx.lifecycle.lifecycleScope
 import com.github.dhaval2404.imagepicker.ImagePicker
-import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.add_note_button
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.add_picture_button
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.cancel_button
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.captured_image
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.close_button
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.note_input
+import kotlinx.android.synthetic.main.add_note_bottom_sheet.view.note_input_layout
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -23,7 +36,9 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
-import java.util.*
+import java.io.File
+import java.io.FileOutputStream
+import java.util.Date
 import javax.inject.Inject
 
 class AddNoteBottomSheet(
@@ -52,14 +67,14 @@ class AddNoteBottomSheet(
                     val fileUri = data?.data
                     fileUri ?: return@registerForActivityResult
 
-                    contentView?.captured_image?.apply {
-                        setImageURI(fileUri)
-
-                        mPhotoPath = fileUri.toString()
-                        visible()
+                    mPhotoPath = correctImageOrientationIfNeeded(fileUri).also { photoPath ->
+                        contentView?.captured_image?.apply {
+                            setImageURI(photoPath.toUri())
+                            visible()
+                        }
                     }
-
                 }
+
                 ImagePicker.RESULT_ERROR -> Toast.makeText(
                     requireContext(),
                     ImagePicker.getError(data),
@@ -149,6 +164,53 @@ class AddNoteBottomSheet(
             .compress(500)
             .cameraOnly()
             .createIntent { intent -> startForProfileImageResult.launch(intent) }
+    }
+
+    private fun correctImageOrientationIfNeeded(uri: Uri): String {
+        try {
+            val context = requireContext()
+            val inputStream = context.contentResolver.openInputStream(uri) ?: return uri.toString()
+
+            val exif = ExifInterface(inputStream)
+            val orientation = exif.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL
+            )
+
+            if (orientation == ExifInterface.ORIENTATION_NORMAL) {
+                return uri.toString()
+            }
+
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+
+            val rotationAngle = when (orientation) {
+                ExifInterface.ORIENTATION_ROTATE_90 -> 90
+                ExifInterface.ORIENTATION_ROTATE_180 -> 180
+                ExifInterface.ORIENTATION_ROTATE_270 -> 270
+                else -> 0
+            }
+
+            val rotatedBitmap = if (rotationAngle != 0) {
+                val matrix = Matrix()
+                matrix.postRotate(rotationAngle.toFloat())
+                Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+            } else {
+                bitmap
+            }
+
+            val filename = "IMG_${System.currentTimeMillis()}.jpg"
+            val file = File(context.cacheDir, filename)
+            val outputStream = FileOutputStream(file)
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
+            return Uri.fromFile(file).toString()
+
+        } catch (e: Exception) {
+            Log.e("ImageRotation", "Error correcting image orientation", e)
+            return uri.toString()
+        }
     }
 
     private fun showCameraHelperDialog() {

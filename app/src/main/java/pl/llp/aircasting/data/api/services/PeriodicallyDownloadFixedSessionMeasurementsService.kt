@@ -7,7 +7,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import javax.inject.Inject
@@ -55,7 +54,6 @@ class PeriodicallyDownloadFixedSessionMeasurementsService @Inject constructor(
         }
     }
 
-    // todo: safe to replace session
     private suspend fun downloadMeasurements(uuid: String) {
         downloadMeasurementsService.downloadMeasurements(uuid)
     }

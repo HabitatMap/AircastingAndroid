@@ -107,7 +107,6 @@ abstract class SessionsController(
             reloadSession(session)
         }
     }
-    // TODO: safe to replace Session
     suspend fun getReloadedSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
         mSessionsViewModel.reloadSessionWithMeasurements(uuid).firstOrNull()
 }
