@@ -36,6 +36,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.NotesNoLocationError
 import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Date
@@ -67,7 +68,7 @@ class AddNoteBottomSheet(
                     val fileUri = data?.data
                     fileUri ?: return@registerForActivityResult
 
-                    mPhotoPath = correctImageOrientationIfNeeded(fileUri).also { photoPath ->
+                    mPhotoPath = rotateAndCompressIfNeeded(fileUri).also { photoPath ->
                         contentView?.captured_image?.apply {
                             setImageURI(photoPath.toUri())
                             visible()
@@ -160,13 +161,11 @@ class AddNoteBottomSheet(
      **/
     private fun takePictureUsingCamera() {
         ImagePicker.with(this)
-            .maxResultSize(620, 620)
-            .compress(500)
             .cameraOnly()
             .createIntent { intent -> startForProfileImageResult.launch(intent) }
     }
 
-    private fun correctImageOrientationIfNeeded(uri: Uri): String {
+    private fun rotateAndCompressIfNeeded(uri: Uri): String {
         try {
             val context = requireContext()
             val inputStream = context.contentResolver.openInputStream(uri) ?: return uri.toString()
@@ -176,10 +175,6 @@ class AddNoteBottomSheet(
                 ExifInterface.TAG_ORIENTATION,
                 ExifInterface.ORIENTATION_NORMAL
             )
-
-            if (orientation == ExifInterface.ORIENTATION_NORMAL) {
-                return uri.toString()
-            }
 
             val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
 
@@ -201,7 +196,9 @@ class AddNoteBottomSheet(
             val filename = "IMG_${System.currentTimeMillis()}.jpg"
             val file = File(context.cacheDir, filename)
             val outputStream = FileOutputStream(file)
-            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+
+            outputStream.write(rotatedBitmap.compress(maxSizeKB = 400))
+
             outputStream.flush()
             outputStream.close()
 
@@ -211,6 +208,24 @@ class AddNoteBottomSheet(
             Log.e("ImageRotation", "Error correcting image orientation", e)
             return uri.toString()
         }
+    }
+
+    private fun Bitmap.compress(maxSizeKB: Int): ByteArray {
+        var quality = 100
+        val maxBytes = maxSizeKB * 1024
+        var outputStream = ByteArrayOutputStream()
+
+        compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+
+        while (outputStream.toByteArray().size > maxBytes && quality > 5) {
+            outputStream = ByteArrayOutputStream()
+
+            quality -= 5
+
+            compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+        }
+
+        return outputStream.toByteArray()
     }
 
     private fun showCameraHelperDialog() {
