@@ -292,8 +292,8 @@ abstract class SyncableAirBeamConfigurator(
         val downloadMetaDataFromSDCardCharacteristic =
             downloadMetaDataFromSDCardCharacteristic ?: return
 
-        var metaDatacallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
-        metaDatacallback.with { _, data ->
+        val metaDataCallback = setNotificationCallback(downloadMetaDataFromSDCardCharacteristic)
+        metaDataCallback.with { _, data ->
             sdCardReader.onMetaDataDownloaded(data.value)
         }
 

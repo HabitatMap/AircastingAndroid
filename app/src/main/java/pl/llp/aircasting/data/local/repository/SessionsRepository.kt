@@ -27,6 +27,10 @@ class SessionsRepository @Inject constructor(
         return mDatabase.sessions().insert(sessionDBObject)
     }
 
+    suspend fun insert(session: SessionDBObject): Long {
+        return mDatabase.sessions().insert(session)
+    }
+
     suspend fun getMobileActiveSessionIdByDeviceId(deviceId: String): Long? {
         val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
             deviceId,

@@ -4,6 +4,7 @@ import android.util.Log
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -35,34 +36,37 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
     override suspend fun processSession(deviceId: String, csvSession: CSVSession?) {
         csvSession?.uuid ?: return
 
-        val dbSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
-        val session: Session?
         val sessionId: Long
+        val session: SessionDBObject
+        val existingSession = mSessionsRepository.getSessionByUUID(csvSession.uuid)
 
-
-        if (dbSession == null) {
+        if (existingSession == null) {
             Log.v(TAG, "Could not find session with uuid: ${csvSession.uuid} in DB")
             session = csvSession.toSession(deviceId, lineParameterHandler.deviceType) ?: return
             sessionId = mSessionsRepository.insert(session)
         } else {
-            session = Session(dbSession)
-            sessionId = dbSession.id
+            session = existingSession
+            sessionId = session.id
         }
 
-        Log.v(TAG, "Will save measurements: ${session.isDisconnected()}")
-        if (session.isDisconnected()) {
+        Log.v(TAG, "Will save measurements: ${session.isDisconnected}")
+        if (session.isDisconnected) {
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
             }
 
-            finishSession(sessionId, session)
+            finish(session)
         }
     }
 
-    private suspend fun finishSession(sessionId: Long, session: Session) {
-        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(sessionId)
-        session.stopRecording(lastMeasurementTime)
-        mSessionsRepository.update(session)
+    private suspend fun finish(session: SessionDBObject) {
+        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(session.id)
+        mSessionsRepository.update(
+            session.copy(
+                endTime = lastMeasurementTime,
+                status = Session.Status.FINISHED
+            )
+        )
         settings.decreaseActiveMobileSessionsCount()
     }
 

@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv
 
+import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.Session.Location.Companion.DEFAULT_LOCATION
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -48,20 +49,9 @@ class CSVSession(
         streams[streamLineParameter]?.add(measurement)
     }
 
-    fun toSession(deviceId: String, deviceType: DeviceItem.Type): Session? {
+    fun toSession(deviceId: String, deviceType: DeviceItem.Type): SessionDBObject? {
         val startTime = firstMeasurement()?.time ?: return null
-        uuid ?: return null
-
-        val session = Session(
-            uuid,
-            deviceId,
-            deviceType,
-            Session.Type.MOBILE,
-            DEFAULT_NAME,
-            ArrayList(),
-            Session.Status.DISCONNECTED,
-            startTime
-        )
+        val uuid = uuid ?: return null
 
         val latitude = firstMeasurement()?.latitude
             ?: LocationHelper.lastLocation()?.latitude
@@ -69,12 +59,21 @@ class CSVSession(
         val longitude = firstMeasurement()?.longitude
             ?: LocationHelper.lastLocation()?.longitude
             ?: DEFAULT_LOCATION.longitude
-        val location = Session.Location(latitude, longitude)
-        session.location = location
+        val locationLess = Session.Location(latitude, longitude) == Session.Location.FAKE_LOCATION
 
-        if (location == Session.Location.FAKE_LOCATION) {
-            session.locationless = true
-        }
+        val session = SessionDBObject(
+            uuid = uuid,
+            deviceId = deviceId,
+            deviceType = deviceType,
+            type = Session.Type.MOBILE,
+            name = DEFAULT_NAME,
+            status = Session.Status.DISCONNECTED,
+            startTime = startTime,
+            latitude = latitude,
+            longitude = longitude,
+            locationless = locationLess,
+            endTime = null,
+        )
 
         return session
     }
