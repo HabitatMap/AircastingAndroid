@@ -44,6 +44,7 @@ class SessionsRepository @Inject constructor(
         uuid ?: return null
 
         return mDatabase.sessions().loadSessionByUUID(uuid)
+            .also { if (it == null) Log.e(TAG, "Couldn't find session $uuid in DB") }
     }
 
     suspend fun updateAveragingFrequency(sessionId: Long?, averagingFrequency: Int?) {
@@ -199,6 +200,10 @@ class SessionsRepository @Inject constructor(
 
     suspend fun updateSessionStatus(session: Session, status: Session.Status) {
         mDatabase.sessions().updateStatus(session.uuid, status)
+    }
+
+    suspend fun updateSessionStatus(uuid: String, status: Session.Status) {
+        mDatabase.sessions().updateStatus(uuid, status)
     }
 
     suspend fun updateUrlLocation(session: Session, urlLocation: String?) {

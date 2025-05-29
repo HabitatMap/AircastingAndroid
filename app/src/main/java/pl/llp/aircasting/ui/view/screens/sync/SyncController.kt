@@ -51,7 +51,8 @@ interface SyncControllerFactory {
     fun create(
         mContextActivity: AppCompatActivity,
         mViewMvc: SyncViewMvc,
-        fragmentManager: FragmentManager
+        fragmentManager: FragmentManager,
+        sessionUuid: String?,
     ): SyncController
 }
 
@@ -59,6 +60,7 @@ class SyncController @AssistedInject constructor(
     @Assisted private val mRootActivity: AppCompatActivity,
     @Assisted mViewMvc: SyncViewMvc,
     @Assisted private val mFragmentManager: FragmentManager,
+    @Assisted private val sessionUuid: String?,
     private val mPermissionsManager: PermissionsManager,
     private val mBluetoothManager: BluetoothManager,
     private val mErrorHandler: ErrorHandler,
@@ -234,7 +236,7 @@ class SyncController @AssistedInject constructor(
         wakeLock.acquire(20 * 60 * 1000L /* 20 minutes */)
         Log.d("WakeLock", "Acquired wakelock: ${wakeLock.isHeld}")
 
-        AirBeamSyncService.startService(mRootActivity, deviceItem)
+        AirBeamSyncService.startService(mRootActivity, deviceItem, sessionUuid)
         mWizardNavigator.goToAirbeamSyncing(this)
     }
 

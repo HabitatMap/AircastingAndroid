@@ -2,9 +2,31 @@ package pl.llp.aircasting.di
 
 import dagger.Subcomponent
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.di.modules.*
+import pl.llp.aircasting.di.modules.ApiModule
+import pl.llp.aircasting.di.modules.CoroutineModule
+import pl.llp.aircasting.di.modules.DevicesModule
+import pl.llp.aircasting.di.modules.FlowModule
+import pl.llp.aircasting.di.modules.FragmentModule
+import pl.llp.aircasting.di.modules.HelperModule
+import pl.llp.aircasting.di.modules.NewSessionWizardModule
+import pl.llp.aircasting.di.modules.PermissionsModule
+import pl.llp.aircasting.di.modules.RepositoryModule
+import pl.llp.aircasting.di.modules.SyncModule
+import pl.llp.aircasting.di.modules.ViewModelModule
 import pl.llp.aircasting.ui.view.common.BaseActivity
-import pl.llp.aircasting.ui.view.fragments.*
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncedFragment
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncingFragment
+import pl.llp.aircasting.ui.view.fragments.ClearingSDCardFragment
+import pl.llp.aircasting.ui.view.fragments.DashboardFragment
+import pl.llp.aircasting.ui.view.fragments.FixedFragment
+import pl.llp.aircasting.ui.view.fragments.FollowingFragment
+import pl.llp.aircasting.ui.view.fragments.LetsBeginFragment
+import pl.llp.aircasting.ui.view.fragments.MobileActiveFragment
+import pl.llp.aircasting.ui.view.fragments.MobileDormantFragment
+import pl.llp.aircasting.ui.view.fragments.ReorderingDashboardFragment
+import pl.llp.aircasting.ui.view.fragments.ReorderingFollowingFragment
+import pl.llp.aircasting.ui.view.fragments.SDCardClearedFragment
+import pl.llp.aircasting.ui.view.fragments.SettingsFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationFragment
 import pl.llp.aircasting.ui.view.fragments.search_follow_fixed_session.SearchLocationResultFragment
 import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
@@ -28,11 +50,11 @@ import pl.llp.aircasting.ui.view.screens.settings.clear_sd_card.ClearSDCardActiv
 import pl.llp.aircasting.ui.view.screens.settings.my_account.MyAccountActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncActivity
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
+import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamClearCardService
+import pl.llp.aircasting.util.helpers.sensor.services.AirBeamReconnectSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamSyncService
-import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
-import pl.llp.aircasting.util.helpers.sensor.services.AirBeamReconnectSessionService
 import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import javax.inject.Scope
 
@@ -49,6 +71,7 @@ import javax.inject.Scope
         RepositoryModule::class,
         SyncModule::class,
         FlowModule::class,
+        HelperModule::class,
     ]
 )
 interface UserDependentComponent {

@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.FragmentActivity
-import kotlinx.android.synthetic.main.app_bar.*
+import kotlinx.android.synthetic.main.app_bar.topAppBar
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.util.extensions.setupAppBar
@@ -18,6 +18,7 @@ class SyncActivity : BaseActivity() {
     lateinit var controllerFactory: SyncControllerFactory
 
     companion object {
+        private const val UUID_EXTRA_KEY = "sessionUuid"
         private var launcher: ActivityResultLauncher<Intent>? = null
 
         fun register(rootActivity: FragmentActivity?, onFinish: (() -> Unit)? = null) {
@@ -29,10 +30,11 @@ class SyncActivity : BaseActivity() {
             // More info: https://stackoverflow.com/questions/44471284/when-to-use-an-inline-function-in-kotlin
         }
 
-        fun start(rootActivity: FragmentActivity?) {
+        fun start(rootActivity: FragmentActivity?, sessionUuid: String? = null) {
             rootActivity ?: return
 
             val intent = Intent(rootActivity, SyncActivity::class.java)
+                .putExtra(UUID_EXTRA_KEY, sessionUuid)
             launcher?.launch(intent)
         }
     }
@@ -43,7 +45,12 @@ class SyncActivity : BaseActivity() {
         (application as AircastingApplication).userDependentComponent?.inject(this)
 
         val view = SyncViewMvcImpl(layoutInflater, null)
-        controller = controllerFactory.create(this, view, supportFragmentManager)
+        controller = controllerFactory.create(
+            this,
+            view,
+            supportFragmentManager,
+            intent.getStringExtra(UUID_EXTRA_KEY)
+        )
 
         controller?.onCreate()
 
