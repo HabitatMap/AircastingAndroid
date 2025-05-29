@@ -103,7 +103,6 @@ class SDCardSyncService @AssistedInject constructor(
         if (mSDCardCSVFileChecker.areFilesCorrupted(stepsByFilePaths)) {
             terminateSync()
         } else {
-            clearSDCard()
             processSessionsMeasurementsFiles(stepsByFilePaths)
             syncMobileSessionWithBackend()
                 .onSuccess { syncResult ->
@@ -121,11 +120,6 @@ class SDCardSyncService @AssistedInject constructor(
                 }
         }
         if (BuildConfig.DEBUG) sdSyncFinishedCountingIdleResource.decrement()
-    }
-
-    private suspend fun clearSDCard() {
-        Log.d(TAG, "Clearing SD card")
-        mAirBeamConnector?.clearSDCard()
     }
 
     private suspend fun processSessionsMeasurementsFiles(
@@ -214,8 +208,10 @@ class SDCardSyncService @AssistedInject constructor(
         )
     }
 
-    private fun clearSdCardAndFinish() {
+    private suspend fun clearSdCardAndFinish() {
         mSDCardFileService.deleteAllSyncFiles()
+
+        clearSDCard()
 
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
@@ -225,6 +221,11 @@ class SDCardSyncService @AssistedInject constructor(
         cleanup()
         EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
+    }
+
+    private suspend fun clearSDCard() {
+        Log.d(TAG, "Clearing SD card")
+        mAirBeamConnector?.clearSDCard()
     }
 
     private fun cleanup() {
