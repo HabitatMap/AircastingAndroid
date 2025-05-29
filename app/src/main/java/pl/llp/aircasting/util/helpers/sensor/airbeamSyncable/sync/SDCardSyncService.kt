@@ -19,11 +19,11 @@ import pl.llp.aircasting.util.exceptions.SDCardDownloadedFileCorrupted
 import pl.llp.aircasting.util.exceptions.SDCardMissingSDCardUploadFixedMeasurementsServiceError
 import pl.llp.aircasting.util.exceptions.SDCardMissingSessionsSyncServiceError
 import pl.llp.aircasting.util.exceptions.SDCardSessionsFinalSyncError
-import pl.llp.aircasting.util.exceptions.SDCardSyncError
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.common.SessionFinisher
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.sdSyncFinishedCountingIdleResource
 import java.io.File
@@ -36,6 +36,7 @@ interface SDCardSyncServiceFactory {
         mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
         mSDCardCSVFileChecker: SDCardCSVFileChecker,
         mSDCardFileService: SDCardFileService,
+        sessionUuid: String?,
     ): SDCardSyncService
 }
 
@@ -43,11 +44,13 @@ class SDCardSyncService @AssistedInject constructor(
     private val mSessionsSyncService: SessionsSyncService?,
     private val mErrorHandler: ErrorHandler,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
+    private val finishSession: SessionFinisher,
     @Assisted private val mSDCardFileService: SDCardFileService,
     @Assisted private val mSDCardCSVFileChecker: SDCardCSVFileChecker,
     @Assisted private val mSDCardMobileSessionsProcessor: SDCardMobileSessionsProcessor,
     @Assisted private val mSDCardFixedSessionsProcessor: SDCardFixedSessionsProcessor,
     @Assisted private val mSDCardUploadFixedMeasurementsService: SDCardUploadFixedMeasurementsService?,
+    @Assisted private val disconnectedSessionUuid: String?,
 ) {
     private val TAG = "SDCardSyncService"
 
@@ -101,8 +104,21 @@ class SDCardSyncService @AssistedInject constructor(
             terminateSync()
         } else {
             clearSDCard()
-            saveMeasurements(stepsByFilePaths)
-            syncMobileSessionWithBackendAndFinish()
+            processSessionsMeasurementsFiles(stepsByFilePaths)
+            syncMobileSessionWithBackend()
+                .onSuccess { syncResult ->
+                    when (syncResult) {
+                        is SessionsSyncService.Result.Success -> clearSdCardAndFinish()
+                        is SessionsSyncService.Result.Error -> {
+                            mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+                            cleanup()
+                        }
+                    }
+                }
+                .onFailure {
+                    mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
+                    cleanup()
+                }
         }
         if (BuildConfig.DEBUG) sdSyncFinishedCountingIdleResource.decrement()
     }
@@ -112,7 +128,7 @@ class SDCardSyncService @AssistedInject constructor(
         mAirBeamConnector?.clearSDCard()
     }
 
-    private suspend fun saveMeasurements(
+    private suspend fun processSessionsMeasurementsFiles(
         stepsByFilePaths: Map<SDCardReader.Step?, List<String>>
     ) {
         Log.v(TAG, "Saving measurements locally")
@@ -123,6 +139,7 @@ class SDCardSyncService @AssistedInject constructor(
                         // launches new coroutine for each mobile session to process
                         performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
                     }
+                    disconnectedSessionUuid?.let { finishSession(it) }
                 }
 
                 SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI ->
@@ -132,7 +149,6 @@ class SDCardSyncService @AssistedInject constructor(
                         saveFixedMeasurementsLocallyFrom(file)
                         sendFixedMeasurementsToBackendFrom(file)
                     }
-
             }
         }
     }
@@ -165,31 +181,18 @@ class SDCardSyncService @AssistedInject constructor(
         )
     }
 
-    private suspend fun syncMobileSessionWithBackendAndFinish() {
+    private suspend fun syncMobileSessionWithBackend(): Result<SessionsSyncService.Result> {
         val sessionsSyncService = mSessionsSyncService
 
         if (sessionsSyncService == null) {
             val cause = SDCardMissingSessionsSyncServiceError()
             mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
             cleanup()
-            return
+            return Result.failure(SDCardSessionsFinalSyncError())
         }
 
         Log.d(TAG, "Syncing mobile sessions with backend")
-        sessionsSyncService.sync()
-            .onSuccess { syncResult ->
-                when (syncResult) {
-                    is SessionsSyncService.Result.Success -> finish()
-                    is SessionsSyncService.Result.Error -> {
-                        mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
-                        cleanup()
-                    }
-                }
-            }
-            .onFailure {
-                mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError())
-                cleanup()
-            }
+        return sessionsSyncService.sync()
     }
 
     private suspend fun sendFixedMeasurementsToBackendFrom(file: File) {
@@ -211,16 +214,15 @@ class SDCardSyncService @AssistedInject constructor(
         )
     }
 
-    private fun finish() {
+    private fun clearSdCardAndFinish() {
         mSDCardFileService.deleteAllSyncFiles()
-        Log.d(TAG, "Sync finishing")
+
         mDeviceItem?.let { deviceItem ->
             mAirBeamConnector?.onDisconnected(deviceItem, false)
             mAirBeamConnector?.disconnect()
         }
 
         cleanup()
-        mErrorHandler.handle(SDCardSyncError("finish(), posting SDCardSyncFinished"))
         EventBus.getDefault().post(SDCardSyncFinished())
         Log.d(TAG, "Sync finished")
     }

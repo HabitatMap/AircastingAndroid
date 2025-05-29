@@ -47,12 +47,13 @@ class AirBeamSyncService : AirBeamService() {
     private lateinit var sdCardSyncService: SDCardSyncService
 
     companion object {
-        val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
+        const val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
+        private const val UUID_EXTRA_KEY = "sessionUuid"
 
-        fun startService(context: Context, deviceItem: DeviceItem) {
+        fun startService(context: Context, deviceItem: DeviceItem, sessionUUID: String?) {
             val startIntent = Intent(context, AirBeamSyncService::class.java)
-
-            startIntent.putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
+                .putExtra(DEVICE_ITEM_KEY, deviceItem as Parcelable)
+                .putExtra(UUID_EXTRA_KEY, sessionUUID)
 
             ContextCompat.startForegroundService(context, startIntent)
         }
@@ -86,7 +87,8 @@ class AirBeamSyncService : AirBeamService() {
                 fixedSessionsProcessor,
                 uploadFixedMeasurementsService,
                 csvFileChecker,
-                sDCardFileService
+                sDCardFileService,
+                intent.getStringExtra(UUID_EXTRA_KEY)
             )
         }
 
@@ -107,7 +109,7 @@ class AirBeamSyncService : AirBeamService() {
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
-        val airBeamConnector = mAirBeamConnector ?: return
+        val airBeamConnector = mAirBeamConnector
         sdCardSyncService.start(airBeamConnector, deviceItem)
     }
 }

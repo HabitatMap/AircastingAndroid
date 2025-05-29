@@ -69,6 +69,8 @@ data class SessionDBObject(
     val isFixed get() = type == Session.Type.FIXED
     val isFollowed get() = followedAt != null
     val isDisconnected get() = status == Session.Status.DISCONNECTED
+    val isFinished get() = status == Session.Status.FINISHED
+    val isNotFinished get() = !isFinished
 }
 
 class SessionWithStreamsDBObject {

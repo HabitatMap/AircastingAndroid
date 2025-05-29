@@ -8,10 +8,8 @@ import pl.llp.aircasting.data.local.entity.SessionDBObject
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
-import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.Session.Location.Companion.DEFAULT_LOCATION
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.location.toLatLng
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerMobile
@@ -24,7 +22,6 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
     mSessionsRepository: SessionsRepository,
     mMeasurementStreamsRepository: MeasurementStreamsRepository,
     mMeasurementsRepository: MeasurementsRepositoryImpl,
-    private val settings: Settings,
     @Assisted private val lineParameterHandler: CSVLineParameterHandler,
 ) : SDCardSessionsProcessor(
     fileHandlerMobile,
@@ -54,20 +51,7 @@ class SDCardMobileSessionsProcessor @AssistedInject constructor(
             csvSession.streams.forEach { (headerKey, csvMeasurements) ->
                 processMeasurements(deviceId, sessionId, headerKey, csvMeasurements)
             }
-
-            finish(session)
         }
-    }
-
-    private suspend fun finish(session: SessionDBObject) {
-        val lastMeasurementTime = mMeasurementsRepository.lastMeasurementTime(session.id)
-        mSessionsRepository.update(
-            session.copy(
-                endTime = lastMeasurementTime,
-                status = Session.Status.FINISHED
-            )
-        )
-        settings.decreaseActiveMobileSessionsCount()
     }
 
     override suspend fun filterMeasurements(
