@@ -78,20 +78,30 @@ class SessionsRepository @Inject constructor(
     }
 
     suspend fun update(session: Session) {
-        session.endTime?.let {
+        session.apply {
             mDatabase.sessions().update(
-                session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation
+                uuid,
+                name,
+                tags,
+                endTime,
+                status,
+                version,
+                urlLocation
             )
         }
     }
 
 
     suspend fun update(session: SessionDBObject) {
-        session.endTime?.let {
+        session.apply {
             mDatabase.sessions().update(
-                session.uuid, session.name, session.tags,
-                it, session.status, session.version, session.urlLocation
+                uuid,
+                name,
+                tags,
+                endTime,
+                status,
+                version,
+                urlLocation
             )
         }
     }

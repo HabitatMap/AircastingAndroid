@@ -100,7 +100,7 @@ interface SessionDao {
         uuid: String,
         name: String,
         tags: ArrayList<String>,
-        endTime: Date,
+        endTime: Date?,
         status: Session.Status,
         version: Int,
         urlLocation: String?
