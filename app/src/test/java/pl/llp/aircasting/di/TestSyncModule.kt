@@ -3,6 +3,7 @@ package pl.llp.aircasting.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import pl.llp.aircasting.di.mocks.sdSync.TestEmptySyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.di.mocks.sdSync.TestSyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -11,6 +12,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.Syncab
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import javax.inject.Qualifier
 
 @Module
 object TestSyncModule {
@@ -33,4 +35,28 @@ object TestSyncModule {
         sdCardFileServiceProvider,
         await
     )
+
+    @UserSessionScope
+    @Provides
+    @EmptySDMeasurements
+    fun provideEmptySyncableAirBeamConfiguratorFactory(
+        applicationContext: Context,
+        mErrorHandler: ErrorHandler,
+        mSettings: Settings,
+        hexMessagesBuilder: HexMessagesBuilder,
+        syncableAirBeamReader: SyncableAirBeamReader,
+        sdCardFileServiceProvider: SDCardFileServiceProvider,
+        await: RequestQueueCall.Await,
+    ): SyncableAirBeamConfiguratorFactory = TestEmptySyncableAirBeamConfiguratorFactory(
+        applicationContext,
+        mErrorHandler,
+        mSettings,
+        hexMessagesBuilder,
+        syncableAirBeamReader,
+        sdCardFileServiceProvider,
+        await
+    )
+
+    @Qualifier
+    internal annotation class EmptySDMeasurements
 }

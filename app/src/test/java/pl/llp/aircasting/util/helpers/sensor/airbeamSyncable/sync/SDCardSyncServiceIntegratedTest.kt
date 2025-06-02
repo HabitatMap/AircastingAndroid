@@ -13,6 +13,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import pl.llp.aircasting.AircastingApplication
@@ -24,17 +25,19 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.DaggerTestAppComponent
 import pl.llp.aircasting.di.TestAppModule
+import pl.llp.aircasting.di.TestSyncModule.EmptySDMeasurements
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest.ABMiniStubData.bleCount
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncServiceIntegratedTest.ABMiniSDStubData.bleCount
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.CSVSession
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileCheckerFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.lineParameter.CSVLineParameterHandlerFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessorFactory
+import pl.llp.aircasting.util.helpers.sensor.common.SessionFinisher
 import pl.llp.aircasting.util.sdSyncFinishedCountingIdleResource
 import javax.inject.Inject
 import kotlin.properties.Delegates
@@ -66,6 +69,10 @@ class SDCardSyncServiceIntegratedTest {
     @Inject
     lateinit var syncableAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory
 
+    @EmptySDMeasurements
+    @Inject
+    lateinit var syncableEmptyAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory
+
     @Inject
     lateinit var measurementsRepository: MeasurementsRepositoryImpl
 
@@ -85,6 +92,8 @@ class SDCardSyncServiceIntegratedTest {
     private var pm10Id by Delegates.notNull<Long>()
     private var rhId by Delegates.notNull<Long>()
     private var fId by Delegates.notNull<Long>()
+
+    private val sessionFinisher: SessionFinisher = mock()
 
     @Before
     fun setup() {
@@ -129,55 +138,66 @@ class SDCardSyncServiceIntegratedTest {
     }
 
     @Test
-    fun `AB3 SD Sync takes location of new measurements from SD and retains known location for present measurements`() = runTest {
-        val deviceType = DeviceItem.Type.AIRBEAM3
-        val sdCardSyncService = setupAndReturnSdCardSyncService(deviceType)
-        setupDBWithStubDataAB3()
-        val deviceItem: DeviceItem = mock {
-            on(it.id) doReturn DEVICE_ID
-            on(it.type) doReturn deviceType
-        }
+    fun `AB3 SD Sync takes location of new measurements from SD and retains known location for present measurements`() =
+        runTest {
+            val deviceType = DeviceItem.Type.AIRBEAM3
+            val sdCardSyncService = setupAndReturnSdCardSyncService(deviceType)
+            setupDBWithStubDataAB3()
+            val deviceItem: DeviceItem = mock {
+                on(it.id) doReturn DEVICE_ID
+                on(it.type) doReturn deviceType
+            }
 
-        sdCardSyncService.start(mock(), deviceItem)
-        syncableAirBeamConfigurator.triggerSDCardDownload()
-        waitForSdSyncToFinish()
+            sdCardSyncService.start(mock(), deviceItem)
+            syncableAirBeamConfigurator.triggerSDCardDownload()
+            waitForSdSyncToFinish()
 
-        val pm2_5measurementFromActiveSession = measurementsRepository.getAllByStreamId(pm2_5Id).first()
-        assertEquals(AB3DBStub.measurement.latitude, pm2_5measurementFromActiveSession.latitude)
-        assertEquals(AB3DBStub.measurement.longitude, pm2_5measurementFromActiveSession.longitude)
-        measurementsRepository.getAllByStreamId(pm2_5Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            val pm2_5measurementFromActiveSession =
+                measurementsRepository.getAllByStreamId(pm2_5Id).first()
+            assertEquals(AB3DBStub.measurement.latitude, pm2_5measurementFromActiveSession.latitude)
+            assertEquals(
+                AB3DBStub.measurement.longitude,
+                pm2_5measurementFromActiveSession.longitude
+            )
+            measurementsRepository.getAllByStreamId(pm2_5Id).drop(1).forEach { savedMeasurement ->
+                assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+                assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            }
+            val pm1measurementFromActiveSession =
+                measurementsRepository.getAllByStreamId(pm1Id).first()
+            assertEquals(AB3DBStub.measurement.latitude, pm1measurementFromActiveSession.latitude)
+            assertEquals(AB3DBStub.measurement.longitude, pm1measurementFromActiveSession.longitude)
+            measurementsRepository.getAllByStreamId(pm1Id).drop(1).forEach { savedMeasurement ->
+                assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+                assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            }
+            val pm10measurementFromActiveSession =
+                measurementsRepository.getAllByStreamId(pm10Id).first()
+            assertEquals(AB3DBStub.measurement.latitude, pm10measurementFromActiveSession.latitude)
+            assertEquals(
+                AB3DBStub.measurement.longitude,
+                pm10measurementFromActiveSession.longitude
+            )
+            measurementsRepository.getAllByStreamId(pm10Id).drop(1).forEach { savedMeasurement ->
+                assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+                assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            }
+            val rhMeasurementFromActiveSession =
+                measurementsRepository.getAllByStreamId(rhId).first()
+            assertEquals(AB3DBStub.measurement.latitude, rhMeasurementFromActiveSession.latitude)
+            assertEquals(AB3DBStub.measurement.longitude, rhMeasurementFromActiveSession.longitude)
+            measurementsRepository.getAllByStreamId(rhId).drop(1).forEach { savedMeasurement ->
+                assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+                assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            }
+            val fMeasurementFromActiveSession = measurementsRepository.getAllByStreamId(fId).first()
+            assertEquals(AB3DBStub.measurement.latitude, fMeasurementFromActiveSession.latitude)
+            assertEquals(AB3DBStub.measurement.longitude, fMeasurementFromActiveSession.longitude)
+            measurementsRepository.getAllByStreamId(fId).drop(1).forEach { savedMeasurement ->
+                assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
+                assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
+            }
         }
-        val pm1measurementFromActiveSession = measurementsRepository.getAllByStreamId(pm1Id).first()
-        assertEquals(AB3DBStub.measurement.latitude, pm1measurementFromActiveSession.latitude)
-        assertEquals(AB3DBStub.measurement.longitude, pm1measurementFromActiveSession.longitude)
-        measurementsRepository.getAllByStreamId(pm1Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
-        }
-        val pm10measurementFromActiveSession = measurementsRepository.getAllByStreamId(pm10Id).first()
-        assertEquals(AB3DBStub.measurement.latitude, pm10measurementFromActiveSession.latitude)
-        assertEquals(AB3DBStub.measurement.longitude, pm10measurementFromActiveSession.longitude)
-        measurementsRepository.getAllByStreamId(pm10Id).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
-        }
-        val rhMeasurementFromActiveSession = measurementsRepository.getAllByStreamId(rhId).first()
-        assertEquals(AB3DBStub.measurement.latitude, rhMeasurementFromActiveSession.latitude)
-        assertEquals(AB3DBStub.measurement.longitude, rhMeasurementFromActiveSession.longitude)
-        measurementsRepository.getAllByStreamId(rhId).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
-        }
-        val fMeasurementFromActiveSession = measurementsRepository.getAllByStreamId(fId).first()
-        assertEquals(AB3DBStub.measurement.latitude, fMeasurementFromActiveSession.latitude)
-        assertEquals(AB3DBStub.measurement.longitude, fMeasurementFromActiveSession.longitude)
-        measurementsRepository.getAllByStreamId(fId).drop(1).forEach { savedMeasurement ->
-            assertNotEquals(ABMiniDBStub.measurement1.latitude, savedMeasurement.latitude)
-            assertNotEquals(ABMiniDBStub.measurement1.longitude, savedMeasurement.longitude)
-        }
-    }
 
     @Test
     fun `ABMini SD Sync saves measurements to DB`() = runTest {
@@ -212,12 +232,30 @@ class SDCardSyncServiceIntegratedTest {
         syncableAirBeamConfigurator.triggerSDCardDownload()
         waitForSdSyncToFinish()
 
-        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm1Id).size)
-        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm2_5Id).size)
-        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(pm10Id).size)
-        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(fId).size)
-        assertEquals(AB3StubData.bleCount, measurementsRepository.getAllByStreamId(rhId).size)
+        assertEquals(AB3SDStubData.bleCount, measurementsRepository.getAllByStreamId(pm1Id).size)
+        assertEquals(AB3SDStubData.bleCount, measurementsRepository.getAllByStreamId(pm2_5Id).size)
+        assertEquals(AB3SDStubData.bleCount, measurementsRepository.getAllByStreamId(pm10Id).size)
+        assertEquals(AB3SDStubData.bleCount, measurementsRepository.getAllByStreamId(fId).size)
+        assertEquals(AB3SDStubData.bleCount, measurementsRepository.getAllByStreamId(rhId).size)
     }
+
+    @Test
+    fun `ABMini SD Sync finishes disconnected session if there are no SD measurements for it`() =
+        runTest {
+            val deviceType = DeviceItem.Type.AIRBEAMMINI
+            val sdCardSyncService = setupAndReturnSdCardSyncService(deviceType, emptySdCard = true)
+            setupDBWithStubDataABMini()
+            val deviceItem: DeviceItem = mock {
+                on(it.id) doReturn DEVICE_ID
+                on(it.type) doReturn deviceType
+            }
+
+            sdCardSyncService.start(mock(), deviceItem)
+            syncableAirBeamConfigurator.triggerSDCardDownload()
+            waitForSdSyncToFinish()
+
+            verify(sessionFinisher).invoke(ABMiniDBStub.session.uuid)
+        }
 
     private suspend fun setupDBWithStubDataABMini() {
         sessionId = sessionsRepository.insert(ABMiniDBStub.session)
@@ -233,11 +271,18 @@ class SDCardSyncServiceIntegratedTest {
         while (!sdSyncFinishedCountingIdleResource.isIdleNow) delay(100)
     }
 
-    private fun TestScope.setupAndReturnSdCardSyncService(deviceType: DeviceItem.Type): SDCardSyncService {
+    private fun TestScope.setupAndReturnSdCardSyncService(
+        deviceType: DeviceItem.Type,
+        emptySdCard: Boolean = false
+    ): SDCardSyncService {
         val lineParameterHandler = CSVLineParameterHandlerFactory.create(deviceType)
         val fileChecker = SDCardCSVFileCheckerFactory.create(deviceType)
         val mobileSessionFileHandler =
-            mSDCardSessionFileHandlerMobileFactory.create(lineParameterHandler, fileChecker, deviceType)
+            mSDCardSessionFileHandlerMobileFactory.create(
+                lineParameterHandler,
+                fileChecker,
+                deviceType
+            )
         val sdCardMobileSessionsProcessor = mSDCardMobileSessionsProcessorFactory.create(
             lineParameterHandler,
             mobileSessionFileHandler
@@ -249,7 +294,9 @@ class SDCardSyncServiceIntegratedTest {
             fixedSessionFileHandler
         )
         val fileService = sdCardFileServiceProvider.get(deviceType)
-        syncableAirBeamConfigurator = syncableAirBeamConfiguratorFactory.create(deviceType)
+        syncableAirBeamConfigurator = if (emptySdCard)
+            syncableEmptyAirBeamConfiguratorFactory.create(deviceType)
+        else syncableAirBeamConfiguratorFactory.create(deviceType)
         val disconnectedSessionUuid = when (deviceType) {
             DeviceItem.Type.AIRBEAM3 -> AB3DBStub.session.uuid
             else -> ABMiniDBStub.session.uuid
@@ -259,7 +306,7 @@ class SDCardSyncServiceIntegratedTest {
             mock(),
             mock(),
             this,
-            mock(),
+            finishSession = sessionFinisher,
             fileService,
             fileChecker,
             sdCardMobileSessionsProcessor,
@@ -346,7 +393,7 @@ class SDCardSyncServiceIntegratedTest {
 
     }
 
-    object ABMiniStubData {
+    object ABMiniSDStubData {
         const val bleCount = 7
         const val wifiCount = 0
         const val measurements1 = "d90ce4d3-cf8a-42b4-9e0f-1b30a9c2e8f1\n" +
@@ -454,7 +501,7 @@ class SDCardSyncServiceIntegratedTest {
         )
     }
 
-    object AB3StubData {
+    object AB3SDStubData {
         const val bleCount = 8
         const val wifiCount = 0
         const val cellCount = 0

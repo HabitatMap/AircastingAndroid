@@ -11,6 +11,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirB
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import javax.inject.Inject
 
 class TestSyncableAirBeamConfiguratorFactory(
     private val applicationContext: Context,
@@ -43,6 +44,50 @@ class TestSyncableAirBeamConfiguratorFactory(
         )
 
         else -> TestAB3Configurator(
+            applicationContext,
+            mErrorHandler,
+            mSettings,
+            hexMessagesBuilder,
+            syncableAirBeamReader,
+            SDCardReader(
+                sdCardFileServiceProvider.get(type)
+            ),
+            await
+        )
+    }
+}
+
+class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
+    private val applicationContext: Context,
+    private val mErrorHandler: ErrorHandler,
+    private val mSettings: Settings,
+    private val hexMessagesBuilder: HexMessagesBuilder,
+    private val syncableAirBeamReader: SyncableAirBeamReader,
+    private val sdCardFileServiceProvider: SDCardFileServiceProvider,
+    private val await: RequestQueueCall,
+) : SyncableAirBeamConfiguratorFactory(
+    applicationContext,
+    mErrorHandler,
+    mSettings,
+    hexMessagesBuilder,
+    syncableAirBeamReader,
+    sdCardFileServiceProvider,
+    await
+) {
+    override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
+        DeviceItem.Type.AIRBEAMMINI -> TestEmptyABMiniConfigurator(
+            applicationContext,
+            mErrorHandler,
+            mSettings,
+            hexMessagesBuilder,
+            syncableAirBeamReader,
+            SDCardReader(
+                sdCardFileServiceProvider.get(type)
+            ),
+            await
+        )
+
+        else -> TestEmptyAB3Configurator(
             applicationContext,
             mErrorHandler,
             mSettings,
