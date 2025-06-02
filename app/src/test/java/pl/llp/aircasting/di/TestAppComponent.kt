@@ -6,6 +6,7 @@ import pl.llp.aircasting.di.components.AppComponent
 import pl.llp.aircasting.di.modules.ApiModule
 import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
+import pl.llp.aircasting.di.modules.HelperModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.ViewModelModule
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorTest
@@ -39,6 +40,7 @@ interface TestAppComponent : AppComponent {
         TestPermissionsModule::class,
         TestSyncModule::class,
         FlowModule::class,
+        HelperModule::class,
     ]
 )
 

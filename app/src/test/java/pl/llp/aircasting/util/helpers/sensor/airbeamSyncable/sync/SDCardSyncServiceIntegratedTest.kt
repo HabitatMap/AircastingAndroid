@@ -250,15 +250,22 @@ class SDCardSyncServiceIntegratedTest {
         )
         val fileService = sdCardFileServiceProvider.get(deviceType)
         syncableAirBeamConfigurator = syncableAirBeamConfiguratorFactory.create(deviceType)
+        val disconnectedSessionUuid = when (deviceType) {
+            DeviceItem.Type.AIRBEAM3 -> AB3DBStub.session.uuid
+            else -> ABMiniDBStub.session.uuid
+        }
+
         return SDCardSyncService(
             mock(),
             mock(),
             this,
+            mock(),
             fileService,
             fileChecker,
             sdCardMobileSessionsProcessor,
             sdCardFixedSessionsProcessor,
-            mock()
+            mock(),
+            disconnectedSessionUuid
         )
     }
 

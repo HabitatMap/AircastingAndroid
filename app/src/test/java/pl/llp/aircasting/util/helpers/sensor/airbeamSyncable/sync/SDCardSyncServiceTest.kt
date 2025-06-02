@@ -1,6 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
@@ -9,13 +9,22 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argThat
+import org.mockito.kotlin.capture
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardFixedSessionsProcessor
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessor
+import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 import java.io.File
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,11 +65,13 @@ class SDCardSyncServiceTest {
                 mock(),
                 mock(),
                 this,
+                mock(),
                 fileService,
                 fileChecker,
                 mobileProcessor,
                 fixedProcessor,
-                mock()
+                mock(),
+                "",
             )
 
             service.start(abConnector, mock())
@@ -95,11 +106,13 @@ class SDCardSyncServiceTest {
                 mock(),
                 mock(),
                 this,
+                mock(),
                 fileService,
                 fileChecker,
                 mock(),
                 fixedProcessor,
-                uploadFixedService
+                uploadFixedService,
+                disconnectedSessionUuid = "",
             )
 
             service.start(abConnector, deviceItem)
