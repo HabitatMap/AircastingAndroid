@@ -17,7 +17,6 @@ import pl.llp.aircasting.util.exceptions.BaseException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SDCardDownloadedFileCorrupted
 import pl.llp.aircasting.util.exceptions.SDCardMissingSDCardUploadFixedMeasurementsServiceError
-import pl.llp.aircasting.util.exceptions.SDCardMissingSessionsSyncServiceError
 import pl.llp.aircasting.util.exceptions.SDCardSessionsFinalSyncError
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileChecker.SDCardCSVFileChecker
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileService
@@ -41,7 +40,7 @@ interface SDCardSyncServiceFactory {
 }
 
 class SDCardSyncService @AssistedInject constructor(
-    private val mSessionsSyncService: SessionsSyncService?,
+    private val mSessionsSyncService: SessionsSyncService,
     private val mErrorHandler: ErrorHandler,
     @IoCoroutineScope private val coroutineScope: CoroutineScope,
     private val finishSession: SessionFinisher,
@@ -174,17 +173,8 @@ class SDCardSyncService @AssistedInject constructor(
     }
 
     private suspend fun syncMobileSessionWithBackend(): Result<SessionsSyncService.Result> {
-        val sessionsSyncService = mSessionsSyncService
-
-        if (sessionsSyncService == null) {
-            val cause = SDCardMissingSessionsSyncServiceError()
-            mErrorHandler.handleAndDisplay(SDCardSessionsFinalSyncError(cause))
-            cleanup()
-            return Result.failure(SDCardSessionsFinalSyncError())
-        }
-
         Log.d(TAG, "Syncing mobile sessions with backend")
-        return sessionsSyncService.sync()
+        return mSessionsSyncService.sync()
     }
 
     private suspend fun sendFixedMeasurementsToBackendFrom(file: File) {
