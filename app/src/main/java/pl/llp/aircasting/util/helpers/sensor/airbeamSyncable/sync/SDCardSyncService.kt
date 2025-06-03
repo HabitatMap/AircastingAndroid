@@ -130,7 +130,6 @@ class SDCardSyncService @AssistedInject constructor(
             when (entry.key?.type) {
                 SDCardReader.StepType.MOBILE -> {
                     entry.value.forEach { path ->
-                        // launches new coroutine for each mobile session to process
                         performAveragingAndSaveMobileMeasurementsLocallyFrom(File(path))
                     }
                     disconnectedSessionUuid?.let { finishSession(it) }
@@ -138,7 +137,6 @@ class SDCardSyncService @AssistedInject constructor(
 
                 SDCardReader.StepType.FIXED_CELLULAR, SDCardReader.StepType.FIXED_WIFI ->
                     entry.value.forEach { path ->
-                        // fixed sessions are handled one by one
                         val file = File(path)
                         saveFixedMeasurementsLocallyFrom(file)
                         sendFixedMeasurementsToBackendFrom(file)
