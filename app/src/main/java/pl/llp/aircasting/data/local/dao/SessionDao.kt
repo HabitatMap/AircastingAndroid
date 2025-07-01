@@ -114,6 +114,9 @@ interface SessionDao {
     @Query("UPDATE sessions SET url_location=:urlLocation WHERE uuid=:uuid")
     suspend fun updateUrlLocation(uuid: String, urlLocation: String?)
 
+    @Query("SELECT url_location FROM sessions WHERE uuid=:uuid")
+    suspend fun getUrlLocation(uuid: String): String?
+
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
     suspend fun disconnectSession(
         newStatus: Session.Status,

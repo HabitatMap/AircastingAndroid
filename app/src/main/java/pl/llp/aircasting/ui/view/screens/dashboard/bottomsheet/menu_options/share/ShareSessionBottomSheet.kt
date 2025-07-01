@@ -33,7 +33,7 @@ import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.common.BottomSheet
-import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
+import pl.llp.aircasting.ui.viewmodel.ShareSessionBottomSheetViewModel
 import pl.llp.aircasting.util.CSVHelper
 import pl.llp.aircasting.util.OperationStatus
 import pl.llp.aircasting.util.ShareHelper
@@ -68,7 +68,7 @@ class ShareSessionBottomSheet(
     lateinit var chosenSensor: String
 
     @Inject
-    lateinit var mSessionsViewModel: SessionsViewModel
+    lateinit var viewModel: ShareSessionBottomSheetViewModel
 
     @Inject
     lateinit var mErrorHandler: ErrorHandler
@@ -111,28 +111,27 @@ class ShareSessionBottomSheet(
         }
 
         lifecycleScope.launch {
-            mSession?.let { session ->
-                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).let { dbSession ->
-                    mSession = dbSession?.let { Session(it) }
+            val uuid = mSession?.uuid ?: return@launch
+            val dbSession = viewModel.reloadSessionWithMeasurements(uuid) ?: return@launch
 
-                    if (mSession?.locationless == true) {
-                        radioGroup?.visibility = View.GONE
-                        shareLinkButton?.visibility = View.GONE
-                        selectStreamTextView?.visibility = View.GONE
-                        emailInput?.visibility = View.GONE
-                        emailCsvTextView?.text =
-                            getString(R.string.generate_csv_file_without_share_link)
-                    } else {
-                        setRadioButtonsForChosenSession()
+            mSession = Session(dbSession)
 
-                        radioGroup?.setOnCheckedChangeListener { group, checkedId ->
-                            chosenSensor = fieldValues[checkedId]?.sensorName.toString()
-                        }
+            if (mSession?.locationless == true) {
+                radioGroup?.visibility = View.GONE
+                shareLinkButton?.visibility = View.GONE
+                selectStreamTextView?.visibility = View.GONE
+                emailInput?.visibility = View.GONE
+                emailCsvTextView?.text =
+                    getString(R.string.generate_csv_file_without_share_link)
+            } else {
+                setRadioButtonsForChosenSession()
 
-                        shareLinkButton?.setOnClickListener {
-                            shareLinkPressed()
-                        }
-                    }
+                radioGroup?.setOnCheckedChangeListener { group, checkedId ->
+                    chosenSensor = fieldValues[checkedId]?.sensorName.toString()
+                }
+
+                shareLinkButton?.setOnClickListener {
+                    launch { shareLinkPressed() }
                 }
             }
 
@@ -146,6 +145,7 @@ class ShareSessionBottomSheet(
                             visible()
                         }
                     }
+
                     OperationStatus.Idle -> {
                         shareFileButton?.isEnabled = true
                         shareFileButton?.text = context?.getString(R.string.share_file)
@@ -196,8 +196,8 @@ class ShareSessionBottomSheet(
         )
     }
 
-    fun shareLinkPressed() {
-        if (mSession?.urlLocation != null) {
+    private suspend fun shareLinkPressed() {
+        if (mSession?.uuid?.let { viewModel.getSessionUrlLocation(it) } != null) {
             openShareIntentChooser()
         } else {
             mErrorHandler.handleAndDisplay(SessionUploadPendingError())

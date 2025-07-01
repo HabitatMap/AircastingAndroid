@@ -210,6 +210,8 @@ class SessionsRepository @Inject constructor(
         mDatabase.sessions().updateUrlLocation(session.uuid, urlLocation)
     }
 
+    suspend fun getUrlLocation(uuid: String) = mDatabase.sessions().getUrlLocation(uuid)
+
     suspend fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }
