@@ -5,11 +5,25 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.*
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.cancel_button
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.close_button
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.email_csv_text_view
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.email_input
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.email_text_input_layout
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.loader
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.select_stream_text_view
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.share_file_button
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.share_link_button
+import kotlinx.android.synthetic.main.share_session_bottom_sheet.view.stream_choose_radio_group
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
@@ -26,7 +40,13 @@ import pl.llp.aircasting.util.ShareHelper
 import pl.llp.aircasting.util.events.ExportSessionEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SessionUploadPendingError
-import pl.llp.aircasting.util.extensions.*
+import pl.llp.aircasting.util.extensions.inVisible
+import pl.llp.aircasting.util.extensions.isValidEmail
+import pl.llp.aircasting.util.extensions.setAppearance
+import pl.llp.aircasting.util.extensions.showToast
+import pl.llp.aircasting.util.extensions.startAnimation
+import pl.llp.aircasting.util.extensions.stopAnimation
+import pl.llp.aircasting.util.extensions.visible
 import javax.inject.Inject
 
 class ShareSessionBottomSheet(
@@ -92,7 +112,7 @@ class ShareSessionBottomSheet(
 
         lifecycleScope.launch {
             mSession?.let { session ->
-                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).collect { dbSession ->
+                mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).let { dbSession ->
                     mSession = dbSession?.let { Session(it) }
 
                     if (mSession?.locationless == true) {

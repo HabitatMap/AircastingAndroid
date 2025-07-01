@@ -21,9 +21,7 @@ class SessionsViewModel @Inject constructor(
     private val sessionsRepository: SessionsRepository,
 ) : ViewModel() {
 
-    fun reloadSessionWithMeasurements(uuid: String) = flow {
-        emit(sessionsRepository.reloadSessionWithMeasurements(uuid))
-    }
+    suspend fun reloadSessionWithMeasurements(uuid: String) = sessionsRepository.reloadSessionWithMeasurements(uuid)
 
     fun loadFollowingSessionsWithMeasurements(): LiveData<List<SessionWithStreamsAndLastMeasurementsDBObject>> {
         return sessionsRepository.loadFollowingSessionsWithMeasurements()

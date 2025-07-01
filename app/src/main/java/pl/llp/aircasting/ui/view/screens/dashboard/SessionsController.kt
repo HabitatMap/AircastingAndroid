@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -90,13 +89,10 @@ abstract class SessionsController(
     }
 
     private suspend fun reloadSession(session: Session) {
-        // TODO: first()?
-        mSessionsViewModel.reloadSessionWithMeasurements(session.uuid).collect { dbSession ->
-            dbSession?.let {
-                val reloadedSession = Session(it)
+        mSessionsViewModel.reloadSessionWithMeasurements(session.uuid)?.let { dbSession ->
+                val reloadedSession = Session(dbSession)
                 mViewMvc?.hideLoaderFor(session)
                 mViewMvc?.reloadSession(reloadedSession)
-            }
         }
     }
 
@@ -108,5 +104,5 @@ abstract class SessionsController(
         }
     }
     suspend fun getReloadedSession(uuid: String): SessionWithStreamsAndMeasurementsDBObject? =
-        mSessionsViewModel.reloadSessionWithMeasurements(uuid).firstOrNull()
+        mSessionsViewModel.reloadSessionWithMeasurements(uuid)
 }
