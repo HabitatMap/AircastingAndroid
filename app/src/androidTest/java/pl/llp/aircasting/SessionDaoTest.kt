@@ -106,7 +106,7 @@ class SessionDaoStressTest {
                     }
                 }
                 val result = sessionDao.loadSessionAndMeasurementsByUUID(UUID)
-                val job2 = launch { sessionDao.reloadSessionAndMeasurementsByUUID(UUID) }
+                val job2 = launch { sessionDao.loadSessionAndMeasurementsByUUID(UUID) }
                 val job3 = launch { sessionDao.loadCompleteSession(UUID) }
 
                 job2.join()

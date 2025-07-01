@@ -252,6 +252,6 @@ class SessionsRepository @Inject constructor(
 
     suspend fun reloadSessionWithMeasurements(uuid: String): SessionWithStreamsAndMeasurementsDBObject? {
         // TODO: change to load()?
-        return mDatabase.sessions().reloadSessionAndMeasurementsByUUID(uuid)
+        return mDatabase.sessions().loadSessionAndMeasurementsByUUID(uuid)
     }
 }

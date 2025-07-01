@@ -64,10 +64,6 @@ interface SessionDao {
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun loadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
 
-    @Transaction
-    @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
-    suspend fun reloadSessionAndMeasurementsByUUID(uuid: String): SessionWithStreamsAndMeasurementsDBObject?
-
     @Query("SELECT * FROM sessions WHERE uuid=:uuid AND deleted=0")
     suspend fun sessionWithNotes(uuid: String): SessionWithNotesDBObject?
 
