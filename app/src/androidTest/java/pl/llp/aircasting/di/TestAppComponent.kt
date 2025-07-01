@@ -15,6 +15,7 @@ import pl.llp.aircasting.di.modules.AppModule
 import pl.llp.aircasting.di.modules.CoroutineModule
 import pl.llp.aircasting.di.modules.FlowModule
 import pl.llp.aircasting.di.modules.FragmentModule
+import pl.llp.aircasting.di.modules.HelperModule
 import pl.llp.aircasting.di.modules.RepositoryModule
 import pl.llp.aircasting.di.modules.SyncModule
 import pl.llp.aircasting.di.modules.ViewModelModule
@@ -51,6 +52,7 @@ interface TestAppComponent : AppComponent {
         TestPermissionsModule::class,
         SyncModule::class,
         FlowModule::class,
+        HelperModule::class,
     ]
 )
 

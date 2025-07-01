@@ -13,7 +13,7 @@ fun interface SessionFinisher {
     suspend operator fun invoke(uuid: String)
 }
 
-class DefaultSessionFinisher @Inject constructor(
+class SessionFinisherDefault @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val settings: Settings,
     private val measurementRepository: MeasurementsRepository,

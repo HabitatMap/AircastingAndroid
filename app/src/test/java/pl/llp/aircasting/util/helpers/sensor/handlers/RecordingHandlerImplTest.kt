@@ -1,9 +1,12 @@
 package pl.llp.aircasting.util.helpers.sensor.handlers
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.yield
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -11,8 +14,13 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.*
-import pl.llp.aircasting.data.api.services.FixedSessionUploadService
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import pl.llp.aircasting.data.api.services.FixedSessionUploader
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -33,7 +41,7 @@ class RecordingHandlerImplTest {
     lateinit var settings: Settings
 
     @Mock
-    lateinit var fixedSessionUploadService: FixedSessionUploadService
+    lateinit var fixedSessionUploader: FixedSessionUploader
 
     @Mock
     lateinit var sessionsRepository: SessionsRepository
@@ -78,7 +86,7 @@ class RecordingHandlerImplTest {
     fun setup() {
         recordingHandler = RecordingHandlerImpl(
             settings,
-            fixedSessionUploadService,
+            fixedSessionUploader,
             sessionsRepository,
             activeSessionMeasurementsRepository,
             sessionsSyncService,
@@ -120,7 +128,7 @@ class RecordingHandlerImplTest {
 
             verify(fixedSession).setFollowedAtNow()
             verify(settings).increaseFollowedSessionsCount()
-            verify(fixedSessionUploadService).upload(fixedSession)
+            verify(fixedSessionUploader).invoke(fixedSession)
         }
 
     @Ignore("complete after improving average service")

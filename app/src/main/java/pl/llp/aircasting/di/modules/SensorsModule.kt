@@ -6,7 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import pl.llp.aircasting.AircastingApplication
-import pl.llp.aircasting.data.api.services.FixedSessionUploadService
+import pl.llp.aircasting.data.api.services.FixedSessionUploader
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -101,7 +101,7 @@ open class SensorsModule {
     @UserSessionScope
     fun providesRecordingHandler(
         settings: Settings,
-        fixedSessionUploadService: FixedSessionUploadService,
+        fixedSessionUploader: FixedSessionUploader,
         sessionsRepository: SessionsRepository,
         activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
         sessionsSyncService: SessionsSyncService,
@@ -112,7 +112,7 @@ open class SensorsModule {
         @IoCoroutineScope coroutineScope: CoroutineScope,
     ): RecordingHandler = RecordingHandlerImpl(
         settings,
-        fixedSessionUploadService,
+        fixedSessionUploader,
         sessionsRepository,
         activeSessionMeasurementsRepository,
         sessionsSyncService,

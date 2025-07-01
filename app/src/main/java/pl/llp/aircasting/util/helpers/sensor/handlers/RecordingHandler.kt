@@ -5,7 +5,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
-import pl.llp.aircasting.data.api.services.FixedSessionUploadService
+import pl.llp.aircasting.data.api.services.FixedSessionUploader
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -28,7 +28,7 @@ interface RecordingHandler {
 
 class RecordingHandlerImpl(
     private val settings: Settings,
-    private val fixedSessionUploadService: FixedSessionUploadService,
+    private val upload: FixedSessionUploader,
     private val sessionsRepository: SessionsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val sessionsSyncService: SessionsSyncService,
@@ -55,7 +55,7 @@ class RecordingHandlerImpl(
                     session.setFollowedAtNow()
                     sessionsRepository.updateFollowedAt(session)
                     settings.increaseFollowedSessionsCount()
-                    fixedSessionUploadService.upload(session)
+                    upload(session)
                 }
                 Session.Type.MOBILE -> {
                     startAveragingServices(databaseSessionId)

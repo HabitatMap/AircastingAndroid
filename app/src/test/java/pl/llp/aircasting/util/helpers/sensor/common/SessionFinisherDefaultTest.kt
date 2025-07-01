@@ -18,7 +18,7 @@ import pl.llp.aircasting.utilities.dataClassFixture
 import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DefaultSessionFinisherTest {
+class SessionFinisherDefaultTest {
 
     @Test
     fun `does not finish session if already finished`() = runTest {
@@ -35,7 +35,7 @@ class DefaultSessionFinisherTest {
             }
 
         val finishSession =
-            DefaultSessionFinisher(sessionRepository, settings, measurementsRepository)
+            SessionFinisherDefault(sessionRepository, settings, measurementsRepository)
 
         finishSession(uuid)
 
@@ -65,7 +65,7 @@ class DefaultSessionFinisherTest {
         }
 
         val finishSession =
-            DefaultSessionFinisher(sessionRepository, settings, measurementsRepository)
+            SessionFinisherDefault(sessionRepository, settings, measurementsRepository)
 
         finishSession(uuid)
 
