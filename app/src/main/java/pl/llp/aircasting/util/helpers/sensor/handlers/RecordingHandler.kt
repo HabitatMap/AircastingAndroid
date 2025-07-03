@@ -43,12 +43,10 @@ class RecordingHandlerImpl(
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         coroutineScope.launch {
-            val databaseSessionId: Long?
-
             EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
 
-            session.startRecording()
-            databaseSessionId = sessionsRepository.insert(session)
+            session.setAppropriateStatusForStartOfRecording()
+            val databaseSessionId = sessionsRepository.insert(session)
 
             when (session.type) {
                 Session.Type.FIXED -> {

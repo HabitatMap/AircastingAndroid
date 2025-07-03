@@ -109,7 +109,7 @@ class RecordingHandlerImplTest {
         recordingHandler.startRecording(session, wifiSSID, wifiPassword)
         yield()
 
-        verify(session).startRecording()
+        verify(session).setAppropriateStatusForStartOfRecording()
     }
 
     @Test

@@ -332,8 +332,14 @@ open class Session(
         )
     }
 
-    fun startRecording() {
-        mStatus = Status.RECORDING
+    fun setAppropriateStatusForStartOfRecording() {
+        mStatus = if (isFixed())
+            // For fixed sessions there is no way to know if they are finished or not
+            // because AirBeam is recording them on its own
+            // so we deem them FINISHED by default
+            Status.FINISHED
+        else
+            Status.RECORDING
     }
 
     fun stopRecording(date: Date? = null) {

@@ -36,7 +36,7 @@ class NewSessionControllerTest {
     }
 
     @Test
-    fun onStartRecordingClicked_whenSessionTypeIsNotMobile_doesNotIncrementActiveMobileSessionCount() {
+    fun onSetAppropriateStatusForStartOfRecordingClicked_whenSessionTypeIsNotMobile_doesNotIncrementActiveMobileSessionCount() {
         whenever(session.type).thenReturn(Session.Type.FIXED)
 
         controller.onStartRecordingClicked(session)
@@ -45,7 +45,7 @@ class NewSessionControllerTest {
     }
 
     @Test
-    fun onStartRecordingClicked_whenSessionTypeIsMobile_incrementsActiveMobileSessionCount() {
+    fun onSetAppropriateStatusForStartOfRecordingClicked_whenSessionTypeIsMobile_incrementsActiveMobileSessionCount() {
         whenever(session.type).thenReturn(Session.Type.MOBILE)
 
         controller.onStartRecordingClicked(session)
