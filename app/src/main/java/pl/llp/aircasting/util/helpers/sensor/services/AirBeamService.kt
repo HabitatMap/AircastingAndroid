@@ -16,7 +16,7 @@ import pl.llp.aircasting.di.modules.AirbeamConnectionStatusFlow
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
-import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
@@ -102,7 +102,7 @@ abstract class AirBeamService : SensorService(),
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onMessageEvent(event: SensorDisconnectedEvent) {
+    fun onMessageEvent(event: SensorDisconnectedUnexpectedlyEvent) {
         updateConnectionStatus(false)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
 

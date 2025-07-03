@@ -14,7 +14,7 @@ import pl.llp.aircasting.ui.view.screens.session_view.SessionDetailsViewMvc
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NoteCreatedEvent
-import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 
@@ -55,7 +55,7 @@ class MobileActiveMapController(
     }
 
     @Subscribe
-    fun onMessage(event: SensorDisconnectedEvent) {
+    fun onMessage(event: SensorDisconnectedUnexpectedlyEvent) {
         if (event.sessionUUID == mSessionPresenter.session?.uuid)
             MainActivity.navigate(mRootActivity, DashboardPagerAdapter.MOBILE_ACTIVE_TAB_INDEX)
     }

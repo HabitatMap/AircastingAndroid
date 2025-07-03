@@ -1,7 +1,6 @@
 package pl.llp.aircasting.data.api.services
 
 import android.database.sqlite.SQLiteConstraintException
-import android.util.Log
 import androidx.core.net.toUri
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.data.api.params.SyncSessionBody
 import pl.llp.aircasting.data.api.params.SyncSessionParams
-import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -57,7 +55,6 @@ class SessionsSyncService @Inject constructor(
             if (response.isSuccessful) {
                 val body = response.body()
                 body?.let {
-                    Log.d(TAG, "Updating local sessions from SyncSuspend")
                     delete(body.deleted)
                     removeOldMeasurements()
 

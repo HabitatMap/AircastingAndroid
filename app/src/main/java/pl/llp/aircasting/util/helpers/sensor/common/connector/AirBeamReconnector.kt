@@ -17,7 +17,7 @@ import pl.llp.aircasting.di.modules.SyncActiveFlow
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.AirBeamDiscoveryFailedEvent
-import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
 import pl.llp.aircasting.util.events.StandaloneModeEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.eventbus
@@ -134,7 +134,7 @@ class AirBeamReconnector(
         val deviceId = session.deviceId
         deviceId?.let {
             Log.d(TAG, "Posting SensorDisconnectedEvent")
-            eventbus.post(SensorDisconnectedEvent(deviceId, null, session.uuid))
+            eventbus.post(SensorDisconnectedUnexpectedlyEvent(deviceId, null, session.uuid))
         }
     }
 

@@ -9,7 +9,11 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.R
-import pl.llp.aircasting.data.api.services.*
+import pl.llp.aircasting.data.api.services.DownloadFollowedSessionMeasurementsService
+import pl.llp.aircasting.data.api.services.ExportSessionService
+import pl.llp.aircasting.data.api.services.PeriodicallyDownloadFixedSessionMeasurementsService
+import pl.llp.aircasting.data.api.services.SessionsSyncService
+import pl.llp.aircasting.data.api.services.UpdateSessionService
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.NoteRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -18,7 +22,21 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.*
+import pl.llp.aircasting.util.events.AppToBackgroundEvent
+import pl.llp.aircasting.util.events.AppToForegroundEvent
+import pl.llp.aircasting.util.events.DeleteSessionEvent
+import pl.llp.aircasting.util.events.DeleteStreamsEvent
+import pl.llp.aircasting.util.events.ExportSessionEvent
+import pl.llp.aircasting.util.events.LogoutEvent
+import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.events.NoteCreatedEvent
+import pl.llp.aircasting.util.events.NoteDeletedEvent
+import pl.llp.aircasting.util.events.NoteEditedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
+import pl.llp.aircasting.util.events.StandaloneModeEvent
+import pl.llp.aircasting.util.events.StartRecordingEvent
+import pl.llp.aircasting.util.events.StopRecordingEvent
+import pl.llp.aircasting.util.events.UpdateSessionEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.extensions.showToast
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
@@ -56,7 +74,7 @@ class SessionManager @Inject constructor(
     }
 
     @Subscribe
-    fun onMessageEvent(event: SensorDisconnectedEvent) {
+    fun onMessageEvent(event: SensorDisconnectedUnexpectedlyEvent) {
         recordingHandler.disconnectSession(event.sessionDeviceId)
     }
 

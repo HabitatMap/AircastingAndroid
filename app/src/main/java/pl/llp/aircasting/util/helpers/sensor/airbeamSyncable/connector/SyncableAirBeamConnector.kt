@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.util.Log.VERBOSE
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_TERMINATE_PEER_USER
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
@@ -107,7 +108,7 @@ class SyncableAirBeamConnector(
         airBeam3Configurator.log(VERBOSE, "Disconnected reason: $reason")
 
         val deviceItem = DeviceItem(device)
-        onDisconnected(deviceItem)
+        onDisconnected(deviceItem, isDisconnectedUnexpectedly = reason != REASON_TERMINATE_PEER_USER)
 
         airBeam3Configurator.reset()
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceDisconnected device id ${deviceItem.id} reason ${reason}"))

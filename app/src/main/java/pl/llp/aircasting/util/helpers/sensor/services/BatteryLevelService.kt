@@ -21,7 +21,7 @@ import pl.llp.aircasting.R
 import pl.llp.aircasting.di.modules.BatteryLevelFlow
 import pl.llp.aircasting.di.modules.MainScope
 import pl.llp.aircasting.util.Settings
-import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import javax.inject.Inject
@@ -178,7 +178,7 @@ class BatteryLevelService : Service() {
     }
 
     @Subscribe
-    fun onMessageEvent(event: SensorDisconnectedEvent) {
+    fun onMessageEvent(event: SensorDisconnectedUnexpectedlyEvent) {
         stopService(Intent(applicationContext, BatteryLevelService::class.java))
     }
 

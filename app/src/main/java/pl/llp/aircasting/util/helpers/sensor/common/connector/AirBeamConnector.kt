@@ -11,7 +11,7 @@ import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Co
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
-import pl.llp.aircasting.util.events.SensorDisconnectedEvent
+import pl.llp.aircasting.util.events.SensorDisconnectedUnexpectedlyEvent
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
@@ -118,15 +118,15 @@ abstract class AirBeamConnector(
         }
     }
 
-    fun onDisconnected(device: DeviceItem, postDisconnectedEvent: Boolean = true) {
+    fun onDisconnected(device: DeviceItem, isDisconnectedUnexpectedly: Boolean = true) {
         val deviceItem = if (device.name == UNKNOWN_DEVICE_NAME)
             deviceAddressByDeviceItem[device.address] ?: device
         else device
 
-        if (postDisconnectedEvent) {
-            Log.d(TAG, "Posting SensorDisconnectedEvent")
+        if (isDisconnectedUnexpectedly) {
+            Log.d(TAG, "Posting SensorDisconnectedUnexpectedlyEvent")
             EventBus.getDefault()
-                .post(SensorDisconnectedEvent(deviceItem.id, deviceItem, mSessionUUID))
+                .post(SensorDisconnectedUnexpectedlyEvent(deviceItem.id, deviceItem, mSessionUUID))
         }
         mListener?.onDisconnect(deviceItem.id)
     }
@@ -147,7 +147,7 @@ abstract class AirBeamConnector(
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
-    fun onMessageEvent(event: SensorDisconnectedEvent) {
+    fun onMessageEvent(event: SensorDisconnectedUnexpectedlyEvent) {
         if (mDeviceItem?.id == event.sessionDeviceId) {
             disconnect()
         }
