@@ -84,6 +84,9 @@ class RecordingHandlerImplTest {
 
     @Before
     fun setup() {
+        sessionsRepository = mock {
+            onBlocking { it.insert(any<Session>()) } doReturn 1L
+        }
         recordingHandler = RecordingHandlerImpl(
             settings,
             fixedSessionUploader,
