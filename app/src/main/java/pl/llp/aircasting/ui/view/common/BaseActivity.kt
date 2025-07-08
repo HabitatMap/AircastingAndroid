@@ -1,6 +1,5 @@
 package pl.llp.aircasting.ui.view.common
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
@@ -12,7 +11,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import pl.llp.aircasting.AircastingApplication
@@ -41,24 +43,29 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        initConnectivityBanner()
+        setupRootView()
     }
 
     override fun setContentView(view: View?) {
         super.setContentView(view)
-        initConnectivityBanner()
+        setupRootView()
     }
 
-    private fun initConnectivityBanner() {
+    private fun setupRootView() {
         val rootView = findViewById<ViewGroup>(android.R.id.content)
 
+        setupConnectivityBanner(rootView)
+        applyEdgeToEdgeInsets(rootView)
+    }
+
+    private fun setupConnectivityBanner(rootView: ViewGroup) {
         connectivityBanner =
             layoutInflater.inflate(R.layout.layout_connectivity_banner, rootView, false)
         connectivityBanner?.visibility = View.GONE
 
         rootView.addView(connectivityBanner)
 
-        connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         setupNetworkCallback()
     }
 
@@ -138,6 +145,22 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
+    private fun applyEdgeToEdgeInsets(rootView: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+
+            v.updatePadding(
+                left = insets.left,
+                top = insets.top,
+                right = insets.right,
+                bottom = insets.bottom
+            )
+
+            WindowInsetsCompat.CONSUMED
+        }
+    }
 }
 
 fun <T : ViewDataBinding> BaseActivity.setContentViewWithDataBinding(
