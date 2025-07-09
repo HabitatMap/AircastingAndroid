@@ -12,6 +12,7 @@ import android.view.WindowManager
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
@@ -56,6 +57,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
         setupConnectivityBanner(rootView)
         applyEdgeToEdgeInsets(rootView)
+        configureStatusBarIcons()
     }
 
     private fun setupConnectivityBanner(rootView: ViewGroup) {
@@ -147,6 +149,12 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected open fun applyEdgeToEdgeInsets(rootView: View) {
         rootView.updateInsets(ViewEdge.LEFT, ViewEdge.RIGHT, ViewEdge.TOP, ViewEdge.BOTTOM)
+    }
+
+    private fun configureStatusBarIcons() {
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        windowInsetsController.isAppearanceLightStatusBars = settings.isDarkThemeEnabled().not()
     }
 }
 
