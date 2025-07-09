@@ -145,21 +145,29 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    private fun applyEdgeToEdgeInsets(rootView: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
-            val insets = windowInsets.getInsets(
-                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
-            )
+    protected open fun applyEdgeToEdgeInsets(rootView: View) {
+        rootView.updateInsets(ViewEdge.LEFT, ViewEdge.RIGHT, ViewEdge.TOP, ViewEdge.BOTTOM)
+    }
+}
 
-            v.updatePadding(
-                left = insets.left,
-                top = insets.top,
-                right = insets.right,
-                bottom = insets.bottom
-            )
+enum class ViewEdge {
+    LEFT, RIGHT, TOP, BOTTOM
+}
 
-            WindowInsetsCompat.CONSUMED
-        }
+fun View.updateInsets(vararg edges: ViewEdge) {
+    ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
+        val insets = windowInsets.getInsets(
+            WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+        )
+
+        v.updatePadding(
+            top = if (ViewEdge.TOP in edges) insets.top else paddingTop,
+            bottom = if (ViewEdge.BOTTOM in edges) insets.bottom else paddingBottom,
+            left = if (ViewEdge.LEFT in edges) insets.left else paddingLeft,
+            right = if (ViewEdge.RIGHT in edges) insets.right else paddingRight,
+        )
+
+        WindowInsetsCompat.CONSUMED
     }
 }
 
