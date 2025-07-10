@@ -148,7 +148,7 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     protected open fun applyEdgeToEdgeInsets(rootView: View) {
-        rootView.updateInsets(ViewEdge.LEFT, ViewEdge.RIGHT, ViewEdge.TOP, ViewEdge.BOTTOM)
+        rootView.updateInsets()
     }
 
     private fun configureStatusBarIcons() {
@@ -162,7 +162,14 @@ enum class ViewEdge {
     LEFT, RIGHT, TOP, BOTTOM
 }
 
-fun View.updateInsets(vararg edges: ViewEdge) {
+fun View.updateInsets(
+    vararg edges: ViewEdge = arrayOf(
+        ViewEdge.LEFT,
+        ViewEdge.RIGHT,
+        ViewEdge.TOP,
+        ViewEdge.BOTTOM
+    )
+) {
     ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, windowInsets ->
         val insets = windowInsets.getInsets(
             WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()

@@ -8,7 +8,6 @@ import kotlinx.android.synthetic.main.activity_onboarding.view.progress_bar
 import kotlinx.android.synthetic.main.activity_onboarding.view.progress_bar_frame
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.common.BaseViewMvc
-import pl.llp.aircasting.ui.view.common.ViewEdge
 import pl.llp.aircasting.ui.view.common.updateInsets
 
 
@@ -41,6 +40,6 @@ class OnboardingViewMvcImpl(
 
     override fun showProgressBar() {
         this.rootView?.progress_bar_frame?.visibility = View.VISIBLE
-        this.rootView?.progress_bar_frame?.updateInsets(ViewEdge.TOP)
+        this.rootView?.progress_bar_frame?.updateInsets()
     }
 }
