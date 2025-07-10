@@ -18,7 +18,10 @@ import com.github.mikephil.charting.jobs.MoveViewJob
 import com.github.mikephil.charting.listener.ChartTouchListener
 import com.github.mikephil.charting.listener.OnChartGestureListener
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.graph.view.*
+import kotlinx.android.synthetic.main.graph.view.from_label
+import kotlinx.android.synthetic.main.graph.view.graph
+import kotlinx.android.synthetic.main.graph.view.loader
+import kotlinx.android.synthetic.main.graph.view.to_label
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,7 +36,7 @@ import pl.llp.aircasting.util.MeasurementColor
 import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.helpers.services.AveragingService
 import pl.llp.aircasting.util.isSDKLessThanN
-import java.util.*
+import java.util.Date
 import kotlin.math.max
 import kotlin.math.min
 
@@ -127,7 +130,7 @@ class GraphContainer(
             updateLabelsBasedOnVisibleTimeSpan()
 
         drawData(entries)
-        drawMidnightPointLines(result.midnightPoint)
+        result.midnightPoint?.let { drawMidnightPointLines(it) }
         drawThresholds()
 
         mGraph?.invalidate()

@@ -14,7 +14,9 @@ import pl.llp.aircasting.util.extensions.calendar
 import pl.llp.aircasting.util.extensions.dayOfMonth
 import pl.llp.aircasting.util.extensions.truncateToMidnight
 import pl.llp.aircasting.util.helpers.services.AveragingWindow
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.LinkedList
 
 class GraphDataGenerator(
     private val mContext: Context
@@ -30,7 +32,7 @@ class GraphDataGenerator(
 
     class Result(
         val entries: List<Entry>,
-        val midnightPoint: Float,
+        val midnightPoint: Float?,
         val noteRanges: MutableList<ClosedRange<Long>>
     )
 
@@ -47,7 +49,7 @@ class GraphDataGenerator(
         reset()
 
         val entries = LinkedList<Entry>()
-        var midnightPoint = 0f
+        var midnightPoint: Float? = null
         val noteRanges = mutableListOf<ClosedRange<Long>>()
         averagingGeneratorFrequency = averagingFrequency
         // fillFactor is responsible for controlling the number of measurements we average when generating the Entries set
