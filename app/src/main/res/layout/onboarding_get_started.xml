@@ -34,14 +34,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
+        app:layout_constraintGuide_percent="@dimen/onboarding_middle_guideline_percentage" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.69" />
+        app:layout_constraintGuide_percent="@dimen/onboarding_bottom_guideline_percentage" />
 
     <ImageView
         android:id="@+id/arcasting_icon"
@@ -63,13 +63,12 @@
         android:paddingTop="20dp"
         android:text="@string/onboarding_page1_header"
         android:textAlignment="center"
-        android:textSize="@dimen/text_size_xxl"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
-        app:layout_constraintVertical_bias="0.745" />
+        app:layout_constraintVertical_bias="0.262" />
 
     <TextView
         android:id="@+id/onboarding_get_started_description"
@@ -80,12 +79,11 @@
         android:layout_marginEnd="@dimen/keyline_8"
         android:text="@string/onboarding_page1_description"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@id/get_started_button"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineBottom"
-        app:layout_constraintVertical_bias="0.243" />
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_get_started_header" />
 
     <Button
         android:id="@+id/get_started_button"
@@ -94,11 +92,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_10"
+        android:layout_marginTop="@dimen/onboarding_primary_button_top_margin"
         android:fontFamily="@font/muli_bold"
         android:text="@string/get_started"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineBottom" />
 </androidx.constraintlayout.widget.ConstraintLayout>

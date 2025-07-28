@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guidelineTop"
-        app:layout_constraintGuide_percent="0.05"
+        app:layout_constraintGuide_percent="@dimen/onboarding_top_guideline_percentage"
         android:orientation="horizontal"/>
 
     <ImageView
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="@dimen/onboarding_middle_guideline_percentage" />
 
     <TextView
         android:id="@+id/onboarding_how_is_the_air_header"
@@ -38,7 +38,6 @@
         android:layout_marginTop="@dimen/header_1_vertical_margin"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:textSize="@dimen/text_size_xxl"
         style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
         app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,29 +46,36 @@
 
     <TextView
         android:id="@+id/onboarding_how_is_the_air_description"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
-        android:text="@string/onboarding_page2_description"
-        android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_6"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_how_is_the_air_header"
+        android:text="@string/onboarding_page2_description"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/onboarding_how_is_the_air_header" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/onboarding_bottom_guideline_percentage" />
 
     <Button
         android:id="@+id/continue_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/continue_button_onboarding"
+        android:layout_marginTop="@dimen/onboarding_primary_button_top_margin"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_how_is_the_air_description"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/continue_button_onboarding"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guidelineBottom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
