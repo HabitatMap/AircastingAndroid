@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.65" />
+        app:layout_constraintGuide_percent="0.69" />
 
     <ImageView
         android:id="@+id/arcasting_icon"
@@ -66,8 +66,10 @@
         android:textSize="@dimen/text_size_xxl"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle" />
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
+        app:layout_constraintVertical_bias="0.745" />
 
     <TextView
         android:id="@+id/onboarding_get_started_description"
@@ -80,8 +82,10 @@
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@id/get_started_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guidelineBottom" />
+        app:layout_constraintTop_toTopOf="@+id/guidelineBottom"
+        app:layout_constraintVertical_bias="0.243" />
 
     <Button
         android:id="@+id/get_started_button"
@@ -90,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_10"
         android:fontFamily="@font/muli_bold"
         android:text="@string/get_started"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
