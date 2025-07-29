@@ -14,14 +14,23 @@
         android:orientation="horizontal"/>
 
     <ImageView
+        android:id="@+id/onboarding_measure_and_map_three_arcs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:src="@drawable/three_arcs_green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
+
+    <ImageView
         android:id="@+id/onboarding_measure_and_map_image"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:src="@drawable/airbeam_in_hand"
-        app:layout_constraintTop_toBottomOf="@id/guidelineTop"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/onboarding_measure_and_map_three_arcs" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineMiddle"
