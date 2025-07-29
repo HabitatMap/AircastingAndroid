@@ -13,8 +13,9 @@
 
     <ImageView
         android:id="@+id/connected_image"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginHorizontal="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_10"
         android:contentDescription="@string/airbeam_connected_image_desc"
         android:src="@drawable/airbeam"
