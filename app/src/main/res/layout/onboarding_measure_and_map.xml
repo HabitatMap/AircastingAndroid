@@ -53,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_measure_and_map_description"/>
+        />
 
     <TextView
         android:id="@+id/onboarding_measure_and_map_description"
@@ -66,8 +66,10 @@
         android:text="@string/onboarding_page3_description"
         app:layout_constraintBottom_toTopOf="@+id/guidelineBottom"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_header" />
+        app:layout_constraintTop_toBottomOf="@id/onboarding_measure_and_map_header"
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -87,24 +89,23 @@
         android:fontFamily="@font/muli_bold"
         app:layout_constraintTop_toBottomOf="@id/guidelineBottom"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/learn_more_button" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/learn_more_button"
+        style="@style/Widget.Aircasting.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/learn_more_button_onboarding"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_8"
-        style="@style/Widget.Aircasting.TextButton"
-        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        android:layout_marginTop="@dimen/keyline_1"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/continue_button"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/learn_more_button_onboarding"
+        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/continue_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

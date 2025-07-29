@@ -20,18 +20,18 @@
 
     <TextView
         android:id="@+id/onboarding_your_privacy_header"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_4"
+        android:layout_marginEnd="@dimen/keyline_8"
         android:text="@string/onboarding_page4_header"
         android:textAlignment="viewStart"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
         android:textSize="@dimen/text_size_xxl"
-        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/onboarding_your_privacy_description"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineMiddle" />
 
     <TextView
         android:id="@+id/onboarding_your_privacy_description"
@@ -58,30 +58,28 @@
         android:id="@+id/accept_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/accept_button_onboarding"
         android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/onboarding_primary_button_top_margin"
+        android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/guidelineBottom"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/accept_button_onboarding"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/learn_more_button" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineBottom" />
 
     <Button
         android:id="@+id/learn_more_button"
+        style="@style/Widget.Aircasting.TextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/learn_more_button_onboarding"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:layout_marginBottom="@dimen/keyline_8"
-        style="@style/Widget.Aircasting.TextButton"
-        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        android:layout_marginTop="@dimen/keyline_1"
         android:fontFamily="@font/muli_bold"
-        app:layout_constraintTop_toBottomOf="@id/accept_button"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/learn_more_button_onboarding"
+        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/accept_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
