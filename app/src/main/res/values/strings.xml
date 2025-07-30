@@ -354,7 +354,7 @@
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
-    <string name="onboarding_page1_description">record and map measurements from health and environmental monitoring devices</string>
+    <string name="onboarding_page1_description">Record and map measurements from health and environmental monitoring devices.</string>
     <string name="get_started">Get started</string>
     <string name="onboarding_page2_header">How\'s the air near you?</string>
     <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>

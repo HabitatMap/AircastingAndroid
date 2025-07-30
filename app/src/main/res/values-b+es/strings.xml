@@ -357,7 +357,7 @@
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
-    <string name="onboarding_page1_description">Registre y mapee mediciones de los dispositivos de monitoreo ambiental y de salud</string>
+    <string name="onboarding_page1_description">Registre y mapee mediciones de los dispositivos de monitoreo ambiental y de salud.</string>
     <string name="get_started">Empezar</string>
     <string name="onboarding_page2_header">¿Cómo está el aire cerca de ti?</string>
     <string name="onboarding_page2_description">Encuentre y siga un monitor de calidad del aire fijo cerca de usted y sepa qué tan limpio o contaminado está su aire en este momento.</string>

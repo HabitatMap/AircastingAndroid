@@ -339,7 +339,7 @@
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>
-    <string name="onboarding_page1_description">enregistrer et cartographier les mesures des dispositifs de surveillance de la santé et de l\'environnement</string>
+    <string name="onboarding_page1_description">Enregistrer et cartographier les mesures des dispositifs de surveillance de la santé et de l\'environnement.</string>
     <string name="get_started">Commencer</string>
     <string name="onboarding_page2_header">Comment est l\'air près de chez vous ?</string>
     <string name="onboarding_page2_description">Trouvez et suivez un moniteur de qualité de l\'air fixe près de chez vous et sachez à quel point votre air est propre ou pollué en ce moment.</string>
