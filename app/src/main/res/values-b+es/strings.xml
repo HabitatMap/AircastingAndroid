@@ -363,7 +363,7 @@
     <string name="onboarding_page2_description">Encuentre y siga un monitor de calidad del aire fijo cerca de usted y sepa qué tan limpio o contaminado está su aire en este momento.</string>
     <string name="continue_button_onboarding">Continuar</string>
     <string name="onboarding_page3_header">Mida y mapee contaminacion del aire</string>
-    <string name="onboarding_page3_description">Conecte AirBeam para medir la calidad del aire, la humedad y la temperatura.</string>
+    <string name="onboarding_page3_description">Conecte AirBeam para medir la contaminación por partículas.</string>
     <string name="learn_more_button_onboarding">Aprende más</string>
     <string name="onboarding_bottomsheet_page3_header">¿Cómo funciona AirBeam?</string>
     <string name="onboarding_bottomsheet_page3_description1">En modo móvil, The AirBeam captura exposiciones personales.</string>

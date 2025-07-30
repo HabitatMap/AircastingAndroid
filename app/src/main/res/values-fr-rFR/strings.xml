@@ -345,7 +345,7 @@
     <string name="onboarding_page2_description">Trouvez et suivez un moniteur de qualité de l\'air fixe près de chez vous et sachez à quel point votre air est propre ou pollué en ce moment.</string>
     <string name="continue_button_onboarding">Continuez</string>
     <string name="onboarding_page3_header">Mesurez et cartographiez votre exposition à la pollution atmosphérique</string>
-    <string name="onboarding_page3_description">Connectez AirBeam pour mesurer la qualité de l\'air, l\'humidité et la température.</string>
+    <string name="onboarding_page3_description">Connectez AirBeam pour mesurer la pollution particulaire.</string>
     <string name="learn_more_button_onboarding">Apprendre encore plus</string>
     <string name="onboarding_bottomsheet_page3_header">Comment fonctionne Air Beam?</string>
     <string name="onboarding_bottomsheet_page3_description1">En mode mobile, l\'AirBeam capture les expositions personnelles.</string>

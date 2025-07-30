@@ -360,7 +360,7 @@
     <string name="onboarding_page2_description">Find and follow a fixed air quality monitor near you and know how clean or polluted your air is right now.</string>
     <string name="continue_button_onboarding">Continue</string>
     <string name="onboarding_page3_header">Measure and map your exposure to air pollution</string>
-    <string name="onboarding_page3_description">Connect AirBeam to measure air quality, humidity, and temperature.</string>
+    <string name="onboarding_page3_description">Connect AirBeam to measure particle pollution.</string>
     <string name="learn_more_button_onboarding">Learn more</string>
     <string name="onboarding_bottomsheet_page3_header">How AirBeam works?</string>
     <string name="onboarding_bottomsheet_page3_description1">In mobile mode, the AirBeam captures personal exposures.</string>
