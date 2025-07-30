@@ -335,7 +335,7 @@
 
     <!-- Did you know box -->
     <string name="did_you_know">Le saviez-vous?</string>
-    <string name="did_you_know_box_tip_1">AirBeam3 et AirBeam Mini résistent aux intempéries. Accrochez-les à l\'extérieur et enregistrez une session fixe pour surveiller la qualité de votre air 24/7</string>
+    <string name="did_you_know_box_tip_1">L\'AirBeam Mini résiste aux intempéries. Suspendez-le à l\'extérieur et enregistrez une session fixe pour surveiller la qualité de l\'air 24/7.</string>
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>

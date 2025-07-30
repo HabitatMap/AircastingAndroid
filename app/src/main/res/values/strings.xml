@@ -350,7 +350,7 @@
 
     <!-- Did you know box -->
     <string name="did_you_know">Did you know?</string>
-    <string name="did_you_know_box_tip_1">AirBeam3 &amp; AirBeam Mini are weather resistant. Hang them outside and record a fixed session to keep tabs on your air quality 24/7</string>
+    <string name="did_you_know_box_tip_1">AirBeam Mini is weather resistant. Hang it outside and record a fixed session to keep tabs on your air quality 24/7</string>
 
     <!-- Onboarding -->
     <string name="onboarding_page1_header">AirCasting</string>

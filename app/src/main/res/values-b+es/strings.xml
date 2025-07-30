@@ -337,7 +337,7 @@
 
     <!-- Did you know box -->
     <string name="did_you_know">¿Sabías?</string>
-    <string name="did_you_know_box_tip_1">AirBeam3 y AirBeam Mini son resistentes al clima. Cuélgalos afuera y graba una sesión fija para mantener un registro de la calidad del aire 24/7</string>
+    <string name="did_you_know_box_tip_1">AirBeam Mini es resistente a la intemperie. Cuélgalo en el exterior y graba una sesión fija para controlar la calidad del aire 24/7.</string>
 
     <string name="bluetooth_failed_connection_alert_header">La conexión AirBeam falló.</string>
     <string name="bluetooth_failed_connection_alert_description">La conexión AirBeam falló. \nInténtalo de nuevo.</string>
