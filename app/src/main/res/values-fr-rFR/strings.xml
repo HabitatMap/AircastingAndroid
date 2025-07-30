@@ -117,7 +117,7 @@
 
     <!-- New session Step 3 -->
     <!-- Mobile -->
-    <string name="power_on_bluetooth_device_header">Allumez votre appareil Bluetooth</string>
+    <string name="power_on_bluetooth_device_header">Allumez votre AirBeam</string>
     <string name="power_on_bluetooth_device_desc">Si vous utilisez AirBeam2, attendez que l\'indicateur de connexion passe du rouge au vert avant de continuer.</string>
     <string name="power_on_bluetooth_device_ready_button">Continuez</string>
     <string name="power_on_bluetooth_device_image_desc">Allumez votre AirBeam</string>
