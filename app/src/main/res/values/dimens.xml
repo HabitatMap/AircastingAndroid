@@ -50,7 +50,7 @@
 
     <dimen name="onboarding_top_guideline_percentage">0.05</dimen>
     <dimen name="onboarding_middle_guideline_percentage">0.45</dimen>
-    <dimen name="onboarding_bottom_guideline_percentage">0.75</dimen>
+    <dimen name="onboarding_bottom_guideline_percentage">0.8</dimen>
     <dimen name="onboarding_primary_button_top_margin">32dp</dimen>
 
     <dimen name="card_corner_radius">0dp</dimen>
