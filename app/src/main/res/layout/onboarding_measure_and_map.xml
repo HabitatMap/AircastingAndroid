@@ -97,15 +97,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
         android:layout_marginTop="@dimen/keyline_1"
+        android:layout_marginEnd="@dimen/keyline_8"
         android:fontFamily="@font/muli_bold"
         android:text="@string/learn_more_button_onboarding"
         android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/continue_button" />
+        app:layout_constraintTop_toBottomOf="@id/continue_button"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
