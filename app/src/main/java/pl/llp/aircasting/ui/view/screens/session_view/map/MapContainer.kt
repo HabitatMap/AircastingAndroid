@@ -429,7 +429,7 @@ class MapContainer(rootView: View?, context: Context, supportFragmentManager: Fr
 
     private fun setCustomCompassLocation() {
         mMapFragment?.view?.let { mapView ->
-            mapView.findViewWithTag<View>("GoogleMapMyLocationButton").parent.let { parent ->
+            mapView.findViewWithTag<View>("GoogleMapMyLocationButton")?.parent?.let { parent ->
                 val vg: ViewGroup = parent as ViewGroup
                 vg.post {
                     val mapCompass: View = parent.getChildAt(4)
