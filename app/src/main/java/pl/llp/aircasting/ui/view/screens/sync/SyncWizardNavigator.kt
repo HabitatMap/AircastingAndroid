@@ -14,6 +14,7 @@ import pl.llp.aircasting.ui.view.screens.sync.error.ErrorViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.refreshed.RefreshedSessionsViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.synced.AirbeamSyncedViewMvc
 import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingViewMvc
+import pl.llp.aircasting.ui.view.screens.sync.unplug_airbeam.UnplugAirBeamFragment
 import pl.llp.aircasting.util.ProgressBarCounter
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -31,7 +32,6 @@ class SyncWizardNavigator(
     R.id.airbeam_sync_fragment_container,
     settings
 ) {
-
     override fun selectDeviceHeader(): String {
         return mContext.getString(R.string.airbeam_sync_select_device_header)
     }
@@ -63,11 +63,16 @@ class SyncWizardNavigator(
     }
 
     private fun goToRefreshedSessions(listener: RefreshedSessionsViewMvc.Listener, success: Boolean) {
-        incrementStepProgress()
         val fragment = RefreshedSessionsFragment()
         fragment.success = success
         fragment.listener = listener
         registerBackPressed(fragment)
+        goToFragment(fragment)
+    }
+
+    fun goToUnplugAirBeam(onContinueClicked: () -> Unit) {
+        incrementStepProgress()
+        val fragment = UnplugAirBeamFragment(onContinueClicked)
         goToFragment(fragment)
     }
 

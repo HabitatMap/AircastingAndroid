@@ -6,7 +6,6 @@ import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import java.io.OutputStream
 import javax.inject.Inject
 
-// TODO: Add to DI
 class AirBeam2Configurator @Inject constructor(
     private val mSettings: Settings,
     private val mHexMessagesBuilder: HexMessagesBuilder,

@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.content.Context
 import android.util.Log
 import no.nordicsemi.android.ble.BleManager
+import no.nordicsemi.android.ble.ConnectionPriorityRequest
 import no.nordicsemi.android.ble.RequestQueue
 import no.nordicsemi.android.ble.WriteRequest
 import no.nordicsemi.android.ble.exception.RequestFailedException
@@ -159,6 +160,7 @@ abstract class SyncableAirBeamConfigurator(
 
         beginAtomicRequestQueue()
             .add(requestMtu(MAX_MTU))
+            .add(requestConnectionPriority(ConnectionPriorityRequest.CONNECTION_PRIORITY_HIGH))
             .add(sleep(500))
             .add(downloadFromSDCardModeRequest())
             .enqueue()

@@ -286,6 +286,8 @@
     <string name="refreshed_sessions_header_error">Quelque chose s\'est mal passé</string>
     <string name="refreshed_sessions_description_error">Un problème est survenu lors de l\'actualisation des sessions. S\'il vous plaît, vérifiez votre connexion à internet et réessayez.</string>
     <string name="refreshed_sessions_retry">Réessayer</string>
+    <string name="airbeam_sync_unplug_header">Débranchez votre AirBeam</string>
+    <string name="airbeam_sync_unplug_description">Gardez-le débranché pendant toute la durée de la synchronisation.</string>
     <string name="airbeam_sync_select_device_header">Sélectionnez l\'appareil que vous souhaitez synchroniser</string>
     <string name="airbeam_syncing_header">Synchronisation</string>
     <string name="airbeam_syncing_description">Gardez votre AirBeam près de votre Android. Branchez votre AirBeam pour accélérer la synchronisation.</string>

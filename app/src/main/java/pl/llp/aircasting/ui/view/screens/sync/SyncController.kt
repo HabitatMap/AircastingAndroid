@@ -80,8 +80,9 @@ class SyncController @AssistedInject constructor(
 
     private val mWizardNavigator: SyncWizardNavigator =
         SyncWizardNavigator(mRootActivity, mViewMvc, mFragmentManager, mSettings, mErrorHandler)
-    private val wakeLock: PowerManager.WakeLock = (mRootActivity.getSystemService(Context.POWER_SERVICE) as PowerManager)
-        .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AircastingApplication::SDSyncWakeLock")
+    private val wakeLock: PowerManager.WakeLock =
+        (mRootActivity.getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AircastingApplication::SDSyncWakeLock")
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -133,6 +134,7 @@ class SyncController @AssistedInject constructor(
                             Log.d(this@SyncController.TAG, "Acting on success sync result")
                             goToSuccessScreen()
                         }
+
                         is SessionsSyncService.Result.Error -> {
                             Log.d(
                                 this@SyncController.TAG,
@@ -202,7 +204,9 @@ class SyncController @AssistedInject constructor(
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
+        mWizardNavigator.goToUnplugAirBeam(onContinueClicked = {
+            mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
+        })
     }
 
     override fun onConnectClicked(deviceItem: DeviceItem) {
@@ -268,6 +272,7 @@ class SyncController @AssistedInject constructor(
                     mErrorHandler.showError(R.string.errors_location_services_required)
                 }
             }
+
             else -> {
                 // Ignore all other requests.
             }
@@ -287,6 +292,7 @@ class SyncController @AssistedInject constructor(
                     mErrorHandler.showError(R.string.errors_location_services_required)
                 }
             }
+
             ResultCodes.AIRCASTING_REQUEST_BLUETOOTH_ENABLE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     mWizardNavigator.goToRestartAirBeam(this)
@@ -294,6 +300,7 @@ class SyncController @AssistedInject constructor(
                     mErrorHandler.showError(R.string.errors_bluetooth_required)
                 }
             }
+
             else -> {
                 // Ignore all other requests.
             }

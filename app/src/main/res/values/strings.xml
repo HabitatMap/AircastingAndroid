@@ -299,6 +299,8 @@
     <string name="refreshed_sessions_description_error">There was a problem while refreshing sessions. Please check your internet connection and try again.</string>
     <string name="refreshed_sessions_retry">Try again</string>
     <string name="airbeam_sync_select_device_header">Select the device you\'d like to sync</string>
+    <string name="airbeam_sync_unplug_header">Unplug your AirBeam</string>
+    <string name="airbeam_sync_unplug_description">Keep it unplugged for the duration of the sync.</string>
     <string name="airbeam_syncing_header">Syncing</string>
     <string name="airbeam_syncing_description">Don’t exit the app or turn your screen off. Keep your AirBeam close to your Android. Plug in your AirBeam to speed up the sync.</string>
     <string name="airbeam_syncing_finalizing">Finalizing…</string>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.02" />
+
+
+    <ImageView
+        android:id="@+id/unplug_airbeam_image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/keyline_10"
+        android:contentDescription="@string/power_on_bluetooth_device_image_desc"
+        android:layout_marginHorizontal="@dimen/keyline_8"
+        android:src="@drawable/sync_step3"
+        app:layout_constraintBottom_toTopOf="@id/guidelineMiddle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTop" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/connecting_image_margin"
+        android:layout_marginBottom="@dimen/connecting_image_margin"
+        android:src="@drawable/unplug_icon"
+        app:layout_constraintBottom_toBottomOf="@+id/unplug_airbeam_image"
+        app:layout_constraintEnd_toEndOf="@+id/unplug_airbeam_image" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineMiddle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/unplug_airbeam_header"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Headline1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/airbeam_sync_unplug_header"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineMiddle" />
+
+    <TextView
+        android:id="@+id/unplug_airbeam_description"
+        style="@style/TextAppearance.Aircasting.NewSessionSteps.Body1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginTop="@dimen/keyline_6"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/airbeam_sync_unplug_description"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unplug_airbeam_header" />
+
+    <Button
+        android:id="@+id/unplug_airbeam_ready_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/keyline_8"
+        android:layout_marginEnd="@dimen/keyline_8"
+        android:text="@string/power_on_bluetooth_device_ready_button"
+        app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/unplug_airbeam_description" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.98" />
+</androidx.constraintlayout.widget.ConstraintLayout>
