@@ -48,7 +48,6 @@
         android:id="@+id/connect_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/keyline_8"
         android:text="@string/select_device_connect_button"
         app:layout_constraintTop_toBottomOf="@id/refresh_button"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom" />
