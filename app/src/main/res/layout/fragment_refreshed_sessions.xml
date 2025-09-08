@@ -71,6 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_8"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -97,7 +98,7 @@
             app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline

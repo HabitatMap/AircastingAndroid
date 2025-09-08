@@ -74,6 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
+        android:layout_marginBottom="@dimen/keyline_8"
         android:text="@string/power_on_bluetooth_device_ready_button"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintLeft_toLeftOf="parent"
