@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -65,33 +66,40 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_header" />
 
-    <Button
-        android:id="@+id/primary_button"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/keyline_8"
         android:layout_marginEnd="@dimen/keyline_8"
-        android:text="@string/sd_card_cleared_continue_button"
-        app:layout_constraintBottom_toTopOf="@id/cancel_button"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/refreshed_sessions_description" />
-
-    <Button
-        android:id="@+id/cancel_button"
-        style="@style/Widget.Aircasting.TextButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/keyline_8"
-        android:layout_marginEnd="@dimen/keyline_8"
-        android:fontFamily="@font/muli_bold"
-        android:text="@string/cancel"
-        android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
-        android:visibility="gone"
+        android:layout_marginBottom="@dimen/keyline_8"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/primary_button" />
+        app:layout_constraintRight_toRightOf="parent">
+
+        <Button
+            android:id="@+id/primary_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sd_card_cleared_continue_button"
+            app:layout_constraintBottom_toTopOf="@id/cancel_button"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/cancel_button"
+            style="@style/Widget.Aircasting.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/muli_bold"
+            android:text="@string/cancel"
+            android:textAppearance="@style/TextAppearance.Aircasting.Login.TextButton"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/guidelineBottom"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            tools:visibility="gone" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineBottom"
