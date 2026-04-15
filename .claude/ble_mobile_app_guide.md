@@ -274,39 +274,9 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 
 ---
 
-## 8. Android Implementation Plan
-
-### New Files to Create
-
-| File | Purpose |
-| ---- | ------- |
-| `AirBeamMiniV2Configurator.kt` | `BleManager` subclass handling V2 GATT, subscriptions, command writing, response/status parsing |
-| `AirBeamMiniV2CommandBuilder.kt` | Builds binary LE payloads for all opcodes (replaces `HexMessagesBuilder` for V2) |
-| `AirBeamMiniV2MeasurementParser.kt` | Parses binary measurement data from Measurement and Sync characteristics into `NewMeasurementEvent` |
-
-### Existing Files to Modify (Minimal)
-
-| File | Change |
-| ---- | ------ |
-| `DeviceItem.kt` | Add `FirmwareVersion` enum (V1/V2) field, populated from advertised service UUID |
-| `AirBeamDiscoveryService.kt` | Extract advertised service UUID from `ScanResult.scanRecord.serviceUuids` during discovery |
-| `SyncableAirBeamConfiguratorFactory.kt` | Add V2 branch in `create()` method |
-| `AirBeamConnectorFactory.kt` | Route V2 devices to appropriate connector/configurator |
-
-### Files NOT Modified (Old Firmware Untouched)
-
-- `AirBeamMiniConfigurator.kt`
-- `SyncableAirBeamConfigurator.kt`
-- `HexMessagesBuilder.kt`
-- `ResponseParser.kt`
-- `SyncableAirBeamReader.kt`
-- `SDCardReader.kt`, `SDCardSyncService.kt`, `SDCardCSVFileChecker*.kt`, `SDCardFileService*.kt`
-- `AirBeam2Configurator.kt`, `AirBeam2Connector.kt`, `AirBeam2Reader.kt`
-- `AirBeam3Configurator.kt`
-
 ---
 
-## 9. `SetTime` Periodic Scheduling
+## 8. `SetTime` Periodic Scheduling
 
 `SetTime (0x15)` must be sent:
 1. Immediately after connection (once Status is received)
