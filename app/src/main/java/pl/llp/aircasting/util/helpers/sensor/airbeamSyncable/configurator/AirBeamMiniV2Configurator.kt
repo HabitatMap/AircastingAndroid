@@ -184,8 +184,8 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun reconnectMobileSession() {
-        // Reconnection is Phase 2
-        Log.d(TAG, "V2: reconnectMobileSession called (stub for Phase 2)")
+        // Reconnection is Phase 3
+        Log.d(TAG, "V2: reconnectMobileSession called (stub for Phase 3)")
     }
 
     override fun triggerSDCardDownload() {
