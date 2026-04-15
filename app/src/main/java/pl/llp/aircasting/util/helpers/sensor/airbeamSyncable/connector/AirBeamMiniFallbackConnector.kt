@@ -51,6 +51,7 @@ class AirBeamMiniFallbackConnector(
             .fail { device, status -> onFailedCallback(device, status) }
             .done { _ ->
                 Log.d(TAG, "AirBeamMiniFallback: Connected with ${if (isV2Attempt) "V2" else "V1"}")
+                if (isV2Attempt) v2Configurator.deviceId = deviceItem.id
                 onConnectionSuccessful(deviceItem)
             }
             .enqueue()

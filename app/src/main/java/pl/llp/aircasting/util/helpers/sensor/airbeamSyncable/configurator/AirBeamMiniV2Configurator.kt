@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -12,8 +13,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -41,17 +44,26 @@ class AirBeamMiniV2Configurator(
         private val SYNC_UUID: UUID =
             UUID.fromString("a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60")
 
+        private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
 
         private const val STATE_IDLE: Int = 0x00
         private const val STATE_HAS_SAVED_SESSION: Int = 0x01
         private const val STATE_RUNNING: Int = 0x02
 
+        private const val RESPONSE_ACK: Int = 0x20
+        private const val RESPONSE_NACK: Int = 0x21
+        private const val RESPONSE_READY: Int = 0x22
+
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
 
     enum class DeviceState {
         IDLE, HAS_SAVED_SESSION, RUNNING, UNKNOWN
+    }
+
+    enum class CommandState {
+        IDLE, WAITING_ACK, WAITING_READY
     }
 
     private var statusCharacteristic: BluetoothGattCharacteristic? = null
@@ -61,7 +73,10 @@ class AirBeamMiniV2Configurator(
     private var syncCharacteristic: BluetoothGattCharacteristic? = null
 
     private var setTimeJob: Job? = null
+    private var commandState: CommandState = CommandState.IDLE
+    private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
 
+    var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
         private set
     var currentBatteryLevel: Int = -1
@@ -113,7 +128,7 @@ class AirBeamMiniV2Configurator(
         // Response notifications
         setNotificationCallback(responseCharacteristic).with { _, data ->
             val bytes = data.value ?: return@with
-            Log.d(TAG, "V2 Response: ${bytes.joinToString { "0x%02x".format(it) }}")
+            parseResponse(bytes)
         }
         queue.add(
             enableNotifications(responseCharacteristic)
@@ -123,7 +138,7 @@ class AirBeamMiniV2Configurator(
         // Measurement indications
         setNotificationCallback(measurementCharacteristic).with { _, data ->
             val bytes = data.value ?: return@with
-            Log.d(TAG, "V2 Measurement received: ${bytes.size} bytes")
+            parseMeasurement(bytes)
         }
         queue.add(
             enableIndications(measurementCharacteristic)
@@ -179,8 +194,27 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        // Session configuration is Phase 2
-        Log.d(TAG, "V2: configure called (stub for Phase 2)")
+        if (deviceId == null) deviceId = session.deviceId
+
+        val cmd = commandCharacteristic ?: run {
+            Log.e(TAG, "V2: Command characteristic not available")
+            return
+        }
+
+        val payload = buildMobileSessionPayload(session.uuid)
+
+        commandState = CommandState.WAITING_ACK
+        sessionReadyDeferred = CompletableDeferred()
+
+        writeCharacteristic(cmd, payload, WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
+                commandState = CommandState.IDLE
+                sessionReadyDeferred?.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: NewSessionConfig sent (${payload.size} bytes), uuid=${session.uuid}")
     }
 
     override fun reconnectMobileSession() {
@@ -201,6 +235,9 @@ class AirBeamMiniV2Configurator(
     override fun reset() {
         Log.d(TAG, "V2: Resetting")
         setTimeJob?.cancel()
+        commandState = CommandState.IDLE
+        sessionReadyDeferred?.cancel()
+        sessionReadyDeferred = null
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -281,6 +318,136 @@ class AirBeamMiniV2Configurator(
                 Log.w(TAG, "V2 Status: Unknown state 0x${state.toString(16)}, battery=$battery%")
             }
         }
+    }
+
+    // -- Response parsing --
+
+    private fun parseResponse(bytes: ByteArray) {
+        if (bytes.isEmpty()) return
+        val opcode = bytes[0].toInt() and 0xFF
+        Log.d(TAG, "V2 Response: opcode=0x${"%02x".format(opcode)}, state=$commandState")
+
+        when (opcode) {
+            RESPONSE_ACK -> {
+                if (commandState == CommandState.WAITING_ACK) {
+                    commandState = CommandState.WAITING_READY
+                    Log.d(TAG, "V2: Ack received, waiting for Ready")
+                }
+            }
+
+            RESPONSE_NACK -> {
+                val errorCode = if (bytes.size > 1) bytes[1].toInt() and 0xFF else -1
+                Log.e(TAG, "V2: Nack received, error code=$errorCode")
+                commandState = CommandState.IDLE
+                sessionReadyDeferred?.complete(false)
+            }
+
+            RESPONSE_READY -> {
+                if (commandState == CommandState.WAITING_READY) {
+                    Log.d(TAG, "V2: Ready received, session is active")
+                    commandState = CommandState.IDLE
+                    sessionReadyDeferred?.complete(true)
+                    onSessionReady()
+                }
+            }
+
+            else -> Log.w(TAG, "V2: Unknown response 0x${"%02x".format(opcode)}")
+        }
+    }
+
+    private fun onSessionReady() {
+        startHourlySetTime()
+    }
+
+    // -- Session config payload --
+
+    private fun buildMobileSessionPayload(sessionUuid: String): ByteArray {
+        // Mobile: 0x13 + 16B_UUID + 2B_interval(u16) + 0x01 = 20 bytes
+        val buffer = ByteBuffer.allocate(20).order(ByteOrder.LITTLE_ENDIAN)
+        buffer.put(OPCODE_NEW_SESSION)
+        buffer.put(uuidToLeBytes(sessionUuid))
+        buffer.putShort(1) // interval_seconds = 1
+        buffer.put(0x01)   // mobile mode
+        return buffer.array()
+    }
+
+    /**
+     * Convert a UUID string to 16-byte little-endian format as expected by firmware
+     * (Uuid::from_slice_le). First three groups are byte-reversed, last 8 bytes unchanged.
+     */
+    private fun uuidToLeBytes(uuidString: String): ByteArray {
+        val uuid = UUID.fromString(uuidString)
+        val msb = uuid.mostSignificantBits
+        val lsb = uuid.leastSignificantBits
+
+        // Standard big-endian byte order first
+        val std = ByteBuffer.allocate(16).order(ByteOrder.BIG_ENDIAN)
+            .putLong(msb)
+            .putLong(lsb)
+            .array()
+
+        // Reverse first 3 groups for LE encoding
+        return byteArrayOf(
+            std[3], std[2], std[1], std[0],  // time_low (4B reversed)
+            std[5], std[4],                    // time_mid (2B reversed)
+            std[7], std[6],                    // time_hi_and_version (2B reversed)
+            std[8], std[9], std[10], std[11],  // clock_seq + node (unchanged)
+            std[12], std[13], std[14], std[15]
+        )
+    }
+
+    // -- Measurement parsing --
+
+    private fun parseMeasurement(bytes: ByteArray) {
+        if (bytes.size < 9) {
+            Log.w(TAG, "V2: Measurement too short: ${bytes.size} bytes")
+            return
+        }
+
+        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        val count = buffer.get().toInt() and 0xFF
+        val timestamp = buffer.getInt().toLong() and 0xFFFFFFFFL
+        val pm1 = buffer.getShort().toInt() and 0xFFFF
+        val pm25 = buffer.getShort().toInt() and 0xFFFF
+
+        Log.d(TAG, "V2: Measurement count=$count, ts=$timestamp, PM1=$pm1, PM2.5=$pm25")
+
+        val devId = deviceId ?: "unknown"
+        val packageName = "AirBeamMini:$devId"
+
+        EventBus.getDefault().post(
+            NewMeasurementEvent(
+                sensorPackageName = packageName,
+                sensorName = "AirBeamMini-PM1",
+                measurementType = "Particulate Matter",
+                measurementShortType = "PM",
+                unitName = "microgram per cubic meter",
+                unitSymbol = "µg/m³",
+                thresholdVeryLow = 0,
+                thresholdLow = 9,
+                thresholdMedium = 35,
+                thresholdHigh = 55,
+                thresholdVeryHigh = 150,
+                measuredValue = pm1.toDouble()
+            )
+        )
+
+        EventBus.getDefault().post(
+            NewMeasurementEvent(
+                sensorPackageName = packageName,
+                sensorName = "AirBeamMini-PM2.5",
+                measurementType = "Particulate Matter",
+                measurementShortType = "PM",
+                unitName = "microgram per cubic meter",
+                unitSymbol = "µg/m³",
+                thresholdVeryLow = 0,
+                thresholdLow = 9,
+                thresholdMedium = 35,
+                thresholdHigh = 55,
+                thresholdVeryHigh = 150,
+                measuredValue = pm25.toDouble()
+            )
+        )
     }
 
     private fun logError(operation: String, status: Int) {

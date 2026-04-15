@@ -153,11 +153,19 @@ All numerical values encoded as **Little Endian**.
 
 ### D. `NewSessionConfig` (OpCode `0x13`)
 
-**Payload (Mobile):** `0x13` + `16B_UUID` + `16B_session_token` + `2B_interval_seconds(u16)` + `0x01`
+**Payload (Mobile):** `0x13` + `16B_UUID` + `2B_interval_seconds(u16)` + `0x01`
+Mobile sessions do **not** include `session_token` — the field is absent from the payload entirely.
 
 **Payload (Fixed):** `0x13` + `16B_UUID` + `16B_session_token` + `2B_interval_seconds(u16)` + `0x00` + `1B_pm1_index` + `1B_pm2_5_index` + `32B_WiFi_SSID` + `64B_WiFi_Password`
+Strings are null-byte padded to their container lengths. The `session_token` (16 bytes) is only included for fixed sessions (provided by backend API response).
 
-Strings are null-byte padded to their container lengths. The `session_token` (16 bytes) is included in the payload for both session types.
+### UUID Byte Encoding (Little-Endian)
+
+All UUIDs in V2 binary payloads use **mixed-endian (LE)** encoding, matching the firmware's `Uuid::from_slice_le()`:
+- The first three groups are byte-reversed: time_low (4B), time_mid (2B), time_hi_and_version (2B)
+- The last 8 bytes (clock_seq + node) remain in standard order
+
+Example: UUID `"a4a3a2a1-b2b1-c2c1-d1d2-d3d4d5d6d7d8"` encodes as bytes `[a1,a2,a3,a4, b1,b2, c1,c2, d1,d2,d3,d4,d5,d6,d7,d8]`.
 
 **Context:** Start recording a new session.
 
