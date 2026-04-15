@@ -123,7 +123,7 @@ abstract class SessionsRecyclerAdapter<ListenerType>(
     }
 
     private fun indexOfPresenter(deviceId: String): Int {
-        for (i in 0..mSessionPresenters.size()) {
+        for (i in 0 until mSessionPresenters.size()) {
             if (mSessionPresenters[i].session?.deviceId == deviceId)
                 return i
         }
