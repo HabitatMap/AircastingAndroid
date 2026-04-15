@@ -40,6 +40,15 @@ class SessionsRepository @Inject constructor(
         return sessionDBObject?.id
     }
 
+    suspend fun getMobileDisconnectedSessionIdByDeviceId(deviceId: String): Long? {
+        val sessionDBObject = mDatabase.sessions().loadSessionByDeviceIdStatusAndType(
+            deviceId,
+            Session.Status.DISCONNECTED, Session.Type.MOBILE
+        )
+
+        return sessionDBObject?.id
+    }
+
     suspend fun getSessionByUUID(uuid: String?): SessionDBObject? {
         uuid ?: return null
 

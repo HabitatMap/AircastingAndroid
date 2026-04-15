@@ -547,19 +547,14 @@ class AirBeamMiniV2Configurator(
         pm1Measurements: List<Measurement>,
         pm25Measurements: List<Measurement>,
     ) {
-        val sessionUuidBytes = savedSessionUuid
-        if (sessionUuidBytes == null) {
-            Log.w(TAG, "V2: No saved session UUID, cannot save sync measurements")
+        // Use device ID lookup (same as live measurement path) to avoid UUID encoding issues.
+        // Try RECORDING first, fallback to DISCONNECTED (session may not have been updated yet).
+        val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(devId)
+            ?: sessionsRepository.getMobileDisconnectedSessionIdByDeviceId(devId)
+        if (sessionId == null) {
+            Log.w(TAG, "V2: No mobile session found for deviceId=$devId, cannot save sync measurements")
             return
         }
-
-        val uuid = leBytesToUuid(sessionUuidBytes)
-        val sessionDbObject = sessionsRepository.getSessionByUUID(uuid)
-        if (sessionDbObject == null) {
-            Log.w(TAG, "V2: Session not found for UUID=$uuid, cannot save sync measurements")
-            return
-        }
-        val sessionId = sessionDbObject.id
 
         val packageName = "AirBeamMini:$devId"
 
@@ -597,7 +592,7 @@ class AirBeamMiniV2Configurator(
         measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
         activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, pm25Measurements)
 
-        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB for session $uuid")
+        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
     }
 
     // -- UUID LE conversion --
