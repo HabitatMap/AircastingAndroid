@@ -1,0 +1,315 @@
+# Airbeam Mini V2 Firmware: Android App Integration Guide
+
+This document outlines how BLE communication operates in the new Airbeam Mini firmware and how the Android app should integrate it. It serves as a comprehensive reference for implementation.
+
+---
+
+## 0. Key Differences from Old (V1) Firmware
+
+| Aspect | Old Firmware (V1) | New Firmware (V2) |
+| ------ | ----------------- | ----------------- |
+| **BLE Name** | `airbeammini` | `airbeammini` (same name) |
+| **Service UUID** | `0000ffdd-0000-1000-8000-00805f9b34fb` | `a0e1f000-0001-4b3c-8e9a-1f2d3c4b5a60` |
+| **Protocol** | `0xFE/0xFF`-wrapped ASCII hex messages via single config characteristic | Binary little-endian opcodes via dedicated Command characteristic |
+| **Characteristics** | Separate per-sensor (PM1, PM2.5, battery), config, SD card download | 5 purpose-based: Status, Command, Response, Measurement, Sync |
+| **Auth** | UUID + auth token sent after connection | No auth. Only UUID sent as part of session config |
+| **Measurement format** | Semicolon-delimited ASCII string (parsed by `ResponseParser`) | Binary: `[count_u8, timestamp_u32_LE, pm1_u16_LE, pm2_5_u16_LE]` |
+| **Battery level** | Separate BLE characteristic (`0000ffe7`) | Embedded in Status notification byte |
+| **Sync** | SD card CSV file download via dedicated characteristics | Binary records streamed via Sync characteristic (indicate) |
+| **Session config** | Multiple sequential messages (location, time, mode) | Single binary command `NewSessionConfig (0x13)` |
+| **Time sync** | Date string in `dd/MM/yy-HH:mm:ss` format | Unix epoch i64, sent every hour via `SetTime (0x15)` |
+| **Reconnection** | Reconfigure mobile session from scratch | `ContinueSession (0x10)` for mobile; Running state auto-streams |
+
+### Backward Compatibility
+
+The old V1 firmware implementation (`AirBeamMiniConfigurator`, `SyncableAirBeamConfigurator`, `HexMessagesBuilder`, etc.) must remain fully intact and operational. V2 is a parallel code path.
+
+---
+
+## 1. Device Detection (Old vs New Firmware)
+
+Both old and new firmware devices advertise as `"airbeammini"`. The app must distinguish them by the **advertised service UUID** in the BLE scan result.
+
+- **Old firmware** advertises service UUID: `0000ffdd-0000-1000-8000-00805f9b34fb`
+- **New firmware** advertises service UUID: `a0e1f000-0001-4b3c-8e9a-1f2d3c4b5a60`
+
+### Android Implementation
+
+During BLE scan, check `ScanResult.scanRecord.serviceUuids`:
+- If it contains `a0e1f000-0001-...` → V2 firmware → route to `AirBeamMiniV2Configurator`
+- If it contains `0000ffdd-...` (or no match) → V1 firmware → route to existing `AirBeamMiniConfigurator`
+
+Store a firmware version indicator on `DeviceItem` so the factory layer (`SyncableAirBeamConfiguratorFactory`, `AirBeamConnectorFactory`) can route correctly.
+
+### Existing files to modify
+- **`DeviceItem.kt`** — Add a firmware version field (e.g., `enum FirmwareVersion { V1, V2 }`)
+- **`AirBeamDiscoveryService.kt`** (or scan callback) — Extract advertised service UUID from `ScanResult` and pass to `DeviceItem`
+- **`SyncableAirBeamConfiguratorFactory.kt`** — Add V2 branch in `create()`
+- **`AirBeamConnectorFactory.kt`** — Route V2 devices appropriately
+
+---
+
+## 2. BLE GATT Infrastructure (V2)
+
+The device acts as a peripheral BLE GATT Server.
+
+**Service UUID:** `a0e1f000-0001-4b3c-8e9a-1f2d3c4b5a60`
+
+**Characteristics:**
+
+| Name | UUID | Permissions | Description |
+| ---- | ---- | ----------- | ----------- |
+| **Status** | `a0e1f000-0002-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends its state (Idle, Running, HasSavedSession) + battery level. |
+| **Command** | `a0e1f000-0003-4b3c-8e9a-1f2d3c4b5a60` | Write | App writes binary `AppCommand`s (little-endian byte streams). |
+| **Response** | `a0e1f000-0004-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends replies: Ack, Nack, Ready, SensorInfo, SyncInfo. |
+| **Measurement** | `a0e1f000-0005-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Live measurement stream during active session. |
+| **Sync** | `a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Historical measurement records during sync. |
+
+### Connection Flow (No Auth)
+
+1. Connect to device via BLE
+2. Discover service `a0e1f000-0001-...` in `isRequiredServiceSupported()`
+3. Subscribe to Status (notify), Response (notify), Measurement (indicate), Sync (indicate)
+4. Wait ~300ms for device to settle
+5. Device automatically sends Status notification with current state + battery level
+6. App reads Status and decides next action (no auth handshake needed)
+
+---
+
+## 3. Status Notifications (`Status` Characteristic)
+
+On connection (after ~300ms delay), the device sends a state notification. The app uses this to understand the device context.
+
+- `0x00` **Idle**: Payload = `[0x00, battery_level_u8]`. No ongoing session.
+- `0x01` **HasSavedSession**: Payload = `[0x01, battery_level_u8, session_uuid_16B_LE, has_measurements_u8_bool]`. Active session stored on device (device was turned off and on).
+- `0x02` **Running**: Payload = `[0x02, battery_level_u8, session_uuid_16B_LE]`. Session actively running.
+
+### Battery Level
+
+Battery level is a `u8` (signed `i8` in firmware, treat as percentage). It arrives:
+- In every Status notification (all states)
+- Updated with each live measurement sent (Status is re-notified alongside Measurement indications)
+
+This replaces the old separate battery characteristic (`0000ffe7`).
+
+### App Behavior per Status
+
+| Status | Mobile Session | Fixed Session |
+| ------ | -------------- | ------------- |
+| **Idle** | Start new session via `NewSessionConfig` | Start new session via `NewSessionConfig` |
+| **HasSavedSession** (no measurements) | Send `ContinueSession (0x10)` | N/A (fixed sessions don't reconnect this way) |
+| **HasSavedSession** (has measurements) | Must sync first (`StartSync`), then `ContinueSession` | Must sync first |
+| **Running** | Just subscribe — measurements flow automatically | Just subscribe — measurements flow automatically |
+
+---
+
+## 4. Responses (`Response` Characteristic)
+
+All replies to app commands arrive as notification bytes on the Response characteristic.
+
+- `0x20` **Ack**: Command understood. Wait for further replies (like `Ready`) if applicable.
+- `0x21` **Nack**: Command rejected. Next byte = Error Code:
+  - `0x01`: NoSession
+  - `0x02`: InvalidConfig (e.g., WiFi connection failed)
+  - `0x03`: StorageHasMeasurements
+  - `0x04`: ClearStorageFailed / SyncStorageFailed
+- `0x22` **Ready**: Procedure complete (e.g., WiFi connected, sync finished, storage cleared).
+- `0x23` **SensorInfo**: Response to `GetSensors`. Bytes after `0x23` = ASCII string `"PM1,μg/m3;PM2.5,μg/m3"`.
+- `0x24` **SyncInfo**: Response to `StartSync`. Bytes after `0x24` = `32B_WiFi_SSID_string` + `64B_WiFi_Password_string` (null-padded).
+
+---
+
+## 5. `AppCommand` Scenarios (`Command` Characteristic)
+
+All numerical values encoded as **Little Endian**.
+
+### A. `ContinueSession` (OpCode `0x10`)
+
+**Payload:** Single byte `0x10`.
+**Context:** Resume a saved session after device was turned off and on. **Only needed for mobile sessions.**
+
+- **Has Unsynced Measurements:** `Nack (0x03 StorageHasMeasurements)`. Must sync first.
+- **Has Clean Session:** `Ack (0x20)`, resumes running state.
+- **No Saved Session:** `Nack (0x01 NoSession)`.
+
+### B. `DiscardSession` (OpCode `0x11`)
+
+**Payload:** Single byte `0x11`.
+**Context:** Terminate session, wipe locally stored measurements. Also stops a running session.
+
+- `Ack (0x20)`, then attempts wipe.
+  - Success: `Ready (0x22)`.
+  - Failure: `Nack (0x04 ClearStorageFailed)`.
+
+### C. `StartSync` (OpCode `0x12`)
+
+**Payload:** Single byte `0x12`.
+**Context:** Push locally stored measurements through the **Sync** characteristic. Stops session if running.
+
+- `Ack (0x20)`, then `SyncInfo (0x24)` with WiFi SSID + password.
+- Historical records stream on Sync characteristic as chunked indications.
+  - Success: `Ready (0x22)`.
+  - Failure: `Nack (0x04)`.
+
+### D. `NewSessionConfig` (OpCode `0x13`)
+
+**Payload (Mobile):** `0x13` + `16B_UUID` + `16B_session_token` + `2B_interval_seconds(u16)` + `0x01`
+
+**Payload (Fixed):** `0x13` + `16B_UUID` + `16B_session_token` + `2B_interval_seconds(u16)` + `0x00` + `1B_pm1_index` + `1B_pm2_5_index` + `32B_WiFi_SSID` + `64B_WiFi_Password`
+
+Strings are null-byte padded to their container lengths. The `session_token` (16 bytes) is included in the payload for both session types.
+
+**Context:** Start recording a new session.
+
+- **Mobile:** `Ack (0x20)` → `Ready (0x22)` → starts tracking.
+- **Fixed:**
+  - `Ack (0x20)`.
+  - Firmware attempts WiFi connection with provided credentials.
+  - Success: `Ready (0x22)`.
+  - Failure: `Nack (0x02 InvalidConfig)`.
+
+### E. `GetSensors` (OpCode `0x14`)
+
+**Payload:** Single byte `0x14`.
+**Context:** Query which sensor metrics the hardware supports.
+
+- Response: `0x23` + ASCII bytes `"PM1,μg/m3;PM2.5,μg/m3"`.
+
+### F. `SetTime` (OpCode `0x15`)
+
+**Payload:** `0x15` + `8B_unix_epoch_seconds(i64_LE)`.
+**Context:** Synchronize firmware's internal RTC.
+
+- Updates internal system time. **No Ack emitted.**
+- **Must be sent on connection and repeated every hour.**
+
+---
+
+## 6. Measurement Data Format (Binary)
+
+### Live Measurements (`Measurement` Characteristic — Indicate)
+
+Single measurement, 9 bytes:
+```
+[count_u8=1, timestamp_u32_LE, pm1_u16_LE, pm2_5_u16_LE]
+```
+
+- `count`: Always `1` for live measurements.
+- `timestamp`: Unix epoch seconds, `u32` little-endian.
+- `pm1`: PM1.0 value in μg/m³, `u16` little-endian.
+- `pm2_5`: PM2.5 value in μg/m³, `u16` little-endian.
+
+After each live measurement indication, the device also re-notifies the Status characteristic with `Running` state (updating battery level).
+
+### Historical/Sync Measurements (`Sync` Characteristic — Indicate)
+
+Batched records, up to 244 bytes:
+```
+[count_u8, padding_2B, record_0(8B), record_1(8B), ...]
+```
+
+Each record is 8 bytes:
+```
+[timestamp_u32_LE, pm1_u16_LE, pm2_5_u16_LE]
+```
+
+- `count`: Number of records in this chunk.
+- Records start at byte offset 3.
+
+**This replaces the old SD card CSV file download entirely.** The old `SDCardReader`, `SDCardSyncService`, `SDCardCSVFileChecker`, and related classes are **not used** for V2.
+
+### Mapping to `NewMeasurementEvent`
+
+The V2 binary format does NOT include sensor metadata (package name, thresholds, etc.) like the old ASCII format. The app must construct `NewMeasurementEvent` using:
+- Sensor info from `GetSensors` response: `"PM1,μg/m3;PM2.5,μg/m3"`
+- Hardcoded thresholds matching the AirBeam Mini sensor profile
+- Device ID from the connected `DeviceItem`
+
+The old `ResponseParser` is **not reusable** for V2 — a new binary parser is needed.
+
+---
+
+## 7. Fixed Session Flow (Backend Integration)
+
+### Step-by-step
+
+1. App sends `GetSensors (0x14)` → receives `"PM1,μg/m3;PM2.5,μg/m3"`
+2. App calls backend `POST /api/v3/fixed_sessions`:
+
+**Request:**
+```json
+{
+  "uuid": "<session-uuid>",
+  "title": "...",
+  "latitude": 40.7128,
+  "longitude": -74.006,
+  "contribute": true,
+  "is_indoor": false,
+  "airbeam": {
+    "mac_address": "AA:BB:CC:DD:EE:FF",
+    "model": "AirBeamMini",
+    "name": "..."
+  },
+  "streams": [
+    { "sensor_name": "AirBeamMini-PM1", "unit_symbol": "µg/m³" },
+    { "sensor_name": "AirBeamMini-PM2.5", "unit_symbol": "µg/m³" }
+  ]
+}
+```
+
+**Response:**
+```json
+{
+  "location": "http://aircasting.org/s/ab12c",
+  "session_token": "a3f2c1d4e5b6a7f8c9d0e1f2a3b4c5d6",
+  "streams": [
+    { "sensor_name": "AirBeam-PM2.5", "sensor_type_id": 2 }
+  ]
+}
+```
+
+3. `streams[].sensor_type_id` values become `pm1_index` and `pm2_5_index` in the `NewSessionConfig` payload
+4. `session_token` is included in the `NewSessionConfig` payload (16 bytes)
+5. App sends `NewSessionConfig (0x13)` with all the above data + WiFi credentials
+
+---
+
+## 8. Android Implementation Plan
+
+### New Files to Create
+
+| File | Purpose |
+| ---- | ------- |
+| `AirBeamMiniV2Configurator.kt` | `BleManager` subclass handling V2 GATT, subscriptions, command writing, response/status parsing |
+| `AirBeamMiniV2CommandBuilder.kt` | Builds binary LE payloads for all opcodes (replaces `HexMessagesBuilder` for V2) |
+| `AirBeamMiniV2MeasurementParser.kt` | Parses binary measurement data from Measurement and Sync characteristics into `NewMeasurementEvent` |
+
+### Existing Files to Modify (Minimal)
+
+| File | Change |
+| ---- | ------ |
+| `DeviceItem.kt` | Add `FirmwareVersion` enum (V1/V2) field, populated from advertised service UUID |
+| `AirBeamDiscoveryService.kt` | Extract advertised service UUID from `ScanResult.scanRecord.serviceUuids` during discovery |
+| `SyncableAirBeamConfiguratorFactory.kt` | Add V2 branch in `create()` method |
+| `AirBeamConnectorFactory.kt` | Route V2 devices to appropriate connector/configurator |
+
+### Files NOT Modified (Old Firmware Untouched)
+
+- `AirBeamMiniConfigurator.kt`
+- `SyncableAirBeamConfigurator.kt`
+- `HexMessagesBuilder.kt`
+- `ResponseParser.kt`
+- `SyncableAirBeamReader.kt`
+- `SDCardReader.kt`, `SDCardSyncService.kt`, `SDCardCSVFileChecker*.kt`, `SDCardFileService*.kt`
+- `AirBeam2Configurator.kt`, `AirBeam2Connector.kt`, `AirBeam2Reader.kt`
+- `AirBeam3Configurator.kt`
+
+---
+
+## 9. `SetTime` Periodic Scheduling
+
+`SetTime (0x15)` must be sent:
+1. Immediately after connection (once Status is received)
+2. Every hour while connected
+
+The app should schedule a repeating timer/coroutine for this. The command does not produce an Ack response.
