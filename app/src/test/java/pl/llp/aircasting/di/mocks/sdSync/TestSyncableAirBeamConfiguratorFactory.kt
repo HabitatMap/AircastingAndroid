@@ -1,6 +1,9 @@
 package pl.llp.aircasting.di.mocks.sdSync
 
 import android.content.Context
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -25,6 +28,9 @@ class TestSyncableAirBeamConfiguratorFactory(
     private val await: RequestQueueCall,
     coroutineScope: CoroutineScope = CoroutineScope(kotlinx.coroutines.Dispatchers.Main),
     batteryLevelFlow: MutableSharedFlow<Int> = MutableSharedFlow(),
+    sessionsRepository: SessionsRepository,
+    measurementStreamsRepository: MeasurementStreamsRepository,
+    measurementsRepository: MeasurementsRepository,
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -35,6 +41,9 @@ class TestSyncableAirBeamConfiguratorFactory(
     await,
     coroutineScope,
     batteryLevelFlow,
+    sessionsRepository,
+    measurementStreamsRepository,
+    measurementsRepository,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
@@ -73,6 +82,9 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     private val await: RequestQueueCall,
     coroutineScope: CoroutineScope = CoroutineScope(kotlinx.coroutines.Dispatchers.Main),
     batteryLevelFlow: MutableSharedFlow<Int> = MutableSharedFlow(),
+    sessionsRepository: SessionsRepository,
+    measurementStreamsRepository: MeasurementStreamsRepository,
+    measurementsRepository: MeasurementsRepository,
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -83,6 +95,9 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     await,
     coroutineScope,
     batteryLevelFlow,
+    sessionsRepository,
+    measurementStreamsRepository,
+    measurementsRepository,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestEmptyABMiniConfigurator(

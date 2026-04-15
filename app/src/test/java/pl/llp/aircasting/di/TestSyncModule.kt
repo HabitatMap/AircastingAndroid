@@ -3,6 +3,9 @@ package pl.llp.aircasting.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.di.mocks.sdSync.TestEmptySyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.di.mocks.sdSync.TestSyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.Settings
@@ -29,6 +32,9 @@ object TestSyncModule {
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
         await: RequestQueueCall.Await,
+        sessionsRepository: SessionsRepository,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = TestSyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -39,6 +45,9 @@ object TestSyncModule {
         await,
         CoroutineScope(Dispatchers.Main),
         MutableSharedFlow(),
+        sessionsRepository,
+        measurementStreamsRepository,
+        measurementsRepository,
     )
 
     @UserSessionScope
@@ -52,6 +61,9 @@ object TestSyncModule {
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
         await: RequestQueueCall.Await,
+        sessionsRepository: SessionsRepository,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = TestEmptySyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -62,6 +74,9 @@ object TestSyncModule {
         await,
         CoroutineScope(Dispatchers.Main),
         MutableSharedFlow(),
+        sessionsRepository,
+        measurementStreamsRepository,
+        measurementsRepository,
     )
 
     @Qualifier

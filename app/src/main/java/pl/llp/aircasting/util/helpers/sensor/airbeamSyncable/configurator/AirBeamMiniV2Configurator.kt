@@ -18,8 +18,14 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.data.model.Measurement
+import pl.llp.aircasting.data.model.MeasurementStream
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import java.util.Date
 import java.util.UUID
 
 class AirBeamMiniV2Configurator(
@@ -27,6 +33,9 @@ class AirBeamMiniV2Configurator(
     private val errorHandler: ErrorHandler,
     private val coroutineScope: CoroutineScope,
     private val batteryLevelFlow: MutableSharedFlow<Int>,
+    private val sessionsRepository: SessionsRepository,
+    private val measurementStreamsRepository: MeasurementStreamsRepository,
+    private val measurementsRepository: MeasurementsRepository,
 ) : BleManager(applicationContext), AirBeamBleConfigurator {
 
     companion object {
@@ -44,8 +53,11 @@ class AirBeamMiniV2Configurator(
         private val SYNC_UUID: UUID =
             UUID.fromString("a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60")
 
+        private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
+
+        private const val SYNC_RECORD_SIZE = 8
 
         private const val STATE_IDLE: Int = 0x00
         private const val STATE_HAS_SAVED_SESSION: Int = 0x01
@@ -145,10 +157,10 @@ class AirBeamMiniV2Configurator(
                 .fail { _, status -> logError("measurement indication", status) }
         ).add(sleep(300))
 
-        // Sync indications
+        // Sync indications (historical measurements streamed on reconnect)
         setNotificationCallback(syncCharacteristic).with { _, data ->
             val bytes = data.value ?: return@with
-            Log.d(TAG, "V2 Sync received: ${bytes.size} bytes")
+            parseSyncChunk(bytes)
         }
         queue.add(
             enableIndications(syncCharacteristic)
@@ -218,8 +230,25 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun reconnectMobileSession() {
-        // Reconnection is Phase 3
-        Log.d(TAG, "V2: reconnectMobileSession called (stub for Phase 3)")
+        sendSetTime()
+
+        when (currentState) {
+            DeviceState.RUNNING -> {
+                // Sync + live data already flowing automatically
+                startHourlySetTime()
+                Log.d(TAG, "V2: Device Running, sync + live measurements flowing")
+            }
+
+            DeviceState.HAS_SAVED_SESSION -> {
+                // Must send ContinueSession to activate; device then streams sync + live
+                sendContinueSession()
+                Log.d(TAG, "V2: HasSavedSession, sending ContinueSession")
+            }
+
+            else -> {
+                Log.w(TAG, "V2: Unexpected state on reconnect: $currentState")
+            }
+        }
     }
 
     override fun triggerSDCardDownload() {
@@ -448,6 +477,146 @@ class AirBeamMiniV2Configurator(
                 measuredValue = pm25.toDouble()
             )
         )
+    }
+
+    // -- ContinueSession --
+
+    private fun sendContinueSession() {
+        val cmd = commandCharacteristic ?: run {
+            Log.e(TAG, "V2: Command characteristic not available for ContinueSession")
+            return
+        }
+
+        commandState = CommandState.WAITING_ACK
+        sessionReadyDeferred = CompletableDeferred()
+
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: ContinueSession write failed, status=$status")
+                commandState = CommandState.IDLE
+                sessionReadyDeferred?.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: ContinueSession sent")
+    }
+
+    // -- Sync chunk parsing & DB saving --
+
+    private fun parseSyncChunk(bytes: ByteArray) {
+        if (bytes.size < 3) {
+            Log.w(TAG, "V2: Sync chunk too short: ${bytes.size} bytes")
+            return
+        }
+
+        val buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN)
+        val count = buffer.get().toInt() and 0xFF
+        buffer.position(3) // skip 2 padding bytes
+
+        val expectedSize = 3 + count * SYNC_RECORD_SIZE
+        if (bytes.size < expectedSize) {
+            Log.w(TAG, "V2: Sync chunk too short for $count records: ${bytes.size} < $expectedSize bytes")
+            return
+        }
+
+        val devId = deviceId ?: "unknown"
+        val pm1Measurements = mutableListOf<Measurement>()
+        val pm25Measurements = mutableListOf<Measurement>()
+
+        for (i in 0 until count) {
+            val timestamp = buffer.getInt().toLong() and 0xFFFFFFFFL
+            val pm1 = buffer.getShort().toInt() and 0xFFFF
+            val pm25 = buffer.getShort().toInt() and 0xFFFF
+            val time = Date(timestamp * 1000)
+
+            pm1Measurements.add(Measurement(pm1.toDouble(), time))
+            pm25Measurements.add(Measurement(pm25.toDouble(), time))
+        }
+
+        Log.d(TAG, "V2: Sync chunk parsed: $count records")
+
+        coroutineScope.launch {
+            saveSyncChunkToDb(devId, pm1Measurements, pm25Measurements)
+        }
+    }
+
+    private suspend fun saveSyncChunkToDb(
+        devId: String,
+        pm1Measurements: List<Measurement>,
+        pm25Measurements: List<Measurement>,
+    ) {
+        val sessionUuidBytes = savedSessionUuid
+        if (sessionUuidBytes == null) {
+            Log.w(TAG, "V2: No saved session UUID, cannot save sync measurements")
+            return
+        }
+
+        val uuid = leBytesToUuid(sessionUuidBytes)
+        val sessionDbObject = sessionsRepository.getSessionByUUID(uuid)
+        if (sessionDbObject == null) {
+            Log.w(TAG, "V2: Session not found for UUID=$uuid, cannot save sync measurements")
+            return
+        }
+        val sessionId = sessionDbObject.id
+
+        val packageName = "AirBeamMini:$devId"
+
+        val pm1Stream = MeasurementStream(
+            sensorPackageName = packageName,
+            sensorName = "AirBeamMini-PM1",
+            measurementType = "Particulate Matter",
+            measurementShortType = "PM",
+            unitName = "microgram per cubic meter",
+            unitSymbol = "µg/m³",
+            thresholdVeryLow = 0,
+            thresholdLow = 9,
+            thresholdMedium = 35,
+            thresholdHigh = 55,
+            thresholdVeryHigh = 150,
+        )
+        val pm1StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm1Stream)
+        measurementsRepository.insertAll(pm1StreamId, sessionId, pm1Measurements)
+
+        val pm25Stream = MeasurementStream(
+            sensorPackageName = packageName,
+            sensorName = "AirBeamMini-PM2.5",
+            measurementType = "Particulate Matter",
+            measurementShortType = "PM",
+            unitName = "microgram per cubic meter",
+            unitSymbol = "µg/m³",
+            thresholdVeryLow = 0,
+            thresholdLow = 9,
+            thresholdMedium = 35,
+            thresholdHigh = 55,
+            thresholdVeryHigh = 150,
+        )
+        val pm25StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm25Stream)
+        measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
+
+        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB for session $uuid")
+    }
+
+    // -- UUID LE conversion --
+
+    /**
+     * Reverse of [uuidToLeBytes]: reconstruct a UUID string from 16-byte mixed-endian encoding.
+     */
+    private fun leBytesToUuid(bytes: ByteArray): String {
+        require(bytes.size == 16) { "UUID must be 16 bytes, got ${bytes.size}" }
+
+        // Reverse the first 3 groups back to big-endian
+        val std = byteArrayOf(
+            bytes[3], bytes[2], bytes[1], bytes[0],   // time_low
+            bytes[5], bytes[4],                         // time_mid
+            bytes[7], bytes[6],                         // time_hi_and_version
+            bytes[8], bytes[9], bytes[10], bytes[11],   // clock_seq + node
+            bytes[12], bytes[13], bytes[14], bytes[15]
+        )
+
+        val buffer = ByteBuffer.wrap(std)
+        val msb = buffer.long
+        val lsb = buffer.long
+        return UUID(msb, lsb).toString()
     }
 
     private fun logError(operation: String, status: Int) {

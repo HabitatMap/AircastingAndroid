@@ -5,6 +5,9 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -28,6 +31,9 @@ object SyncModule {
         await: RequestQueueCall.Await,
         @IoCoroutineScope coroutineScope: CoroutineScope,
         @BatteryLevelFlow batteryLevelFlow: MutableSharedFlow<Int>,
+        sessionsRepository: SessionsRepository,
+        measurementStreamsRepository: MeasurementStreamsRepository,
+        measurementsRepository: MeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -38,5 +44,8 @@ object SyncModule {
         await,
         coroutineScope,
         batteryLevelFlow,
+        sessionsRepository,
+        measurementStreamsRepository,
+        measurementsRepository,
     )
 }

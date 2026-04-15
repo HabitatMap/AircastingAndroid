@@ -63,7 +63,7 @@ The device acts as a peripheral BLE GATT Server.
 | **Command** | `a0e1f000-0003-4b3c-8e9a-1f2d3c4b5a60` | Write | App writes binary `AppCommand`s (little-endian byte streams). |
 | **Response** | `a0e1f000-0004-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends replies: Ack, Nack, Ready, SensorInfo, SyncInfo. |
 | **Measurement** | `a0e1f000-0005-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Live measurement stream during active session. |
-| **Sync** | `a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Historical measurement records during sync. |
+| **Sync** | `a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Device streams historical (stored) measurements automatically after reconnection. Not manually triggered. |
 
 ### Connection Flow (No Auth)
 
@@ -97,9 +97,10 @@ This replaces the old separate battery characteristic (`0000ffe7`).
 | Status | Mobile Session | Fixed Session |
 | ------ | -------------- | ------------- |
 | **Idle** | Start new session via `NewSessionConfig` | Start new session via `NewSessionConfig` |
-| **HasSavedSession** (no measurements) | Send `ContinueSession (0x10)` | N/A (fixed sessions don't reconnect this way) |
-| **HasSavedSession** (has measurements) | Must sync first (`StartSync`), then `ContinueSession` | Must sync first |
-| **Running** | Just subscribe — measurements flow automatically | Just subscribe — measurements flow automatically |
+| **HasSavedSession** | Send `ContinueSession (0x10)` — device transitions to Running and streams both sync + live data | N/A (fixed sessions don't reconnect this way) |
+| **Running** | Sync + live data flow automatically (interleaved). No command needed. | Just subscribe — measurements flow automatically |
+
+**Note:** Sync data (stored measurements) streams automatically on the Sync characteristic — there is no manual trigger. For `HasSavedSession`, sending `ContinueSession` activates the device and starts both sync and live data. For `Running` (e.g., phone went out of range), both flows start automatically on reconnection.
 
 ---
 
@@ -291,3 +292,42 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 2. Every hour while connected — **only for mobile sessions**. Fixed sessions get time from the backend server, so hourly scheduling is not needed.
 
 The app should schedule a repeating timer/coroutine for this. The command does not produce an Ack response.
+
+---
+
+## 9. Mobile Session Reconnection (Phase 3)
+
+When the app reconnects to the device during an active mobile session, two scenarios apply:
+
+### Scenario A: Device was Running (phone went out of range)
+
+The device continued recording while disconnected. On BLE reconnect:
+1. Status notification = `Running (0x02)`
+2. **No command needed** — device automatically streams:
+   - Stored measurements on **Sync characteristic** (batched indications)
+   - Live measurements on **Measurement characteristic**
+   - Both can be interleaved
+3. App parses Sync indications and saves each chunk to DB with original timestamps
+4. When all stored data is streamed, Status re-notifies as `Running` with `has_measurements=false`
+
+### Scenario B: Device was power-cycled (HasSavedSession)
+
+The device was turned off and back on. On BLE reconnect:
+1. Status notification = `HasSavedSession (0x01)` with `has_measurements` flag
+2. App sends `ContinueSession (0x10)` — device transitions to Running immediately
+3. From here, same as Scenario A: sync + live data flow interleaved
+4. App parses and saves sync chunks to DB
+
+### Sync Data Format (Sync Characteristic — Indicate)
+
+Batched records, up to 244 bytes:
+```
+[count_u8, padding_2B, record_0(8B), record_1(8B), ...]
+```
+Each 8-byte record: `[timestamp_u32_LE, pm1_u16_LE, pm2_5_u16_LE]`
+
+Each chunk is saved to the DB immediately (not accumulated) since there can be many stored measurements.
+
+### Key Implementation Detail
+
+`StartSync (0x12)` is **NOT** used for mobile reconnection sync. The sync is automatic. `StartSync` may be used for other purposes (e.g., fixed session sync) but is not part of the mobile reconnection flow.
