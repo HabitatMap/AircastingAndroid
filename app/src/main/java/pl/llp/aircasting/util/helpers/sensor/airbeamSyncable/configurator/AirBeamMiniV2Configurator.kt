@@ -506,6 +506,8 @@ class AirBeamMiniV2Configurator(
     // -- Sync chunk parsing & DB saving --
 
     private fun parseSyncChunk(bytes: ByteArray) {
+        Log.d(TAG, "V2: Sync callback fired, ${bytes.size} bytes, deviceId=$deviceId")
+
         if (bytes.size < 3) {
             Log.w(TAG, "V2: Sync chunk too short: ${bytes.size} bytes")
             return
@@ -521,7 +523,10 @@ class AirBeamMiniV2Configurator(
             return
         }
 
-        val devId = deviceId ?: "unknown"
+        val devId = deviceId ?: run {
+            Log.e(TAG, "V2: deviceId is null when sync chunk arrived, cannot save")
+            return
+        }
         val pm1Measurements = mutableListOf<Measurement>()
         val pm25Measurements = mutableListOf<Measurement>()
 
@@ -535,10 +540,14 @@ class AirBeamMiniV2Configurator(
             pm25Measurements.add(Measurement(pm25.toDouble(), time))
         }
 
-        Log.d(TAG, "V2: Sync chunk parsed: $count records")
+        Log.d(TAG, "V2: Sync chunk parsed: $count records, first ts=${pm1Measurements.firstOrNull()?.time}")
 
         coroutineScope.launch {
-            saveSyncChunkToDb(devId, pm1Measurements, pm25Measurements)
+            try {
+                saveSyncChunkToDb(devId, pm1Measurements, pm25Measurements)
+            } catch (e: Exception) {
+                Log.e(TAG, "V2: saveSyncChunkToDb EXCEPTION", e)
+            }
         }
     }
 
@@ -547,12 +556,15 @@ class AirBeamMiniV2Configurator(
         pm1Measurements: List<Measurement>,
         pm25Measurements: List<Measurement>,
     ) {
-        // Use device ID lookup (same as live measurement path) to avoid UUID encoding issues.
-        // Try RECORDING first, fallback to DISCONNECTED (session may not have been updated yet).
-        val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(devId)
-            ?: sessionsRepository.getMobileDisconnectedSessionIdByDeviceId(devId)
+        Log.d(TAG, "V2: saveSyncChunkToDb called, devId=$devId, pm1Count=${pm1Measurements.size}")
+
+        val recordingId = sessionsRepository.getMobileActiveSessionIdByDeviceId(devId)
+        val disconnectedId = sessionsRepository.getMobileDisconnectedSessionIdByDeviceId(devId)
+        Log.d(TAG, "V2: Session lookup: recordingId=$recordingId, disconnectedId=$disconnectedId")
+
+        val sessionId = recordingId ?: disconnectedId
         if (sessionId == null) {
-            Log.w(TAG, "V2: No mobile session found for deviceId=$devId, cannot save sync measurements")
+            Log.e(TAG, "V2: No mobile session found for deviceId=$devId, cannot save sync measurements")
             return
         }
 
@@ -572,8 +584,10 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm1StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm1Stream)
+        Log.d(TAG, "V2: PM1 streamId=$pm1StreamId, inserting ${pm1Measurements.size} measurements")
         measurementsRepository.insertAll(pm1StreamId, sessionId, pm1Measurements)
         activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm1StreamId, sessionId, pm1Measurements)
+        Log.d(TAG, "V2: PM1 measurements inserted successfully")
 
         val pm25Stream = MeasurementStream(
             sensorPackageName = packageName,
@@ -589,8 +603,10 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm25StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm25Stream)
+        Log.d(TAG, "V2: PM2.5 streamId=$pm25StreamId, inserting ${pm25Measurements.size} measurements")
         measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
         activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, pm25Measurements)
+        Log.d(TAG, "V2: PM2.5 measurements inserted successfully")
 
         Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
     }
