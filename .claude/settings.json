@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(/local.properties)",
+      "Edit(/local.properties)",
+      "Read(/app/google-services.json)",
+      "Edit(/app/google-services.json)"
+    ]
+  }
+}
