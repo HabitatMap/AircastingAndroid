@@ -5,6 +5,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -34,6 +35,7 @@ object SyncModule {
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepository,
+        activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -47,5 +49,6 @@ object SyncModule {
         sessionsRepository,
         measurementStreamsRepository,
         measurementsRepository,
+        activeSessionMeasurementsRepository,
     )
 }

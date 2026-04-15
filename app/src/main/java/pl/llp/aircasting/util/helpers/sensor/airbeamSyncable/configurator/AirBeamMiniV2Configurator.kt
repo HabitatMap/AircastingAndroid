@@ -18,6 +18,7 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -36,6 +37,7 @@ class AirBeamMiniV2Configurator(
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
 ) : BleManager(applicationContext), AirBeamBleConfigurator {
 
     companion object {
@@ -576,6 +578,7 @@ class AirBeamMiniV2Configurator(
         )
         val pm1StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm1Stream)
         measurementsRepository.insertAll(pm1StreamId, sessionId, pm1Measurements)
+        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm1StreamId, sessionId, pm1Measurements)
 
         val pm25Stream = MeasurementStream(
             sensorPackageName = packageName,
@@ -592,6 +595,7 @@ class AirBeamMiniV2Configurator(
         )
         val pm25StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm25Stream)
         measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
+        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, pm25Measurements)
 
         Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB for session $uuid")
     }

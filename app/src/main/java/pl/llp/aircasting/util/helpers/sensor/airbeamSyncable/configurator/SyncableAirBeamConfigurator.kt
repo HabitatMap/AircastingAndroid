@@ -26,6 +26,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileServic
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -46,6 +47,7 @@ open class SyncableAirBeamConfiguratorFactory(
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
 ) {
     private lateinit var sdCardReader: SDCardReader
 
@@ -57,6 +59,7 @@ open class SyncableAirBeamConfiguratorFactory(
         sessionsRepository,
         measurementStreamsRepository,
         measurementsRepository,
+        activeSessionMeasurementsRepository,
     )
 
     open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {

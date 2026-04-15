@@ -3,6 +3,7 @@ package pl.llp.aircasting.di
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -35,6 +36,7 @@ object TestSyncModule {
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepository,
+        activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = TestSyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -48,6 +50,7 @@ object TestSyncModule {
         sessionsRepository,
         measurementStreamsRepository,
         measurementsRepository,
+        activeSessionMeasurementsRepository,
     )
 
     @UserSessionScope
@@ -64,6 +67,7 @@ object TestSyncModule {
         sessionsRepository: SessionsRepository,
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepository,
+        activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     ): SyncableAirBeamConfiguratorFactory = TestEmptySyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -77,6 +81,7 @@ object TestSyncModule {
         sessionsRepository,
         measurementStreamsRepository,
         measurementsRepository,
+        activeSessionMeasurementsRepository,
     )
 
     @Qualifier

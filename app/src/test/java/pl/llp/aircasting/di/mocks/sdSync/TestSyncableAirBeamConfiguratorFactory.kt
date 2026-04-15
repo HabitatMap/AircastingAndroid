@@ -1,6 +1,7 @@
 package pl.llp.aircasting.di.mocks.sdSync
 
 import android.content.Context
+import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -31,6 +32,7 @@ class TestSyncableAirBeamConfiguratorFactory(
     sessionsRepository: SessionsRepository,
     measurementStreamsRepository: MeasurementStreamsRepository,
     measurementsRepository: MeasurementsRepository,
+    activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -44,6 +46,7 @@ class TestSyncableAirBeamConfiguratorFactory(
     sessionsRepository,
     measurementStreamsRepository,
     measurementsRepository,
+    activeSessionMeasurementsRepository,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
@@ -85,6 +88,7 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     sessionsRepository: SessionsRepository,
     measurementStreamsRepository: MeasurementStreamsRepository,
     measurementsRepository: MeasurementsRepository,
+    activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -98,6 +102,7 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     sessionsRepository,
     measurementStreamsRepository,
     measurementsRepository,
+    activeSessionMeasurementsRepository,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestEmptyABMiniConfigurator(
