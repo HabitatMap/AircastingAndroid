@@ -8,8 +8,8 @@ import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import pl.llp.aircasting.data.api.util.TAG
@@ -262,7 +262,7 @@ class AirBeamMiniV2Configurator(
                 currentState = DeviceState.HAS_SAVED_SESSION
                 if (bytes.size >= 19) {
                     savedSessionUuid = bytes.copyOfRange(2, 18)
-                    hasSavedMeasurements = bytes.size >= 19 && bytes[18].toInt() != 0
+                    hasSavedMeasurements = bytes[18].toInt() != 0
                 }
                 Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, hasMeasurements=$hasSavedMeasurements")
             }
