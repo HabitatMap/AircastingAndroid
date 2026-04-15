@@ -11,6 +11,8 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirB
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
 class TestSyncableAirBeamConfiguratorFactory(
@@ -21,6 +23,8 @@ class TestSyncableAirBeamConfiguratorFactory(
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardFileServiceProvider: SDCardFileServiceProvider,
     private val await: RequestQueueCall,
+    coroutineScope: CoroutineScope = CoroutineScope(kotlinx.coroutines.Dispatchers.Main),
+    batteryLevelFlow: MutableSharedFlow<Int> = MutableSharedFlow(),
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -28,7 +32,9 @@ class TestSyncableAirBeamConfiguratorFactory(
     hexMessagesBuilder,
     syncableAirBeamReader,
     sdCardFileServiceProvider,
-    await
+    await,
+    coroutineScope,
+    batteryLevelFlow,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
@@ -65,6 +71,8 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardFileServiceProvider: SDCardFileServiceProvider,
     private val await: RequestQueueCall,
+    coroutineScope: CoroutineScope = CoroutineScope(kotlinx.coroutines.Dispatchers.Main),
+    batteryLevelFlow: MutableSharedFlow<Int> = MutableSharedFlow(),
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -72,7 +80,9 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     hexMessagesBuilder,
     syncableAirBeamReader,
     sdCardFileServiceProvider,
-    await
+    await,
+    coroutineScope,
+    batteryLevelFlow,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestEmptyABMiniConfigurator(

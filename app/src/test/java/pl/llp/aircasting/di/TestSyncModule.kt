@@ -12,6 +12,9 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.Syncab
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Qualifier
 
 @Module
@@ -33,7 +36,9 @@ object TestSyncModule {
         hexMessagesBuilder,
         syncableAirBeamReader,
         sdCardFileServiceProvider,
-        await
+        await,
+        CoroutineScope(Dispatchers.Main),
+        MutableSharedFlow(),
     )
 
     @UserSessionScope
@@ -54,7 +59,9 @@ object TestSyncModule {
         hexMessagesBuilder,
         syncableAirBeamReader,
         sdCardFileServiceProvider,
-        await
+        await,
+        CoroutineScope(Dispatchers.Main),
+        MutableSharedFlow(),
     )
 
     @Qualifier

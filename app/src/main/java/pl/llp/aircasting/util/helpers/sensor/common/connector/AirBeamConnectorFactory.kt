@@ -6,6 +6,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector.AirBeam2Connector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector.AirBeamMiniFallbackConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector.SyncableAirBeamConnector
 
 open class AirBeamConnectorFactory(
@@ -17,7 +18,15 @@ open class AirBeamConnectorFactory(
 ) {
     open fun get(deviceItem: DeviceItem): AirBeamConnector {
         return when (deviceItem.type) {
-            DeviceItem.Type.AIRBEAM3, DeviceItem.Type.AIRBEAMMINI -> SyncableAirBeamConnector(
+            DeviceItem.Type.AIRBEAMMINI -> AirBeamMiniFallbackConnector(
+                applicationContext,
+                mErrorHandler,
+                bluetoothManager,
+                v2Configurator = syncableAirBeamConfiguratorFactory.createV2(),
+                v1Configurator = syncableAirBeamConfiguratorFactory.create(deviceItem.type),
+            )
+
+            DeviceItem.Type.AIRBEAM3 -> SyncableAirBeamConnector(
                 applicationContext,
                 mErrorHandler,
                 bluetoothManager,

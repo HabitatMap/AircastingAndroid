@@ -24,6 +24,8 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirB
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.Date
 import java.util.TimeZone
 import java.util.UUID
@@ -36,8 +38,18 @@ open class SyncableAirBeamConfiguratorFactory(
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardFileServiceProvider: SDCardFileServiceProvider,
     private val await: RequestQueueCall,
+    private val coroutineScope: CoroutineScope,
+    private val batteryLevelFlow: MutableSharedFlow<Int>,
 ) {
     private lateinit var sdCardReader: SDCardReader
+
+    open fun createV2(): AirBeamMiniV2Configurator = AirBeamMiniV2Configurator(
+        applicationContext,
+        mErrorHandler,
+        coroutineScope,
+        batteryLevelFlow,
+    )
+
     open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
         sdCardReader = SDCardReader(
             sdCardFileServiceProvider.get(type)
@@ -74,7 +86,7 @@ abstract class SyncableAirBeamConfigurator(
     private val syncableAirBeamReader: SyncableAirBeamReader,
     private val sdCardReader: SDCardReader,
     private val await: RequestQueueCall,
-) : BleManager(applicationContext) {
+) : BleManager(applicationContext), AirBeamBleConfigurator {
     companion object {
         val SERVICE_UUID: UUID = UUID.fromString("0000ffdd-0000-1000-8000-00805f9b34fb")
         const val MAX_MTU = 517
@@ -110,7 +122,21 @@ abstract class SyncableAirBeamConfigurator(
     private var downloadFromSDCardCharacteristic: BluetoothGattCharacteristic? = null
     private var downloadMetaDataFromSDCardCharacteristic: BluetoothGattCharacteristic? = null
 
-    fun sendAuth(uuid: String) {
+    // -- AirBeamBleConfigurator bridge methods --
+
+    override fun setObserver(observer: no.nordicsemi.android.ble.observer.ConnectionObserver) {
+        connectionObserver = observer
+    }
+
+    override fun connectDevice(device: android.bluetooth.BluetoothDevice): no.nordicsemi.android.ble.ConnectRequest {
+        return connect(device)
+    }
+
+    override fun closeConnection() {
+        close()
+    }
+
+    override fun sendAuth(uuid: String) {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -120,7 +146,7 @@ abstract class SyncableAirBeamConfigurator(
             .enqueue()
     }
 
-    fun configure(
+    override fun configure(
         session: Session,
         wifiSSID: String?,
         wifiPassword: String?
@@ -144,7 +170,7 @@ abstract class SyncableAirBeamConfigurator(
         }
     }
 
-    open fun reconnectMobileSession() {
+    override fun reconnectMobileSession() {
         val location = Session.Location.get(LocationHelper.lastLocation())
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)
         Log.d(
@@ -155,7 +181,7 @@ abstract class SyncableAirBeamConfigurator(
         configureMobileSession(location, dateString)
     }
 
-    open fun triggerSDCardDownload() {
+    override fun triggerSDCardDownload() {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
         beginAtomicRequestQueue()
@@ -166,7 +192,7 @@ abstract class SyncableAirBeamConfigurator(
             .enqueue()
     }
 
-    suspend fun clearSDCard() {
+    override suspend fun clearSDCard() {
         configurationCharacteristic?.writeType = WRITE_TYPE_DEFAULT
 
         try {
@@ -346,7 +372,7 @@ abstract class SyncableAirBeamConfigurator(
         )
     }
 
-    fun reset() {
+    override fun reset() {
         Log.d(TAG, "Resetting")
         measurementsCharacteristics = null
         configurationCharacteristic = null

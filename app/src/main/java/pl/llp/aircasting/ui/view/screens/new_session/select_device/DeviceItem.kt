@@ -13,7 +13,12 @@ open class DeviceItem(
     open val address: String = mBluetoothDevice?.address ?: "",
     open val id: String = name.split(":", "-").last(),
     open val type: Type = getType(name),
+    open val firmwareVersion: FirmwareVersion = FirmwareVersion.V1,
 ) : Parcelable {
+
+    enum class FirmwareVersion {
+        V1, V2
+    }
 
     companion object {
         const val UNKNOWN_DEVICE_NAME = "Unknown"

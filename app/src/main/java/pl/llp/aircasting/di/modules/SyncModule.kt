@@ -3,6 +3,8 @@ package pl.llp.aircasting.di.modules
 import android.content.Context
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -24,6 +26,8 @@ object SyncModule {
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
         await: RequestQueueCall.Await,
+        @MainScope coroutineScope: CoroutineScope,
+        @BatteryLevelFlow batteryLevelFlow: MutableSharedFlow<Int>,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -31,6 +35,8 @@ object SyncModule {
         hexMessagesBuilder,
         syncableAirBeamReader,
         sdCardFileServiceProvider,
-        await
+        await,
+        coroutineScope,
+        batteryLevelFlow,
     )
 }

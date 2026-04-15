@@ -15,14 +15,14 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.MissingDeviceAfterConnectionError
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
-import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfigurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamBleConfigurator
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 
 class SyncableAirBeamConnector(
     private val applicationContext: Context,
     private val mErrorHandler: ErrorHandler,
     bluetoothManager: BluetoothManager,
-    private val airBeam3Configurator: SyncableAirBeamConfigurator
+    private val airBeam3Configurator: AirBeamBleConfigurator
 ) : AirBeamConnector(bluetoothManager), ConnectionObserver {
 
     override fun start(deviceItem: DeviceItem) {
@@ -30,11 +30,11 @@ class SyncableAirBeamConnector(
             throw BLENotSupported()
         }
 
-        airBeam3Configurator.connectionObserver = this
+        airBeam3Configurator.setObserver(this)
 
         val bluetoothDevice = deviceItem.bluetoothDevice ?: return
 
-        airBeam3Configurator.connect(bluetoothDevice)
+        airBeam3Configurator.connectDevice(bluetoothDevice)
             .timeout(0)
             .retry(3, 100)
             .useAutoConnect(true)
@@ -54,7 +54,7 @@ class SyncableAirBeamConnector(
     }
 
     override fun stop() {
-        airBeam3Configurator.close()
+        airBeam3Configurator.closeConnection()
     }
 
     override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
