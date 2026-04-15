@@ -26,7 +26,7 @@ object SyncModule {
         syncableAirBeamReader: SyncableAirBeamReader,
         sdCardFileServiceProvider: SDCardFileServiceProvider,
         await: RequestQueueCall.Await,
-        @MainScope coroutineScope: CoroutineScope,
+        @IoCoroutineScope coroutineScope: CoroutineScope,
         @BatteryLevelFlow batteryLevelFlow: MutableSharedFlow<Int>,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
