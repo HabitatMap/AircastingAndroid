@@ -280,6 +280,6 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 
 `SetTime (0x15)` must be sent:
 1. Immediately after connection (once Status is received)
-2. Every hour while connected
+2. Every hour while connected — **only for mobile sessions**. Fixed sessions get time from the backend server, so hourly scheduling is not needed.
 
 The app should schedule a repeating timer/coroutine for this. The command does not produce an Ack response.

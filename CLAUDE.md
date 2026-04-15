@@ -10,3 +10,4 @@ We are adjusting the existing Android app (Kotlin) to support the new V2 firmwar
 - **Always commit and build**: Always commit your changes and build them before finishing.
 - **Concise responses**: Keep answers to the point — don't make them too long.
 - **Kotlin best practices**: When creating new code, follow Kotlin best practices and prefer functional style.
+- **Update the guide**: When you learn new implementation details, corrections, or clarifications about the V2 firmware behavior (from the user, from testing, or from code review), update `.claude/ble_mobile_app_guide.md` with that information. This file is the single source of truth for V2 integration and must stay accurate across chat sessions.
