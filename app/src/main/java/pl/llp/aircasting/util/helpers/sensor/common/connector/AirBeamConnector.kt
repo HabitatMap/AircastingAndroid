@@ -156,8 +156,13 @@ abstract class AirBeamConnector(
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: StopRecordingEvent) {
         if (mSessionUUID == event.sessionUUID || mSessionUUID == null) {
+            discardSession()
             disconnect()
         }
+    }
+
+    protected open fun discardSession() {
+        // no-op by default; V2 overrides to send DiscardSession (0x11)
     }
 
     protected fun registerToEventBus() {

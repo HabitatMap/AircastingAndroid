@@ -14,6 +14,7 @@ interface AirBeamBleConfigurator {
     fun reconnectMobileSession()
     fun triggerSDCardDownload()
     suspend fun clearSDCard()
+    fun discardSession() {}
     fun reset()
     fun log(priority: Int, message: String)
 }

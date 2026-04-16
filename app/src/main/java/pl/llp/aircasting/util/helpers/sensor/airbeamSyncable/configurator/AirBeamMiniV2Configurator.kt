@@ -56,6 +56,7 @@ class AirBeamMiniV2Configurator(
             UUID.fromString("a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60")
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
+        private const val OPCODE_DISCARD_SESSION: Byte = 0x11
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
 
@@ -479,6 +480,19 @@ class AirBeamMiniV2Configurator(
                 measuredValue = pm25.toDouble()
             )
         )
+    }
+
+    // -- DiscardSession --
+
+    override fun discardSession() {
+        val cmd = commandCharacteristic ?: run {
+            Log.w(TAG, "V2: Command characteristic not available for DiscardSession")
+            return
+        }
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_DISCARD_SESSION), WRITE_TYPE_DEFAULT)
+            .fail { _, status -> Log.e(TAG, "V2: DiscardSession write failed, status=$status") }
+            .enqueue()
+        Log.d(TAG, "V2: DiscardSession sent")
     }
 
     // -- ContinueSession --

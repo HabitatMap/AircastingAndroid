@@ -82,6 +82,10 @@ class SyncableAirBeamConnector(
         airBeam3Configurator.clearSDCard()
     }
 
+    override fun discardSession() {
+        airBeam3Configurator.discardSession()
+    }
+
     override fun onDeviceConnecting(device: BluetoothDevice) {
         Log.v(TAG, "Device connecting: $device")
     }
