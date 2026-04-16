@@ -4,6 +4,9 @@ This document outlines how BLE communication operates in the new Airbeam Mini fi
 
 ---
 
+## If something is unclear from the guide, fetch and reference the firmware code to find relevant information:
+https://github.com/HabitatMap/AirbeamMiniFirmware/tree/wifi-session
+
 ## 0. Key Differences from Old (V1) Firmware
 
 | Aspect | Old Firmware (V1) | New Firmware (V2) |
@@ -57,13 +60,13 @@ The device acts as a peripheral BLE GATT Server.
 
 **Characteristics:**
 
-| Name | UUID | Permissions | Description |
-| ---- | ---- | ----------- | ----------- |
-| **Status** | `a0e1f000-0002-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends its state (Idle, Running, HasSavedSession) + battery level. |
-| **Command** | `a0e1f000-0003-4b3c-8e9a-1f2d3c4b5a60` | Write | App writes binary `AppCommand`s (little-endian byte streams). |
-| **Response** | `a0e1f000-0004-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends replies: Ack, Nack, Ready, SensorInfo, SyncInfo. |
+| Name            | UUID | Permissions | Description |
+|-----------------| ---- | ----------- | ----------- |
+| **Status**      | `a0e1f000-0002-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends its state (Idle, Running, HasSavedSession) + battery level. |
+| **Command**     | `a0e1f000-0003-4b3c-8e9a-1f2d3c4b5a60` | Write | App writes binary `AppCommand`s (little-endian byte streams). |
+| **Response**    | `a0e1f000-0004-4b3c-8e9a-1f2d3c4b5a60` | Notify | Device sends replies: Ack, Nack, Ready, SensorInfo, SyncInfo. |
 | **Measurement** | `a0e1f000-0005-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Live measurement stream during active session. |
-| **Sync** | `a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Device streams historical (stored) measurements automatically after reconnection. Not manually triggered. |
+| **Active Sync** | `a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60` | Indicate | Device streams historical (stored) measurements automatically after reconnection. Not manually triggered. |
 
 ### Connection Flow (No Auth)
 
