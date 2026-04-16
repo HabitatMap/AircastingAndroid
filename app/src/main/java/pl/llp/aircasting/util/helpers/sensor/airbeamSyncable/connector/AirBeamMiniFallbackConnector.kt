@@ -100,6 +100,10 @@ class AirBeamMiniFallbackConnector(
         activeConfigurator.clearSDCard()
     }
 
+    override fun discardSession() {
+        activeConfigurator.discardSession()
+    }
+
     fun isV2Connected(): Boolean = isV2Attempt && connectionEstablished.get()
 
     // -- ConnectionObserver --
