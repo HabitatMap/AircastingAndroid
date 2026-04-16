@@ -43,8 +43,6 @@ class RecordingHandlerImpl(
 
     override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
         coroutineScope.launch {
-            EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
-
             session.setAppropriateStatusForStartOfRecording()
             val databaseSessionId = sessionsRepository.insert(session)
 
@@ -53,9 +51,14 @@ class RecordingHandlerImpl(
                     session.setFollowedAtNow()
                     sessionsRepository.updateFollowedAt(session)
                     settings.increaseFollowedSessionsCount()
-                    upload(session)
+                    // Upload first so we can pass session_token + sensor_type_ids to the device
+                    // via ConfigureSession. For V1 devices the fixedSessionConfig will be null
+                    // and configure() behaves as before.
+                    val fixedSessionConfig = upload(session)
+                    EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword, fixedSessionConfig))
                 }
                 Session.Type.MOBILE -> {
+                    EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
                     startAveragingServices(databaseSessionId)
                     startObservingNewMeasurements(session)
                 }

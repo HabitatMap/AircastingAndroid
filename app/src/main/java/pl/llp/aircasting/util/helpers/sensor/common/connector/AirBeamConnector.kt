@@ -8,6 +8,7 @@ import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
+import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
@@ -48,7 +49,8 @@ abstract class AirBeamConnector(
     protected abstract fun configureSession(
         session: Session,
         wifiSSID: String?,
-        wifiPassword: String?
+        wifiPassword: String?,
+        fixedSessionConfig: FixedSessionConfig? = null,
     )
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
@@ -138,7 +140,7 @@ abstract class AirBeamConnector(
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: ConfigureSession) {
-        configureSession(event.session, event.wifiSSID, event.wifiPassword)
+        configureSession(event.session, event.wifiSSID, event.wifiPassword, event.fixedSessionConfig)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

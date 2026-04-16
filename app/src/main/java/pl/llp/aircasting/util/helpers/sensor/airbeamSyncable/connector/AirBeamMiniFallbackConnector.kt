@@ -10,6 +10,7 @@ import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_TERMINATE_PE
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.util.exceptions.BLENotSupported
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
@@ -80,8 +81,8 @@ class AirBeamMiniFallbackConnector(
         activeConfigurator.closeConnection()
     }
 
-    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
-        activeConfigurator.configure(session, wifiSSID, wifiPassword)
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
+        activeConfigurator.configure(session, wifiSSID, wifiPassword, fixedSessionConfig)
     }
 
     override fun sendAuth(sessionUUID: String) {

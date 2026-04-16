@@ -11,6 +11,8 @@ class SessionParams(session: Session) {
         const val FIXED_SESSION_TYPE = "FixedSession"
     }
 
+    data class AirBeamParams(val mac_address: String?, val model: String, val name: String)
+
     val uuid: String
     val type: String
     val title: String
@@ -25,6 +27,7 @@ class SessionParams(session: Session) {
 
     val latitude: Double?
     val longitude: Double?
+    val airbeam: AirBeamParams?
 
     init {
         this.uuid = session.uuid
@@ -41,6 +44,13 @@ class SessionParams(session: Session) {
         this.is_indoor = session.indoor
         this.latitude = session.location?.latitude
         this.longitude = session.location?.longitude
+        this.airbeam = if (session.type == Session.Type.FIXED && session.deviceId != null)
+            AirBeamParams(
+                mac_address = session.deviceId,
+                model = "AirBeamMini",
+                name = session.name,
+            )
+        else null
         session.streams.forEach { stream ->
             streams[stream.sensorName] =
                 MeasurementStreamParams(stream)

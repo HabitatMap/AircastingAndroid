@@ -161,7 +161,8 @@ abstract class SyncableAirBeamConfigurator(
     override fun configure(
         session: Session,
         wifiSSID: String?,
-        wifiPassword: String?
+        wifiPassword: String?,
+        fixedSessionConfig: pl.llp.aircasting.data.api.services.FixedSessionConfig?,
     ) {
         val location = session.sharableLocation() ?: return
         val dateString = DateConverter.toDateString(Date(), TimeZone.getDefault(), DATE_FORMAT)

@@ -45,7 +45,7 @@ open class AirBeam2Connector @Inject constructor(
         mThread?.sendAuth(sessionUUID)
     }
 
-    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: pl.llp.aircasting.data.api.services.FixedSessionConfig?) {
         mThread?.configureSession(session, wifiSSID, wifiPassword)
     }
 
