@@ -57,6 +57,7 @@ class AirBeamMiniV2Configurator(
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_DISCARD_SESSION: Byte = 0x11
+        private const val OPCODE_START_SYNC: Byte = 0x12
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
 
@@ -69,6 +70,9 @@ class AirBeamMiniV2Configurator(
         private const val RESPONSE_ACK: Int = 0x20
         private const val RESPONSE_NACK: Int = 0x21
         private const val RESPONSE_READY: Int = 0x22
+        private const val RESPONSE_SYNC_INFO: Int = 0x24
+
+        private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
@@ -81,6 +85,10 @@ class AirBeamMiniV2Configurator(
         IDLE, WAITING_ACK, WAITING_READY
     }
 
+    enum class PendingCommand {
+        NONE, CONTINUE_SESSION, START_SYNC
+    }
+
     private var statusCharacteristic: BluetoothGattCharacteristic? = null
     private var commandCharacteristic: BluetoothGattCharacteristic? = null
     private var responseCharacteristic: BluetoothGattCharacteristic? = null
@@ -89,6 +97,7 @@ class AirBeamMiniV2Configurator(
 
     private var setTimeJob: Job? = null
     private var commandState: CommandState = CommandState.IDLE
+    private var pendingCommand: PendingCommand = PendingCommand.NONE
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
 
     var deviceId: String? = null
@@ -268,6 +277,7 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: Resetting")
         setTimeJob?.cancel()
         commandState = CommandState.IDLE
+        pendingCommand = PendingCommand.NONE
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
         statusCharacteristic = null
@@ -369,18 +379,36 @@ class AirBeamMiniV2Configurator(
 
             RESPONSE_NACK -> {
                 val errorCode = if (bytes.size > 1) bytes[1].toInt() and 0xFF else -1
-                Log.e(TAG, "V2: Nack received, error code=$errorCode")
-                commandState = CommandState.IDLE
-                sessionReadyDeferred?.complete(false)
+                Log.e(TAG, "V2: Nack received, error code=0x${"%02x".format(errorCode)}, pending=$pendingCommand")
+                if (errorCode == NACK_STORAGE_HAS_MEASUREMENTS && pendingCommand == PendingCommand.CONTINUE_SESSION) {
+                    Log.d(TAG, "V2: ContinueSession rejected (StorageHasMeasurements), sending StartSync first")
+                    commandState = CommandState.IDLE
+                    sendStartSync()
+                } else {
+                    commandState = CommandState.IDLE
+                    pendingCommand = PendingCommand.NONE
+                    sessionReadyDeferred?.complete(false)
+                }
             }
 
             RESPONSE_READY -> {
                 if (commandState == CommandState.WAITING_READY) {
-                    Log.d(TAG, "V2: Ready received, session is active")
                     commandState = CommandState.IDLE
-                    sessionReadyDeferred?.complete(true)
-                    onSessionReady()
+                    if (pendingCommand == PendingCommand.START_SYNC) {
+                        Log.d(TAG, "V2: StartSync complete, retrying ContinueSession")
+                        pendingCommand = PendingCommand.NONE
+                        sendContinueSession()
+                    } else {
+                        Log.d(TAG, "V2: Ready received, session is active")
+                        pendingCommand = PendingCommand.NONE
+                        sessionReadyDeferred?.complete(true)
+                        onSessionReady()
+                    }
                 }
+            }
+
+            RESPONSE_SYNC_INFO -> {
+                Log.d(TAG, "V2: SyncInfo received (StartSync in progress)")
             }
 
             else -> Log.w(TAG, "V2: Unknown response 0x${"%02x".format(opcode)}")
@@ -509,18 +537,46 @@ class AirBeamMiniV2Configurator(
             return
         }
 
+        if (sessionReadyDeferred == null || sessionReadyDeferred!!.isCompleted) {
+            sessionReadyDeferred = CompletableDeferred()
+        }
+        pendingCommand = PendingCommand.CONTINUE_SESSION
         commandState = CommandState.WAITING_ACK
-        sessionReadyDeferred = CompletableDeferred()
 
         writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
             .fail { _, status ->
                 Log.e(TAG, "V2: ContinueSession write failed, status=$status")
                 commandState = CommandState.IDLE
+                pendingCommand = PendingCommand.NONE
                 sessionReadyDeferred?.complete(false)
             }
             .enqueue()
 
         Log.d(TAG, "V2: ContinueSession sent")
+    }
+
+    private fun sendStartSync() {
+        val cmd = commandCharacteristic ?: run {
+            Log.e(TAG, "V2: Command characteristic not available for StartSync")
+            commandState = CommandState.IDLE
+            pendingCommand = PendingCommand.NONE
+            sessionReadyDeferred?.complete(false)
+            return
+        }
+
+        pendingCommand = PendingCommand.START_SYNC
+        commandState = CommandState.WAITING_ACK
+
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_START_SYNC), WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: StartSync write failed, status=$status")
+                commandState = CommandState.IDLE
+                pendingCommand = PendingCommand.NONE
+                sessionReadyDeferred?.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: StartSync sent (clearing storage before ContinueSession retry)")
     }
 
     // -- Sync chunk parsing & DB saving --
