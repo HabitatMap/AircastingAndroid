@@ -506,7 +506,7 @@ class AirBeamMiniV2Configurator(
     // -- Sync chunk parsing & DB saving --
 
     private fun parseSyncChunk(bytes: ByteArray) {
-        Log.d(TAG, "V2: Sync callback fired, ${bytes.size} bytes, deviceId=$deviceId")
+        Log.d(TAG, "V2: Sync callback fired, ${bytes.size} bytes, deviceId=$deviceId, raw=${bytes.joinToString(" ") { "%02x".format(it) }}")
 
         if (bytes.size < 3) {
             Log.w(TAG, "V2: Sync chunk too short: ${bytes.size} bytes")
