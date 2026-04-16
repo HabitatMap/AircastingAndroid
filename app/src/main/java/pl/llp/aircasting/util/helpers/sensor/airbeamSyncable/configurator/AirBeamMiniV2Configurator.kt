@@ -489,9 +489,15 @@ class AirBeamMiniV2Configurator(
             Log.w(TAG, "V2: Command characteristic not available for DiscardSession")
             return
         }
+        val latch = java.util.concurrent.CountDownLatch(1)
         writeCharacteristic(cmd, byteArrayOf(OPCODE_DISCARD_SESSION), WRITE_TYPE_DEFAULT)
-            .fail { _, status -> Log.e(TAG, "V2: DiscardSession write failed, status=$status") }
+            .done { _ -> latch.countDown() }
+            .fail { _, status ->
+                Log.e(TAG, "V2: DiscardSession write failed, status=$status")
+                latch.countDown()
+            }
             .enqueue()
+        latch.await(3, java.util.concurrent.TimeUnit.SECONDS)
         Log.d(TAG, "V2: DiscardSession sent")
     }
 
