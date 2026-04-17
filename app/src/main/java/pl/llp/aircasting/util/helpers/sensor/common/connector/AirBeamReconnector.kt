@@ -76,7 +76,7 @@ class AirBeamReconnector(
         mErrorCallback = errorCallback
         mFinallyCallback = finallyCallback
 
-        if (deviceItem?.type == DeviceItem.Type.AIRBEAM3) {
+        if (deviceItem?.type == DeviceItem.Type.AIRBEAM3 || deviceItem?.type == DeviceItem.Type.AIRBEAMMINI) {
             reconnect(deviceItem)
         } else {
             mAirBeamDiscoveryService.find(
@@ -211,7 +211,9 @@ class AirBeamReconnector(
     }
 
     private fun unregisterFromEventBus() {
-        eventbus.unregister(this)
+        if (eventbus.isRegistered(this)) {
+            eventbus.unregister(this)
+        }
     }
 
     class ReconnectionEvent(val sessionUuid: String?, val inProgress: Boolean = false)

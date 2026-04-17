@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
@@ -43,7 +44,10 @@ class AirBeamMiniFallbackConnector(
 
     private fun connectWith(configurator: AirBeamBleConfigurator, deviceItem: DeviceItem) {
         configurator.setObserver(this)
-        val bluetoothDevice = deviceItem.bluetoothDevice ?: return
+        val bluetoothDevice = deviceItem.bluetoothDevice
+            ?: deviceItem.address.takeIf { it.isNotEmpty() }
+                ?.let { BluetoothAdapter.getDefaultAdapter()?.getRemoteDevice(it) }
+            ?: return
 
         configurator.connectDevice(bluetoothDevice)
             .timeout(0)
