@@ -97,6 +97,7 @@ class AirBeamMiniV2Configurator(
     private var commandState: CommandState = CommandState.IDLE
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
     private var lastNackCode: Int = -1
+    private var pendingMobileReconnect: Boolean = false
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -294,20 +295,40 @@ class AirBeamMiniV2Configurator(
 
         when (currentState) {
             DeviceState.RUNNING -> {
-                // Sync + live data already flowing automatically
                 startHourlySetTime()
                 Log.d(TAG, "V2: Device Running, sync + live measurements flowing")
             }
 
             DeviceState.HAS_SAVED_SESSION -> {
-                // Must send ContinueSession to activate; device then streams sync + live.
-                // If rejected with Nack 0x03 (unsynced measurements), StartSync is sent first.
                 coroutineScope.launch { sendContinueSession() }
                 Log.d(TAG, "V2: HasSavedSession, sending ContinueSession")
             }
 
+            DeviceState.UNKNOWN -> {
+                // Status notification not yet received — defer until parseStatus fires
+                pendingMobileReconnect = true
+                Log.d(TAG, "V2: State unknown on reconnect, deferring until Status arrives")
+            }
+
             else -> {
                 Log.w(TAG, "V2: Unexpected state on reconnect: $currentState")
+            }
+        }
+    }
+
+    private fun handlePendingReconnect() {
+        pendingMobileReconnect = false
+        when (currentState) {
+            DeviceState.RUNNING -> {
+                startHourlySetTime()
+                Log.d(TAG, "V2: Deferred reconnect — Device Running, sync + live measurements flowing")
+            }
+            DeviceState.HAS_SAVED_SESSION -> {
+                coroutineScope.launch { sendContinueSession() }
+                Log.d(TAG, "V2: Deferred reconnect — HasSavedSession, sending ContinueSession")
+            }
+            else -> {
+                Log.w(TAG, "V2: Deferred reconnect — unexpected state: $currentState")
             }
         }
     }
@@ -328,6 +349,7 @@ class AirBeamMiniV2Configurator(
         commandState = CommandState.IDLE
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
+        pendingMobileReconnect = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -408,6 +430,8 @@ class AirBeamMiniV2Configurator(
                 Log.w(TAG, "V2 Status: Unknown state 0x${state.toString(16)}, battery=$battery%")
             }
         }
+
+        if (pendingMobileReconnect) handlePendingReconnect()
     }
 
     // -- Response parsing --
