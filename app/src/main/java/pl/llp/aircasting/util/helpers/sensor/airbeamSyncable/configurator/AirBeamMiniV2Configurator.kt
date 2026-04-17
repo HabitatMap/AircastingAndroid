@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CompletableDeferred
-import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -58,9 +57,7 @@ class AirBeamMiniV2Configurator(
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_DISCARD_SESSION: Byte = 0x11
-        private const val OPCODE_START_SYNC: Byte = 0x12
         private const val OPCODE_NEW_SESSION: Byte = 0x13
-        private const val OPCODE_GET_SENSORS: Byte = 0x14
         private const val OPCODE_SET_TIME: Byte = 0x15
 
         private const val SYNC_RECORD_SIZE = 8
@@ -72,10 +69,6 @@ class AirBeamMiniV2Configurator(
         private const val RESPONSE_ACK: Int = 0x20
         private const val RESPONSE_NACK: Int = 0x21
         private const val RESPONSE_READY: Int = 0x22
-        private const val RESPONSE_SENSOR_INFO: Int = 0x23
-        private const val RESPONSE_SYNC_INFO: Int = 0x24
-
-        private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
@@ -88,10 +81,6 @@ class AirBeamMiniV2Configurator(
         IDLE, WAITING_ACK, WAITING_READY
     }
 
-    enum class PendingCommand {
-        NONE, CONTINUE_SESSION, START_SYNC
-    }
-
     private var statusCharacteristic: BluetoothGattCharacteristic? = null
     private var commandCharacteristic: BluetoothGattCharacteristic? = null
     private var responseCharacteristic: BluetoothGattCharacteristic? = null
@@ -100,9 +89,7 @@ class AirBeamMiniV2Configurator(
 
     private var setTimeJob: Job? = null
     private var commandState: CommandState = CommandState.IDLE
-    private var pendingCommand: PendingCommand = PendingCommand.NONE
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
-    private var sensorInfoDeferred: CompletableDeferred<String>? = null
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -226,83 +213,62 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: sendAuth called (no-op, V2 has no auth)")
     }
 
-    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
+    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
         if (deviceId == null) deviceId = session.deviceId
 
-        val cmd = commandCharacteristic ?: run {
+        if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
             return
         }
 
-        if (session.isFixed() && fixedSessionConfig != null) {
+        if (currentState == DeviceState.HAS_SAVED_SESSION) {
             coroutineScope.launch {
-                // Guide specifies GetSensors before NewSessionConfig.
-                // Note: we call it after the API response (the upload happens before configure()),
-                // which is slightly out of order vs the guide, but functionally equivalent since
-                // session streams are pre-populated from the UI.
-                val sensorInfo = sendGetSensors()
-                Log.d(TAG, "V2: GetSensors response: $sensorInfo")
-
-                val ssid = wifiSSID ?: ""
-                val password = wifiPassword ?: ""
-
-                val pm1Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM1"] ?: 0
-                val pm25Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM2.5"] ?: 0
-
-                val payload = buildFixedSessionPayload(
-                    sessionUuid = session.uuid,
-                    sessionToken = fixedSessionConfig.sessionToken,
-                    pm1Index = pm1Index,
-                    pm25Index = pm25Index,
-                    wifiSSID = ssid,
-                    wifiPassword = password,
-                )
-
-                commandState = CommandState.WAITING_ACK
-                sessionReadyDeferred = CompletableDeferred()
-
-                writeCharacteristic(cmd, payload, WRITE_TYPE_DEFAULT)
-                    .fail { _, status ->
-                        Log.e(TAG, "V2: NewSessionConfig (fixed) write failed, status=$status")
-                        commandState = CommandState.IDLE
-                        sessionReadyDeferred?.complete(false)
-                    }
-                    .enqueue()
-
-                Log.d(TAG, "V2: NewSessionConfig (fixed) sent (${payload.size} bytes), uuid=${session.uuid}")
+                val discarded = discardSavedSessionAndAwait()
+                if (discarded) {
+                    sendNewSessionConfig(session)
+                } else {
+                    Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
+                }
             }
         } else {
-            val payload = buildMobileSessionPayload(session.uuid)
-
-            commandState = CommandState.WAITING_ACK
-            sessionReadyDeferred = CompletableDeferred()
-
-            writeCharacteristic(cmd, payload, WRITE_TYPE_DEFAULT)
-                .fail { _, status ->
-                    Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
-                    commandState = CommandState.IDLE
-                    sessionReadyDeferred?.complete(false)
-                }
-                .enqueue()
-
-            Log.d(TAG, "V2: NewSessionConfig (mobile) sent (${payload.size} bytes), uuid=${session.uuid}")
+            sendNewSessionConfig(session)
         }
     }
 
-    private suspend fun sendGetSensors(): String {
-        val cmd = commandCharacteristic ?: run {
-            Log.e(TAG, "V2: Command characteristic not available for GetSensors")
-            return ""
-        }
-        val deferred = CompletableDeferred<String>()
-        sensorInfoDeferred = deferred
-        writeCharacteristic(cmd, byteArrayOf(OPCODE_GET_SENSORS), WRITE_TYPE_DEFAULT)
+    private suspend fun discardSavedSessionAndAwait(): Boolean {
+        val cmd = commandCharacteristic ?: return false
+        val deferred = CompletableDeferred<Boolean>()
+        sessionReadyDeferred = deferred
+        commandState = CommandState.WAITING_ACK
+
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_DISCARD_SESSION), WRITE_TYPE_DEFAULT)
             .fail { _, status ->
-                Log.e(TAG, "V2: GetSensors write failed, status=$status")
-                deferred.complete("")
+                Log.e(TAG, "V2: DiscardSession write failed, status=$status")
+                commandState = CommandState.IDLE
+                deferred.complete(false)
             }
             .enqueue()
+
+        Log.d(TAG, "V2: DiscardSession sent")
         return deferred.await()
+    }
+
+    private fun sendNewSessionConfig(session: Session) {
+        val cmd = commandCharacteristic ?: return
+        val payload = buildMobileSessionPayload(session.uuid)
+
+        commandState = CommandState.WAITING_ACK
+        sessionReadyDeferred = CompletableDeferred()
+
+        writeCharacteristic(cmd, payload, WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
+                commandState = CommandState.IDLE
+                sessionReadyDeferred?.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: NewSessionConfig sent (${payload.size} bytes), uuid=${session.uuid}")
     }
 
     override fun reconnectMobileSession() {
@@ -341,11 +307,8 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: Resetting")
         setTimeJob?.cancel()
         commandState = CommandState.IDLE
-        pendingCommand = PendingCommand.NONE
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
-        sensorInfoDeferred?.cancel()
-        sensorInfoDeferred = null
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -445,43 +408,18 @@ class AirBeamMiniV2Configurator(
 
             RESPONSE_NACK -> {
                 val errorCode = if (bytes.size > 1) bytes[1].toInt() and 0xFF else -1
-                Log.e(TAG, "V2: Nack received, error code=0x${"%02x".format(errorCode)}, pending=$pendingCommand")
-                if (errorCode == NACK_STORAGE_HAS_MEASUREMENTS && pendingCommand == PendingCommand.CONTINUE_SESSION) {
-                    Log.d(TAG, "V2: ContinueSession rejected (StorageHasMeasurements), sending StartSync first")
-                    commandState = CommandState.IDLE
-                    sendStartSync()
-                } else {
-                    commandState = CommandState.IDLE
-                    pendingCommand = PendingCommand.NONE
-                    sessionReadyDeferred?.complete(false)
-                }
+                Log.e(TAG, "V2: Nack received, error code=$errorCode")
+                commandState = CommandState.IDLE
+                sessionReadyDeferred?.complete(false)
             }
 
             RESPONSE_READY -> {
                 if (commandState == CommandState.WAITING_READY) {
+                    Log.d(TAG, "V2: Ready received, session is active")
                     commandState = CommandState.IDLE
-                    if (pendingCommand == PendingCommand.START_SYNC) {
-                        Log.d(TAG, "V2: StartSync complete, retrying ContinueSession")
-                        pendingCommand = PendingCommand.NONE
-                        sendContinueSession()
-                    } else {
-                        Log.d(TAG, "V2: Ready received, session is active")
-                        pendingCommand = PendingCommand.NONE
-                        sessionReadyDeferred?.complete(true)
-                        onSessionReady()
-                    }
+                    sessionReadyDeferred?.complete(true)
+                    onSessionReady()
                 }
-            }
-
-            RESPONSE_SENSOR_INFO -> {
-                val info = if (bytes.size > 1) String(bytes, 1, bytes.size - 1, Charsets.UTF_8) else ""
-                Log.d(TAG, "V2: SensorInfo received: $info")
-                sensorInfoDeferred?.complete(info)
-                sensorInfoDeferred = null
-            }
-
-            RESPONSE_SYNC_INFO -> {
-                Log.d(TAG, "V2: SyncInfo received (StartSync in progress)")
             }
 
             else -> Log.w(TAG, "V2: Unknown response 0x${"%02x".format(opcode)}")
@@ -501,38 +439,6 @@ class AirBeamMiniV2Configurator(
         buffer.put(uuidToLeBytes(sessionUuid))
         buffer.putShort(1) // interval_seconds = 1
         buffer.put(0x01)   // mobile mode
-        return buffer.array()
-    }
-
-    /**
-     * Fixed session payload:
-     * 0x13 (1B) + UUID_LE (16B) + session_token (16B) + interval_u16_LE (2B) +
-     * mode=0x00 (1B) + pm1_index (1B) + pm25_index (1B) + SSID_padded (32B) + password_padded (64B)
-     * = 132 bytes total
-     *
-     * TODO: Confirm session_token length. Current assumption: 16 bytes decoded from a 32-char hex
-     *       string. If the backend changes this (e.g. 128 bytes or raw binary), update accordingly.
-     */
-    private fun buildFixedSessionPayload(
-        sessionUuid: String,
-        sessionToken: ByteArray,
-        pm1Index: Int,
-        pm25Index: Int,
-        wifiSSID: String,
-        wifiPassword: String,
-    ): ByteArray {
-        val ssidBytes = wifiSSID.toByteArray(Charsets.UTF_8).copyOf(32)
-        val passBytes = wifiPassword.toByteArray(Charsets.UTF_8).copyOf(64)
-        val buffer = ByteBuffer.allocate(132).order(ByteOrder.LITTLE_ENDIAN)
-        buffer.put(OPCODE_NEW_SESSION)
-        buffer.put(uuidToLeBytes(sessionUuid))
-        buffer.put(sessionToken)
-        buffer.putShort(1)              // interval_seconds = 1
-        buffer.put(0x00)                // fixed mode
-        buffer.put(pm1Index.toByte())
-        buffer.put(pm25Index.toByte())
-        buffer.put(ssidBytes)
-        buffer.put(passBytes)
         return buffer.array()
     }
 
@@ -615,25 +521,6 @@ class AirBeamMiniV2Configurator(
         )
     }
 
-    // -- DiscardSession --
-
-    override fun discardSession() {
-        val cmd = commandCharacteristic ?: run {
-            Log.w(TAG, "V2: Command characteristic not available for DiscardSession")
-            return
-        }
-        val latch = java.util.concurrent.CountDownLatch(1)
-        writeCharacteristic(cmd, byteArrayOf(OPCODE_DISCARD_SESSION), WRITE_TYPE_DEFAULT)
-            .done { _ -> latch.countDown() }
-            .fail { _, status ->
-                Log.e(TAG, "V2: DiscardSession write failed, status=$status")
-                latch.countDown()
-            }
-            .enqueue()
-        latch.await(3, java.util.concurrent.TimeUnit.SECONDS)
-        Log.d(TAG, "V2: DiscardSession sent")
-    }
-
     // -- ContinueSession --
 
     private fun sendContinueSession() {
@@ -642,46 +529,18 @@ class AirBeamMiniV2Configurator(
             return
         }
 
-        if (sessionReadyDeferred == null || sessionReadyDeferred!!.isCompleted) {
-            sessionReadyDeferred = CompletableDeferred()
-        }
-        pendingCommand = PendingCommand.CONTINUE_SESSION
         commandState = CommandState.WAITING_ACK
+        sessionReadyDeferred = CompletableDeferred()
 
         writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
             .fail { _, status ->
                 Log.e(TAG, "V2: ContinueSession write failed, status=$status")
                 commandState = CommandState.IDLE
-                pendingCommand = PendingCommand.NONE
                 sessionReadyDeferred?.complete(false)
             }
             .enqueue()
 
         Log.d(TAG, "V2: ContinueSession sent")
-    }
-
-    private fun sendStartSync() {
-        val cmd = commandCharacteristic ?: run {
-            Log.e(TAG, "V2: Command characteristic not available for StartSync")
-            commandState = CommandState.IDLE
-            pendingCommand = PendingCommand.NONE
-            sessionReadyDeferred?.complete(false)
-            return
-        }
-
-        pendingCommand = PendingCommand.START_SYNC
-        commandState = CommandState.WAITING_ACK
-
-        writeCharacteristic(cmd, byteArrayOf(OPCODE_START_SYNC), WRITE_TYPE_DEFAULT)
-            .fail { _, status ->
-                Log.e(TAG, "V2: StartSync write failed, status=$status")
-                commandState = CommandState.IDLE
-                pendingCommand = PendingCommand.NONE
-                sessionReadyDeferred?.complete(false)
-            }
-            .enqueue()
-
-        Log.d(TAG, "V2: StartSync sent (clearing storage before ContinueSession retry)")
     }
 
     // -- Sync chunk parsing & DB saving --
