@@ -141,6 +141,11 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun initialize() {
+        requestMtu(247)
+            .with { _, mtu -> Log.d(TAG, "V2: MTU negotiated: $mtu") }
+            .fail { _, status -> Log.w(TAG, "V2: MTU request failed, status=$status") }
+            .enqueue()
+
         val queue = beginAtomicRequestQueue()
 
         // Status notifications
