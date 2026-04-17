@@ -116,6 +116,6 @@ abstract class AirBeamService : SensorService(),
                     }
                 }
             }
-        }
+        } ?: Log.e("Reconnect", "SensorDisconnectedUnexpectedlyEvent event Session uuid is null")
     }
 }

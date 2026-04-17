@@ -229,7 +229,12 @@ class AirBeamMiniV2Configurator(
             return
         }
 
-        if (currentState == DeviceState.HAS_SAVED_SESSION) {
+        if (session.isFixed() && fixedSessionConfig == null) {
+            Log.e(TAG, "V2: Fixed session but fixedSessionConfig is null (upload failed or backend returned no token/streams). Aborting configure.")
+            return
+        }
+
+        if (session.isFixed() && fixedSessionConfig != null) {
             coroutineScope.launch {
                 val discarded = discardSavedSessionAndAwait()
                 if (discarded) {
@@ -492,9 +497,12 @@ class AirBeamMiniV2Configurator(
     }
 
     /**
-     * Fixed session payload (132 bytes):
-     * 0x13 (1B) + UUID_LE (16B) + session_token (16B) + interval_u16_LE (2B) +
-     * mode=0x00 (1B) + pm1_index (1B) + pm25_index (1B) + SSID_padded (32B) + password_padded (64B)
+     * Fixed session payload (134 bytes), matching firmware ble_protocol.rs layout:
+     * 0x13 (1B) + UUID_LE (16B) + interval_u16_LE (2B) + mode=0x00 (1B) +
+     * pm1_index (1B) + pm25_index (1B) + session_token (16B) + SSID_padded (32B) + password_padded (64B)
+     *
+     * Note: interval and mode come BEFORE the indices and token — byte 19 is the mode byte,
+     * which is what the firmware reads to distinguish MOBILE (0x01) from FIXED (0x00).
      *
      * session_token: 16 bytes decoded from the backend's 32-char hex string.
      */
@@ -508,14 +516,14 @@ class AirBeamMiniV2Configurator(
     ): ByteArray {
         val ssidBytes = wifiSSID.toByteArray(Charsets.UTF_8).copyOf(32)
         val passBytes = wifiPassword.toByteArray(Charsets.UTF_8).copyOf(64)
-        val buffer = ByteBuffer.allocate(132).order(ByteOrder.LITTLE_ENDIAN)
+        val buffer = ByteBuffer.allocate(134).order(ByteOrder.LITTLE_ENDIAN)
         buffer.put(OPCODE_NEW_SESSION)
         buffer.put(uuidToLeBytes(sessionUuid))
-        buffer.put(sessionToken)
         buffer.putShort(1)              // interval_seconds = 1
-        buffer.put(0x00)                // fixed mode
+        buffer.put(0x00)                // fixed mode (byte 19 — firmware reads this as session_type)
         buffer.put(pm1Index.toByte())
         buffer.put(pm25Index.toByte())
+        buffer.put(sessionToken)        // 16B token (bytes 22-37)
         buffer.put(ssidBytes)
         buffer.put(passBytes)
         return buffer.array()
