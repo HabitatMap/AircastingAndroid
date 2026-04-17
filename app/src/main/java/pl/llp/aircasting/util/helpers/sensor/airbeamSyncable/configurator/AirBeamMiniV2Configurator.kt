@@ -14,6 +14,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
 import org.greenrobot.eventbus.EventBus
+import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.events.NewMeasurementEvent
@@ -213,7 +214,7 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: sendAuth called (no-op, V2 has no auth)")
     }
 
-    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
         if (deviceId == null) deviceId = session.deviceId
 
         if (commandCharacteristic == null) {
@@ -225,13 +226,13 @@ class AirBeamMiniV2Configurator(
             coroutineScope.launch {
                 val discarded = discardSavedSessionAndAwait()
                 if (discarded) {
-                    sendNewSessionConfig(session)
+                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
                 }
             }
         } else {
-            sendNewSessionConfig(session)
+            sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
         }
     }
 
@@ -253,9 +254,20 @@ class AirBeamMiniV2Configurator(
         return deferred.await()
     }
 
-    private fun sendNewSessionConfig(session: Session) {
+    private fun sendNewSessionConfig(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?,
+        fixedSessionConfig: FixedSessionConfig?,
+    ) {
         val cmd = commandCharacteristic ?: return
-        val payload = buildMobileSessionPayload(session.uuid)
+        val payload = if (fixedSessionConfig != null && wifiSSID != null && wifiPassword != null) {
+            val pm1Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM1"] ?: 0
+            val pm25Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM2.5"] ?: 1
+            buildFixedSessionPayload(session.uuid, fixedSessionConfig.sessionToken, pm1Index, pm25Index, wifiSSID, wifiPassword)
+        } else {
+            buildMobileSessionPayload(session.uuid)
+        }
 
         commandState = CommandState.WAITING_ACK
         sessionReadyDeferred = CompletableDeferred()
