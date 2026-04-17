@@ -184,6 +184,18 @@ class AirBeamMiniV2Configurator(
                 .fail { _, status -> logError("sync indication", status) }
         )
 
+        // Read Status characteristic explicitly — firmware sends the notification at ~300ms after
+        // connection, but Android service discovery often takes longer, so the notification is
+        // missed. The firmware stores the value via set_value(), so a READ always returns it.
+        queue.add(
+            readCharacteristic(statusCharacteristic)
+                .with { _, data ->
+                    val bytes = data.value ?: return@with
+                    if (currentState == DeviceState.UNKNOWN) parseStatus(bytes)
+                }
+                .fail { _, status -> Log.w(TAG, "V2: Status read failed, status=$status") }
+        )
+
         queue.enqueue()
 
         // Send initial SetTime after subscriptions settle
