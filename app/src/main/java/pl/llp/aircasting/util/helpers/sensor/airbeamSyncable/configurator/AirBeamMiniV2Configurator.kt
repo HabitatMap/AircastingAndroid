@@ -26,6 +26,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
+import kotlin.math.abs
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.util.Date
@@ -399,7 +400,11 @@ class AirBeamMiniV2Configurator(
         if (bytes.size < 2) return
 
         val state = bytes[0].toInt() and 0xFF
-        val battery = bytes[1].toInt() and 0xFF
+        // FW encodes charging direction via sign: positive = charging, negative = discharging.
+        // Cast to i8 first, then abs() for the actual level.
+        val signedBattery = bytes[1].toInt()
+        val battery = abs(signedBattery)
+        val isCharging = signedBattery > 0
         currentBatteryLevel = battery
 
         coroutineScope.launch { batteryLevelFlow.emit(battery) }
@@ -409,7 +414,7 @@ class AirBeamMiniV2Configurator(
                 currentState = DeviceState.IDLE
                 savedSessionUuid = null
                 hasSavedMeasurements = false
-                Log.d(TAG, "V2 Status: Idle, battery=$battery%")
+                Log.d(TAG, "V2 Status: Idle, battery=$battery%, charging=$isCharging")
             }
 
             STATE_HAS_SAVED_SESSION -> {
@@ -418,7 +423,7 @@ class AirBeamMiniV2Configurator(
                     savedSessionUuid = bytes.copyOfRange(2, 18)
                     hasSavedMeasurements = bytes[18].toInt() != 0
                 }
-                Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, hasMeasurements=$hasSavedMeasurements")
+                Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, charging=$isCharging, hasMeasurements=$hasSavedMeasurements")
             }
 
             STATE_RUNNING -> {
@@ -427,12 +432,12 @@ class AirBeamMiniV2Configurator(
                     savedSessionUuid = bytes.copyOfRange(2, 18)
                 }
                 hasSavedMeasurements = false
-                Log.d(TAG, "V2 Status: Running, battery=$battery%")
+                Log.d(TAG, "V2 Status: Running, battery=$battery%, charging=$isCharging")
             }
 
             else -> {
                 currentState = DeviceState.UNKNOWN
-                Log.w(TAG, "V2 Status: Unknown state 0x${state.toString(16)}, battery=$battery%")
+                Log.w(TAG, "V2 Status: Unknown state 0x${state.toString(16)}, battery=$battery%, charging=$isCharging")
             }
         }
 

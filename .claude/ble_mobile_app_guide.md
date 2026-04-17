@@ -89,7 +89,13 @@ On connection (after ~300ms delay), the device sends a state notification. The a
 
 ### Battery Level
 
-Battery level is a `u8` (signed `i8` in firmware, treat as percentage). It arrives:
+Battery level byte is a **signed `i8`** in firmware, transmitted as `u8` via two's complement:
+- **Positive value** → charging (e.g. `54` = 54% and charging)
+- **Negative value** → discharging (e.g. `-54` → transmitted as `202u8`, means 54% discharging)
+
+Mobile app must read the byte as signed (`bytes[1].toInt()` in Kotlin, which sign-extends), then use `abs()` for the percentage level and check the sign for charging direction.
+
+It arrives:
 - In every Status notification (all states)
 - Updated with each live measurement sent (Status is re-notified alongside Measurement indications)
 
