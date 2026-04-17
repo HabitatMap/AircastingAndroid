@@ -749,6 +749,20 @@ class AirBeamMiniV2Configurator(
             return
         }
 
+        // Drop measurements that predate the session's start — the device buffer
+        // may contain samples from before the user tapped Record.
+        val sessionStart = sessionsRepository.getSessionById(sessionId)?.startTime
+        val filteredPm1 = sessionStart?.let { start -> pm1Measurements.filter { it.time >= start } } ?: pm1Measurements
+        val filteredPm25 = sessionStart?.let { start -> pm25Measurements.filter { it.time >= start } } ?: pm25Measurements
+        val droppedCount = pm1Measurements.size - filteredPm1.size
+        if (droppedCount > 0) {
+            Log.d(TAG, "V2: Dropped $droppedCount sync measurements predating session start ($sessionStart)")
+        }
+        if (filteredPm1.isEmpty()) {
+            Log.d(TAG, "V2: No sync measurements within session range, nothing to save")
+            return
+        }
+
         val packageName = "AirBeamMini:$devId"
 
         val pm1Stream = MeasurementStream(
@@ -765,9 +779,9 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm1StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm1Stream)
-        Log.d(TAG, "V2: PM1 streamId=$pm1StreamId, inserting ${pm1Measurements.size} measurements")
-        measurementsRepository.insertAll(pm1StreamId, sessionId, pm1Measurements)
-        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm1StreamId, sessionId, pm1Measurements)
+        Log.d(TAG, "V2: PM1 streamId=$pm1StreamId, inserting ${filteredPm1.size} measurements")
+        measurementsRepository.insertAll(pm1StreamId, sessionId, filteredPm1)
+        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm1StreamId, sessionId, filteredPm1)
         Log.d(TAG, "V2: PM1 measurements inserted successfully")
 
         val pm25Stream = MeasurementStream(
@@ -784,12 +798,12 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm25StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm25Stream)
-        Log.d(TAG, "V2: PM2.5 streamId=$pm25StreamId, inserting ${pm25Measurements.size} measurements")
-        measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
-        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, pm25Measurements)
+        Log.d(TAG, "V2: PM2.5 streamId=$pm25StreamId, inserting ${filteredPm25.size} measurements")
+        measurementsRepository.insertAll(pm25StreamId, sessionId, filteredPm25)
+        activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, filteredPm25)
         Log.d(TAG, "V2: PM2.5 measurements inserted successfully")
 
-        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
+        Log.d(TAG, "V2: Saved ${filteredPm1.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
     }
 
     // -- UUID LE conversion --
