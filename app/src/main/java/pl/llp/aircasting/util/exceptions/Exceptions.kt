@@ -122,6 +122,16 @@ object ThresholdAlert {
         BaseException(null, "Threshold Alert saving error: ${cause?.message}")
 }
 
+class AirBeamMiniV2NackError(errorCode: Int) : BaseException(
+    null,
+    when (errorCode) {
+        0x01 -> "Device has no active session."
+        0x02 -> "Invalid device configuration — check WiFi credentials."
+        0x04 -> "Failed to clear or sync device storage."
+        else -> "Device rejected the command (error code: $errorCode)."
+    }
+)
+
 object Account {
     class DeleteError(cause: Throwable?) : BaseException(Exception(cause))
 }

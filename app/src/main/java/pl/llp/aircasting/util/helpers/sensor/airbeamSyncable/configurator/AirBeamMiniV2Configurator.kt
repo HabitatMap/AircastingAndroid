@@ -18,6 +18,7 @@ import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.exceptions.AirBeamMiniV2NackError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
@@ -58,6 +59,7 @@ class AirBeamMiniV2Configurator(
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_DISCARD_SESSION: Byte = 0x11
+        private const val OPCODE_START_SYNC: Byte = 0x12
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
 
@@ -70,6 +72,9 @@ class AirBeamMiniV2Configurator(
         private const val RESPONSE_ACK: Int = 0x20
         private const val RESPONSE_NACK: Int = 0x21
         private const val RESPONSE_READY: Int = 0x22
+        private const val RESPONSE_SYNC_INFO: Int = 0x24
+
+        private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
@@ -91,6 +96,7 @@ class AirBeamMiniV2Configurator(
     private var setTimeJob: Job? = null
     private var commandState: CommandState = CommandState.IDLE
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
+    private var lastNackCode: Int = -1
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -294,8 +300,9 @@ class AirBeamMiniV2Configurator(
             }
 
             DeviceState.HAS_SAVED_SESSION -> {
-                // Must send ContinueSession to activate; device then streams sync + live
-                sendContinueSession()
+                // Must send ContinueSession to activate; device then streams sync + live.
+                // If rejected with Nack 0x03 (unsynced measurements), StartSync is sent first.
+                coroutineScope.launch { sendContinueSession() }
                 Log.d(TAG, "V2: HasSavedSession, sending ContinueSession")
             }
 
@@ -421,8 +428,12 @@ class AirBeamMiniV2Configurator(
             RESPONSE_NACK -> {
                 val errorCode = if (bytes.size > 1) bytes[1].toInt() and 0xFF else -1
                 Log.e(TAG, "V2: Nack received, error code=$errorCode")
+                lastNackCode = errorCode
                 commandState = CommandState.IDLE
                 sessionReadyDeferred?.complete(false)
+                if (errorCode != NACK_STORAGE_HAS_MEASUREMENTS) {
+                    errorHandler.handleAndDisplay(AirBeamMiniV2NackError(errorCode))
+                }
             }
 
             RESPONSE_READY -> {
@@ -433,6 +444,8 @@ class AirBeamMiniV2Configurator(
                     onSessionReady()
                 }
             }
+
+            RESPONSE_SYNC_INFO -> Log.d(TAG, "V2: SyncInfo received (${bytes.size - 1} bytes)")
 
             else -> Log.w(TAG, "V2: Unknown response 0x${"%02x".format(opcode)}")
         }
@@ -565,24 +578,68 @@ class AirBeamMiniV2Configurator(
 
     // -- ContinueSession --
 
-    private fun sendContinueSession() {
+    private suspend fun sendContinueSession() {
         val cmd = commandCharacteristic ?: run {
             Log.e(TAG, "V2: Command characteristic not available for ContinueSession")
             return
         }
 
+        lastNackCode = -1
         commandState = CommandState.WAITING_ACK
-        sessionReadyDeferred = CompletableDeferred()
+        val deferred = CompletableDeferred<Boolean>()
+        sessionReadyDeferred = deferred
 
         writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
             .fail { _, status ->
                 Log.e(TAG, "V2: ContinueSession write failed, status=$status")
                 commandState = CommandState.IDLE
-                sessionReadyDeferred?.complete(false)
+                deferred.complete(false)
             }
             .enqueue()
 
         Log.d(TAG, "V2: ContinueSession sent")
+        val success = deferred.await()
+
+        if (!success && lastNackCode == NACK_STORAGE_HAS_MEASUREMENTS) {
+            Log.d(TAG, "V2: ContinueSession rejected (unsynced measurements), sending StartSync first")
+            val syncSuccess = sendStartSyncAndAwait()
+            if (syncSuccess) {
+                Log.d(TAG, "V2: StartSync complete, retrying ContinueSession")
+                lastNackCode = -1
+                commandState = CommandState.WAITING_ACK
+                val retryDeferred = CompletableDeferred<Boolean>()
+                sessionReadyDeferred = retryDeferred
+                writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
+                    .fail { _, status ->
+                        Log.e(TAG, "V2: ContinueSession retry write failed, status=$status")
+                        commandState = CommandState.IDLE
+                        retryDeferred.complete(false)
+                    }
+                    .enqueue()
+                retryDeferred.await()
+            } else {
+                Log.e(TAG, "V2: StartSync failed, cannot resume session")
+                errorHandler.showError("Failed to sync device storage before resuming session.")
+            }
+        }
+    }
+
+    private suspend fun sendStartSyncAndAwait(): Boolean {
+        val cmd = commandCharacteristic ?: return false
+        commandState = CommandState.WAITING_ACK
+        val deferred = CompletableDeferred<Boolean>()
+        sessionReadyDeferred = deferred
+
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_START_SYNC), WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: StartSync write failed, status=$status")
+                commandState = CommandState.IDLE
+                deferred.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: StartSync sent")
+        return deferred.await()
     }
 
     // -- Sync chunk parsing & DB saving --
