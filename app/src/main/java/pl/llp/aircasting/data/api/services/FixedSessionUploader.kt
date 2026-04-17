@@ -16,10 +16,7 @@ import javax.inject.Inject
  * Contains the data needed to build the NewSessionConfig BLE payload.
  *
  * @param location  URL returned by the backend (may be null on failure).
- * @param sessionToken  16-byte session token decoded from the backend response.
- *   TODO: Confirm exact token format from backend — previously 128 bytes was considered.
- *         If the backend returns a 32-char hex string, decoding to 16 bytes is correct.
- *         If it returns raw bytes or a different length, this needs to change.
+ * @param sessionToken  16-byte session token decoded from the backend's 32-char hex string.
  * @param sensorTypeIds  Map of sensor_name → sensor_type_id from backend streams response.
  */
 data class FixedSessionConfig(
@@ -59,8 +56,7 @@ class FixedSessionUploaderDefault @Inject constructor(
             val streams = body?.streams
 
             if (tokenHex != null && streams != null) {
-                // TODO: Confirm token format with backend. Current assumption: 32-char hex → 16 bytes.
-                // If the backend uses a different length or encoding, update this decoding logic.
+                // Backend stores session_token as a 16-byte integer, returned as a 32-char hex string.
                 val tokenBytes = tokenHex.chunked(2)
                     .map { it.toInt(16).toByte() }
                     .toByteArray()

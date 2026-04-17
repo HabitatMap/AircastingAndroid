@@ -443,6 +443,36 @@ class AirBeamMiniV2Configurator(
     }
 
     /**
+     * Fixed session payload (132 bytes):
+     * 0x13 (1B) + UUID_LE (16B) + session_token (16B) + interval_u16_LE (2B) +
+     * mode=0x00 (1B) + pm1_index (1B) + pm25_index (1B) + SSID_padded (32B) + password_padded (64B)
+     *
+     * session_token: 16 bytes decoded from the backend's 32-char hex string.
+     */
+    private fun buildFixedSessionPayload(
+        sessionUuid: String,
+        sessionToken: ByteArray,
+        pm1Index: Int,
+        pm25Index: Int,
+        wifiSSID: String,
+        wifiPassword: String,
+    ): ByteArray {
+        val ssidBytes = wifiSSID.toByteArray(Charsets.UTF_8).copyOf(32)
+        val passBytes = wifiPassword.toByteArray(Charsets.UTF_8).copyOf(64)
+        val buffer = ByteBuffer.allocate(132).order(ByteOrder.LITTLE_ENDIAN)
+        buffer.put(OPCODE_NEW_SESSION)
+        buffer.put(uuidToLeBytes(sessionUuid))
+        buffer.put(sessionToken)
+        buffer.putShort(1)              // interval_seconds = 1
+        buffer.put(0x00)                // fixed mode
+        buffer.put(pm1Index.toByte())
+        buffer.put(pm25Index.toByte())
+        buffer.put(ssidBytes)
+        buffer.put(passBytes)
+        return buffer.array()
+    }
+
+    /**
      * Convert a UUID string to 16-byte little-endian format as expected by firmware
      * (Uuid::from_slice_le). First three groups are byte-reversed, last 8 bytes unchanged.
      */
