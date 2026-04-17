@@ -51,7 +51,6 @@ class AirBeamMiniFallbackConnector(
 
         configurator.connectDevice(bluetoothDevice)
             .timeout(0)
-            .retry(3, 100)
             .useAutoConnect(true)
             .fail { device, status -> onFailedCallback(device, status) }
             .done { _ ->
