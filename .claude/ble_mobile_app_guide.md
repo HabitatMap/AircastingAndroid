@@ -331,10 +331,6 @@ Each 8-byte record: `[timestamp_u32_LE, pm1_u16_LE, pm2_5_u16_LE]`
 
 Each chunk is saved to the DB immediately (not accumulated) since there can be many stored measurements.
 
-**Important:** The device's internal buffer may contain measurements recorded **before** the user started the app session (e.g. from a previous session still sitting in the ring buffer, or from seconds before `NewSessionConfig` was received). We filter out any synced measurements whose timestamp precedes `session.startTime` before writing to the DB — otherwise they show up on the graph as data preceding the session, and extend the chart's leftmost label before the true start time.
-
-Timestamps **within** a single sync chunk are not guaranteed to be monotonically increasing — the firmware may dump ring-buffer pages out of chronological order (blocks of ~10 sequential records, with jumps backward between blocks). Sorting is applied downstream (`MeasurementStream` constructor from `StreamWithLastMeasurementsDBObject` calls `sortedWith(compareBy { it.time })`), so per-chunk order doesn't matter for the UI, but it's worth knowing when reading raw indications.
-
 ### Key Implementation Detail
 
 `StartSync (0x12)` is **NOT** used for mobile reconnection sync. The sync is automatic. `StartSync` may be used for other purposes (e.g., fixed session sync) but is not part of the mobile reconnection flow.
