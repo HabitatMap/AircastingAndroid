@@ -340,3 +340,15 @@ Each chunk is saved to the DB immediately (not accumulated) since there can be m
 ### Key Implementation Detail
 
 `StartSync (0x12)` is **NOT** used for mobile reconnection sync. The sync is automatic. `StartSync` may be used for other purposes (e.g., fixed session sync) but is not part of the mobile reconnection flow.
+
+### Session UUID Validation for Sync Data
+
+When sync measurements arrive on the Sync characteristic, **always verify the device's session UUID** (from the last Status notification, stored as `savedSessionUuid` in `AirBeamMiniV2Configurator`) matches the current app session UUID before saving. If they don't match, the sync data is from an older session that the device still had in storage — discard it.
+
+The device UUID arrives in LE-encoded form via `savedSessionUuid: ByteArray?` and must be decoded with `leBytesToUuid()` before comparing to the DB session UUID.
+
+### Live Measurements — Do NOT Use NewMeasurementEvent
+
+`NewMeasurementEvent.deviceId` extracts the device ID by splitting `sensorPackageName` on `:` and taking the last segment. Since V2 `sensorPackageName` is `"AirBeamMini:AA:BB:CC:DD:EE:FF"`, this returns only `"FF"` (last MAC byte), causing every live measurement to be silently dropped.
+
+**V2 live measurements must be saved directly to the DB** (same `saveMeasurementsToSession()` path as sync chunks), using the device timestamp from the binary packet and the full device ID from `AirBeamMiniV2Configurator.deviceId`.
