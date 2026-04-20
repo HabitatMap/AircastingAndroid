@@ -356,16 +356,13 @@ class NewSessionController @AssistedInject constructor(
 
     override fun onStartRecordingClicked(session: Session) {
         when {
-            session.type != Session.Type.MOBILE -> checkV2SyncAndStart(session)
-            DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> handleBatteryServicePermissionsAndStartRecording(
-                session
-            )
-
-            else -> checkV2SyncAndStart(session)
+            session.type != Session.Type.MOBILE -> startRecording(session)
+            DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> checkV2SyncAndHandleBattery(session)
+            else -> startRecording(session)
         }
     }
 
-    private fun checkV2SyncAndStart(session: Session) {
+    private fun checkV2SyncAndHandleBattery(session: Session) {
         if (v2StateRepository.deviceState == AirBeamMiniV2Configurator.DeviceState.HAS_SAVED_SESSION
             && v2StateRepository.hasSavedMeasurements
         ) {
@@ -373,12 +370,12 @@ class NewSessionController @AssistedInject constructor(
                 mFragmentManager,
                 onSyncAndStart = {
                     v2StateRepository.startSync()
-                    startRecording(session)
+                    handleBatteryServicePermissionsAndStartRecording(session)
                 },
-                onJustStart = { startRecording(session) },
+                onJustStart = { handleBatteryServicePermissionsAndStartRecording(session) },
             ).show()
         } else {
-            startRecording(session)
+            handleBatteryServicePermissionsAndStartRecording(session)
         }
     }
 

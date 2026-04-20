@@ -30,9 +30,10 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     }
 
     fun reset() {
+        // Keep hasSavedMeasurements and savedSessionUuid so DisconnectedView can still read
+        // the last known state after BLE disconnect. parseStatus() will overwrite them on
+        // the next connection.
         deviceState = AirBeamMiniV2Configurator.DeviceState.UNKNOWN
-        hasSavedMeasurements = false
-        savedSessionUuid = null
         syncCallback = null
     }
 

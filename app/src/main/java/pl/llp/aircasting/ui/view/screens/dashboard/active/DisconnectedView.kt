@@ -36,6 +36,7 @@ import pl.llp.aircasting.util.extensions.startAnimation
 import pl.llp.aircasting.util.extensions.stopAnimation
 import pl.llp.aircasting.util.extensions.visible
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import javax.inject.Inject
 
@@ -64,6 +65,9 @@ class DisconnectedView(
 
     @Inject
     lateinit var bluetoothManager: BluetoothManager
+
+    @Inject
+    lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
     lateinit var session: Session
 
@@ -152,10 +156,11 @@ class DisconnectedView(
             ).show()
         }
         mSecondaryButton?.setOnClickListener {
-            FinishSessionConfirmationDialog(
-                mSupportFragmentManager,
-                session
-            ).show()
+            if (v2StateRepository.hasSavedMeasurements) {
+                SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show()
+            } else {
+                FinishSessionConfirmationDialog(mSupportFragmentManager, session).show()
+            }
         }
 
         moveLoaderToTopLeft()
