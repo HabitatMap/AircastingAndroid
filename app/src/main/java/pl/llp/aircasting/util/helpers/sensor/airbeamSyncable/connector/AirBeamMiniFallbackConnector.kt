@@ -55,8 +55,20 @@ class AirBeamMiniFallbackConnector(
             .fail { device, status -> onFailedCallback(device, status) }
             .done { _ ->
                 Log.d(TAG, "AirBeamMiniFallback: Connected with ${if (isV2Attempt) "V2" else "V1"}")
-                if (isV2Attempt) v2Configurator.deviceId = deviceItem.id
-                onConnectionSuccessful(deviceItem)
+                val effectiveDeviceItem = if (isV2Attempt) {
+                    v2Configurator.deviceId = deviceItem.id
+                    DeviceItem(
+                        deviceItem.bluetoothDevice,
+                        deviceItem.name,
+                        deviceItem.address,
+                        deviceItem.id,
+                        deviceItem.type,
+                        DeviceItem.FirmwareVersion.V2,
+                    )
+                } else {
+                    deviceItem
+                }
+                onConnectionSuccessful(effectiveDeviceItem)
             }
             .enqueue()
     }
