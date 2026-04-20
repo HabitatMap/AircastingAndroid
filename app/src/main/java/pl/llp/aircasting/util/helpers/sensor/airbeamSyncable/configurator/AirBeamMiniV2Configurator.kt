@@ -13,11 +13,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.ble.BleManager
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.AirBeamMiniV2NackError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsRepository
@@ -587,42 +585,19 @@ class AirBeamMiniV2Configurator(
 
         Log.d(TAG, "V2: Measurement count=$count, ts=$timestamp, PM1=$pm1, PM2.5=$pm25")
 
-        val devId = deviceId ?: "unknown"
-        val packageName = "AirBeamMini:$devId"
+        val devId = deviceId ?: run {
+            Log.e(TAG, "V2: deviceId null when live measurement arrived")
+            return
+        }
 
-        EventBus.getDefault().post(
-            NewMeasurementEvent(
-                sensorPackageName = packageName,
-                sensorName = "AirBeamMini-PM1",
-                measurementType = "Particulate Matter",
-                measurementShortType = "PM",
-                unitName = "microgram per cubic meter",
-                unitSymbol = "µg/m³",
-                thresholdVeryLow = 0,
-                thresholdLow = 9,
-                thresholdMedium = 35,
-                thresholdHigh = 55,
-                thresholdVeryHigh = 150,
-                measuredValue = pm1.toDouble()
-            )
-        )
-
-        EventBus.getDefault().post(
-            NewMeasurementEvent(
-                sensorPackageName = packageName,
-                sensorName = "AirBeamMini-PM2.5",
-                measurementType = "Particulate Matter",
-                measurementShortType = "PM",
-                unitName = "microgram per cubic meter",
-                unitSymbol = "µg/m³",
-                thresholdVeryLow = 0,
-                thresholdLow = 9,
-                thresholdMedium = 35,
-                thresholdHigh = 55,
-                thresholdVeryHigh = 150,
-                measuredValue = pm25.toDouble()
-            )
-        )
+        val time = Date(timestamp * 1000)
+        coroutineScope.launch {
+            try {
+                saveLiveMeasurementToDb(devId, listOf(Measurement(pm1.toDouble(), time)), listOf(Measurement(pm25.toDouble(), time)))
+            } catch (e: Exception) {
+                Log.e(TAG, "V2: saveLiveMeasurementToDb EXCEPTION", e)
+            }
+        }
     }
 
     // -- ContinueSession --
@@ -739,6 +714,18 @@ class AirBeamMiniV2Configurator(
         }
     }
 
+    private suspend fun saveLiveMeasurementToDb(
+        devId: String,
+        pm1Measurements: List<Measurement>,
+        pm25Measurements: List<Measurement>,
+    ) {
+        val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(devId) ?: run {
+            Log.e(TAG, "V2: No active mobile session for live measurement, deviceId=$devId")
+            return
+        }
+        saveMeasurementsToSession(sessionId, devId, pm1Measurements, pm25Measurements)
+    }
+
     private suspend fun saveSyncChunkToDb(
         devId: String,
         pm1Measurements: List<Measurement>,
@@ -750,12 +737,31 @@ class AirBeamMiniV2Configurator(
         val disconnectedId = sessionsRepository.getMobileDisconnectedSessionIdByDeviceId(devId)
         Log.d(TAG, "V2: Session lookup: recordingId=$recordingId, disconnectedId=$disconnectedId")
 
-        val sessionId = recordingId ?: disconnectedId
-        if (sessionId == null) {
+        val sessionId = recordingId ?: disconnectedId ?: run {
             Log.e(TAG, "V2: No mobile session found for deviceId=$devId, cannot save sync measurements")
             return
         }
 
+        // Discard sync data that belongs to a different (older) session on the device.
+        val deviceUuid = savedSessionUuid?.let { leBytesToUuid(it) }
+        if (deviceUuid != null) {
+            val appSession = sessionsRepository.getSessionById(sessionId)
+            if (appSession?.uuid != deviceUuid) {
+                Log.w(TAG, "V2: Discarding sync data from device session $deviceUuid (app session: ${appSession?.uuid})")
+                return
+            }
+        }
+
+        saveMeasurementsToSession(sessionId, devId, pm1Measurements, pm25Measurements)
+        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
+    }
+
+    private suspend fun saveMeasurementsToSession(
+        sessionId: Long,
+        devId: String,
+        pm1Measurements: List<Measurement>,
+        pm25Measurements: List<Measurement>,
+    ) {
         val packageName = "AirBeamMini:$devId"
 
         val pm1Stream = MeasurementStream(
@@ -772,10 +778,8 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm1StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm1Stream)
-        Log.d(TAG, "V2: PM1 streamId=$pm1StreamId, inserting ${pm1Measurements.size} measurements")
         measurementsRepository.insertAll(pm1StreamId, sessionId, pm1Measurements)
         activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm1StreamId, sessionId, pm1Measurements)
-        Log.d(TAG, "V2: PM1 measurements inserted successfully")
 
         val pm25Stream = MeasurementStream(
             sensorPackageName = packageName,
@@ -791,12 +795,8 @@ class AirBeamMiniV2Configurator(
             thresholdVeryHigh = 150,
         )
         val pm25StreamId = measurementStreamsRepository.getIdOrInsert(sessionId, pm25Stream)
-        Log.d(TAG, "V2: PM2.5 streamId=$pm25StreamId, inserting ${pm25Measurements.size} measurements")
         measurementsRepository.insertAll(pm25StreamId, sessionId, pm25Measurements)
         activeSessionMeasurementsRepository.createOrReplaceMultipleRows(pm25StreamId, sessionId, pm25Measurements)
-        Log.d(TAG, "V2: PM2.5 measurements inserted successfully")
-
-        Log.d(TAG, "V2: Saved ${pm1Measurements.size} synced measurements to DB (sessionId=$sessionId, deviceId=$devId)")
     }
 
     // -- UUID LE conversion --
