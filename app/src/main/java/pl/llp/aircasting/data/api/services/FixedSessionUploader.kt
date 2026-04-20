@@ -1,14 +1,16 @@
 package pl.llp.aircasting.data.api.services
 
+import android.util.Log
+import com.google.gson.Gson
 import pl.llp.aircasting.data.api.GzippedParams
 import pl.llp.aircasting.data.api.params.CreateFixedSessionV3Body
 import pl.llp.aircasting.data.api.params.CreateSessionBody
 import pl.llp.aircasting.data.api.params.SessionParams
+import pl.llp.aircasting.data.api.response.UploadSessionResponse
+import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
-import android.util.Log
-import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
 import java.util.Date
@@ -43,15 +45,13 @@ class FixedSessionUploaderDefault @Inject constructor(
         return runCatching {
             session.endTime = Date()
 
-            val response = if (isV2) {
-                val body = buildV3Body(session)
-                Log.d(TAG, "FixedSessionUploader: calling /api/v3/fixed_sessions for V2 device")
-                apiService.createFixedSessionV3(body)
-            } else {
-                val sessionParams = SessionParams(session)
-                val sessionBody = CreateSessionBody(GzippedParams.get(sessionParams, SessionParams::class.java))
-                apiService.createFixedSession(sessionBody)
+            if (isV2) {
+                return@runCatching invokeV2(session)
             }
+
+            val sessionParams = SessionParams(session)
+            val sessionBody = CreateSessionBody(GzippedParams.get(sessionParams, SessionParams::class.java))
+            val response = apiService.createFixedSession(sessionBody)
 
             if (!response.isSuccessful) {
                 throw UnexpectedAPIError()
@@ -85,6 +85,39 @@ class FixedSessionUploaderDefault @Inject constructor(
             Log.e(TAG, "FixedSessionUploader: API call failed", throwable)
             errorHandler.handle(UnexpectedAPIError(throwable))
         }.getOrNull()
+    }
+
+    private suspend fun invokeV2(session: Session): FixedSessionConfig? {
+        val requestBody = buildV3Body(session)
+        Log.d(TAG, "FixedSessionUploader: calling /api/v3/fixed_sessions for V2 device, body=$requestBody")
+        val response = apiService.createFixedSessionV3(requestBody)
+        val rawBody = response.body()?.string() ?: response.errorBody()?.string() ?: ""
+        Log.d(TAG, "FixedSessionUploader: V3 HTTP ${response.code()} raw body: $rawBody")
+
+        if (!response.isSuccessful) {
+            Log.e(TAG, "FixedSessionUploader: V3 endpoint returned error ${response.code()}: $rawBody")
+            throw UnexpectedAPIError()
+        }
+
+        val parsed = runCatching { Gson().fromJson(rawBody, UploadSessionResponse::class.java) }
+            .onFailure { Log.e(TAG, "FixedSessionUploader: failed to parse V3 response as JSON: $rawBody", it) }
+            .getOrNull()
+
+        sessionsRepository.updateUrlLocation(session, parsed?.location)
+
+        val tokenHex = parsed?.session_token
+        val streams = parsed?.streams
+        Log.d(TAG, "FixedSessionUploader: V3 parsed: location=${parsed?.location}, token=$tokenHex, streams=$streams")
+
+        if (tokenHex == null || streams == null) {
+            Log.e(TAG, "FixedSessionUploader: V3 response missing session_token or streams")
+            return null
+        }
+
+        val tokenBytes = tokenHex.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
+        val sensorTypeIds = streams.associate { it.sensor_name to it.sensor_type_id }
+        Log.d(TAG, "FixedSessionUploader: V3 token (${tokenBytes.size}B), sensorTypeIds=$sensorTypeIds")
+        return FixedSessionConfig(location = parsed.location, sessionToken = tokenBytes, sensorTypeIds = sensorTypeIds)
     }
 
     private fun buildV3Body(session: Session): CreateFixedSessionV3Body {

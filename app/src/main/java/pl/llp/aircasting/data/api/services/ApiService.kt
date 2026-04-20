@@ -1,5 +1,6 @@
 package pl.llp.aircasting.data.api.services
 
+import okhttp3.ResponseBody
 import pl.llp.aircasting.data.api.params.*
 import pl.llp.aircasting.data.api.params.CreateFixedSessionV3Body
 import pl.llp.aircasting.data.api.response.*
@@ -81,7 +82,7 @@ interface ApiService {
     suspend fun createFixedSession(@Body body: CreateSessionBody): Response<UploadSessionResponse>
 
     @POST(urlCreateFixedSessionV3)
-    suspend fun createFixedSessionV3(@Body body: CreateFixedSessionV3Body): Response<UploadSessionResponse>
+    suspend fun createFixedSessionV3(@Body body: CreateFixedSessionV3Body): Response<ResponseBody>
 
     @POST(urlSync)
     suspend fun sync(@Body body: SyncSessionBody): Response<SyncResponse>
