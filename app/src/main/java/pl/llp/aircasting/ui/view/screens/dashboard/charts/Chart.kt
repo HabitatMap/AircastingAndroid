@@ -105,7 +105,7 @@ class Chart(
             val entriesEndTime = mSessionPresenter?.chartData?.entriesEndTime
 
             mChartStartTimeTextView?.text = entriesStartTime ?: sessionStartTime
-            mChartEndTimeTextView?.text = entriesEndTime
+            mChartEndTimeTextView?.text = entriesEndTime ?: toTimeStringForDisplay(Date(), TimeZone.getDefault())
             mChartUnitTextView?.text = chartUnitText()
         }
     }
