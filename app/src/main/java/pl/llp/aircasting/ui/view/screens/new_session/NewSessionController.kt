@@ -100,6 +100,7 @@ class NewSessionController @AssistedInject constructor(
         NewSessionWizardNavigator(mViewMvc, mFragmentManager)
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
+    private var deviceFirmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -336,6 +337,7 @@ class NewSessionController @AssistedInject constructor(
 
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
+        this.deviceFirmwareVersion = deviceItem.firmwareVersion
         if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(session, this)
         } else if (sessionType == Session.Type.MOBILE || indoor) {
@@ -362,7 +364,7 @@ class NewSessionController @AssistedInject constructor(
 
     private fun startRecording(session: Session) {
         if (session.type == Session.Type.MOBILE) settings.increaseActiveMobileSessionsCount()
-        val event = StartRecordingEvent(session, wifiSSID, wifiPassword)
+        val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion)
         EventBus.getDefault().post(event)
         mContextActivity.setResult(RESULT_OK)
         mContextActivity.finish()

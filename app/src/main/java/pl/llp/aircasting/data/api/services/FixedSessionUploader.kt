@@ -1,6 +1,7 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.api.GzippedParams
+import pl.llp.aircasting.data.api.params.CreateFixedSessionV3Body
 import pl.llp.aircasting.data.api.params.CreateSessionBody
 import pl.llp.aircasting.data.api.params.SessionParams
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -27,8 +28,8 @@ data class FixedSessionConfig(
     val sensorTypeIds: Map<String, Int>,
 )
 
-fun interface FixedSessionUploader {
-    suspend operator fun invoke(session: Session): FixedSessionConfig?
+interface FixedSessionUploader {
+    suspend operator fun invoke(session: Session, isV2: Boolean = false): FixedSessionConfig?
 }
 
 @UserSessionScope
@@ -38,14 +39,19 @@ class FixedSessionUploaderDefault @Inject constructor(
     private val sessionsRepository: SessionsRepository,
 ) : FixedSessionUploader {
 
-    override suspend fun invoke(session: Session): FixedSessionConfig? {
+    override suspend fun invoke(session: Session, isV2: Boolean): FixedSessionConfig? {
         return runCatching {
             session.endTime = Date()
 
-            val sessionParams = SessionParams(session)
-            val sessionBody =
-                CreateSessionBody(GzippedParams.get(sessionParams, SessionParams::class.java))
-            val response = apiService.createFixedSession(sessionBody)
+            val response = if (isV2) {
+                val body = buildV3Body(session)
+                Log.d(TAG, "FixedSessionUploader: calling /api/v3/fixed_sessions for V2 device")
+                apiService.createFixedSessionV3(body)
+            } else {
+                val sessionParams = SessionParams(session)
+                val sessionBody = CreateSessionBody(GzippedParams.get(sessionParams, SessionParams::class.java))
+                apiService.createFixedSession(sessionBody)
+            }
 
             if (!response.isSuccessful) {
                 throw UnexpectedAPIError()
@@ -79,5 +85,26 @@ class FixedSessionUploaderDefault @Inject constructor(
             Log.e(TAG, "FixedSessionUploader: API call failed", throwable)
             errorHandler.handle(UnexpectedAPIError(throwable))
         }.getOrNull()
+    }
+
+    private fun buildV3Body(session: Session): CreateFixedSessionV3Body {
+        val streams = listOf(
+            CreateFixedSessionV3Body.StreamInfo("AirBeamMini-PM1", "µg/m³"),
+            CreateFixedSessionV3Body.StreamInfo("AirBeamMini-PM2.5", "µg/m³"),
+        )
+        return CreateFixedSessionV3Body(
+            uuid = session.uuid,
+            title = session.name,
+            latitude = session.location?.latitude,
+            longitude = session.location?.longitude,
+            contribute = session.contribute,
+            is_indoor = session.indoor,
+            airbeam = CreateFixedSessionV3Body.AirbeamInfo(
+                mac_address = session.deviceId,
+                model = "AirBeamMini",
+                name = session.name,
+            ),
+            streams = streams,
+        )
     }
 }

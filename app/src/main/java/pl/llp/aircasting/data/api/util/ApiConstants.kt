@@ -15,6 +15,7 @@ object ApiConstants {
 
     /* POST Requests */
     const val urlCreateFixedSession = "/api/realtime/sessions.json"
+    const val urlCreateFixedSessionV3 = "/api/v3/fixed_sessions"
     const val urlCreateMobileSession = "/api/sessions"
     const val urlSync = "/api/user/sessions/sync_with_versioning.json"
     const val urlCreateAccount = "/api/user.json"

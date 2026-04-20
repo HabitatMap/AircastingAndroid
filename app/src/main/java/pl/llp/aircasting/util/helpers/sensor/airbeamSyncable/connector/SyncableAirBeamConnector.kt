@@ -58,7 +58,7 @@ class SyncableAirBeamConnector(
     }
 
     override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: pl.llp.aircasting.data.api.services.FixedSessionConfig?) {
-        airBeam3Configurator.configure(session, wifiSSID, wifiPassword)
+        airBeam3Configurator.configure(session, wifiSSID, wifiPassword, fixedSessionConfig)
     }
 
     override fun sendAuth(sessionUUID: String) {

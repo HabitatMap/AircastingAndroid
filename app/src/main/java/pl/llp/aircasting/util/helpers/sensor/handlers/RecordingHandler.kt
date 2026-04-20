@@ -12,6 +12,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.NewMeasurementEvent
@@ -19,7 +20,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
 
 interface RecordingHandler {
-    fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?)
+    fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?, firmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1)
     fun stopRecording(uuid: String)
     fun handle(event: NewMeasurementEvent)
     fun startStandaloneMode(uuid: String)
@@ -41,7 +42,7 @@ class RecordingHandlerImpl(
     private val observers: MutableMap<String, Job>,
 ) : RecordingHandler {
 
-    override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?) {
+    override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?, firmwareVersion: DeviceItem.FirmwareVersion) {
         coroutineScope.launch {
             session.setAppropriateStatusForStartOfRecording()
             val databaseSessionId = sessionsRepository.insert(session)
@@ -51,10 +52,7 @@ class RecordingHandlerImpl(
                     session.setFollowedAtNow()
                     sessionsRepository.updateFollowedAt(session)
                     settings.increaseFollowedSessionsCount()
-                    // Upload first so we can pass session_token + sensor_type_ids to the device
-                    // via ConfigureSession. For V1 devices the fixedSessionConfig will be null
-                    // and configure() behaves as before.
-                    val fixedSessionConfig = upload(session)
+                    val fixedSessionConfig = upload(session, firmwareVersion == DeviceItem.FirmwareVersion.V2)
                     EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword, fixedSessionConfig))
                 }
                 Session.Type.MOBILE -> {

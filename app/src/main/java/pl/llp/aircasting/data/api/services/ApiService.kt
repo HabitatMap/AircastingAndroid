@@ -1,12 +1,14 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.data.api.params.*
+import pl.llp.aircasting.data.api.params.CreateFixedSessionV3Body
 import pl.llp.aircasting.data.api.response.*
 import pl.llp.aircasting.data.api.response.search.SessionsInRegionsResponse
 import pl.llp.aircasting.data.api.response.search.session.details.SessionWithStreamsAndMeasurementsResponse
 import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateAccount
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateFixedSession
+import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateFixedSessionV3
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateMobileSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlCreateThresholdAlert
 import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteThresholdAlert
@@ -77,6 +79,9 @@ interface ApiService {
 
     @POST(urlCreateFixedSession)
     suspend fun createFixedSession(@Body body: CreateSessionBody): Response<UploadSessionResponse>
+
+    @POST(urlCreateFixedSessionV3)
+    suspend fun createFixedSessionV3(@Body body: CreateFixedSessionV3Body): Response<UploadSessionResponse>
 
     @POST(urlSync)
     suspend fun sync(@Body body: SyncSessionBody): Response<SyncResponse>

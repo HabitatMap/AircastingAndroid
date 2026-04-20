@@ -60,7 +60,7 @@ class SessionManager @Inject constructor(
 
     @Subscribe
     fun onMessageEvent(event: StartRecordingEvent) {
-        recordingHandler.startRecording(event.session, event.wifiSSID, event.wifiPassword)
+        recordingHandler.startRecording(event.session, event.wifiSSID, event.wifiPassword, event.firmwareVersion)
     }
 
     @Subscribe
