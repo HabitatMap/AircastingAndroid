@@ -39,6 +39,7 @@ class AirBeamMiniV2Configurator(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) : BleManager(applicationContext), AirBeamBleConfigurator {
 
     companion object {
@@ -198,6 +199,8 @@ class AirBeamMiniV2Configurator(
 
         // Send initial SetTime after subscriptions settle
         sendSetTime()
+
+        v2StateRepository.setSyncCallback { sendStartSyncAndAwait() }
     }
 
     override fun onServicesInvalidated() {
@@ -252,6 +255,16 @@ class AirBeamMiniV2Configurator(
                     sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
+                }
+            }
+        } else if (currentState == DeviceState.HAS_SAVED_SESSION) {
+            // Device has a saved session from before; discard it before starting a new mobile session.
+            coroutineScope.launch {
+                val discarded = discardSavedSessionAndAwait()
+                if (discarded) {
+                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
+                } else {
+                    Log.e(TAG, "V2: DiscardSession failed for mobile session, aborting")
                 }
             }
         } else {
@@ -371,6 +384,7 @@ class AirBeamMiniV2Configurator(
         responseCharacteristic = null
         measurementCharacteristic = null
         syncCharacteristic = null
+        v2StateRepository.reset()
     }
 
     // -- SetTime --
@@ -438,11 +452,16 @@ class AirBeamMiniV2Configurator(
 
             STATE_RUNNING -> {
                 currentState = DeviceState.RUNNING
-                if (bytes.size >= 18) {
+                // Byte 18 present when device is actively streaming sync data; absent otherwise.
+                // Firmware re-notifies with has_measurements=false when sync completes.
+                if (bytes.size >= 19) {
                     savedSessionUuid = bytes.copyOfRange(2, 18)
+                    hasSavedMeasurements = bytes[18].toInt() != 0
+                } else if (bytes.size >= 18) {
+                    savedSessionUuid = bytes.copyOfRange(2, 18)
+                    hasSavedMeasurements = false
                 }
-                hasSavedMeasurements = false
-                Log.d(TAG, "V2 Status: Running, battery=$battery%, charging=$isCharging")
+                Log.d(TAG, "V2 Status: Running, battery=$battery%, charging=$isCharging, hasMeasurements=$hasSavedMeasurements")
             }
 
             else -> {
@@ -450,6 +469,8 @@ class AirBeamMiniV2Configurator(
                 Log.w(TAG, "V2 Status: Unknown state 0x${state.toString(16)}, battery=$battery%, charging=$isCharging")
             }
         }
+
+        v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
 
         if (pendingMobileReconnect) handlePendingReconnect()
     }

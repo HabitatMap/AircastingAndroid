@@ -57,6 +57,8 @@ import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2Configurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
@@ -85,6 +87,7 @@ class NewSessionController @AssistedInject constructor(
     private val coroutineScope: CoroutineScope,
     @AirbeamConnectionStatusFlow
     private val connectionStatus: StateFlow<AirbeamConnectionStatus?>,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -353,12 +356,29 @@ class NewSessionController @AssistedInject constructor(
 
     override fun onStartRecordingClicked(session: Session) {
         when {
-            session.type != Session.Type.MOBILE -> startRecording(session)
+            session.type != Session.Type.MOBILE -> checkV2SyncAndStart(session)
             DeviceItem.Type.isBatteryLevelAvailable(session.deviceType) -> handleBatteryServicePermissionsAndStartRecording(
                 session
             )
 
-            else -> startRecording(session)
+            else -> checkV2SyncAndStart(session)
+        }
+    }
+
+    private fun checkV2SyncAndStart(session: Session) {
+        if (v2StateRepository.deviceState == AirBeamMiniV2Configurator.DeviceState.HAS_SAVED_SESSION
+            && v2StateRepository.hasSavedMeasurements
+        ) {
+            SyncBeforeNewV2SessionDialog(
+                mFragmentManager,
+                onSyncAndStart = {
+                    v2StateRepository.startSync()
+                    startRecording(session)
+                },
+                onJustStart = { startRecording(session) },
+            ).show()
+        } else {
+            startRecording(session)
         }
     }
 

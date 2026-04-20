@@ -33,6 +33,8 @@ import pl.llp.aircasting.ui.view.screens.create_account.CreateAccountActivity
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.DisconnectedView
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.active.SyncAndFinishV2SessionDialog
+import pl.llp.aircasting.ui.view.screens.new_session.SyncBeforeNewV2SessionDialog
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.edit.EditSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.share.ShareSessionBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.bottomsheet.menu_options.theshold_alerts.CreateThresholdAlertBottomSheet
@@ -114,6 +116,8 @@ interface UserDependentComponent {
     fun inject(bottomSheet: AddNoteBottomSheet)
 
     fun inject(dialog: FinishSessionConfirmationDialog)
+    fun inject(dialog: SyncAndFinishV2SessionDialog)
+    fun inject(dialog: SyncBeforeNewV2SessionDialog)
     fun inject(view: DisconnectedView)
 
     fun inject(fragment: SettingsFragment)

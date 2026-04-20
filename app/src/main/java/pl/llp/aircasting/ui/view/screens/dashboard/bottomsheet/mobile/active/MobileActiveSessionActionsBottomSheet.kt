@@ -9,10 +9,12 @@ import pl.llp.aircasting.ui.view.screens.dashboard.DashboardPagerAdapter.Compani
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.view.screens.dashboard.active.AddNoteBottomSheet
 import pl.llp.aircasting.ui.view.screens.dashboard.active.FinishSessionConfirmationDialog
+import pl.llp.aircasting.ui.view.screens.dashboard.active.SyncAndFinishV2SessionDialog
 import pl.llp.aircasting.ui.view.screens.main.MainActivity
 import pl.llp.aircasting.ui.view.screens.sync.SyncUnavailableDialog
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import pl.llp.aircasting.util.isSDKLessOrEqualToNMR1
 import javax.inject.Inject
@@ -30,6 +32,9 @@ open class MobileActiveSessionActionsBottomSheet(
 
     @Inject
     lateinit var airBeamReconnector: AirBeamReconnector
+
+    @Inject
+    lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
     override fun layoutId(): Int {
         return R.layout.active_session_actions
@@ -67,7 +72,11 @@ open class MobileActiveSessionActionsBottomSheet(
         val stopButton = contentView?.stop_session_button
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
-            FinishSessionConfirmationDialog(parentFragmentManager, session).show()
+            if (v2StateRepository.hasSavedMeasurements) {
+                SyncAndFinishV2SessionDialog(parentFragmentManager, session).show()
+            } else {
+                FinishSessionConfirmationDialog(parentFragmentManager, session).show()
+            }
             dismiss()
         }
     }

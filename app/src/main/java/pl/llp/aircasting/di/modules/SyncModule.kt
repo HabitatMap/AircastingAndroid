@@ -12,6 +12,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.RequestQueueCall
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
@@ -36,6 +37,7 @@ object SyncModule {
         measurementStreamsRepository: MeasurementStreamsRepository,
         measurementsRepository: MeasurementsRepository,
         activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+        v2StateRepository: AirBeamMiniV2StateRepository,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -50,5 +52,6 @@ object SyncModule {
         measurementStreamsRepository,
         measurementsRepository,
         activeSessionMeasurementsRepository,
+        v2StateRepository,
     )
 }

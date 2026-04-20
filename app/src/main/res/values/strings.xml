@@ -257,6 +257,17 @@
     <string name="dialog_finish_and_sync_recording_text_part4">storage will be cleared afterwards.</string>
     <string name="finish_recording_and_sync">Finish recording &amp; sync</string>
 
+    <!-- V2 sync dialogs -->
+    <string name="dialog_sync_and_finish_v2_header">Sync &amp; finish recording</string>
+    <string name="dialog_sync_and_finish_v2_description">This AirBeam has measurements that haven\'t been transferred to the app yet. Sync &amp; Finish will save them before stopping. Finish Without Sync will stop recording immediately.</string>
+    <string name="sync_and_finish_v2">Sync &amp; Finish</string>
+    <string name="finish_without_sync">Finish Without Sync</string>
+
+    <string name="dialog_sync_before_new_v2_header">Unsynced measurements found</string>
+    <string name="dialog_sync_before_new_v2_description">This AirBeam has unsaved measurements from a previous session. Sync them to the app before starting a new session, or start immediately and discard them.</string>
+    <string name="sync_and_start_new_v2">Sync &amp; Start New Session</string>
+    <string name="start_new_session_skip_sync">Start New Session</string>
+
     <!-- Chart -->
     <string name="fixed_session_units_label">1 hr avg</string>
     <string name="mobile_session_units_label">1 min avg</string>

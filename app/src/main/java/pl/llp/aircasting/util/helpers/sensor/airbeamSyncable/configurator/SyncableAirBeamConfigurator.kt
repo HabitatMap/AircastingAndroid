@@ -48,6 +48,7 @@ open class SyncableAirBeamConfiguratorFactory(
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) {
     private lateinit var sdCardReader: SDCardReader
 
@@ -60,6 +61,7 @@ open class SyncableAirBeamConfiguratorFactory(
         measurementStreamsRepository,
         measurementsRepository,
         activeSessionMeasurementsRepository,
+        v2StateRepository,
     )
 
     open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {
