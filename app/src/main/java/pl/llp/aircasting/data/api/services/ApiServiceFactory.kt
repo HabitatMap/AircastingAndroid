@@ -10,6 +10,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import pl.llp.aircasting.BuildConfig
 import pl.llp.aircasting.data.api.interceptor.AuthenticationInterceptor
 import pl.llp.aircasting.data.api.interceptor.NetworkConnectionInterceptor
+import pl.llp.aircasting.data.api.util.ApiConstants
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.util.Settings
 import retrofit2.Retrofit
@@ -53,12 +54,18 @@ open class ApiServiceFactory(
 
     protected open fun baseUrl(): HttpUrl {
         val suffix = "/"
-        val backendUrl = settings.getBackendUrl()
+        val rawUrl = settings.getBackendUrl() ?: ApiConstants.baseUrl
+        val port = settings.getBackendPort() ?: "443"
 
-        var baseUrl = backendUrl + ":" + settings.getBackendPort()
+        // Always use HTTPS to avoid OkHttp downgrading POST→GET on 301 HTTP→HTTPS redirect.
+        // If a stored URL was http:// with port 80, also upgrade the port to 443.
+        val httpsUrl = if (rawUrl.startsWith("http://")) {
+            "https://${rawUrl.removePrefix("http://")}"
+        } else rawUrl
+        val effectivePort = if (rawUrl.startsWith("http://") && port == "80") "443" else port
 
-        if (baseUrl.last().toString() != suffix)
-            baseUrl += suffix
+        var baseUrl = "$httpsUrl:$effectivePort"
+        if (baseUrl.last().toString() != suffix) baseUrl += suffix
 
         return baseUrl.toHttpUrl()
     }

@@ -40,7 +40,7 @@ open class Settings(private val sharedPreferences: SharedPreferences) {
         private const val DEFAULT_CROWD_MAP_ENABLED = true
         private const val DEFAULT_MAPS_DISABLED = false
 
-        private const val DEFAULT_BACKEND_PORT = "80"
+        private const val DEFAULT_BACKEND_PORT = "443"
 
         private const val DEFAULT_APP_RESTARTED = false
         private const val DEFAULT_THEME_VALUE = false
