@@ -555,7 +555,7 @@ class AirBeamMiniV2Configurator(
         val buffer = ByteBuffer.allocate(134).order(ByteOrder.LITTLE_ENDIAN)
         buffer.put(OPCODE_NEW_SESSION)
         buffer.put(uuidToLeBytes(sessionUuid))
-        buffer.putShort(1)              // interval_seconds = 1
+        buffer.putShort(60)             // interval_seconds = 60 (fixed session: 1 measurement/minute)
         buffer.put(0x00)                // fixed mode (byte 19 — firmware reads this as session_type)
         buffer.put(pm1Index.toByte())
         buffer.put(pm25Index.toByte())

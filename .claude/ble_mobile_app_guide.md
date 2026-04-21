@@ -169,6 +169,10 @@ Mobile sessions do **not** include `session_token` — the field is absent from 
 **Payload (Fixed):** `0x13` + `16B_UUID` + `2B_interval_seconds(u16)` + `0x00` + `1B_pm1_index` + `1B_pm2_5_index` + `16B_session_token` + `32B_WiFi_SSID` + `64B_WiFi_Password`
 Total: 134 bytes. Strings are null-byte padded to their container lengths. **Byte 19 is the mode byte (0x00=FIXED, 0x01=MOBILE)** — the firmware reads this to distinguish session types, so the order matters. The `session_token` (16 bytes) comes AFTER the indices, not immediately after the UUID.
 
+**Interval per session type:**
+- Mobile: `interval_seconds = 1` (1 measurement per second)
+- Fixed: `interval_seconds = 60` (1 measurement per minute)
+
 ### UUID Byte Encoding (Little-Endian)
 
 All UUIDs in V2 binary payloads use **mixed-endian (LE)** encoding, matching the firmware's `Uuid::from_slice_le()`:
