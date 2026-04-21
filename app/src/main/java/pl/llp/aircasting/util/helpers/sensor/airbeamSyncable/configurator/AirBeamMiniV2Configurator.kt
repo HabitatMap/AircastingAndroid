@@ -559,7 +559,8 @@ class AirBeamMiniV2Configurator(
         buffer.put(0x00)                // fixed mode (byte 19 — firmware reads this as session_type)
         buffer.put(pm1Index.toByte())
         buffer.put(pm25Index.toByte())
-        buffer.put(sessionToken)        // 16B token (bytes 22-37)
+        // Firmware reads token as u128::from_le_bytes, so reverse the BE hex byte order.
+        buffer.put(sessionToken.reversedArray()) // 16B token (bytes 22-37), little-endian
         buffer.put(ssidBytes)
         buffer.put(passBytes)
         return buffer.array()

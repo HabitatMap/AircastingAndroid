@@ -291,7 +291,7 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 ```
 
 3. `streams[].sensor_type_id` values become `pm1_index` and `pm2_5_index` in the `NewSessionConfig` payload
-4. `session_token` is a 16-byte integer stored by the backend and returned as a 32-char hex string. Decode it to 16 raw bytes before including in the BLE payload.
+4. `session_token` is a 16-byte integer stored by the backend and returned as a 32-char hex string. Decode it to 16 raw bytes, then **reverse the byte order to little-endian** before including in the BLE payload — firmware reads it via `u128::from_le_bytes(...)`. The hex string is big-endian (MSB first), so `tokenBytes.reversedArray()` is required.
 5. App sends `NewSessionConfig (0x13)` with all the above data + WiFi credentials
 
 ---
