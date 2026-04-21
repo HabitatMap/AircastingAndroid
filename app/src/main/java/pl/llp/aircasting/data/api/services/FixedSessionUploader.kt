@@ -61,26 +61,21 @@ class FixedSessionUploaderDefault @Inject constructor(
             val tokenHex = body?.session_token
             val streams = body?.streams
 
-            Log.d(TAG, "FixedSessionUploader: response body: location=${body?.location}, session_token=${tokenHex}, streams=${streams}")
-
             if (tokenHex != null && streams != null) {
                 // Backend stores session_token as a 16-byte integer, returned as a 32-char hex string.
                 val tokenBytes = tokenHex.chunked(2)
                     .map { it.toInt(16).toByte() }
                     .toByteArray()
                 val sensorTypeIds = streams.associate { it.sensor_name to it.sensor_type_id }
-                Log.d(TAG, "FixedSessionUploader: parsed token (${tokenBytes.size}B), sensorTypeIds=$sensorTypeIds")
                 FixedSessionConfig(
                     location = body.location,
                     sessionToken = tokenBytes,
                     sensorTypeIds = sensorTypeIds,
                 )
             } else {
-                Log.e(TAG, "FixedSessionUploader: backend response missing session_token or streams — cannot configure V2 fixed session. token=$tokenHex streams=$streams")
                 null
             }
         }.onFailure { throwable ->
-            Log.e(TAG, "FixedSessionUploader: API call failed", throwable)
             errorHandler.handle(UnexpectedAPIError(throwable))
         }.getOrNull()
     }
