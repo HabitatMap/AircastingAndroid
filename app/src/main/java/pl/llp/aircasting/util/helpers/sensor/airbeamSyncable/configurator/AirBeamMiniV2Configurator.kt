@@ -248,8 +248,6 @@ class AirBeamMiniV2Configurator(
             return
         }
 
-        Log.d(TAG, "V2: configure() called, currentState=$currentState, session=${session.uuid}, fixed=${session.isFixed()}")
-
         if (session.isFixed() && fixedSessionConfig != null) {
             coroutineScope.launch {
                 val discarded = discardSavedSessionAndAwait()
@@ -270,7 +268,6 @@ class AirBeamMiniV2Configurator(
                 }
             }
         } else {
-            Log.d(TAG, "V2: configure() → sending NewSessionConfig directly (currentState=$currentState)")
             sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
         }
     }
@@ -596,7 +593,6 @@ class AirBeamMiniV2Configurator(
     // -- Measurement parsing --
 
     private fun parseMeasurement(bytes: ByteArray) {
-        Log.d(TAG, "V2: Measurement notification received, ${bytes.size} bytes, deviceId=$deviceId")
         if (bytes.size < 9) {
             Log.w(TAG, "V2: Measurement too short: ${bytes.size} bytes")
             return
@@ -745,10 +741,9 @@ class AirBeamMiniV2Configurator(
         pm25Measurements: List<Measurement>,
     ) {
         val sessionId = sessionsRepository.getMobileActiveSessionIdByDeviceId(devId) ?: run {
-            Log.e(TAG, "V2: No active mobile session for live measurement, deviceId=$devId (currentState=$currentState)")
+            Log.e(TAG, "V2: No active mobile session for live measurement, deviceId=$devId")
             return
         }
-        Log.d(TAG, "V2: Saving live measurement to sessionId=$sessionId, deviceId=$devId")
         saveMeasurementsToSession(sessionId, devId, pm1Measurements, pm25Measurements)
     }
 
