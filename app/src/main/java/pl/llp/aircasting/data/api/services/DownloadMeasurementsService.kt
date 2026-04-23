@@ -21,6 +21,7 @@ import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 
 @UserSessionScope
@@ -185,7 +186,7 @@ class DownloadMeasurementsService @Inject constructor(
     ) {
         endTimeString?.let {
             dbSession.copy(
-                endTime = DateConverter.fromString(endTimeString)
+                endTime = DateConverter.fromString(endTimeString, TimeZone.getTimeZone("UTC"))
             ).let {
                 sessionsRepository.update(it)
             }
