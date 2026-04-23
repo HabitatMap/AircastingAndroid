@@ -21,7 +21,8 @@ https://github.com/HabitatMap/AirbeamMiniFirmware/tree/wifi-session
 | **Sync** | SD card CSV file download via dedicated characteristics | Binary records streamed via Sync characteristic (indicate) |
 | **Session config** | Multiple sequential messages (location, time, mode) | Single binary command `NewSessionConfig (0x13)` |
 | **Time sync** | Date string in `dd/MM/yy-HH:mm:ss` format | Unix epoch i64, sent every hour via `SetTime (0x15)` |
-| **Reconnection** | Reconfigure mobile session from scratch | `ContinueSession (0x10)` for mobile; Running state auto-streams |
+| **Reconnection** | Reconfigure mobile session from scratch | `ContinueSession (0x10)` for mobile; Running state auto-streams. Fixed sessions auto-resume on the firmware side (BLE setup timeout + saved fixed session → WiFi reconnect, no app needed). |
+| **Fixed-session offline buffering** | N/A (no fixed-session support) | Measurements persisted to littlefs when WiFi is down; replayed via WiFi POST when connectivity returns (firmware-only, no app involvement on current firmware `d15eff2`+). |
 
 ### Backward Compatibility
 
@@ -120,9 +121,10 @@ All replies to app commands arrive as notification bytes on the Response charact
 - `0x20` **Ack**: Command understood. Wait for further replies (like `Ready`) if applicable.
 - `0x21` **Nack**: Command rejected. Next byte = Error Code:
   - `0x01`: NoSession
-  - `0x02`: InvalidConfig (e.g., WiFi connection failed)
+  - `0x02`: InvalidConfig (generic config failure; for fixed sessions also fires if the **first** measurement POST fails after the session is freshly configured — firmware signals this and then stops, expecting the app to reconfigure)
   - `0x03`: StorageHasMeasurements
   - `0x04`: ClearStorageFailed / SyncStorageFailed
+  - `0x05`: **InvalidWifiCredentials** — sent when `NewSessionConfig` WiFi connect fails because the credentials themselves are wrong (distinct from `0x02`). App should prompt user to re-enter SSID/password.
 - `0x22` **Ready**: Procedure complete (e.g., WiFi connected, sync finished, storage cleared).
 - `0x23` **SensorInfo**: Response to `GetSensors`. Bytes after `0x23` = ASCII string `"PM1,μg/m3;PM2.5,μg/m3"`.
 - `0x24` **SyncInfo**: Response to `StartSync`. Bytes after `0x24` = `32B_WiFi_SSID_string` + `64B_WiFi_Password_string` (null-padded).
@@ -251,6 +253,56 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 
 ---
 
+## 6a. Fixed Session — WiFi-Drop Storage & Replay
+
+When a fixed session is running and WiFi drops (or fails to connect), the
+firmware does NOT lose measurements. Storage replay is a **firmware-side
+concern handled over WiFi** — the app does not participate.
+
+1. `send_measurement` (fixed path) POSTs to
+   `/api/v3/fixed_sessions/{uuid}/measurements` via
+   `wifi_manager.send_measurements(...)`.
+2. If WiFi is not connected, the record is persisted to littlefs storage
+   (`src/main.rs:171-175`).
+3. Every main-loop tick (100 ms), if `storage.has_measurements() &&
+   wifi_manager.is_connected()`, firmware replays stored records through
+   the WiFi POST endpoint via `sync_from_storage` (`src/main.rs:198-204`,
+   closure routes FIXED → WiFi, MOBILE → BLE).
+4. The WiFi POST response includes an `X-Server-Time` header parsed into
+   `LoopEvent::TimeUpdate`, keeping the device clock server-authoritative.
+   `SetTime` BLE hourly scheduling remains unused for fixed sessions.
+5. `connected()` predicate in the main loop is WiFi for FIXED, BLE for
+   MOBILE — so sync loop only fires on the correct transport.
+
+**First-measurement failure signalling (commit `25f94a1`):** On a freshly
+started fixed session, if the first measurement send fails AND BLE is
+still connected, firmware emits `Nack(0x02 InvalidConfig)` and stops the
+loop — a hint to the app that WiFi creds/connectivity are bad.
+Suppressed on resumed sessions (see §6b).
+
+---
+
+## 6b. Fixed Session — Firmware-Side Resume (No App Required)
+
+Commit `25f94a1` added autonomous resume for fixed sessions:
+
+- On BLE setup timeout, if a saved FIXED session exists on the device,
+  firmware auto-reconnects WiFi and returns `SetupResult::Continue`. The
+  session keeps running **without the app**.
+- First-measurement WiFi failure signalling is suppressed in this
+  resumed path (avoid re-prompting creds on every power-cycle).
+
+### Android Implication
+
+On BLE reconnect to a fixed-session device:
+- Status notification may be `Running (0x02)` with a session UUID the
+  app already knows — treat as normal continuation.
+- Do NOT assume "no session running" just because the app wasn't
+  involved in the latest setup. Always trust Status.
+- No `ContinueSession (0x10)` is needed for fixed sessions (still mobile-only).
+
+---
+
 ## 7. Fixed Session Flow (Backend Integration)
 
 ### Step-by-step
@@ -302,7 +354,7 @@ The old `ResponseParser` is **not reusable** for V2 — a new binary parser is n
 
 `SetTime (0x15)` must be sent:
 1. Immediately after connection (once Status is received)
-2. Every hour while connected — **only for mobile sessions**. Fixed sessions get time from the backend server, so hourly scheduling is not needed.
+2. Every hour while connected — **only for mobile sessions**. Fixed sessions get time from the backend server: the WiFi POST to `/api/v3/fixed_sessions/{uuid}/measurements` returns an `X-Server-Time` header that firmware parses into an internal `TimeUpdate` event (guarded by a ≥60s delta to avoid clock thrash). App must NOT schedule hourly `SetTime` for fixed sessions.
 
 The app should schedule a repeating timer/coroutine for this. The command does not produce an Ack response.
 
