@@ -197,6 +197,9 @@
     <string name="fixed_session_choose_location_header">Search the address and adjust the marker to indicate an exact placement of your AirBeam</string>
     <string name="fixed_session_choose_location_continue_button">Continue</string>
     <string name="fixed_session_confirmation_instructions">Hang your AirBeam in a secure position, then press the start recording button below.</string>
+    <string name="session_confirmation_starting_button">Starting…</string>
+    <string name="fixed_session_misconfigured_dialog_header">Session misconfigured</string>
+    <string name="fixed_session_misconfigured_dialog_description">We could not start this fixed session. Please check your WiFi credentials and create a new fixed session.</string>
 
     <!-- Map view -->
     <string name="avg_label">Avg</string>
