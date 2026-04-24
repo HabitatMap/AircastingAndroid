@@ -1,8 +1,12 @@
 package pl.llp.aircasting
 
+import android.app.Activity
 import android.app.Application
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ProcessLifecycleOwner
+import java.lang.ref.WeakReference
 
 import pl.llp.aircasting.data.local.repository.ExpandedCardsRepository
 import pl.llp.aircasting.data.model.observers.AppLifecycleObserver
@@ -18,6 +22,10 @@ open class AircastingApplication : Application() {
     lateinit var appComponent: AppComponent
     lateinit var mSettings: Settings
     val settings get() = mSettings
+
+    private var resumedActivityRef: WeakReference<AppCompatActivity>? = null
+    val currentActivity: AppCompatActivity?
+        get() = resumedActivityRef?.get()
 
     override fun onCreate() {
         super.onCreate()
@@ -36,6 +44,24 @@ open class AircastingApplication : Application() {
         ProcessLifecycleOwner.get()
             .lifecycle
             .addObserver(AppLifecycleObserver())
+
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityResumed(activity: Activity) {
+                if (activity is AppCompatActivity) {
+                    resumedActivityRef = WeakReference(activity)
+                }
+            }
+            override fun onActivityPaused(activity: Activity) {
+                if (resumedActivityRef?.get() === activity) resumedActivityRef = null
+            }
+            override fun onActivityStopped(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {
+                if (resumedActivityRef?.get() === activity) resumedActivityRef = null
+            }
+        })
     }
 
     protected open fun initialiseAppComponent(): AppComponent = DaggerAppComponent.builder()
