@@ -132,13 +132,4 @@ class NewSessionWizardNavigator(
         }
         return false
     }
-
-    fun setConfirmationLoading(loading: Boolean) {
-        for (fragment in mFragmentManager.fragments) {
-            if (fragment is ConfirmationFragment) {
-                fragment.setStartRecordingLoading(loading)
-                return
-            }
-        }
-    }
 }
