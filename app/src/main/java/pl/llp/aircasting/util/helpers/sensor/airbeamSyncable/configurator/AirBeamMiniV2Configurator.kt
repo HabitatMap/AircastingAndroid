@@ -75,11 +75,8 @@ class AirBeamMiniV2Configurator(
         private const val RESPONSE_SYNC_INFO: Int = 0x24
 
         private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
-        private const val NACK_INVALID_CONFIG: Int = 0x02
-        private const val NACK_INVALID_WIFI_CREDENTIALS: Int = 0x05
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
-        private const val FIXED_POST_READY_GRACE_MS = 15_000L
     }
 
     enum class DeviceState {
@@ -102,9 +99,6 @@ class AirBeamMiniV2Configurator(
     private var lastNackCode: Int = -1
     private var pendingMobileReconnect: Boolean = false
     private var isCurrentSessionFixed: Boolean = false
-    private var fixedConfigInFlight: Boolean = false
-    private var inFixedPostReadyGrace: Boolean = false
-    private var fixedPostReadyGraceJob: Job? = null
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -245,20 +239,14 @@ class AirBeamMiniV2Configurator(
     override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
         if (deviceId == null) deviceId = session.deviceId
         isCurrentSessionFixed = session.isFixed()
-        fixedConfigInFlight = isCurrentSessionFixed
-        inFixedPostReadyGrace = false
-        fixedPostReadyGraceJob?.cancel()
-        fixedPostReadyGraceJob = null
 
         if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
-            emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
             return
         }
 
         if (session.isFixed() && fixedSessionConfig == null) {
             Log.e(TAG, "V2: Fixed session but fixedSessionConfig is null (upload failed or backend returned no token/streams). Aborting configure.")
-            emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.OTHER_NACK)
             return
         }
 
@@ -269,7 +257,6 @@ class AirBeamMiniV2Configurator(
                     sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
-                    emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
                 }
             }
         } else if (currentState == DeviceState.HAS_SAVED_SESSION) {
@@ -285,24 +272,6 @@ class AirBeamMiniV2Configurator(
         } else {
             sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
         }
-    }
-
-    private fun emitFixedFailureIfApplicable(reason: FixedSessionConfigureOutcome.Reason, errorCode: Int = -1) {
-        if (!fixedConfigInFlight) return
-        fixedConfigInFlight = false
-        inFixedPostReadyGrace = false
-        fixedPostReadyGraceJob?.cancel()
-        fixedPostReadyGraceJob = null
-        v2StateRepository.emitConfigureOutcome(FixedSessionConfigureOutcome.Failure(reason, errorCode))
-    }
-
-    private fun emitFixedSuccessIfApplicable() {
-        if (!fixedConfigInFlight) return
-        fixedConfigInFlight = false
-        inFixedPostReadyGrace = false
-        fixedPostReadyGraceJob?.cancel()
-        fixedPostReadyGraceJob = null
-        v2StateRepository.emitConfigureOutcome(FixedSessionConfigureOutcome.Success)
     }
 
     private suspend fun discardSavedSessionAndAwait(): Boolean {
@@ -346,7 +315,6 @@ class AirBeamMiniV2Configurator(
                 Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
                 commandState = CommandState.IDLE
                 sessionReadyDeferred?.complete(false)
-                emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
             }
             .enqueue()
 
@@ -409,15 +377,11 @@ class AirBeamMiniV2Configurator(
     override fun reset() {
         Log.d(TAG, "V2: Resetting")
         setTimeJob?.cancel()
-        fixedPostReadyGraceJob?.cancel()
-        fixedPostReadyGraceJob = null
         commandState = CommandState.IDLE
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
         pendingMobileReconnect = false
         isCurrentSessionFixed = false
-        fixedConfigInFlight = false
-        inFixedPostReadyGrace = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -538,17 +502,6 @@ class AirBeamMiniV2Configurator(
                 if (errorCode != NACK_STORAGE_HAS_MEASUREMENTS) {
                     errorHandler.handleAndDisplay(AirBeamMiniV2NackError(errorCode))
                 }
-
-                if (fixedConfigInFlight) {
-                    val reason = when {
-                        inFixedPostReadyGrace && errorCode == NACK_INVALID_CONFIG ->
-                            FixedSessionConfigureOutcome.Reason.FIRST_MEASUREMENT_FAILED
-                        errorCode == NACK_INVALID_WIFI_CREDENTIALS ->
-                            FixedSessionConfigureOutcome.Reason.INVALID_WIFI_CREDENTIALS
-                        else -> FixedSessionConfigureOutcome.Reason.OTHER_NACK
-                    }
-                    emitFixedFailureIfApplicable(reason, errorCode)
-                }
             }
 
             RESPONSE_READY -> {
@@ -569,19 +522,7 @@ class AirBeamMiniV2Configurator(
     private fun onSessionReady() {
         // Fixed sessions receive time updates from backend via X-Server-Time header
         // on each WiFi POST, so hourly BLE SetTime is only needed for mobile sessions.
-        if (!isCurrentSessionFixed) {
-            startHourlySetTime()
-            return
-        }
-
-        // Fixed session reached Ready. Firmware will now try the first measurement POST.
-        // If it fails (bad WiFi, backend down on fresh config), firmware emits Nack(0x02)
-        // and stops the loop. If no Nack arrives within the grace window, assume success.
-        inFixedPostReadyGrace = true
-        fixedPostReadyGraceJob = coroutineScope.launch {
-            delay(FIXED_POST_READY_GRACE_MS)
-            emitFixedSuccessIfApplicable()
-        }
+        if (!isCurrentSessionFixed) startHourlySetTime()
     }
 
     // -- Session config payload --
