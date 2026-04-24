@@ -98,6 +98,7 @@ class AirBeamMiniV2Configurator(
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
     private var lastNackCode: Int = -1
     private var pendingMobileReconnect: Boolean = false
+    private var isCurrentSessionFixed: Boolean = false
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -237,6 +238,7 @@ class AirBeamMiniV2Configurator(
 
     override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
         if (deviceId == null) deviceId = session.deviceId
+        isCurrentSessionFixed = session.isFixed()
 
         if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
@@ -379,6 +381,7 @@ class AirBeamMiniV2Configurator(
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
         pendingMobileReconnect = false
+        isCurrentSessionFixed = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -517,7 +520,9 @@ class AirBeamMiniV2Configurator(
     }
 
     private fun onSessionReady() {
-        startHourlySetTime()
+        // Fixed sessions receive time updates from backend via X-Server-Time header
+        // on each WiFi POST, so hourly BLE SetTime is only needed for mobile sessions.
+        if (!isCurrentSessionFixed) startHourlySetTime()
     }
 
     // -- Session config payload --

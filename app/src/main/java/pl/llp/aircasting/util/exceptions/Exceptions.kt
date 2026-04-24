@@ -126,8 +126,9 @@ class AirBeamMiniV2NackError(errorCode: Int) : BaseException(
     null,
     when (errorCode) {
         0x01 -> "Device has no active session."
-        0x02 -> "Invalid device configuration — check WiFi credentials."
+        0x02 -> "Invalid device configuration."
         0x04 -> "Failed to clear or sync device storage."
+        0x05 -> "Invalid WiFi credentials."
         else -> "Device rejected the command (error code: $errorCode)."
     }
 )
