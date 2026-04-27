@@ -535,7 +535,14 @@ class AirBeamMiniV2Configurator(
                 awaitingSessionStartReady = false
                 sessionReadyDeferred?.complete(false)
                 if (errorCode != NACK_STORAGE_HAS_MEASUREMENTS) {
-                    errorHandler.handleAndDisplay(AirBeamMiniV2NackError(errorCode))
+                    val nackError = AirBeamMiniV2NackError(errorCode)
+                    if (fixedConfigInFlight) {
+                        // Controller observes the typed outcome and shows a single dialog;
+                        // log to crashlytics here without surfacing a duplicate generic dialog.
+                        errorHandler.handle(nackError)
+                    } else {
+                        errorHandler.handleAndDisplay(nackError)
+                    }
                 }
 
                 if (fixedConfigInFlight) {

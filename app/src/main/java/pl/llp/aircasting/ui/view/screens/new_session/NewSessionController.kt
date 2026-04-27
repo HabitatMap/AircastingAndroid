@@ -29,6 +29,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.data.model.SessionBuilder
 import pl.llp.aircasting.di.modules.AirbeamConnectionStatusFlow
 import pl.llp.aircasting.di.modules.MainScope
+import pl.llp.aircasting.ui.view.common.AircastingAlertDialog
 import pl.llp.aircasting.ui.view.screens.new_session.choose_location.ChooseLocationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.ConfirmationViewMvc
 import pl.llp.aircasting.ui.view.screens.new_session.confirmation.NotificationPermissionDialog
@@ -47,6 +48,7 @@ import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
 import pl.llp.aircasting.util.events.StartRecordingEvent
+import pl.llp.aircasting.util.exceptions.AirBeamMiniV2NackError
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.extensions.adjustMenuVisibility
@@ -420,7 +422,7 @@ class NewSessionController @AssistedInject constructor(
         wizardNavigator.setConfirmationLoading(true)
         fixedConfigureObserverJob?.cancel()
         fixedConfigureObserverJob = coroutineScope.launch {
-            when (v2StateRepository.configureOutcome.first()) {
+            when (val outcome = v2StateRepository.configureOutcome.first()) {
                 is FixedSessionConfigureOutcome.Success -> {
                     // Fixed V2 sessions POST measurements over WiFi autonomously, so BLE is no
                     // longer needed once the device confirms the first measurement was sent.
@@ -431,7 +433,14 @@ class NewSessionController @AssistedInject constructor(
 
                 is FixedSessionConfigureOutcome.Failure -> {
                     wizardNavigator.setConfirmationLoading(false)
-                    FixedSessionMisconfiguredDialog(mFragmentManager) {
+                    val header = mContextActivity.getString(R.string.error_dialog_default_header)
+                    val message = when (outcome.reason) {
+                        FixedSessionConfigureOutcome.Reason.INVALID_WIFI_CREDENTIALS ->
+                            mContextActivity.getString(R.string.fixed_session_misconfigured_dialog_description)
+                        else ->
+                            AirBeamMiniV2NackError(outcome.errorCode).messageToDisplay
+                    }
+                    AircastingAlertDialog(mFragmentManager, header, message) {
                         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
                         mContextActivity.setResult(RESULT_OK)
                         mContextActivity.finish()

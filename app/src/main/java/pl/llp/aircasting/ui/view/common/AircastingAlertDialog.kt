@@ -9,7 +9,8 @@ import pl.llp.aircasting.R
 class AircastingAlertDialog(
     mFragmentManager : FragmentManager,
     private val alertHeader : String?,
-    private val alertDescription: String?
+    private val alertDescription: String?,
+    private val onOkClicked: (() -> Unit)? = null,
 ) : BaseDialog(mFragmentManager) {
     lateinit var mView: View
 
@@ -23,6 +24,7 @@ class AircastingAlertDialog(
 
         mView.ok_button.setOnClickListener {
             dismiss()
+            onOkClicked?.invoke()
         }
 
         return mView
