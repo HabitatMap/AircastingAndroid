@@ -422,6 +422,9 @@ class NewSessionController @AssistedInject constructor(
         fixedConfigureObserverJob = coroutineScope.launch {
             when (v2StateRepository.configureOutcome.first()) {
                 is FixedSessionConfigureOutcome.Success -> {
+                    // Fixed V2 sessions POST measurements over WiFi autonomously, so BLE is no
+                    // longer needed once the device confirms the first measurement was sent.
+                    EventBus.getDefault().post(DisconnectExternalSensorsEvent())
                     mContextActivity.setResult(RESULT_OK)
                     mContextActivity.finish()
                 }

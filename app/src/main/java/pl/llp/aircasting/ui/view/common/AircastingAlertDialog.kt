@@ -19,6 +19,8 @@ class AircastingAlertDialog(
         mView.header.text = alertHeader
         mView.description.text = alertDescription
 
+        isCancelable = false
+
         mView.ok_button.setOnClickListener {
             dismiss()
         }
