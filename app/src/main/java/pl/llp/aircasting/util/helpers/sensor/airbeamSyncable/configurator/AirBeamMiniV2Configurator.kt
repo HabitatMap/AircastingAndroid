@@ -105,6 +105,10 @@ class AirBeamMiniV2Configurator(
     // not only after BLE setup. Setup work (e.g. hourly SetTime) must run on the first Ready only.
     private var sessionReadyHandled: Boolean = false
     private var fixedConfigInFlight: Boolean = false
+    // Set true when the next expected Ready means "session has started" (NewSessionConfig
+    // or ContinueSession). DiscardSession and StartSync also emit Ready, but those mean
+    // "procedure done" — they must not trigger session-start hooks.
+    private var awaitingSessionStartReady: Boolean = false
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -247,6 +251,7 @@ class AirBeamMiniV2Configurator(
         isCurrentSessionFixed = session.isFixed()
         sessionReadyHandled = false
         fixedConfigInFlight = isCurrentSessionFixed
+        awaitingSessionStartReady = false
 
         if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
@@ -332,11 +337,13 @@ class AirBeamMiniV2Configurator(
 
         commandState = CommandState.WAITING_ACK
         sessionReadyDeferred = CompletableDeferred()
+        awaitingSessionStartReady = true
 
         writeCharacteristic(cmd, payload, WRITE_TYPE_DEFAULT)
             .fail { _, status ->
                 Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
                 commandState = CommandState.IDLE
+                awaitingSessionStartReady = false
                 sessionReadyDeferred?.complete(false)
                 emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
             }
@@ -408,6 +415,7 @@ class AirBeamMiniV2Configurator(
         isCurrentSessionFixed = false
         sessionReadyHandled = false
         fixedConfigInFlight = false
+        awaitingSessionStartReady = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -524,6 +532,7 @@ class AirBeamMiniV2Configurator(
                 Log.e(TAG, "V2: Nack received, error code=$errorCode")
                 lastNackCode = errorCode
                 commandState = CommandState.IDLE
+                awaitingSessionStartReady = false
                 sessionReadyDeferred?.complete(false)
                 if (errorCode != NACK_STORAGE_HAS_MEASUREMENTS) {
                     errorHandler.handleAndDisplay(AirBeamMiniV2NackError(errorCode))
@@ -541,11 +550,14 @@ class AirBeamMiniV2Configurator(
 
             RESPONSE_READY -> {
                 if (commandState == CommandState.WAITING_READY) {
-                    Log.d(TAG, "V2: Ready received, session is active")
+                    Log.d(TAG, "V2: Ready received")
                     commandState = CommandState.IDLE
-                    sessionReadyHandled = true
                     sessionReadyDeferred?.complete(true)
-                    onSessionReady()
+                    if (awaitingSessionStartReady) {
+                        awaitingSessionStartReady = false
+                        sessionReadyHandled = true
+                        onSessionReady()
+                    }
                 } else if (sessionReadyHandled) {
                     // Firmware emits Ready after every measurement POST while BLE is connected.
                     Log.d(TAG, "V2: Ready heartbeat (per-measurement)")
@@ -684,11 +696,13 @@ class AirBeamMiniV2Configurator(
         commandState = CommandState.WAITING_ACK
         val deferred = CompletableDeferred<Boolean>()
         sessionReadyDeferred = deferred
+        awaitingSessionStartReady = true
 
         writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
             .fail { _, status ->
                 Log.e(TAG, "V2: ContinueSession write failed, status=$status")
                 commandState = CommandState.IDLE
+                awaitingSessionStartReady = false
                 deferred.complete(false)
             }
             .enqueue()
@@ -705,10 +719,12 @@ class AirBeamMiniV2Configurator(
                 commandState = CommandState.WAITING_ACK
                 val retryDeferred = CompletableDeferred<Boolean>()
                 sessionReadyDeferred = retryDeferred
+                awaitingSessionStartReady = true
                 writeCharacteristic(cmd, byteArrayOf(OPCODE_CONTINUE_SESSION), WRITE_TYPE_DEFAULT)
                     .fail { _, status ->
                         Log.e(TAG, "V2: ContinueSession retry write failed, status=$status")
                         commandState = CommandState.IDLE
+                        awaitingSessionStartReady = false
                         retryDeferred.complete(false)
                     }
                     .enqueue()
