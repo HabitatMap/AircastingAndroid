@@ -99,6 +99,9 @@ class AirBeamMiniV2Configurator(
     private var lastNackCode: Int = -1
     private var pendingMobileReconnect: Boolean = false
     private var isCurrentSessionFixed: Boolean = false
+    // Firmware emits Ready (0x22) on every successful measurement POST while BLE is connected,
+    // not only after BLE setup. Setup work (e.g. hourly SetTime) must run on the first Ready only.
+    private var sessionReadyHandled: Boolean = false
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -239,6 +242,7 @@ class AirBeamMiniV2Configurator(
     override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
         if (deviceId == null) deviceId = session.deviceId
         isCurrentSessionFixed = session.isFixed()
+        sessionReadyHandled = false
 
         if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
@@ -382,6 +386,7 @@ class AirBeamMiniV2Configurator(
         sessionReadyDeferred = null
         pendingMobileReconnect = false
         isCurrentSessionFixed = false
+        sessionReadyHandled = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -508,8 +513,14 @@ class AirBeamMiniV2Configurator(
                 if (commandState == CommandState.WAITING_READY) {
                     Log.d(TAG, "V2: Ready received, session is active")
                     commandState = CommandState.IDLE
+                    sessionReadyHandled = true
                     sessionReadyDeferred?.complete(true)
                     onSessionReady()
+                } else if (sessionReadyHandled) {
+                    // Firmware emits Ready after every measurement POST while BLE is connected.
+                    Log.d(TAG, "V2: Ready heartbeat (per-measurement)")
+                } else {
+                    Log.w(TAG, "V2: Ready received in unexpected state $commandState")
                 }
             }
 

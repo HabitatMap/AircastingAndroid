@@ -125,7 +125,7 @@ All replies to app commands arrive as notification bytes on the Response charact
   - `0x03`: StorageHasMeasurements
   - `0x04`: ClearStorageFailed / SyncStorageFailed
   - `0x05`: **InvalidWifiCredentials** — sent when `NewSessionConfig` WiFi connect fails because the credentials themselves are wrong (distinct from `0x02`). App should prompt user to re-enter SSID/password.
-- `0x22` **Ready**: Procedure complete (e.g., WiFi connected, sync finished, storage cleared).
+- `0x22` **Ready**: Procedure complete (e.g., WiFi connected, sync finished, storage cleared). For a running fixed session, firmware also emits `Ready` after **every successful measurement POST** while BLE is connected — i.e. it doubles as a per-measurement heartbeat. The app must treat repeated `Ready` as idempotent: the first one completes the configure flow / kicks off setup work; subsequent ones are heartbeat-only and must not re-trigger setup.
 - `0x23` **SensorInfo**: Response to `GetSensors`. Bytes after `0x23` = ASCII string `"PM1,μg/m3;PM2.5,μg/m3"`.
 - `0x24` **SyncInfo**: Response to `StartSync`. Bytes after `0x24` = `32B_WiFi_SSID_string` + `64B_WiFi_Password_string` (null-padded).
 
@@ -189,8 +189,8 @@ Example: UUID `"a4a3a2a1-b2b1-c2c1-d1d2-d3d4d5d6d7d8"` encodes as bytes `[a1,a2,
 - **Fixed:**
   - `Ack (0x20)`.
   - Firmware attempts WiFi connection with provided credentials.
-  - Success: `Ready (0x22)`.
-  - Failure: `Nack (0x02 InvalidConfig)`.
+  - Success: `Ready (0x22)` — and then another `Ready` after each subsequent measurement POST while BLE is connected (per-measurement heartbeat).
+  - Failure: `Nack (0x02 InvalidConfig)` (generic / first-measurement POST failure) or `Nack (0x05 InvalidWifiCredentials)`.
 
 ### E. `GetSensors` (OpCode `0x14`)
 
