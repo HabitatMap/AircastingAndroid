@@ -1,7 +1,23 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator
 
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import pl.llp.aircasting.di.UserSessionScope
 import javax.inject.Inject
+
+sealed class FixedSessionConfigureOutcome {
+    object Success : FixedSessionConfigureOutcome()
+    data class Failure(val reason: Reason, val errorCode: Int = -1) : FixedSessionConfigureOutcome()
+
+    enum class Reason {
+        INVALID_WIFI_CREDENTIALS,   // Nack 0x05 during NewSessionConfig
+        FIRST_MEASUREMENT_FAILED,   // Nack 0x02 (InvalidConfig / first-measurement POST failure)
+        OTHER_NACK,                 // Any other Nack
+        WRITE_FAILED,               // BLE write failed outright
+    }
+}
 
 @UserSessionScope
 class AirBeamMiniV2StateRepository @Inject constructor() {
@@ -15,6 +31,13 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
 
     private var syncCallback: (suspend () -> Boolean)? = null
 
+    private val _configureOutcome = MutableSharedFlow<FixedSessionConfigureOutcome>(
+        replay = 0,
+        extraBufferCapacity = 4,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val configureOutcome: SharedFlow<FixedSessionConfigureOutcome> = _configureOutcome.asSharedFlow()
+
     fun update(
         state: AirBeamMiniV2Configurator.DeviceState,
         hasMeasurements: Boolean,
@@ -27,6 +50,10 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
 
     fun setSyncCallback(callback: (suspend () -> Boolean)?) {
         syncCallback = callback
+    }
+
+    fun emitConfigureOutcome(outcome: FixedSessionConfigureOutcome) {
+        _configureOutcome.tryEmit(outcome)
     }
 
     fun reset() {

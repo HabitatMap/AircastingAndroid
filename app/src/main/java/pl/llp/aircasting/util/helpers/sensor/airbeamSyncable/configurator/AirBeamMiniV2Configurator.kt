@@ -75,6 +75,8 @@ class AirBeamMiniV2Configurator(
         private const val RESPONSE_SYNC_INFO: Int = 0x24
 
         private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
+        private const val NACK_INVALID_CONFIG: Int = 0x02
+        private const val NACK_INVALID_WIFI_CREDENTIALS: Int = 0x05
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
@@ -102,6 +104,7 @@ class AirBeamMiniV2Configurator(
     // Firmware emits Ready (0x22) on every successful measurement POST while BLE is connected,
     // not only after BLE setup. Setup work (e.g. hourly SetTime) must run on the first Ready only.
     private var sessionReadyHandled: Boolean = false
+    private var fixedConfigInFlight: Boolean = false
 
     var deviceId: String? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
@@ -243,14 +246,17 @@ class AirBeamMiniV2Configurator(
         if (deviceId == null) deviceId = session.deviceId
         isCurrentSessionFixed = session.isFixed()
         sessionReadyHandled = false
+        fixedConfigInFlight = isCurrentSessionFixed
 
         if (commandCharacteristic == null) {
             Log.e(TAG, "V2: Command characteristic not available")
+            emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
             return
         }
 
         if (session.isFixed() && fixedSessionConfig == null) {
             Log.e(TAG, "V2: Fixed session but fixedSessionConfig is null (upload failed or backend returned no token/streams). Aborting configure.")
+            emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.OTHER_NACK)
             return
         }
 
@@ -261,6 +267,7 @@ class AirBeamMiniV2Configurator(
                     sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
+                    emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
                 }
             }
         } else if (currentState == DeviceState.HAS_SAVED_SESSION) {
@@ -276,6 +283,18 @@ class AirBeamMiniV2Configurator(
         } else {
             sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
         }
+    }
+
+    private fun emitFixedFailureIfApplicable(reason: FixedSessionConfigureOutcome.Reason, errorCode: Int = -1) {
+        if (!fixedConfigInFlight) return
+        fixedConfigInFlight = false
+        v2StateRepository.emitConfigureOutcome(FixedSessionConfigureOutcome.Failure(reason, errorCode))
+    }
+
+    private fun emitFixedSuccessIfApplicable() {
+        if (!fixedConfigInFlight) return
+        fixedConfigInFlight = false
+        v2StateRepository.emitConfigureOutcome(FixedSessionConfigureOutcome.Success)
     }
 
     private suspend fun discardSavedSessionAndAwait(): Boolean {
@@ -319,6 +338,7 @@ class AirBeamMiniV2Configurator(
                 Log.e(TAG, "V2: NewSessionConfig write failed, status=$status")
                 commandState = CommandState.IDLE
                 sessionReadyDeferred?.complete(false)
+                emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
             }
             .enqueue()
 
@@ -387,6 +407,7 @@ class AirBeamMiniV2Configurator(
         pendingMobileReconnect = false
         isCurrentSessionFixed = false
         sessionReadyHandled = false
+        fixedConfigInFlight = false
         statusCharacteristic = null
         commandCharacteristic = null
         responseCharacteristic = null
@@ -507,6 +528,15 @@ class AirBeamMiniV2Configurator(
                 if (errorCode != NACK_STORAGE_HAS_MEASUREMENTS) {
                     errorHandler.handleAndDisplay(AirBeamMiniV2NackError(errorCode))
                 }
+
+                if (fixedConfigInFlight) {
+                    val reason = when (errorCode) {
+                        NACK_INVALID_WIFI_CREDENTIALS -> FixedSessionConfigureOutcome.Reason.INVALID_WIFI_CREDENTIALS
+                        NACK_INVALID_CONFIG -> FixedSessionConfigureOutcome.Reason.FIRST_MEASUREMENT_FAILED
+                        else -> FixedSessionConfigureOutcome.Reason.OTHER_NACK
+                    }
+                    emitFixedFailureIfApplicable(reason, errorCode)
+                }
             }
 
             RESPONSE_READY -> {
@@ -534,6 +564,10 @@ class AirBeamMiniV2Configurator(
         // Fixed sessions receive time updates from backend via X-Server-Time header
         // on each WiFi POST, so hourly BLE SetTime is only needed for mobile sessions.
         if (!isCurrentSessionFixed) startHourlySetTime()
+
+        // First Ready proves the configure flow succeeded — for fixed sessions, firmware
+        // emits Ready only after a successful measurement POST, so this is a real ack.
+        emitFixedSuccessIfApplicable()
     }
 
     // -- Session config payload --

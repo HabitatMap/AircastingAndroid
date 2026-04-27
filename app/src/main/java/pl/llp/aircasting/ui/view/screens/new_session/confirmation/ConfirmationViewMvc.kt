@@ -10,5 +10,7 @@ interface ConfirmationViewMvc : ObservableViewMvc<ConfirmationViewMvc.Listener> 
     }
 
     fun updateLocation(latitude: Double?, longitude: Double?)
+    fun showStartRecordingLoading()
+    fun hideStartRecordingLoading()
     fun onDestroy()
 }

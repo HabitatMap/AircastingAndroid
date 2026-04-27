@@ -44,6 +44,9 @@ abstract class ConfirmationViewMvcImpl(
     private var mApplication: AircastingApplication
     private var mContext: Context
 
+    private var startRecordingButton: Button? = null
+    private var defaultStartRecordingButtonText: CharSequence? = null
+
     init {
         this.rootView = inflater.inflate(layoutId(), parent, false)
 
@@ -55,10 +58,21 @@ abstract class ConfirmationViewMvcImpl(
         val sessionDescription = rootView?.findViewById<TextView>(R.id.description)
         sessionDescription?.text = buildDescription()
         initMap(mSupportFragmentManager)
-        val startRecordingButton = rootView?.findViewById<Button>(R.id.start_recording_button)
+        startRecordingButton = rootView?.findViewById(R.id.start_recording_button)
+        defaultStartRecordingButtonText = startRecordingButton?.text
         startRecordingButton?.setOnClickListener {
             onStartRecordingClicked()
         }
+    }
+
+    override fun showStartRecordingLoading() {
+        startRecordingButton?.isEnabled = false
+        startRecordingButton?.text = getString(R.string.session_confirmation_starting_button)
+    }
+
+    override fun hideStartRecordingLoading() {
+        startRecordingButton?.isEnabled = true
+        defaultStartRecordingButtonText?.let { startRecordingButton?.text = it }
     }
 
     abstract fun layoutId(): Int

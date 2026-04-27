@@ -15,7 +15,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -42,6 +44,7 @@ import pl.llp.aircasting.ui.view.screens.new_session.session_details.SessionDeta
 import pl.llp.aircasting.util.ResultCodes
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.AirBeamConnectionFailedEvent
+import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
 import pl.llp.aircasting.util.events.SendSessionAuth
 import pl.llp.aircasting.util.events.StartRecordingEvent
 import pl.llp.aircasting.util.exceptions.BluetoothNotSupportedException
@@ -59,6 +62,7 @@ import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneService
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamRecordSessionService
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.FixedSessionConfigureOutcome
 import pl.llp.aircasting.util.helpers.sensor.services.BatteryLevelService
 import pl.llp.aircasting.util.isSDKGreaterOrEqualToQ
 
@@ -104,6 +108,7 @@ class NewSessionController @AssistedInject constructor(
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
     private var deviceFirmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1
+    private var fixedConfigureObserverJob: Job? = null
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -398,10 +403,42 @@ class NewSessionController @AssistedInject constructor(
 
     private fun startRecording(session: Session) {
         if (session.type == Session.Type.MOBILE) settings.increaseActiveMobileSessionsCount()
+
+        val isFixedV2 = session.isFixed() && deviceFirmwareVersion == DeviceItem.FirmwareVersion.V2
+        if (isFixedV2) observeFixedConfigureOutcome(session)
+
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion)
         EventBus.getDefault().post(event)
-        mContextActivity.setResult(RESULT_OK)
-        mContextActivity.finish()
+
+        if (!isFixedV2) {
+            mContextActivity.setResult(RESULT_OK)
+            mContextActivity.finish()
+        }
+    }
+
+    private fun observeFixedConfigureOutcome(session: Session) {
+        wizardNavigator.setConfirmationLoading(true)
+        fixedConfigureObserverJob?.cancel()
+        fixedConfigureObserverJob = coroutineScope.launch {
+            when (v2StateRepository.configureOutcome.first()) {
+                is FixedSessionConfigureOutcome.Success -> {
+                    mContextActivity.setResult(RESULT_OK)
+                    mContextActivity.finish()
+                }
+
+                is FixedSessionConfigureOutcome.Failure -> {
+                    wizardNavigator.setConfirmationLoading(false)
+                    FixedSessionMisconfiguredDialog(mFragmentManager) {
+                        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
+                        coroutineScope.launch {
+                            sessionsRepository.delete(session.uuid)
+                            mContextActivity.setResult(RESULT_OK)
+                            mContextActivity.finish()
+                        }
+                    }.show()
+                }
+            }
+        }
     }
 
     private fun handleBatteryServicePermissionsAndStartRecording(session: Session) {

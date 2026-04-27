@@ -42,4 +42,8 @@ class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationC
         super.onStop()
         controller?.unregisterListener(listener)
     }
+
+    fun setStartRecordingLoading(loading: Boolean) {
+        if (loading) view?.showStartRecordingLoading() else view?.hideStartRecordingLoading()
+    }
 }
