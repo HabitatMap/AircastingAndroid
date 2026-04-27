@@ -405,7 +405,7 @@ class NewSessionController @AssistedInject constructor(
         if (session.type == Session.Type.MOBILE) settings.increaseActiveMobileSessionsCount()
 
         val isFixedV2 = session.isFixed() && deviceFirmwareVersion == DeviceItem.FirmwareVersion.V2
-        if (isFixedV2) observeFixedConfigureOutcome(session)
+        if (isFixedV2) observeFixedConfigureOutcome()
 
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion)
         EventBus.getDefault().post(event)
@@ -416,7 +416,7 @@ class NewSessionController @AssistedInject constructor(
         }
     }
 
-    private fun observeFixedConfigureOutcome(session: Session) {
+    private fun observeFixedConfigureOutcome() {
         wizardNavigator.setConfirmationLoading(true)
         fixedConfigureObserverJob?.cancel()
         fixedConfigureObserverJob = coroutineScope.launch {
@@ -433,11 +433,8 @@ class NewSessionController @AssistedInject constructor(
                     wizardNavigator.setConfirmationLoading(false)
                     FixedSessionMisconfiguredDialog(mFragmentManager) {
                         EventBus.getDefault().post(DisconnectExternalSensorsEvent())
-                        coroutineScope.launch {
-                            sessionsRepository.delete(session.uuid)
-                            mContextActivity.setResult(RESULT_OK)
-                            mContextActivity.finish()
-                        }
+                        mContextActivity.setResult(RESULT_OK)
+                        mContextActivity.finish()
                     }.show()
                 }
             }
