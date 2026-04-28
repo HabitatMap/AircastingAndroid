@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
 import no.nordicsemi.android.ble.BleManager
 import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.data.api.util.TAG
@@ -241,6 +243,28 @@ class AirBeamMiniV2Configurator(
 
     override fun closeConnection() {
         close()
+    }
+
+    override fun discardSession() {
+        val cmd = commandCharacteristic ?: run {
+            Log.d(TAG, "V2: discardSession skipped (command characteristic null)")
+            return
+        }
+
+        val written = CompletableDeferred<Boolean>()
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_DISCARD_SESSION), WRITE_TYPE_DEFAULT)
+            .done { written.complete(true) }
+            .fail { _, status ->
+                Log.e(TAG, "V2: DiscardSession write failed, status=$status")
+                written.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: DiscardSession sent on session finish")
+
+        runBlocking {
+            withTimeoutOrNull(2_000L) { written.await() }
+        }
     }
 
     override fun sendAuth(uuid: String) {

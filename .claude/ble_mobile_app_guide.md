@@ -153,6 +153,8 @@ All numerical values encoded as **Little Endian**.
   - Success: `Ready (0x22)`.
   - Failure: `Nack (0x04 ClearStorageFailed)`.
 
+**Android wiring:** `AirBeamConnector.onMessageEvent(StopRecordingEvent)` calls `discardSession()` then `disconnect()`. `AirBeamMiniV2Configurator.discardSession()` overrides the interface default and writes `0x11` synchronously (blocking up to 2s on the BLE write callback) so the command lands before `close()` tears down GATT. Required for both mobile and fixed V2 sessions — without it the device stays in `Running` (mobile) or auto-resumes via WiFi on reconnect (fixed, see §6b).
+
 ### C. `StartSync` (OpCode `0x12`)
 
 **Payload:** Single byte `0x12`.
