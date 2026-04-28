@@ -15,5 +15,5 @@ class NewMeasurementEvent(
     val thresholdVeryHigh: Int,
     val measuredValue: Double
 ) {
-    val deviceId get(): String? = sensorPackageName.split(':').lastOrNull()
+    val deviceId get(): String? = sensorPackageName.substringAfterLast(':').takeIf { it.isNotEmpty() }
 }

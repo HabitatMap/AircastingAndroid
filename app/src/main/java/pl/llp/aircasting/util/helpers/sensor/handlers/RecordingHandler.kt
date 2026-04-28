@@ -58,7 +58,9 @@ class RecordingHandlerImpl(
                 Session.Type.MOBILE -> {
                     EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
                     startAveragingServices(databaseSessionId)
-                    startObservingNewMeasurements(session)
+                    if (firmwareVersion != DeviceItem.FirmwareVersion.V2) {
+                        startObservingNewMeasurements(session)
+                    }
                 }
             }
         }

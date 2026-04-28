@@ -403,8 +403,10 @@ When sync measurements arrive on the Sync characteristic, **always verify the de
 
 The device UUID arrives in LE-encoded form via `savedSessionUuid: ByteArray?` and must be decoded with `leBytesToUuid()` before comparing to the DB session UUID.
 
-### Live Measurements — Do NOT Use NewMeasurementEvent
+### Live Measurements — Direct DB Save + UI Notification
 
-`NewMeasurementEvent.deviceId` extracts the device ID by splitting `sensorPackageName` on `:` and taking the last segment. Since V2 `sensorPackageName` is `"AirBeamMini:AA:BB:CC:DD:EE:FF"`, this returns only `"FF"` (last MAC byte), causing every live measurement to be silently dropped.
+V2 saves live measurements **directly** to the DB via `saveMeasurementsToSession()` (same path as sync chunks), using the device timestamp from the binary packet and the full device ID from `AirBeamMiniV2Configurator.deviceId`.
 
-**V2 live measurements must be saved directly to the DB** (same `saveMeasurementsToSession()` path as sync chunks), using the device timestamp from the binary packet and the full device ID from `AirBeamMiniV2Configurator.deviceId`.
+`NewMeasurementEvent.deviceId` originally split `sensorPackageName` on `:` and took the last segment, which broke V2 (`"AirBeamMini:AA:BB:CC:DD:EE:FF"` → only `"FF"`). It now uses `substringAfterLast(':')` so the full MAC is extracted (V1/microphone unchanged: `"AirBeamMini:246f28c47698"` → `"246f28c47698"`, `"Builtin"` → `"Builtin"`).
+
+After each direct DB save, V2 also posts a `NewMeasurementEvent` for PM1 and PM2.5 so UI subscribers (`SessionDetailsViewController` graph, `MobileActiveController` loader) refresh on the go. To avoid the standard observer double-saving the same measurement, `RecordingHandlerImpl.startRecording` skips `startObservingNewMeasurements` for V2 mobile sessions — V2 owns its own DB writes; the EventBus is used only for UI notification.

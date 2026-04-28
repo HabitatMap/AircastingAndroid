@@ -24,6 +24,8 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
+import pl.llp.aircasting.util.events.NewMeasurementEvent
+import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -819,6 +821,44 @@ class AirBeamMiniV2Configurator(
             return
         }
         saveMeasurementsToSession(sessionId, devId, pm1Measurements, pm25Measurements)
+        postLiveMeasurementEvents(devId, pm1Measurements, pm25Measurements)
+    }
+
+    private fun postLiveMeasurementEvents(
+        devId: String,
+        pm1Measurements: List<Measurement>,
+        pm25Measurements: List<Measurement>,
+    ) {
+        val packageName = "AirBeamMini:$devId"
+        val bus = EventBus.getDefault()
+        pm1Measurements.forEach { m ->
+            bus.post(
+                NewMeasurementEvent(
+                    packageName,
+                    "AirBeamMini-PM1",
+                    "Particulate Matter",
+                    "PM",
+                    "microgram per cubic meter",
+                    "µg/m³",
+                    0, 9, 35, 55, 150,
+                    m.value,
+                )
+            )
+        }
+        pm25Measurements.forEach { m ->
+            bus.post(
+                NewMeasurementEvent(
+                    packageName,
+                    "AirBeamMini-PM2.5",
+                    "Particulate Matter",
+                    "PM",
+                    "microgram per cubic meter",
+                    "µg/m³",
+                    0, 9, 35, 55, 150,
+                    m.value,
+                )
+            )
+        }
     }
 
     private suspend fun saveSyncChunkToDb(
