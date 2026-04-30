@@ -38,6 +38,17 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     )
     val configureOutcome: SharedFlow<FixedSessionConfigureOutcome> = _configureOutcome.asSharedFlow()
 
+    /**
+     * Emits the SoftAP password each time the firmware sends `Status::ReadyToSync (0x03)`.
+     * Replay = 1 so a late subscriber (orchestrator) still sees the most recent password.
+     */
+    private val _readyToSyncPassword = MutableSharedFlow<String>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val readyToSyncPassword: SharedFlow<String> = _readyToSyncPassword.asSharedFlow()
+
     fun update(
         state: AirBeamMiniV2Configurator.DeviceState,
         hasMeasurements: Boolean,
@@ -56,12 +67,23 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         _configureOutcome.tryEmit(outcome)
     }
 
+    fun emitReadyToSyncPassword(password: String) {
+        _readyToSyncPassword.tryEmit(password)
+    }
+
+    @Suppress("OPT_IN_USAGE")
+    fun resetReadyToSyncPassword() {
+        _readyToSyncPassword.resetReplayCache()
+    }
+
+    @Suppress("OPT_IN_USAGE")
     fun reset() {
         // Keep hasSavedMeasurements and savedSessionUuid so DisconnectedView can still read
         // the last known state after BLE disconnect. parseStatus() will overwrite them on
         // the next connection.
         deviceState = AirBeamMiniV2Configurator.DeviceState.UNKNOWN
         syncCallback = null
+        _readyToSyncPassword.resetReplayCache()
     }
 
     suspend fun startSync(): Boolean = syncCallback?.invoke() ?: false

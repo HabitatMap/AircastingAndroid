@@ -117,6 +117,15 @@ interface SessionDao {
     @Query("SELECT url_location FROM sessions WHERE uuid=:uuid")
     suspend fun getUrlLocation(uuid: String): String?
 
+    @Query("UPDATE sessions SET session_token=:sessionToken WHERE uuid=:uuid")
+    suspend fun updateSessionToken(uuid: String, sessionToken: String?)
+
+    @Query("SELECT session_token FROM sessions WHERE uuid=:uuid")
+    suspend fun getSessionToken(uuid: String): String?
+
+    @Query("UPDATE sessions SET fixed_pm1_index=:pm1Index, fixed_pm25_index=:pm25Index WHERE uuid=:uuid")
+    suspend fun updateFixedSensorIndices(uuid: String, pm1Index: Int?, pm25Index: Int?)
+
     @Query("UPDATE sessions SET status=:newStatus WHERE device_id=:deviceId AND status=:existingStatus")
     suspend fun disconnectSession(
         newStatus: Session.Status,

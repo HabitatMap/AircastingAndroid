@@ -221,6 +221,16 @@ class SessionsRepository @Inject constructor(
 
     suspend fun getUrlLocation(uuid: String) = mDatabase.sessions().getUrlLocation(uuid)
 
+    suspend fun updateSessionToken(uuid: String, sessionToken: String?) {
+        mDatabase.sessions().updateSessionToken(uuid, sessionToken)
+    }
+
+    suspend fun getSessionToken(uuid: String): String? = mDatabase.sessions().getSessionToken(uuid)
+
+    suspend fun updateFixedSensorIndices(uuid: String, pm1Index: Int?, pm25Index: Int?) {
+        mDatabase.sessions().updateFixedSensorIndices(uuid, pm1Index, pm25Index)
+    }
+
     suspend fun updateFollowedAt(session: Session) {
         mDatabase.sessions().updateFollowedAt(session.uuid, session.followedAt)
     }

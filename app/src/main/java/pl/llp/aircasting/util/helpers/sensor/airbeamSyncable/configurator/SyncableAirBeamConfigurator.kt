@@ -30,6 +30,7 @@ import pl.llp.aircasting.data.local.repository.ActiveSessionMeasurementsReposito
 import pl.llp.aircasting.data.local.repository.MeasurementStreamsRepository
 import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 import java.util.Date
 import java.util.TimeZone
 import java.util.UUID
@@ -49,6 +50,7 @@ open class SyncableAirBeamConfiguratorFactory(
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
+    private val v2SyncOrchestrator: V2SyncOrchestrator,
 ) {
     private lateinit var sdCardReader: SDCardReader
 
@@ -62,6 +64,7 @@ open class SyncableAirBeamConfiguratorFactory(
         measurementsRepository,
         activeSessionMeasurementsRepository,
         v2StateRepository,
+        v2SyncOrchestrator,
     )
 
     open fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator {

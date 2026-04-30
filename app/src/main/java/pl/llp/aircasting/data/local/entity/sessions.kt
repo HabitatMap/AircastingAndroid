@@ -40,6 +40,21 @@ data class SessionDBObject(
     @ColumnInfo(name = "session_order") val session_order: Int? = null,
     @ColumnInfo(name = "username") val username: String? = null,
     @ColumnInfo(name = "is_external", defaultValue = "0") val isExternal: Boolean = false,
+    /**
+     * 32-char hex session token returned by `/api/v3/fixed_sessions` for V2 firmware fixed
+     * sessions. Required as `Authorization: Bearer <hex>` when uploading buffered measurements
+     * to `/api/v3/fixed_sessions/{uuid}/measurements` after a manual sync.
+     * Null for mobile sessions and for V1/legacy fixed sessions.
+     */
+    @ColumnInfo(name = "session_token") val sessionToken: String? = null,
+    /**
+     * `sensor_type_id` values returned by the backend for the V2 fixed-session PM1 / PM2.5 streams.
+     * Needed to label each record byte in the `/api/v3/fixed_sessions/{uuid}/measurements` POST
+     * (FW writes `[pm1_idx, pm1_value, pm25_idx, pm25_value]` per measurement). Null for any
+     * non-V2-fixed session.
+     */
+    @ColumnInfo(name = "fixed_pm1_index") val fixedPm1Index: Int? = null,
+    @ColumnInfo(name = "fixed_pm25_index") val fixedPm25Index: Int? = null,
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
 ) {
 

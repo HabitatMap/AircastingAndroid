@@ -3,10 +3,18 @@ package pl.llp.aircasting.util.helpers.sensor.services
 import android.content.Context
 import android.content.Intent
 import android.os.Parcelable
+import android.util.Log
 import androidx.core.content.ContextCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector.AirBeamMiniFallbackConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerFixedFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerMobileFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSyncService
@@ -43,6 +51,12 @@ class AirBeamSyncService : AirBeamService() {
 
     @Inject
     lateinit var sDCardFileServiceProvider: SDCardFileServiceProvider
+
+    @Inject
+    lateinit var v2StateRepository: AirBeamMiniV2StateRepository
+
+    @field:[Inject IoCoroutineScope]
+    lateinit var ioScope: CoroutineScope
 
     private lateinit var sdCardSyncService: SDCardSyncService
 
@@ -110,6 +124,23 @@ class AirBeamSyncService : AirBeamService() {
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         val airBeamConnector = mAirBeamConnector
+
+        // V2 firmware has no SD card — manual sync runs over BLE + WiFi AP via the orchestrator.
+        // Short-circuit the V1 SD-card flow when the fallback connector successfully connected
+        // over V2; otherwise fall through to the existing SDCardSyncService pipeline.
+        val v2Connected = (airBeamConnector as? AirBeamMiniFallbackConnector)?.isV2Connected() == true
+        if (v2Connected) {
+            ioScope.launch {
+                Log.d("AirBeamSyncService", "V2 connection — running manual sync orchestrator")
+                val ok = v2StateRepository.startSync()
+                Log.d("AirBeamSyncService", "V2 manual sync orchestrator finished ok=$ok")
+                airBeamConnector.disconnect()
+                EventBus.getDefault().post(SDCardSyncFinished())
+                stopSelf()
+            }
+            return
+        }
+
         sdCardSyncService.start(airBeamConnector, deviceItem)
     }
 }

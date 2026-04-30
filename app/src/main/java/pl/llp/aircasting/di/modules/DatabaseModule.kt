@@ -21,6 +21,7 @@ import pl.llp.aircasting.data.local.migrations.MIGRATION_28_29
 import pl.llp.aircasting.data.local.migrations.MIGRATION_30_31
 import pl.llp.aircasting.data.local.migrations.MIGRATION_31_32
 import pl.llp.aircasting.data.local.migrations.MIGRATION_33_34
+import pl.llp.aircasting.data.local.migrations.MIGRATION_34_35
 import javax.inject.Singleton
 
 @Module
@@ -49,7 +50,8 @@ class DatabaseModule {
                 MIGRATION_28_29,
                 MIGRATION_30_31,
                 MIGRATION_31_32,
-                MIGRATION_33_34
+                MIGRATION_33_34,
+                MIGRATION_34_35
             )
             .build()
     }

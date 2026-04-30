@@ -96,6 +96,15 @@ class FixedSessionUploaderDefault @Inject constructor(
 
         val tokenBytes = tokenHex.chunked(2).map { it.toInt(16).toByte() }.toByteArray()
         val sensorTypeIds = streams.associate { it.sensor_name to it.sensor_type_id }
+        // Persist tokenHex + sensor type IDs on the session so post-restart manual sync can
+        // authorize the V3 fixed_sessions/{uuid}/measurements POST and label each record byte
+        // without re-creating the session.
+        sessionsRepository.updateSessionToken(session.uuid, tokenHex)
+        sessionsRepository.updateFixedSensorIndices(
+            session.uuid,
+            sensorTypeIds["AirBeamMini-PM1"],
+            sensorTypeIds["AirBeamMini-PM2.5"],
+        )
         return FixedSessionConfig(location = body.location, sessionToken = tokenBytes, sensorTypeIds = sensorTypeIds)
     }
 

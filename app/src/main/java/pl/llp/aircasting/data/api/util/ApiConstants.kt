@@ -22,6 +22,7 @@ object ApiConstants {
     const val urlUpdateSession = "/api/user/sessions/update_session.json"
     const val urlResetPassword = "/users/password.json"
     const val urlUploadFixedMeasurements = "/api/realtime/measurements"
+    const val urlUploadV2FixedMeasurements = "/api/v3/fixed_sessions/{uuid}/measurements"
     const val urlUpdateUserSettings = "/api/user/settings"
     const val urlCreateThresholdAlert = "api/fixed/threshold_alerts"
     const val urlDeleteAccountSendEmail = "/api/user/delete_account_send_code"

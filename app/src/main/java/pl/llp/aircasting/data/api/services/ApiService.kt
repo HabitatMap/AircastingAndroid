@@ -22,9 +22,11 @@ import pl.llp.aircasting.data.api.util.ApiConstants.urlSync
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateSession
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUpdateUserSettings
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadFixedMeasurements
+import pl.llp.aircasting.data.api.util.ApiConstants.urlUploadV2FixedMeasurements
 import pl.llp.aircasting.data.api.util.ApiConstants.urlUser
 import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteAccountSendEmail
 import pl.llp.aircasting.data.api.util.ApiConstants.urlDeleteAccountConfirmationCode
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -97,6 +99,20 @@ interface ApiService {
 
     @POST(urlUploadFixedMeasurements)
     suspend fun uploadFixedMeasurements(@Body body: UploadFixedMeasurementsBody): Response<Unit>
+
+    /**
+     * V2 fixed-session measurement upload — mirrors the firmware's POST.
+     *
+     * Auth: per-session token (`Bearer {tokenHex}`), NOT the user bearer. The session
+     * token is returned by `createFixedSessionV3` and persisted alongside the local session.
+     * Body: binary `application/octet-stream`, FW format (magic + count_be + records + xor).
+     */
+    @POST(urlUploadV2FixedMeasurements)
+    suspend fun uploadV2FixedMeasurements(
+        @Path("uuid") uuid: String,
+        @Header("Authorization") authorization: String,
+        @Body body: RequestBody,
+    ): Response<Unit>
 
     @POST(urlUpdateUserSettings)
     suspend fun updateUserSettings(@Body body: UserSettingsBody): Response<UserSettingsResponse>

@@ -27,6 +27,7 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
 import java.nio.ByteBuffer
@@ -44,6 +45,7 @@ class AirBeamMiniV2Configurator(
     private val measurementsRepository: MeasurementsRepository,
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
+    private val v2SyncOrchestrator: V2SyncOrchestrator,
 ) : BleManager(applicationContext), AirBeamBleConfigurator {
 
     companion object {
@@ -72,6 +74,7 @@ class AirBeamMiniV2Configurator(
         private const val STATE_IDLE: Int = 0x00
         private const val STATE_HAS_SAVED_SESSION: Int = 0x01
         private const val STATE_RUNNING: Int = 0x02
+        private const val STATE_READY_TO_SYNC: Int = 0x03
 
         private const val RESPONSE_ACK: Int = 0x20
         private const val RESPONSE_NACK: Int = 0x21
@@ -86,7 +89,7 @@ class AirBeamMiniV2Configurator(
     }
 
     enum class DeviceState {
-        IDLE, HAS_SAVED_SESSION, RUNNING, UNKNOWN
+        IDLE, HAS_SAVED_SESSION, RUNNING, READY_TO_SYNC, UNKNOWN
     }
 
     enum class CommandState {
@@ -215,7 +218,8 @@ class AirBeamMiniV2Configurator(
         // Send initial SetTime after subscriptions settle
         sendSetTime()
 
-        v2StateRepository.setSyncCallback { sendStartSyncAndAwait() }
+        // Manual sync flow used by `SyncBeforeNewV2SessionDialog` and the SD-sync entry point.
+        v2StateRepository.setSyncCallback { v2SyncOrchestrator.run(this) }
     }
 
     override fun onServicesInvalidated() {
@@ -431,8 +435,17 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun triggerSDCardDownload() {
-        // V2 uses Sync characteristic, not SD card — later phase
-        Log.d(TAG, "V2: triggerSDCardDownload called (no-op, V2 uses Sync)")
+        // V2 has no SD card — the SD-sync entry point reuses the manual file-sync flow.
+        // Run on the BLE coroutine scope so the suspending orchestrator can await BLE responses.
+        Log.d(TAG, "V2: triggerSDCardDownload routing to V2 manual sync orchestrator")
+        coroutineScope.launch {
+            try {
+                val ok = v2SyncOrchestrator.run(this@AirBeamMiniV2Configurator)
+                Log.d(TAG, "V2: triggerSDCardDownload orchestrator finished ok=$ok")
+            } catch (e: Exception) {
+                Log.e(TAG, "V2: triggerSDCardDownload orchestrator threw", e)
+            }
+        }
     }
 
     override suspend fun clearSDCard() {
@@ -493,9 +506,23 @@ class AirBeamMiniV2Configurator(
     // -- Status parsing --
 
     private fun parseStatus(bytes: ByteArray) {
-        if (bytes.size < 2) return
+        if (bytes.isEmpty()) return
 
         val state = bytes[0].toInt() and 0xFF
+
+        // ReadyToSync (0x03) has a different payload shape: [0x03, ...utf8 password bytes...].
+        // No battery byte — short-circuit before generic battery parsing.
+        if (state == STATE_READY_TO_SYNC) {
+            val password = if (bytes.size > 1) String(bytes, 1, bytes.size - 1, Charsets.UTF_8) else ""
+            currentState = DeviceState.READY_TO_SYNC
+            Log.d(TAG, "V2 Status: ReadyToSync, passwordLen=${password.length}")
+            v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
+            v2StateRepository.emitReadyToSyncPassword(password)
+            return
+        }
+
+        if (bytes.size < 2) return
+
         // FW encodes charging direction via sign: positive = charging, negative = discharging.
         // Cast to i8 first, then abs() for the actual level.
         val signedBattery = bytes[1].toInt()
@@ -795,6 +822,19 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: StartSync sent")
         return deferred.await()
     }
+
+    /**
+     * Send `StartSync (0x12)` and wait until firmware finishes the manual-sync flow:
+     * Ack → ReadyToSync(password) on Status (handled separately by orchestrator) → Ready (0x22).
+     * Returns true on Ready, false on Nack / write failure.
+     */
+    suspend fun sendStartSyncManualAndAwaitDone(): Boolean = sendStartSyncAndAwait()
+
+    /**
+     * After-the-fact wrapper exposed for the V2 sync orchestrator: write 0x11 (DiscardSession)
+     * and block on the resulting Ack→Ready cycle. Returns true on Ready.
+     */
+    suspend fun sendDiscardSessionAndAwait(): Boolean = discardSavedSessionAndAwait()
 
     // -- Sync chunk parsing & DB saving --
 

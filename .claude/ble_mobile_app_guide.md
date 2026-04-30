@@ -7,6 +7,9 @@ This document outlines how BLE communication operates in the new Airbeam Mini fi
 ## If something is unclear from the guide, fetch and reference the firmware code to find relevant information:
 https://github.com/HabitatMap/AirbeamMiniFirmware/tree/wifi-session
 
+The manual file-sync flow (`StartSync (0x12)`) lives on a separate branch:
+https://github.com/HabitatMap/AirbeamMiniFirmware/tree/maunal-sync
+
 ## 0. Key Differences from Old (V1) Firmware
 
 | Aspect | Old Firmware (V1) | New Firmware (V2) |
@@ -87,6 +90,7 @@ On connection (after ~300ms delay), the device sends a state notification. The a
 - `0x00` **Idle**: Payload = `[0x00, battery_level_u8]`. No ongoing session.
 - `0x01` **HasSavedSession**: Payload = `[0x01, battery_level_u8, session_uuid_16B_LE, has_measurements_u8_bool]`. Active session stored on device (device was turned off and on).
 - `0x02` **Running**: Payload = `[0x02, battery_level_u8, session_uuid_16B_LE]`. Session actively running.
+- `0x03` **ReadyToSync**: Payload = `[0x03, utf8_password_bytes...]`. Emitted while `StartSync (0x12)` is in progress and the firmware has opened the SoftAP "AirBeam Mini Sync". Password is variable-length UTF-8, no terminator. **Important:** this status has no battery byte at offset 1 — parsers must short-circuit before generic battery decoding.
 
 ### Battery Level
 
@@ -158,12 +162,34 @@ All numerical values encoded as **Little Endian**.
 ### C. `StartSync` (OpCode `0x12`)
 
 **Payload:** Single byte `0x12`.
-**Context:** Push locally stored measurements through the **Sync** characteristic. Stops session if running.
+**Context:** Initiate the **manual file-sync** flow on the `maunal-sync` firmware branch.
+Stops the session if running. **This is distinct from the auto-streaming on the Sync
+characteristic that fires during reconnect of an active mobile session (§9)** — those
+do not require `StartSync`.
 
-- `Ack (0x20)`, then `SyncInfo (0x24)` with WiFi SSID + password.
-- Historical records stream on Sync characteristic as chunked indications.
-  - Success: `Ready (0x22)`.
-  - Failure: `Nack (0x04)`.
+Sequence:
+1. App writes `0x12` to Command. Device replies `Ack (0x20)` on Response.
+2. Firmware opens SoftAP `"AirBeam Mini Sync"` (random WPA2 password) and an HTTP server.
+3. Device notifies Status with `ReadyToSync (0x03) + utf8_password_bytes` (§3).
+4. App joins the SoftAP using the password and `GET http://192.168.4.1/sync`.
+5. Body is `application/octet-stream` containing the raw measurement file:
+   concatenated blocks of `[0xAB, 0xBA, count_u8, count × 8B records, xor_u8]`.
+   Each 8-byte record is `ts_u32_LE + pm1_u16_LE + pm25_u16_LE`.
+6. When the HTTP transfer completes, firmware emits `Ready (0x22)` on Response and
+   automatically clears stored measurements via `storage.clear_measurements()`.
+
+- Failure: `Nack (0x04)` (`SyncStorageFailed`/`ClearStorageFailed`).
+
+**Android client responsibility for fixed-session measurements:** After draining `/sync`,
+upload the parsed records to the same backend endpoint the firmware uses —
+`POST /api/v3/fixed_sessions/{uuid}/measurements`, `Content-Type: application/octet-stream`,
+`Authorization: Bearer <session_token_hex>`. Body matches FW byte layout (BE u32 timestamps,
+BE f32 values, magic + count_u16_BE + records + xor). Mobile sessions follow the V1 SD-sync
+logic locally instead (skip finished, filter `> lastMeasurementTime`, insert with last-known
+location).
+
+**Note:** `SyncInfo (0x24)` is NOT emitted by the manual-sync flow on this branch — the
+SoftAP password is delivered via the new `Status::ReadyToSync (0x03)` notification.
 
 ### D. `NewSessionConfig` (OpCode `0x13`)
 
