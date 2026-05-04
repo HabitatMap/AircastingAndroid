@@ -113,7 +113,11 @@ class V2WifiApConnector(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
-                connectivityManager.bindProcessToNetwork(network)
+                // Do NOT bindProcessToNetwork — it routes ALL app traffic through the AP,
+                // including background backend uploads/downloads. On no-internet SoftAPs
+                // those calls flood the ESP HTTP server's socket pool, starving the
+                // /sync handler. V2SyncFileDownloader pins its own OkHttpClient to this
+                // network via socketFactory + DNS instead.
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
@@ -167,9 +171,6 @@ class V2WifiApConnector(
     }
 
     private fun disconnect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            connectivityManager.bindProcessToNetwork(null)
-        }
         modernCallback?.let {
             runCatching { connectivityManager.unregisterNetworkCallback(it) }
             modernCallback = null
