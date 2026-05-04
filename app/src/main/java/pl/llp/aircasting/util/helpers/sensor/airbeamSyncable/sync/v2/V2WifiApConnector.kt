@@ -2,32 +2,35 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
-import android.net.wifi.WifiConfiguration
 import android.net.wifi.WifiManager
-import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
+import android.os.Looper
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import pl.llp.aircasting.data.api.util.TAG
 
 /**
- * Joins the V2 firmware's "AirBeam Mini Sync" SoftAP, downloads measurements via
- * [V2SyncFileDownloader], then restores the previous network binding.
+ * Drives the user through joining the V2 firmware's "AirBeamMini Sync" SoftAP, then exposes
+ * the chosen [Network] so [V2SyncFileDownloader] can route its `GET /sync` over the AP.
  *
- * On API 29+ uses [WifiNetworkSpecifier] with [ConnectivityManager.requestNetwork] to obtain
- * a transient, app-scoped network without modifying the user's saved networks. The returned
- * [Network] is bound process-wide so OkHttp routes the GET through the AP rather than the
- * default mobile/Wi-Fi network.
- *
- * On API < 29 falls back to [WifiManager.addNetwork] + [WifiManager.enableNetwork], which
- * temporarily reconnects the entire device to the AP. Best-effort restore by re-enabling
- * the previously connected network.
+ * Why a manual flow rather than [android.net.wifi.WifiNetworkSpecifier]: in practice the
+ * system Wi-Fi picker driven by `requestNetwork(specifier)` is unreliable across OEM
+ * firmwares — the picker either shows an empty list, refuses to display the freshly-started
+ * SoftAP, or times out without giving the user a chance to tap "Connect". The polling
+ * approach below works on every Android version we target and gives the user a clear,
+ * recoverable UX: they land in the system Wi-Fi settings with the password on screen, join
+ * normally, and the app resumes once it sees the device attach to the AP.
  */
 class V2WifiApConnector(
     private val applicationContext: Context,
@@ -35,15 +38,9 @@ class V2WifiApConnector(
 ) {
     companion object {
         const val AP_SSID = "AirBeamMini Sync"
-        // Android's WifiNetworkSpecifier picker waits for a fresh scan that includes the
-        // target SSID. SoftAP beacons can take a few seconds to propagate after the firmware
-        // brings up the AP, and the user also needs time to tap "Connect" in the system
-        // dialog. 90s gives both enough headroom; the picker re-scans periodically.
-        private const val CONNECT_TIMEOUT_MS = 90_000L
-        // Brief delay between receiving the password (FW emits Ready{password} after AP
-        // start) and asking the system for the network — gives beacons time to be picked up
-        // by the next Wi-Fi scan so the picker is not empty when shown.
-        private const val PRE_REQUEST_DELAY_MS = 2_000L
+        // Total time we'll wait for the user to land back on the AP after we open settings.
+        private const val JOIN_TIMEOUT_MS = 120_000L
+        private const val POLL_INTERVAL_MS = 500L
     }
 
     private val connectivityManager: ConnectivityManager =
@@ -52,32 +49,21 @@ class V2WifiApConnector(
     private val wifiManager: WifiManager =
         applicationContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
-    private var modernCallback: ConnectivityManager.NetworkCallback? = null
-    private var legacyAddedNetworkId: Int = -1
-    private var legacyPreviousNetworkId: Int = -1
+    private var trackingCallback: ConnectivityManager.NetworkCallback? = null
 
     /**
-     * Connect to the AP and run [block] with the bound [Network] available; on completion
-     * (success or exception) restore the previous binding.
-     *
-     * Returns whatever [block] returns, or null if the AP could not be joined within
-     * [CONNECT_TIMEOUT_MS]. On API 29+ the [Network] passed to [block] is non-null only when
-     * the system actually attached us to the SoftAP (`onAvailable` fired); on API < 29 the
-     * device-wide connection is on the AP and we always pass null.
+     * Show the user the password, open system Wi-Fi settings, and poll until the device is
+     * associated with [ssid]. Returns the bound [Network] (also bound process-wide) or null
+     * on timeout / cancellation. The block runs with that [Network] in scope; on completion
+     * the process-wide binding is released.
      */
     suspend fun <T> withApConnection(password: String, block: suspend (Network?) -> T): T? {
-        val joined: Boolean
-        val network: Network?
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            network = connectModern(password)
-            joined = network != null
-        } else {
-            joined = connectLegacy(password)
-            network = null
-        }
+        showPasswordToast(password)
+        openWifiSettings()
 
-        if (!joined) {
-            Log.e(TAG, "V2WifiAp: AP join failed — skipping HTTP step")
+        val network = waitForApAssociation()
+        if (network == null) {
+            Log.e(TAG, "V2WifiAp: user did not connect to '$ssid' within ${JOIN_TIMEOUT_MS / 1000}s")
             disconnect()
             return null
         }
@@ -89,96 +75,93 @@ class V2WifiApConnector(
         }
     }
 
-    private suspend fun connectModern(password: String): Network? {
-        Log.d(TAG, "V2WifiAp: requesting SoftAP network ssid='$ssid' (passwordLen=${password.length})")
-        delay(PRE_REQUEST_DELAY_MS)
-        val specifier = WifiNetworkSpecifier.Builder()
-            .setSsid(ssid)
-            .setWpa2Passphrase(password)
-            .build()
+    private fun showPasswordToast(password: String) {
+        // Toast is a low-friction nudge; the orchestrator may also surface a richer dialog at
+        // a higher layer. Either way the password ends up in front of the user before they
+        // open settings.
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(
+                applicationContext,
+                "Connect to '$ssid' (password $password) to sync measurements",
+                Toast.LENGTH_LONG,
+            ).show()
+        } else {
+            android.os.Handler(Looper.getMainLooper()).post {
+                Toast.makeText(
+                    applicationContext,
+                    "Connect to '$ssid' (password $password) to sync measurements",
+                    Toast.LENGTH_LONG,
+                ).show()
+            }
+        }
+        Log.d(TAG, "V2WifiAp: prompting user to join '$ssid' (password=$password)")
+    }
 
+    private fun openWifiSettings() {
+        val intent = Intent(Settings.ACTION_WIFI_SETTINGS).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        runCatching { applicationContext.startActivity(intent) }
+            .onFailure { Log.w(TAG, "V2WifiAp: could not open Wi-Fi settings: ${it.message}") }
+    }
+
+    /**
+     * Poll until [WifiManager.connectionInfo] reports the SoftAP SSID (or timeout). Returns
+     * the underlying [Network] for that Wi-Fi connection, with the process bound to it so
+     * OkHttp in [V2SyncFileDownloader] routes through the AP rather than mobile data.
+     */
+    @SuppressLint("MissingPermission")
+    private suspend fun waitForApAssociation(): Network? {
+        val deadline = System.currentTimeMillis() + JOIN_TIMEOUT_MS
+        while (System.currentTimeMillis() < deadline) {
+            val info = wifiManager.connectionInfo
+            val currentSsid = info?.ssid?.trim('"')
+            if (currentSsid == ssid) {
+                Log.d(TAG, "V2WifiAp: device associated with '$ssid'")
+                return bindToWifiNetwork()
+            }
+            delay(POLL_INTERVAL_MS)
+        }
+        return null
+    }
+
+    /**
+     * Find the currently active Wi-Fi [Network] and pin it to this process so OkHttp routes
+     * through it. Done by registering a one-shot [NetworkRequest] with TRANSPORT_WIFI; the
+     * already-connected network triggers `onAvailable` synchronously.
+     */
+    private suspend fun bindToWifiNetwork(): Network? = withContext(Dispatchers.IO) {
+        val deferred = CompletableDeferred<Network?>()
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
             .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-            .setNetworkSpecifier(specifier)
             .build()
-
-        val deferred = CompletableDeferred<Network?>()
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
-                connectivityManager.bindProcessToNetwork(network)
+                Log.d(TAG, "V2WifiAp: bound Wi-Fi network: $network")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    connectivityManager.bindProcessToNetwork(network)
+                }
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
             override fun onUnavailable() {
-                Log.e(TAG, "V2WifiAp: SoftAP network unavailable")
+                Log.e(TAG, "V2WifiAp: Wi-Fi network unavailable in bind step")
                 if (!deferred.isCompleted) deferred.complete(null)
             }
-
-            override fun onLost(network: Network) {
-                Log.w(TAG, "V2WifiAp: SoftAP network lost: $network")
-            }
         }
-        modernCallback = callback
-        connectivityManager.requestNetwork(request, callback, CONNECT_TIMEOUT_MS.toInt())
-
-        return withTimeoutOrNull(CONNECT_TIMEOUT_MS) { deferred.await() }
+        trackingCallback = callback
+        connectivityManager.requestNetwork(request, callback, 5_000)
+        withTimeoutOrNull(6_000) { deferred.await() }
     }
 
-    @Suppress("DEPRECATION")
-    private suspend fun connectLegacy(password: String): Boolean {
-        legacyPreviousNetworkId = wifiManager.connectionInfo?.networkId ?: -1
-
-        val config = WifiConfiguration().apply {
-            SSID = "\"$ssid\""
-            preSharedKey = "\"$password\""
-        }
-        legacyAddedNetworkId = wifiManager.addNetwork(config)
-        if (legacyAddedNetworkId == -1) {
-            Log.e(TAG, "V2WifiAp: addNetwork failed (legacy path)")
-            return false
-        }
-
-        wifiManager.disconnect()
-        wifiManager.enableNetwork(legacyAddedNetworkId, true)
-        wifiManager.reconnect()
-
-        // Best-effort: poll until associated, up to CONNECT_TIMEOUT_MS.
-        val deadline = System.currentTimeMillis() + CONNECT_TIMEOUT_MS
-        while (System.currentTimeMillis() < deadline) {
-            val info = wifiManager.connectionInfo
-            if (info?.networkId == legacyAddedNetworkId && info.ssid?.trim('"') == ssid) {
-                Log.d(TAG, "V2WifiAp: legacy SoftAP connected")
-                return true
-            }
-            delay(500)
-        }
-        Log.e(TAG, "V2WifiAp: legacy SoftAP connect timed out")
-        return false
-    }
-
-    @SuppressLint("MissingPermission")
     private fun disconnect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             connectivityManager.bindProcessToNetwork(null)
-            modernCallback?.let {
-                runCatching { connectivityManager.unregisterNetworkCallback(it) }
-                modernCallback = null
-            }
-        } else {
-            @Suppress("DEPRECATION")
-            try {
-                if (legacyAddedNetworkId != -1) wifiManager.removeNetwork(legacyAddedNetworkId)
-                if (legacyPreviousNetworkId != -1) {
-                    wifiManager.enableNetwork(legacyPreviousNetworkId, true)
-                    wifiManager.reconnect()
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "V2WifiAp: legacy restore failed", e)
-            }
-            legacyAddedNetworkId = -1
-            legacyPreviousNetworkId = -1
+        }
+        trackingCallback?.let {
+            runCatching { connectivityManager.unregisterNetworkCallback(it) }
+            trackingCallback = null
         }
     }
 }
