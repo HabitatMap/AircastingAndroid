@@ -2,36 +2,33 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.wifi.ScanResult
 import android.net.wifi.WifiManager
+import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
-import android.provider.Settings
 import android.util.Log
-import android.widget.Toast
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import pl.llp.aircasting.data.api.util.TAG
 
 /**
- * Drives the user through joining the V2 firmware's "AirBeamMini Sync" SoftAP, then exposes
- * the chosen [Network] so [V2SyncFileDownloader] can route its `GET /sync` over the AP.
+ * Drives the V2 manual-sync SoftAP join via `WifiNetworkSpecifier` + the system Wi-Fi
+ * picker. Picker pre-fills the SSID + password we received over BLE, so the user only
+ * confirms — they never have to type credentials or risk picking the wrong network.
  *
- * Why a manual flow rather than [android.net.wifi.WifiNetworkSpecifier]: in practice the
- * system Wi-Fi picker driven by `requestNetwork(specifier)` is unreliable across OEM
- * firmwares and Android versions — the picker either shows an empty list, refuses to
- * display the freshly-started SoftAP, or times out without giving the user a chance to tap
- * "Connect" (observed on Android 12). The polling approach below works on every Android
- * version we target: the user lands in the system Wi-Fi settings with the password on
- * screen, joins normally, and the app resumes once it sees the device attach to the AP.
+ * Diagnostic logging: while the picker is open we periodically dump `wifiManager.scanResults`
+ * filtered to the target SSID. That tells us whether the AP is in the framework's scan cache
+ * (visibility issue is in the picker / specifier matching) or absent (visibility issue is in
+ * scan throttle / beacon propagation).
  */
 class V2WifiApConnector(
     private val applicationContext: Context,
@@ -39,9 +36,9 @@ class V2WifiApConnector(
 ) {
     companion object {
         const val AP_SSID = "AirBeamMini Sync"
-        private const val JOIN_TIMEOUT_MS = 120_000L
-        private const val POLL_INTERVAL_MS = 500L
-        private const val BIND_TIMEOUT_MS = 6_000L
+        private const val CONNECT_TIMEOUT_MS = 90_000L
+        private const val PRE_REQUEST_DELAY_MS = 2_000L
+        private const val SCAN_DUMP_INTERVAL_MS = 5_000L
     }
 
     private val connectivityManager: ConnectivityManager =
@@ -50,106 +47,132 @@ class V2WifiApConnector(
     private val wifiManager: WifiManager =
         applicationContext.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
-    private var trackingCallback: ConnectivityManager.NetworkCallback? = null
+    private var modernCallback: ConnectivityManager.NetworkCallback? = null
 
     /**
-     * Show the user the password, open system Wi-Fi settings, and poll until the device is
-     * associated with [ssid]. Runs [block] with the bound [Network] in scope; on completion
-     * the process-wide binding is released.
+     * Connect to the AP and run [block] with the bound [Network] available; on completion
+     * (success or exception) restore the previous binding.
      *
      * Returns whatever [block] returns, or null if the AP could not be joined within
-     * [JOIN_TIMEOUT_MS] (timeout / user cancellation).
+     * [CONNECT_TIMEOUT_MS] (timeout, user cancellation, or `NEARBY_WIFI_DEVICES` missing).
      */
-    suspend fun <T> withApConnection(password: String, block: suspend (Network?) -> T): T? {
-        showPasswordToast(password)
-        openWifiSettings()
-
-        val network = waitForApAssociation()
-        if (network == null) {
-            Log.e(TAG, "V2WifiAp: user did not connect to '$ssid' within ${JOIN_TIMEOUT_MS / 1000}s")
-            disconnect()
-            return null
+    suspend fun <T> withApConnection(password: String, block: suspend (Network) -> T): T? = coroutineScope {
+        val network = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            connectModern(password, this)
+        } else {
+            Log.e(TAG, "V2WifiAp: API < 29 not supported for V2 manual sync")
+            null
         }
 
-        return try {
+        if (network == null) {
+            Log.e(TAG, "V2WifiAp: AP join failed — skipping HTTP step")
+            disconnect()
+            return@coroutineScope null
+        }
+
+        try {
             block(network)
         } finally {
             disconnect()
         }
     }
 
-    private fun showPasswordToast(password: String) {
-        val msg = "Connect to '$ssid' (password $password) to sync measurements"
-        if (Looper.myLooper() == Looper.getMainLooper()) {
-            Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
-        } else {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(applicationContext, msg, Toast.LENGTH_LONG).show()
-            }
-        }
-        Log.d(TAG, "V2WifiAp: prompting user to join '$ssid' (passwordLen=${password.length})")
-    }
-
-    private fun openWifiSettings() {
-        val intent = Intent(Settings.ACTION_WIFI_SETTINGS).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }
-        runCatching { applicationContext.startActivity(intent) }
-            .onFailure { Log.w(TAG, "V2WifiAp: could not open Wi-Fi settings: ${it.message}") }
-    }
-
     @SuppressLint("MissingPermission")
-    private suspend fun waitForApAssociation(): Network? {
-        val deadline = System.currentTimeMillis() + JOIN_TIMEOUT_MS
-        while (System.currentTimeMillis() < deadline) {
-            val info = wifiManager.connectionInfo
-            val currentSsid = info?.ssid?.trim('"')
-            if (currentSsid == ssid) {
-                Log.d(TAG, "V2WifiAp: device associated with '$ssid'")
-                return bindToWifiNetwork()
-            }
-            delay(POLL_INTERVAL_MS)
-        }
-        return null
-    }
+    private suspend fun connectModern(password: String, scope: kotlinx.coroutines.CoroutineScope): Network? {
+        Log.d(TAG, "V2WifiAp: requesting SoftAP network ssid='$ssid' (passwordLen=${password.length})")
+        Log.d(TAG, "V2WifiAp: wifi enabled=${wifiManager.isWifiEnabled}, scan-always=${wifiManager.isScanAlwaysAvailable}")
 
-    /**
-     * Find the currently active Wi-Fi [Network] and pin it to this process so OkHttp routes
-     * through it. Registers a [NetworkRequest] with TRANSPORT_WIFI; the already-connected
-     * Wi-Fi network triggers `onAvailable` synchronously.
-     */
-    private suspend fun bindToWifiNetwork(): Network? = withContext(Dispatchers.IO) {
-        val deferred = CompletableDeferred<Network?>()
+        // Initial scan-cache snapshot before any explicit scan we issue.
+        dumpScanResults("pre-startScan")
+
+        val scanStarted = runCatching { @Suppress("DEPRECATION") wifiManager.startScan() }.getOrElse { false }
+        Log.d(TAG, "V2WifiAp: startScan() returned $scanStarted (false often means rate-limited or wifi off)")
+        delay(PRE_REQUEST_DELAY_MS)
+        dumpScanResults("post-startScan+delay")
+
+        // Keep dumping scan results while picker is open so we can see if/when AP appears.
+        val dumper: Job = scope.launch {
+            while (isActive) {
+                delay(SCAN_DUMP_INTERVAL_MS)
+                dumpScanResults("picker-open")
+            }
+        }
+
+        val specifier = WifiNetworkSpecifier.Builder()
+            .setSsid(ssid)
+            .setWpa2Passphrase(password)
+            .build()
+
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
             .removeCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .setNetworkSpecifier(specifier)
             .build()
+
+        val deferred = CompletableDeferred<Network?>()
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
-                Log.d(TAG, "V2WifiAp: bound Wi-Fi network: $network")
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    connectivityManager.bindProcessToNetwork(network)
-                }
+                Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
+                connectivityManager.bindProcessToNetwork(network)
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
             override fun onUnavailable() {
-                Log.e(TAG, "V2WifiAp: Wi-Fi network unavailable in bind step")
+                Log.e(TAG, "V2WifiAp: SoftAP network unavailable (picker dismissed / no match / user denied)")
                 if (!deferred.isCompleted) deferred.complete(null)
             }
+
+            override fun onLost(network: Network) {
+                Log.w(TAG, "V2WifiAp: SoftAP network lost: $network")
+            }
+
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+                Log.d(TAG, "V2WifiAp: capabilities changed on $network: $caps")
+            }
         }
-        trackingCallback = callback
-        connectivityManager.requestNetwork(request, callback, BIND_TIMEOUT_MS.toInt())
-        withTimeoutOrNull(BIND_TIMEOUT_MS + 1_000L) { deferred.await() }
+        modernCallback = callback
+        connectivityManager.requestNetwork(request, callback, CONNECT_TIMEOUT_MS.toInt())
+
+        val result = withTimeoutOrNull(CONNECT_TIMEOUT_MS) { deferred.await() }
+        dumper.cancel()
+        dumpScanResults("picker-closed")
+        return result
+    }
+
+    /**
+     * Log scan-result entries matching the target SSID (or a count of total entries when not
+     * found). With FINE_LOCATION granted this enumerates fresh `wifiManager.scanResults`.
+     */
+    @SuppressLint("MissingPermission")
+    private fun dumpScanResults(phase: String) {
+        val results: List<ScanResult> = runCatching { wifiManager.scanResults ?: emptyList() }
+            .getOrElse {
+                Log.w(TAG, "V2WifiAp[$phase]: scanResults threw: ${it.message}")
+                return
+            }
+        val total = results.size
+        val matches = results.filter { it.SSID == ssid }
+        if (matches.isEmpty()) {
+            val sample = results.take(10).joinToString(", ") { "${it.SSID}(${it.frequency}MHz,${it.level}dBm)" }
+            Log.d(TAG, "V2WifiAp[$phase]: '$ssid' NOT in scan cache (total=$total). Sample: $sample")
+        } else {
+            matches.forEach { sr ->
+                Log.d(
+                    TAG,
+                    "V2WifiAp[$phase]: '$ssid' MATCH — bssid=${sr.BSSID} freq=${sr.frequency}MHz " +
+                            "level=${sr.level}dBm caps=${sr.capabilities}",
+                )
+            }
+        }
     }
 
     private fun disconnect() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             connectivityManager.bindProcessToNetwork(null)
         }
-        trackingCallback?.let {
+        modernCallback?.let {
             runCatching { connectivityManager.unregisterNetworkCallback(it) }
-            trackingCallback = null
+            modernCallback = null
         }
     }
 }
