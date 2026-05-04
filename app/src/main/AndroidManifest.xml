@@ -26,6 +26,15 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <!-- Required by ConnectivityManager.requestNetwork(WifiNetworkSpecifier) for V2 manual sync. -->
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <!--
+        Required on Android 13+ (API 33) for WifiNetworkSpecifier to populate the system
+        Wi-Fi picker with matching networks. neverForLocation: we only use Wi-Fi to talk to
+        a known AP, never to derive location.
+    -->
+    <uses-permission
+        android:name="android.permission.NEARBY_WIFI_DEVICES"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="33" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

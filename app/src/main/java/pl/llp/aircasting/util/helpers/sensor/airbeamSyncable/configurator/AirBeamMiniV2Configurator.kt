@@ -219,7 +219,15 @@ class AirBeamMiniV2Configurator(
         sendSetTime()
 
         // Manual sync flow used by `SyncBeforeNewV2SessionDialog` and the SD-sync entry point.
-        v2StateRepository.setSyncCallback { v2SyncOrchestrator.run(this) }
+        // Catch here so an orchestrator failure can never crash the calling Activity scope.
+        v2StateRepository.setSyncCallback {
+            try {
+                v2SyncOrchestrator.run(this)
+            } catch (e: Exception) {
+                Log.e(TAG, "V2: sync orchestrator threw", e)
+                false
+            }
+        }
     }
 
     override fun onServicesInvalidated() {

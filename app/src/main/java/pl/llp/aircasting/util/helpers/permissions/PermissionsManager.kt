@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import pl.llp.aircasting.util.ResultCodes
@@ -34,6 +35,18 @@ open class PermissionsManager {
         }
 
     private val CAMERA_PERMISSION = arrayOf(Manifest.permission.CAMERA)
+
+    /**
+     * Required by `WifiNetworkSpecifier` on Android 13+ (API 33). Without it the system
+     * Wi-Fi picker silently shows an empty list when the V2 manual-sync flow asks the user
+     * to join the AirBeam SoftAP.
+     */
+    private val NEARBY_WIFI_PERMISSION =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(Manifest.permission.NEARBY_WIFI_DEVICES)
+        } else {
+            emptyArray()
+        }
 
     fun permissionsGranted(grantResults: IntArray): Boolean {
         return (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
@@ -96,6 +109,20 @@ open class PermissionsManager {
             activity,
             CAMERA_PERMISSION,
             ResultCodes.AIRCASTING_PERMISSION_REQUEST_CAMERA
+        )
+    }
+
+    open fun nearbyWifiPermissionGranted(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return true
+        return permissionsGranted(NEARBY_WIFI_PERMISSION, context)
+    }
+
+    fun requestNearbyWifiPermission(activity: Activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        ActivityCompat.requestPermissions(
+            activity,
+            NEARBY_WIFI_PERMISSION,
+            ResultCodes.AIRCASTING_PERMISSIONS_REQUEST_NEARBY_WIFI
         )
     }
 

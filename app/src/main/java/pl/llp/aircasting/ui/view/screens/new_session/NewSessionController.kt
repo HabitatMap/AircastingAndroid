@@ -376,6 +376,7 @@ class NewSessionController @AssistedInject constructor(
             SyncBeforeNewV2SessionDialog(
                 mFragmentManager,
                 onSyncAndStart = {
+                    ensureNearbyWifiPermission()
                     v2StateRepository.startSync()
                     startRecording(session)
                 },
@@ -393,6 +394,7 @@ class NewSessionController @AssistedInject constructor(
             SyncBeforeNewV2SessionDialog(
                 mFragmentManager,
                 onSyncAndStart = {
+                    ensureNearbyWifiPermission()
                     v2StateRepository.startSync()
                     handleBatteryServicePermissionsAndStartRecording(session)
                 },
@@ -400,6 +402,18 @@ class NewSessionController @AssistedInject constructor(
             ).show()
         } else {
             handleBatteryServicePermissionsAndStartRecording(session)
+        }
+    }
+
+    /**
+     * Trigger the runtime grant for `NEARBY_WIFI_DEVICES` (API 33+) before kicking off the
+     * V2 manual-sync flow. Without this permission the system Wi-Fi picker driven by
+     * `WifiNetworkSpecifier` shows an empty list. Fire-and-forget: if the user denies, the
+     * picker will simply fail later and the orchestrator will surface the failure.
+     */
+    private fun ensureNearbyWifiPermission() {
+        if (!permissionsManager.nearbyWifiPermissionGranted(mContextActivity)) {
+            permissionsManager.requestNearbyWifiPermission(mContextActivity)
         }
     }
 

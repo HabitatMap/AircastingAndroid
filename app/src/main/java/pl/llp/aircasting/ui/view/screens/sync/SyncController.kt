@@ -240,6 +240,13 @@ class SyncController @AssistedInject constructor(
         wakeLock.acquire(20 * 60 * 1000L /* 20 minutes */)
         Log.d("WakeLock", "Acquired wakelock: ${wakeLock.isHeld}")
 
+        // V2 manual-sync drives a system Wi-Fi picker via WifiNetworkSpecifier; on Android
+        // 13+ the picker silently shows an empty list without NEARBY_WIFI_DEVICES, so make
+        // sure the runtime grant lands before the service spins up.
+        if (!mPermissionsManager.nearbyWifiPermissionGranted(mRootActivity)) {
+            mPermissionsManager.requestNearbyWifiPermission(mRootActivity)
+        }
+
         AirBeamSyncService.startService(mRootActivity, deviceItem, sessionUuid)
         mWizardNavigator.goToAirbeamSyncing(this)
     }
