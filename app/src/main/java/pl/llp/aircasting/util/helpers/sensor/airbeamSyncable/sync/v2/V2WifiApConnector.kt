@@ -35,7 +35,15 @@ class V2WifiApConnector(
 ) {
     companion object {
         const val AP_SSID = "AirBeamMini Sync"
-        private const val CONNECT_TIMEOUT_MS = 30_000L
+        // Android's WifiNetworkSpecifier picker waits for a fresh scan that includes the
+        // target SSID. SoftAP beacons can take a few seconds to propagate after the firmware
+        // brings up the AP, and the user also needs time to tap "Connect" in the system
+        // dialog. 90s gives both enough headroom; the picker re-scans periodically.
+        private const val CONNECT_TIMEOUT_MS = 90_000L
+        // Brief delay between receiving the password (FW emits Ready{password} after AP
+        // start) and asking the system for the network — gives beacons time to be picked up
+        // by the next Wi-Fi scan so the picker is not empty when shown.
+        private const val PRE_REQUEST_DELAY_MS = 2_000L
     }
 
     private val connectivityManager: ConnectivityManager =
@@ -53,14 +61,25 @@ class V2WifiApConnector(
      * (success or exception) restore the previous binding.
      *
      * Returns whatever [block] returns, or null if the AP could not be joined within
-     * [CONNECT_TIMEOUT_MS].
+     * [CONNECT_TIMEOUT_MS]. On API 29+ the [Network] passed to [block] is non-null only when
+     * the system actually attached us to the SoftAP (`onAvailable` fired); on API < 29 the
+     * device-wide connection is on the AP and we always pass null.
      */
     suspend fun <T> withApConnection(password: String, block: suspend (Network?) -> T): T? {
-        val network: Network? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            connectModern(password)
+        val joined: Boolean
+        val network: Network?
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            network = connectModern(password)
+            joined = network != null
         } else {
-            connectLegacy(password)
-            null
+            joined = connectLegacy(password)
+            network = null
+        }
+
+        if (!joined) {
+            Log.e(TAG, "V2WifiAp: AP join failed — skipping HTTP step")
+            disconnect()
+            return null
         }
 
         return try {
@@ -71,6 +90,8 @@ class V2WifiApConnector(
     }
 
     private suspend fun connectModern(password: String): Network? {
+        Log.d(TAG, "V2WifiAp: requesting SoftAP network ssid='$ssid' (passwordLen=${password.length})")
+        delay(PRE_REQUEST_DELAY_MS)
         val specifier = WifiNetworkSpecifier.Builder()
             .setSsid(ssid)
             .setWpa2Passphrase(password)
@@ -106,7 +127,7 @@ class V2WifiApConnector(
     }
 
     @Suppress("DEPRECATION")
-    private suspend fun connectLegacy(password: String) {
+    private suspend fun connectLegacy(password: String): Boolean {
         legacyPreviousNetworkId = wifiManager.connectionInfo?.networkId ?: -1
 
         val config = WifiConfiguration().apply {
@@ -116,7 +137,7 @@ class V2WifiApConnector(
         legacyAddedNetworkId = wifiManager.addNetwork(config)
         if (legacyAddedNetworkId == -1) {
             Log.e(TAG, "V2WifiAp: addNetwork failed (legacy path)")
-            return
+            return false
         }
 
         wifiManager.disconnect()
@@ -129,11 +150,12 @@ class V2WifiApConnector(
             val info = wifiManager.connectionInfo
             if (info?.networkId == legacyAddedNetworkId && info.ssid?.trim('"') == ssid) {
                 Log.d(TAG, "V2WifiAp: legacy SoftAP connected")
-                return
+                return true
             }
             delay(500)
         }
         Log.e(TAG, "V2WifiAp: legacy SoftAP connect timed out")
+        return false
     }
 
     @SuppressLint("MissingPermission")
