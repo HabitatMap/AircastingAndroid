@@ -113,11 +113,16 @@ class V2WifiApConnector(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
-                // Do NOT bindProcessToNetwork — it routes ALL app traffic through the AP,
-                // including background backend uploads/downloads. On no-internet SoftAPs
-                // those calls flood the ESP HTTP server's socket pool, starving the
-                // /sync handler. V2SyncFileDownloader pins its own OkHttpClient to this
-                // network via socketFactory + DNS instead.
+                // Bind the process so OkHttp's connect/read for /sync is routed direct
+                // through the SoftAP without per-socket socketFactory indirection that
+                // sometimes stalls the TCP stream long enough for the ESP HTTP server's
+                // 5s send_wait_timeout to abort the connection.
+                //
+                // The flood of "HTTP 503 No Internet Connection" lines we see during the
+                // sync window is *synthetic* — Android short-circuits requests on
+                // no-internet networks at the framework level, so those calls never
+                // actually hit the AP and don't compete for ESP socket slots.
+                connectivityManager.bindProcessToNetwork(network)
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
@@ -171,6 +176,9 @@ class V2WifiApConnector(
     }
 
     private fun disconnect() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            connectivityManager.bindProcessToNetwork(null)
+        }
         modernCallback?.let {
             runCatching { connectivityManager.unregisterNetworkCallback(it) }
             modernCallback = null
