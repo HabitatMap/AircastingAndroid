@@ -129,8 +129,12 @@ class V2SyncFileDownloader(
 
                 val checksumByte = readByteOrNull(data) ?: break
 
-                // XOR over count + all record bytes (matches FW storage_iterator layout)
-                var expected = countByte.toInt() and 0xFF
+                // XOR over [0xAB, 0xBA, count, all record bytes] — firmware computes the
+                // checksum over `slice[..len - 1]` in storage_iterator.rs, which includes
+                // the two magic bytes. Earlier we XOR'd only count + records, so every
+                // checksum was off by `0xAB ^ 0xBA = 0x11` and every block was discarded.
+                var expected = (MAGIC_AB.toInt() and 0xFF) xor (MAGIC_BA.toInt() and 0xFF)
+                expected = expected xor (countByte.toInt() and 0xFF)
                 for (b in recordsBytes) expected = expected xor (b.toInt() and 0xFF)
                 val checksum = checksumByte.toInt() and 0xFF
                 if (expected != checksum) {
