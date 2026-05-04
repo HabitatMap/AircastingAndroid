@@ -22,21 +22,18 @@ import javax.inject.Inject
  *
  *   1. BLE: send `StartSync (0x12)` — firmware Acks, opens SoftAP "AirBeam Mini Sync".
  *   2. BLE: wait for `Status::ReadyToSync(password)` notification.
- *   3. BLE: voluntarily close the GATT connection. ESP32 BLE+Wi-Fi share one 2.4 GHz radio,
- *      and on Android 12 + this hardware leaving BLE active during the SoftAP HTTP transfer
- *      reliably starves Wi-Fi packets long enough that the firmware's HTTP server times out
- *      mid-stream and aborts the connection. Closing BLE here lets Wi-Fi run uncontended.
- *   4. WiFi: join the SoftAP via [V2WifiApConnector].
- *   5. HTTP: GET `http://192.168.71.1/sync` and parse the streamed file.
- *   6. Process measurements:
+ *   3. WiFi: join the SoftAP via [V2WifiApConnector] (BLE link kept alive — firmware parks
+ *      the HTTP server on `WifiManager` so it survives any BLE jitter, and the bumped 30s
+ *      `recv_wait_timeout`/`send_wait_timeout` absorb coex-induced packet loss).
+ *   4. HTTP: GET `http://192.168.71.1/sync` and parse the streamed file.
+ *   5. Process measurements:
  *      - MOBILE saved session → [V2MobileMeasurementsInserter] (V1 insert/skip-finished logic).
  *      - FIXED saved session → [V2FixedMeasurementsUploader] POST to backend.
  *      - Unknown UUID → log + drop (FW will clear storage anyway).
- *   7. BLE: reconnect briefly and send `DiscardSession (0x11)` so the firmware clears the
- *      saved session + storage. Skipped on partial/empty download to keep the data on
- *      device for retry. Reconnect (rather than keeping BLE open through HTTP) preserves
- *      the coex isolation that made step 5 reliable.
- *   8. Restore network binding (handled by [V2WifiApConnector]).
+ *   6. BLE: send `DiscardSession (0x11)` over the still-live link so firmware clears the
+ *      saved session + storage. Skipped when the HTTP stream aborted mid-read so unsent
+ *      data on the device survives for the next attempt.
+ *   7. Restore network binding (handled by [V2WifiApConnector]).
  *
  * Entry points: the new-session "Sync measurements?" dialog and the user-triggered SD-sync
  * flow. Both call [run] with the live [AirBeamMiniV2Configurator] held by the connector.
@@ -90,16 +87,11 @@ class V2SyncOrchestrator @Inject constructor(
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId
 
-        // Step 3: drop BLE so Wi-Fi has the radio to itself for the SoftAP HTTP transfer.
-        // Without this, BLE+Wi-Fi coex on Android 12 + ESP32 starves the TCP stream and the
-        // firmware's HTTP server aborts mid-body. We don't need BLE during HTTP — and the
-        // firmware doesn't send a post-sync Ready we'd be waiting on anyway.
-        Log.d(TAG, "V2SyncOrchestrator: closing BLE before HTTP to avoid Wi-Fi/BLE coex starvation")
-        startSyncJob.cancel()
-        runCatching { configurator.closeConnection() }
-            .onFailure { Log.w(TAG, "V2SyncOrchestrator: BLE close failed: ${it.message}") }
-
-        // Steps 4+5: join AP, GET /sync, parse measurements. Restore network on completion.
+        // Steps 3+4: join AP, GET /sync over the SoftAP, parse measurements. BLE link stays
+        // open — new firmware parks the HTTP server on WifiManager so any BLE jitter no
+        // longer tears the server down, and httpd_config recv/send wait timeouts of 30s
+        // absorb the residual coex stalls. Keeping BLE alive here means we can send the
+        // post-sync Discard on the same link instead of doing a fragile reconnect.
         val apConnector = V2WifiApConnector(applicationContext)
         val downloadResult = apConnector.withApConnection(password) { network ->
             V2SyncFileDownloader().download(network)
@@ -107,14 +99,14 @@ class V2SyncOrchestrator @Inject constructor(
 
         if (downloadResult == null) {
             Log.e(TAG, "V2SyncOrchestrator: AP join failed")
+            startSyncJob.cancel()
             return@coroutineScope false
         }
         val measurements = downloadResult.measurements
         val httpComplete = downloadResult.httpComplete
         Log.d(TAG, "V2SyncOrchestrator: downloaded ${measurements.size} measurements, httpComplete=$httpComplete")
 
-        // Step 6: route measurements to the right destination based on the saved session type.
-        // savedUuid + deviceId captured pre-close above so the BLE teardown didn't lose them.
+        // Step 5: route measurements to the right destination based on the saved session type.
         if (savedUuid != null && deviceId != null && measurements.isNotEmpty()) {
             processMeasurements(savedUuid, deviceId, measurements)
         } else if (measurements.isEmpty()) {
@@ -123,13 +115,17 @@ class V2SyncOrchestrator @Inject constructor(
             Log.w(TAG, "V2SyncOrchestrator: missing savedUuid=$savedUuid or deviceId=$deviceId — dropping ${measurements.size} measurements")
         }
 
-        // Step 7: re-open BLE and send Discard so firmware clears storage + the saved-session
-        // marker. Gate on httpComplete (not record count) — an empty file is still a
-        // successful sync, and we want to clear the marker so the device doesn't keep
-        // reporting HasSavedSession on subsequent connects. Skip when the HTTP stream was
-        // aborted mid-read so any unsynced data on the device survives for the next attempt.
+        // The StartSync deferred never resolves — firmware doesn't emit a post-StartSync
+        // Ready (0x22). Cancel before issuing Discard so its own deferred isn't shadowed.
+        startSyncJob.cancel()
+
+        // Step 6: send Discard on the still-open BLE link so firmware clears storage + the
+        // saved-session marker. Gate on httpComplete (not record count) — an empty file
+        // is still a successful sync, and we want to clear the marker so the device
+        // doesn't keep reporting HasSavedSession on subsequent connects. Skip when the
+        // HTTP stream aborted mid-read so any unsent data on the device survives.
         if (httpComplete) {
-            val discarded = configurator.reconnectAndSendDiscard()
+            val discarded = configurator.sendDiscardSessionAndAwait()
             Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
         } else {
             Log.w(TAG, "V2SyncOrchestrator: HTTP did not complete — skipping Discard, leaving data on device")
