@@ -118,6 +118,7 @@ class AirBeamMiniV2Configurator(
     private var awaitingSessionStartReady: Boolean = false
 
     var deviceId: String? = null
+    private var lastBluetoothDevice: android.bluetooth.BluetoothDevice? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
         private set
     var currentBatteryLevel: Int = -1
@@ -250,7 +251,42 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun connectDevice(device: android.bluetooth.BluetoothDevice): no.nordicsemi.android.ble.ConnectRequest {
+        lastBluetoothDevice = device
         return connect(device)
+    }
+
+    /**
+     * Re-open the GATT connection that the orchestrator closed before the SoftAP HTTP
+     * transfer, send `DiscardSession (0x11)`, wait for the firmware's `Ready (0x22)`, then
+     * close again. Used so that storage on the device gets cleared after a successful sync
+     * without leaving BLE active during the WiFi window (which would re-introduce coex).
+     */
+    suspend fun reconnectAndSendDiscard(): Boolean {
+        val device = lastBluetoothDevice ?: run {
+            Log.w(TAG, "V2: reconnectAndSendDiscard skipped — no cached BluetoothDevice")
+            return false
+        }
+        val connected = CompletableDeferred<Boolean>()
+        connect(device)
+            .timeout(15_000L)
+            .useAutoConnect(false)
+            .done {
+                Log.d(TAG, "V2: BLE reconnected for Discard")
+                connected.complete(true)
+            }
+            .fail { _, status ->
+                Log.w(TAG, "V2: BLE reconnect for Discard failed, status=$status")
+                connected.complete(false)
+            }
+            .enqueue()
+
+        val ok = withTimeoutOrNull(20_000L) { connected.await() } ?: false
+        if (!ok) return false
+        // initialize() callback runs before `done` fires, so command characteristic is ready.
+        val discarded = sendDiscardSessionAndAwait()
+        Log.d(TAG, "V2: post-sync Discard ok=$discarded — closing BLE")
+        runCatching { close() }.onFailure { Log.w(TAG, "V2: post-Discard close failed: ${it.message}") }
+        return discarded
     }
 
     override fun closeConnection() {

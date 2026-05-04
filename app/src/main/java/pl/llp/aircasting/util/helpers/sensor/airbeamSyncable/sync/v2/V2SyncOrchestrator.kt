@@ -32,14 +32,11 @@ import javax.inject.Inject
  *      - MOBILE saved session → [V2MobileMeasurementsInserter] (V1 insert/skip-finished logic).
  *      - FIXED saved session → [V2FixedMeasurementsUploader] POST to backend.
  *      - Unknown UUID → log + drop (FW will clear storage anyway).
- *   7. Restore network binding (handled by [V2WifiApConnector]).
- *
- * Why no `DiscardSession (0x11)` step: it requires a live BLE link, which we have just torn
- * down. The firmware-side saved-session marker is harmless on its own — the next user
- * action (NewSession or explicit Discard via the disconnected-state UI) clears it. Until
- * the firmware exposes a Ready response after the StartSync flow completes (currently it
- * doesn't), there is no reliable signal to gate a Discard on, and a stale BLE-blocked wait
- * would only delay the user.
+ *   7. BLE: reconnect briefly and send `DiscardSession (0x11)` so the firmware clears the
+ *      saved session + storage. Skipped on partial/empty download to keep the data on
+ *      device for retry. Reconnect (rather than keeping BLE open through HTTP) preserves
+ *      the coex isolation that made step 5 reliable.
+ *   8. Restore network binding (handled by [V2WifiApConnector]).
  *
  * Entry points: the new-session "Sync measurements?" dialog and the user-triggered SD-sync
  * flow. Both call [run] with the live [AirBeamMiniV2Configurator] held by the connector.
@@ -122,6 +119,13 @@ class V2SyncOrchestrator @Inject constructor(
             Log.d(TAG, "V2SyncOrchestrator: no measurements to process")
         } else {
             Log.w(TAG, "V2SyncOrchestrator: missing savedUuid=$savedUuid or deviceId=$deviceId — dropping ${measurements.size} measurements")
+        }
+
+        // Step 7: re-open BLE and send Discard so firmware clears storage + the saved-session
+        // marker. Skip on empty/failed download — leave data on device for the next attempt.
+        if (measurements.isNotEmpty()) {
+            val discarded = configurator.reconnectAndSendDiscard()
+            Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
         }
 
         measurements.isNotEmpty()
