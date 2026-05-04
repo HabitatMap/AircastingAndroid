@@ -64,7 +64,15 @@ class V2SyncFileDownloader(
         return builder.build()
     }
 
-    suspend fun download(boundNetwork: android.net.Network?): List<V2SyncMeasurement> {
+    /**
+     * Result of a /sync GET. [httpComplete] = true iff the response stream was read to
+     * a clean EOF without IOException. Callers that need to clear FW storage on success
+     * should gate on this rather than [measurements] count, since an empty file is also
+     * a successful sync that should clear the saved-session marker.
+     */
+    data class Result(val measurements: List<V2SyncMeasurement>, val httpComplete: Boolean)
+
+    suspend fun download(boundNetwork: android.net.Network?): Result {
         val httpClient = client(boundNetwork)
         val url = "http://$syncHostIp/sync"
         val request = Request.Builder().url(url).get().build()
@@ -74,27 +82,29 @@ class V2SyncFileDownloader(
             httpClient.newCall(request).execute()
         } catch (e: IOException) {
             Log.e(TAG, "V2SyncDownloader: HTTP execute failed: ${e.message}")
-            return emptyList()
+            return Result(emptyList(), false)
         }
         if (!response.isSuccessful) {
             Log.e(TAG, "V2SyncDownloader: HTTP ${response.code}")
             response.close()
-            return emptyList()
+            return Result(emptyList(), false)
         }
 
         return response.body?.byteStream()?.use { stream ->
             parseStream(stream)
-        } ?: emptyList()
+        } ?: Result(emptyList(), false)
     }
 
     /**
      * Parse a concatenation of `[0xAB,0xBA, count, count*8B, xor]` blocks. Tolerates partial
      * blocks at EOF (returns whatever was successfully parsed) and records with a bad checksum
-     * (logged + skipped).
+     * (logged + skipped). [Result.httpComplete] is false when the stream throws IOException
+     * mid-read, true on natural EOF.
      */
-    internal fun parseStream(input: InputStream): List<V2SyncMeasurement> {
+    internal fun parseStream(input: InputStream): Result {
         val out = mutableListOf<V2SyncMeasurement>()
         val data = DataInputStream(input)
+        var httpComplete = true
 
         // Outer try/catch: if the SoftAP drops mid-transfer (BLE coex on Android 12 +
         // ESP32), socket reads throw IOException. We still want to keep whatever full
@@ -152,9 +162,10 @@ class V2SyncFileDownloader(
             }
         } catch (e: IOException) {
             Log.w(TAG, "V2SyncDownloader: stream aborted (${e.message}) — keeping ${out.size} measurements parsed so far")
+            httpComplete = false
         }
-        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements")
-        return out
+        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements, httpComplete=$httpComplete")
+        return Result(out, httpComplete)
     }
 
     private fun readByteOrNull(input: DataInputStream): Byte? {

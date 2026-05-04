@@ -101,15 +101,17 @@ class V2SyncOrchestrator @Inject constructor(
 
         // Steps 4+5: join AP, GET /sync, parse measurements. Restore network on completion.
         val apConnector = V2WifiApConnector(applicationContext)
-        val measurements: List<V2SyncMeasurement>? = apConnector.withApConnection(password) { network ->
+        val downloadResult = apConnector.withApConnection(password) { network ->
             V2SyncFileDownloader().download(network)
         }
 
-        if (measurements == null) {
+        if (downloadResult == null) {
             Log.e(TAG, "V2SyncOrchestrator: AP join failed")
             return@coroutineScope false
         }
-        Log.d(TAG, "V2SyncOrchestrator: downloaded ${measurements.size} measurements")
+        val measurements = downloadResult.measurements
+        val httpComplete = downloadResult.httpComplete
+        Log.d(TAG, "V2SyncOrchestrator: downloaded ${measurements.size} measurements, httpComplete=$httpComplete")
 
         // Step 6: route measurements to the right destination based on the saved session type.
         // savedUuid + deviceId captured pre-close above so the BLE teardown didn't lose them.
@@ -122,13 +124,18 @@ class V2SyncOrchestrator @Inject constructor(
         }
 
         // Step 7: re-open BLE and send Discard so firmware clears storage + the saved-session
-        // marker. Skip on empty/failed download — leave data on device for the next attempt.
-        if (measurements.isNotEmpty()) {
+        // marker. Gate on httpComplete (not record count) — an empty file is still a
+        // successful sync, and we want to clear the marker so the device doesn't keep
+        // reporting HasSavedSession on subsequent connects. Skip when the HTTP stream was
+        // aborted mid-read so any unsynced data on the device survives for the next attempt.
+        if (httpComplete) {
             val discarded = configurator.reconnectAndSendDiscard()
             Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
+        } else {
+            Log.w(TAG, "V2SyncOrchestrator: HTTP did not complete — skipping Discard, leaving data on device")
         }
 
-        measurements.isNotEmpty()
+        httpComplete
     }
 
     private suspend fun processMeasurements(
