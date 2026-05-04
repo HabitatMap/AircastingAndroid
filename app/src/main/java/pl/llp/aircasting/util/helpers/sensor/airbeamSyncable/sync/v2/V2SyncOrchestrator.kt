@@ -6,8 +6,10 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
+import pl.llp.aircasting.util.extensions.isConnected
 import pl.llp.aircasting.data.api.services.V2FixedMeasurementsUploader
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -52,6 +54,13 @@ class V2SyncOrchestrator @Inject constructor(
 ) {
     companion object {
         private const val PASSWORD_TIMEOUT_MS = 30_000L
+        // After releasing the SoftAP, give Android a moment to flip the system default
+        // back to a network with INTERNET capability before we hit the backend uploader.
+        // Without this, NetworkConnectionInterceptor sees activeNetwork == SoftAP (no
+        // INTERNET) and synthesizes a 503 for our upload, losing the just-downloaded
+        // batch.
+        private const val DEFAULT_NETWORK_RESTORE_TIMEOUT_MS = 8_000L
+        private const val DEFAULT_NETWORK_POLL_MS = 200L
     }
 
     /**
@@ -113,49 +122,87 @@ class V2SyncOrchestrator @Inject constructor(
         val httpComplete = downloadResult.httpComplete
         Log.d(TAG, "V2SyncOrchestrator: downloaded ${measurements.size} measurements, httpComplete=$httpComplete")
 
-        // Step 6: route measurements to the right destination based on the saved session type.
-        if (savedUuid != null && deviceId != null && measurements.isNotEmpty()) {
+        // Step 6: route measurements to the right destination based on the saved session
+        // type. Wait for Android to restore an INTERNET-capable default network first —
+        // otherwise the backend uploader gets 503'd by NetworkConnectionInterceptor while
+        // activeNetwork is still the just-released no-internet SoftAP.
+        val processed = if (savedUuid != null && deviceId != null && measurements.isNotEmpty()) {
+            waitForDefaultNetwork()
             processMeasurements(savedUuid, deviceId, measurements)
         } else if (measurements.isEmpty()) {
             Log.d(TAG, "V2SyncOrchestrator: no measurements to process")
+            true
         } else {
             Log.w(TAG, "V2SyncOrchestrator: missing savedUuid=$savedUuid or deviceId=$deviceId — dropping ${measurements.size} measurements")
+            false
         }
 
         // Step 7: reconnect BLE and send Discard so firmware clears storage + the
-        // saved-session marker. Gate on httpComplete (not record count) — an empty file
-        // is still a successful sync. Skip when the HTTP stream aborted mid-read so any
-        // unsent data on the device survives for the next attempt.
-        if (httpComplete) {
+        // saved-session marker. Gate on httpComplete *and* successful processing — losing
+        // unsent records to a 503 race would be worse than letting the firmware keep the
+        // saved file for a retry. An empty-but-complete sync still triggers Discard so the
+        // saved-session marker doesn't linger.
+        if (httpComplete && processed) {
             val discarded = configurator.reconnectAndSendDiscard()
             Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
         } else {
-            Log.w(TAG, "V2SyncOrchestrator: HTTP did not complete — skipping Discard, leaving data on device")
+            Log.w(
+                TAG,
+                "V2SyncOrchestrator: skipping Discard (httpComplete=$httpComplete, processed=$processed) — leaving data on device",
+            )
         }
 
-        httpComplete
+        httpComplete && processed
     }
 
+    /**
+     * Poll [Context.isConnected] until Android has flipped the system default back to a
+     * network with `NET_CAPABILITY_INTERNET`. The freshly-released SoftAP has no INTERNET
+     * capability and lingers as activeNetwork for a beat after `unregisterNetworkCallback`,
+     * which makes [NetworkConnectionInterceptor] short-circuit any upload to a synthetic
+     * 503.
+     */
+    private suspend fun waitForDefaultNetwork() {
+        if (applicationContext.isConnected) return
+        Log.d(TAG, "V2SyncOrchestrator: waiting for INTERNET-capable default network")
+        val ok = withTimeoutOrNull(DEFAULT_NETWORK_RESTORE_TIMEOUT_MS) {
+            while (!applicationContext.isConnected) delay(DEFAULT_NETWORK_POLL_MS)
+            true
+        } ?: false
+        Log.d(TAG, "V2SyncOrchestrator: default network ready=$ok")
+    }
+
+    /**
+     * @return true if the measurements were persisted/uploaded successfully (or are an
+     * acceptable no-op like "session not in local DB"). False on backend upload failure
+     * so the orchestrator can keep the data on the device for a retry.
+     */
     private suspend fun processMeasurements(
         sessionUuid: String,
         deviceId: String,
         measurements: List<V2SyncMeasurement>,
-    ) {
+    ): Boolean {
         val session = sessionsRepository.getSessionByUUID(sessionUuid)
         if (session == null) {
             Log.w(TAG, "V2SyncOrchestrator: saved session $sessionUuid not in local DB — dropping ${measurements.size} measurements")
-            return
+            return true
         }
 
-        when (session.type) {
-            Session.Type.MOBILE -> mobileInserter.insert(deviceId, session, measurements)
+        return when (session.type) {
+            Session.Type.MOBILE -> {
+                mobileInserter.insert(deviceId, session, measurements)
+                true
+            }
             Session.Type.FIXED -> uploadFixed(session.uuid, measurements)
-            else -> Log.w(TAG, "V2SyncOrchestrator: unsupported session type=${session.type}")
+            else -> {
+                Log.w(TAG, "V2SyncOrchestrator: unsupported session type=${session.type}")
+                false
+            }
         }
     }
 
-    private suspend fun uploadFixed(uuid: String, measurements: List<V2SyncMeasurement>) {
-        val session = sessionsRepository.getSessionByUUID(uuid) ?: return
+    private suspend fun uploadFixed(uuid: String, measurements: List<V2SyncMeasurement>): Boolean {
+        val session = sessionsRepository.getSessionByUUID(uuid) ?: return false
         val token = sessionsRepository.getSessionToken(uuid)
         val pm1Index = session.fixedPm1Index
         val pm25Index = session.fixedPm25Index
@@ -165,9 +212,10 @@ class V2SyncOrchestrator @Inject constructor(
                 "V2SyncOrchestrator: cannot upload — fixed session $uuid missing token or sensor indices " +
                         "(token=${token != null}, pm1=$pm1Index, pm25=$pm25Index)",
             )
-            return
+            return false
         }
         val ok = fixedUploader.upload(uuid, token, pm1Index, pm25Index, measurements)
         Log.d(TAG, "V2SyncOrchestrator: fixed upload ok=$ok for $uuid")
+        return ok
     }
 }
