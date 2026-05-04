@@ -34,7 +34,7 @@ class V2WifiApConnector(
     private val ssid: String = AP_SSID,
 ) {
     companion object {
-        const val AP_SSID = "AirBeam Mini Sync"
+        const val AP_SSID = "AirBeamMini Sync"
         private const val CONNECT_TIMEOUT_MS = 30_000L
     }
 

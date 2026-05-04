@@ -31,7 +31,7 @@ class V2SyncFileDownloader(
     private val syncHostIp: String = DEFAULT_SYNC_HOST_IP,
 ) {
     companion object {
-        const val DEFAULT_SYNC_HOST_IP = "192.168.4.1"
+        const val DEFAULT_SYNC_HOST_IP = "192.168.71.1"
         private const val MAGIC_AB = 0xAB.toByte()
         private const val MAGIC_BA = 0xBA.toByte()
         private const val MAX_RECORDS_PER_BLOCK = 64 // FW caps at 10; 64 is safety margin
