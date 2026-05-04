@@ -18,6 +18,7 @@ import pl.llp.aircasting.util.exceptions.SensorDisconnectedError
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamBleConfigurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2Configurator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnector
 
 class AirBeamMiniFallbackConnector(
@@ -26,6 +27,7 @@ class AirBeamMiniFallbackConnector(
     bluetoothManager: BluetoothManager,
     private val v2Configurator: AirBeamMiniV2Configurator,
     private val v1Configurator: AirBeamBleConfigurator,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) : AirBeamConnector(bluetoothManager), ConnectionObserver {
 
     private var activeConfigurator: AirBeamBleConfigurator = v2Configurator
@@ -154,6 +156,18 @@ class AirBeamMiniFallbackConnector(
         activeConfigurator.log(VERBOSE, "Disconnected reason: $reason")
 
         val deviceItem = DeviceItem(device)
+
+        // V2 manual sync: if BLE drops mid-HTTP-download (BLE+Wi-Fi coex symptom on Android
+        // 12 + ESP32), let the orchestrator finish parsing whatever it already received over
+        // the SoftAP. Skip reset/disconnect here; the orchestrator's launch block in
+        // `AirBeamSyncService.onConnectionSuccessful` calls `airBeamConnector.disconnect()`
+        // and the configurator is reset by the next connect.
+        if (isV2Attempt && v2StateRepository.syncInProgress) {
+            Log.d(TAG, "AirBeamMiniFallback: BLE disconnected during V2 sync (reason=$reason) — deferring teardown until orchestrator finishes")
+            mErrorHandler.handle(SensorDisconnectedError("AirBeamMiniFallback onDeviceDisconnected during V2 sync, deferring (reason=$reason)"))
+            return
+        }
+
         onDisconnected(deviceItem, isDisconnectedUnexpectedly = reason != REASON_TERMINATE_PEER_USER)
 
         activeConfigurator.reset()

@@ -9,6 +9,7 @@ import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnectorFa
 import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.configurator.AirBeam2Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.reader.AirBeam2Reader
 import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 
 class FakeAirBeamConnectorFactory(
@@ -19,12 +20,14 @@ class FakeAirBeamConnectorFactory(
     private val mAirBeam2Reader: AirBeam2Reader,
     syncableAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory,
     airBeam2Connector: AirBeam2Connector,
+    v2StateRepository: AirBeamMiniV2StateRepository = AirBeamMiniV2StateRepository(),
 ) : AirBeamConnectorFactory(
     app.applicationContext,
     mErrorHandler,
     bluetoothManager,
     airBeam2Connector,
-    syncableAirBeamConfiguratorFactory
+    syncableAirBeamConfiguratorFactory,
+    v2StateRepository,
 ) {
     override fun get(deviceItem: DeviceItem): AirBeamConnector {
         return FakeAirBeam2Connector(

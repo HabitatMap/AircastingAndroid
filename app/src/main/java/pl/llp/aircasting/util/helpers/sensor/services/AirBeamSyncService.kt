@@ -143,4 +143,19 @@ class AirBeamSyncService : AirBeamService() {
 
         sdCardSyncService.start(airBeamConnector, deviceItem)
     }
+
+    /**
+     * Defer service teardown while V2 manual sync is in progress. BLE+Wi-Fi coex can drop
+     * the BLE link mid-HTTP-download (Android 12 + ESP32); without this guard the inherited
+     * `stopSelf()` cancels the orchestrator before it can persist what was already received
+     * over the SoftAP. Orchestrator coroutine in [onConnectionSuccessful] calls `stopSelf()`
+     * itself when it finishes.
+     */
+    override fun onDisconnect(deviceId: String) {
+        if (v2StateRepository.syncInProgress) {
+            Log.d("AirBeamSyncService", "BLE disconnect during V2 sync — deferring stopSelf until orchestrator finishes")
+            return
+        }
+        super.onDisconnect(deviceId)
+    }
 }

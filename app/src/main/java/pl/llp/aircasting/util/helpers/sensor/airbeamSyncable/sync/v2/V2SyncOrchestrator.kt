@@ -55,6 +55,15 @@ class V2SyncOrchestrator @Inject constructor(
      */
     suspend fun run(configurator: AirBeamMiniV2Configurator): Boolean = coroutineScope {
         v2StateRepository.resetReadyToSyncPassword()
+        v2StateRepository.setSyncInProgress(true)
+        try {
+            runInner(configurator)
+        } finally {
+            v2StateRepository.setSyncInProgress(false)
+        }
+    }
+
+    private suspend fun runInner(configurator: AirBeamMiniV2Configurator): Boolean = coroutineScope {
 
         // Step 1: kick off StartSync. The configurator's BLE state machine suspends until the
         // firmware's *final* Ready (0x22) arrives — which only happens after HTTP completes.

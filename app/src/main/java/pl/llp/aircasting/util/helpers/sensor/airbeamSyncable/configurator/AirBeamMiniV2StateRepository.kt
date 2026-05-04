@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import pl.llp.aircasting.di.UserSessionScope
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 sealed class FixedSessionConfigureOutcome {
@@ -30,6 +31,19 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         private set
 
     private var syncCallback: (suspend () -> Boolean)? = null
+
+    /**
+     * True while [V2SyncOrchestrator.run] is executing. Used by lifecycle owners
+     * (`AirBeamSyncService`, `AirBeamMiniFallbackConnector`) to skip teardown actions that
+     * would otherwise cancel the in-flight HTTP download when BLE drops mid-sync (common
+     * BLE+Wi-Fi coex symptom on Android 12 + ESP32).
+     */
+    private val _syncInProgress = AtomicBoolean(false)
+    val syncInProgress: Boolean get() = _syncInProgress.get()
+
+    fun setSyncInProgress(inProgress: Boolean) {
+        _syncInProgress.set(inProgress)
+    }
 
     private val _configureOutcome = MutableSharedFlow<FixedSessionConfigureOutcome>(
         replay = 0,
@@ -83,6 +97,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         // the next connection.
         deviceState = AirBeamMiniV2Configurator.DeviceState.UNKNOWN
         syncCallback = null
+        _syncInProgress.set(false)
         _readyToSyncPassword.resetReplayCache()
     }
 

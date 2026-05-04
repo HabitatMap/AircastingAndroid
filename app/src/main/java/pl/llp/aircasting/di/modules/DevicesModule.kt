@@ -8,6 +8,7 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamConnectorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamNonSyncable.connector.AirBeam2Connector
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.microphone.AudioReader
 
@@ -22,13 +23,15 @@ open class DevicesModule {
         bluetoothManager: BluetoothManager,
         airBeam2Connector: AirBeam2Connector,
         syncableAirBeamConfiguratorFactory: SyncableAirBeamConfiguratorFactory,
+        v2StateRepository: AirBeamMiniV2StateRepository,
     ): AirBeamConnectorFactory =
         AirBeamConnectorFactory(
             applicationContext,
             mErrorHandler,
             bluetoothManager,
             airBeam2Connector,
-            syncableAirBeamConfiguratorFactory
+            syncableAirBeamConfiguratorFactory,
+            v2StateRepository,
         )
 
     @Provides
