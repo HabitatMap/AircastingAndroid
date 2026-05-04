@@ -113,16 +113,14 @@ class V2WifiApConnector(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
-                // Bind the process so OkHttp's connect/read for /sync is routed direct
-                // through the SoftAP without per-socket socketFactory indirection that
-                // sometimes stalls the TCP stream long enough for the ESP HTTP server's
-                // 5s send_wait_timeout to abort the connection.
-                //
-                // The flood of "HTTP 503 No Internet Connection" lines we see during the
-                // sync window is *synthetic* — Android short-circuits requests on
-                // no-internet networks at the framework level, so those calls never
-                // actually hit the AP and don't compete for ESP socket slots.
-                connectivityManager.bindProcessToNetwork(network)
+                // Do NOT bindProcessToNetwork. With binding, *all* OkHttp traffic in the
+                // process (DownloadMeasurementsService background polls, etc.) routes
+                // through the SoftAP — DNS for the backend domain reaches ESP's null DNS
+                // server and TCP SYNs eat slots from ESP's `max_open_sockets: 4` pool,
+                // starving the in-flight /sync handler. V2SyncFileDownloader pins its own
+                // OkHttpClient to this Network via socketFactory + per-network DNS, so
+                // /sync routes correctly without the process-wide bind, and other app
+                // traffic stays on the default network where it can't fight ESP.
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
@@ -176,9 +174,6 @@ class V2WifiApConnector(
     }
 
     private fun disconnect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            connectivityManager.bindProcessToNetwork(null)
-        }
         modernCallback?.let {
             runCatching { connectivityManager.unregisterNetworkCallback(it) }
             modernCallback = null
