@@ -118,6 +118,7 @@ class AirBeamMiniV2Configurator(
     private var awaitingSessionStartReady: Boolean = false
 
     var deviceId: String? = null
+    private var lastBluetoothDevice: android.bluetooth.BluetoothDevice? = null
     var currentState: DeviceState = DeviceState.UNKNOWN
         private set
     var currentBatteryLevel: Int = -1
@@ -250,11 +251,66 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun connectDevice(device: android.bluetooth.BluetoothDevice): no.nordicsemi.android.ble.ConnectRequest {
+        lastBluetoothDevice = device
         return connect(device)
     }
 
     override fun closeConnection() {
         close()
+    }
+
+    /**
+     * Voluntary GATT disconnect that keeps the [BleManager] alive for a later [connect].
+     * Used by the V2 sync orchestrator to free the phone radio for the SoftAP HTTP transfer
+     * without tearing down the manager. `useAutoConnect(true)` from the initial connection
+     * does not retrigger because Nordic's `disconnect().enqueue()` is treated as voluntary.
+     */
+    suspend fun disconnectGattForSync(): Boolean {
+        val deferred = CompletableDeferred<Boolean>()
+        disconnect()
+            .done {
+                Log.d(TAG, "V2: BLE voluntary disconnect for sync done")
+                deferred.complete(true)
+            }
+            .fail { _, status ->
+                Log.w(TAG, "V2: BLE voluntary disconnect failed, status=$status")
+                deferred.complete(false)
+            }
+            .enqueue()
+        return withTimeoutOrNull(3_000L) { deferred.await() } ?: false
+    }
+
+    /**
+     * Re-establish the GATT connection that [disconnectGattForSync] dropped, send
+     * `DiscardSession (0x11)`, await `Ready (0x22)`, then voluntarily disconnect again.
+     * Reused on the same [BleManager] instance so [initialize] re-runs and characteristic
+     * references are repopulated cleanly.
+     */
+    suspend fun reconnectAndSendDiscard(): Boolean {
+        val device = lastBluetoothDevice ?: run {
+            Log.w(TAG, "V2: reconnectAndSendDiscard skipped — no cached BluetoothDevice")
+            return false
+        }
+        val connected = CompletableDeferred<Boolean>()
+        connect(device)
+            .timeout(15_000L)
+            .useAutoConnect(false)
+            .done {
+                Log.d(TAG, "V2: BLE reconnected for Discard")
+                connected.complete(true)
+            }
+            .fail { _, status ->
+                Log.w(TAG, "V2: BLE reconnect for Discard failed, status=$status")
+                connected.complete(false)
+            }
+            .enqueue()
+
+        val ok = withTimeoutOrNull(20_000L) { connected.await() } ?: false
+        if (!ok) return false
+        val discarded = sendDiscardSessionAndAwait()
+        Log.d(TAG, "V2: post-sync Discard ok=$discarded — voluntary disconnect")
+        runCatching { disconnectGattForSync() }
+        return discarded
     }
 
     override fun discardSession() {

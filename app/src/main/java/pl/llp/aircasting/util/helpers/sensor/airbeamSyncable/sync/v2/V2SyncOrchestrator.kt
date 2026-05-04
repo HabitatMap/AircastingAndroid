@@ -22,18 +22,22 @@ import javax.inject.Inject
  *
  *   1. BLE: send `StartSync (0x12)` — firmware Acks, opens SoftAP "AirBeam Mini Sync".
  *   2. BLE: wait for `Status::ReadyToSync(password)` notification.
- *   3. WiFi: join the SoftAP via [V2WifiApConnector] (BLE link kept alive — firmware parks
- *      the HTTP server on `WifiManager` so it survives any BLE jitter, and the bumped 30s
- *      `recv_wait_timeout`/`send_wait_timeout` absorb coex-induced packet loss).
- *   4. HTTP: GET `http://192.168.71.1/sync` and parse the streamed file.
- *   5. Process measurements:
+ *   3. BLE: voluntary GATT disconnect (Nordic `disconnect()`, NOT `close()`). ESP32 + this
+ *      phone share one 2.4 GHz radio; leaving BLE up during the SoftAP HTTP transfer trips
+ *      the GATT supervision timeout in ~2s, fires Nordic's auto-reconnect, and the resulting
+ *      reconnect storm starves WiFi long enough for the phone-side TCP read to abort.
+ *      Voluntary disconnect skips auto-reconnect and lets the [BleManager] be reused for the
+ *      post-sync Discard.
+ *   4. WiFi: join the SoftAP via [V2WifiApConnector].
+ *   5. HTTP: GET `http://192.168.71.1/sync` and parse the streamed file.
+ *   6. Process measurements:
  *      - MOBILE saved session → [V2MobileMeasurementsInserter] (V1 insert/skip-finished logic).
  *      - FIXED saved session → [V2FixedMeasurementsUploader] POST to backend.
  *      - Unknown UUID → log + drop (FW will clear storage anyway).
- *   6. BLE: send `DiscardSession (0x11)` over the still-live link so firmware clears the
- *      saved session + storage. Skipped when the HTTP stream aborted mid-read so unsent
- *      data on the device survives for the next attempt.
- *   7. Restore network binding (handled by [V2WifiApConnector]).
+ *   7. BLE: re-`connect()` the same [BleManager] (so `initialize()` repopulates characteristic
+ *      refs), send `DiscardSession (0x11)`, await `Ready (0x22)`, voluntarily disconnect again.
+ *      Skipped when HTTP did not complete cleanly so unsent data on the device survives.
+ *   8. Restore network binding (handled by [V2WifiApConnector]).
  *
  * Entry points: the new-session "Sync measurements?" dialog and the user-triggered SD-sync
  * flow. Both call [run] with the live [AirBeamMiniV2Configurator] held by the connector.
@@ -87,11 +91,15 @@ class V2SyncOrchestrator @Inject constructor(
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId
 
-        // Steps 3+4: join AP, GET /sync over the SoftAP, parse measurements. BLE link stays
-        // open — new firmware parks the HTTP server on WifiManager so any BLE jitter no
-        // longer tears the server down, and httpd_config recv/send wait timeouts of 30s
-        // absorb the residual coex stalls. Keeping BLE alive here means we can send the
-        // post-sync Discard on the same link instead of doing a fragile reconnect.
+        // Step 3: voluntary BLE disconnect to free the phone radio for the SoftAP HTTP
+        // transfer. Without this the GATT supervision timeout fires during HTTP and Nordic's
+        // auto-reconnect storm starves WiFi until phone-side TCP aborts.
+        Log.d(TAG, "V2SyncOrchestrator: voluntary BLE disconnect before HTTP to avoid coex starvation")
+        startSyncJob.cancel()
+        runCatching { configurator.disconnectGattForSync() }
+            .onFailure { Log.w(TAG, "V2SyncOrchestrator: BLE disconnect failed: ${it.message}") }
+
+        // Steps 4+5: join AP, GET /sync, parse measurements.
         val apConnector = V2WifiApConnector(applicationContext)
         val downloadResult = apConnector.withApConnection(password) { network ->
             V2SyncFileDownloader().download(network)
@@ -99,14 +107,13 @@ class V2SyncOrchestrator @Inject constructor(
 
         if (downloadResult == null) {
             Log.e(TAG, "V2SyncOrchestrator: AP join failed")
-            startSyncJob.cancel()
             return@coroutineScope false
         }
         val measurements = downloadResult.measurements
         val httpComplete = downloadResult.httpComplete
         Log.d(TAG, "V2SyncOrchestrator: downloaded ${measurements.size} measurements, httpComplete=$httpComplete")
 
-        // Step 5: route measurements to the right destination based on the saved session type.
+        // Step 6: route measurements to the right destination based on the saved session type.
         if (savedUuid != null && deviceId != null && measurements.isNotEmpty()) {
             processMeasurements(savedUuid, deviceId, measurements)
         } else if (measurements.isEmpty()) {
@@ -115,17 +122,12 @@ class V2SyncOrchestrator @Inject constructor(
             Log.w(TAG, "V2SyncOrchestrator: missing savedUuid=$savedUuid or deviceId=$deviceId — dropping ${measurements.size} measurements")
         }
 
-        // The StartSync deferred never resolves — firmware doesn't emit a post-StartSync
-        // Ready (0x22). Cancel before issuing Discard so its own deferred isn't shadowed.
-        startSyncJob.cancel()
-
-        // Step 6: send Discard on the still-open BLE link so firmware clears storage + the
+        // Step 7: reconnect BLE and send Discard so firmware clears storage + the
         // saved-session marker. Gate on httpComplete (not record count) — an empty file
-        // is still a successful sync, and we want to clear the marker so the device
-        // doesn't keep reporting HasSavedSession on subsequent connects. Skip when the
-        // HTTP stream aborted mid-read so any unsent data on the device survives.
+        // is still a successful sync. Skip when the HTTP stream aborted mid-read so any
+        // unsent data on the device survives for the next attempt.
         if (httpComplete) {
-            val discarded = configurator.sendDiscardSessionAndAwait()
+            val discarded = configurator.reconnectAndSendDiscard()
             Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
         } else {
             Log.w(TAG, "V2SyncOrchestrator: HTTP did not complete — skipping Discard, leaving data on device")
