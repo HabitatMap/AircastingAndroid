@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import pl.llp.aircasting.util.extensions.isConnected
+import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.V2FixedMeasurementsUploader
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.local.repository.SessionsRepository
@@ -51,6 +52,7 @@ class V2SyncOrchestrator @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val mobileInserter: V2MobileMeasurementsInserter,
     private val fixedUploader: V2FixedMeasurementsUploader,
+    private val downloadMeasurementsService: DownloadMeasurementsService,
 ) {
     companion object {
         private const val PASSWORD_TIMEOUT_MS = 30_000L
@@ -216,6 +218,15 @@ class V2SyncOrchestrator @Inject constructor(
         }
         val ok = fixedUploader.upload(uuid, token, pm1Index, pm25Index, measurements)
         Log.d(TAG, "V2SyncOrchestrator: fixed upload ok=$ok for $uuid")
+
+        // Backend POST is the authoritative store for fixed-session measurements; the app's
+        // local DB only sees them once DownloadMeasurementsService GETs the session back.
+        // Without this refresh the dashboard stays empty until the user expands the session
+        // card (which is the only other code path that triggers a fetch).
+        if (ok) {
+            runCatching { downloadMeasurementsService.downloadMeasurements(uuid) }
+                .onFailure { Log.w(TAG, "V2SyncOrchestrator: post-upload refresh failed: ${it.message}") }
+        }
         return ok
     }
 }
