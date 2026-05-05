@@ -375,12 +375,10 @@ class NewSessionController @AssistedInject constructor(
         ) {
             SyncBeforeNewV2SessionDialog(
                 mFragmentManager,
-                onSyncAndStart = {
-                    ensureNearbyWifiPermission()
-                    v2StateRepository.startSync()
-                    startRecording(session)
-                },
-                onJustStart = { startRecording(session) },
+                onPrepareForSync = { ensureNearbyWifiPermission() },
+                onSyncSuccess = { startRecording(session) },
+                onSyncFailure = { goBackToDashboard() },
+                onSkipSync = { startRecording(session) },
             ).show()
         } else {
             startRecording(session)
@@ -393,16 +391,25 @@ class NewSessionController @AssistedInject constructor(
         ) {
             SyncBeforeNewV2SessionDialog(
                 mFragmentManager,
-                onSyncAndStart = {
-                    ensureNearbyWifiPermission()
-                    v2StateRepository.startSync()
-                    handleBatteryServicePermissionsAndStartRecording(session)
-                },
-                onJustStart = { handleBatteryServicePermissionsAndStartRecording(session) },
+                onPrepareForSync = { ensureNearbyWifiPermission() },
+                onSyncSuccess = { handleBatteryServicePermissionsAndStartRecording(session) },
+                onSyncFailure = { goBackToDashboard() },
+                onSkipSync = { handleBatteryServicePermissionsAndStartRecording(session) },
             ).show()
         } else {
             handleBatteryServicePermissionsAndStartRecording(session)
         }
+    }
+
+    /**
+     * Sync failure path from [SyncBeforeNewV2SessionDialog] — abandon the new-session wizard
+     * and return to the dashboard without firing [StartRecordingEvent]. AirBeam storage is
+     * left intact so the user can retry the sync from the dashboard.
+     */
+    private fun goBackToDashboard() {
+        EventBus.getDefault().post(DisconnectExternalSensorsEvent())
+        mContextActivity.setResult(RESULT_OK)
+        mContextActivity.finish()
     }
 
     /**
