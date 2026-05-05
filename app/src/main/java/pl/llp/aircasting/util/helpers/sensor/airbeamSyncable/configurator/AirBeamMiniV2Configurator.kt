@@ -221,9 +221,9 @@ class AirBeamMiniV2Configurator(
 
         // Manual sync flow used by `SyncBeforeNewV2SessionDialog` and the SD-sync entry point.
         // Catch here so an orchestrator failure can never crash the calling Activity scope.
-        v2StateRepository.setSyncCallback {
+        v2StateRepository.setSyncCallback { keepConnectedAfter ->
             try {
-                v2SyncOrchestrator.run(this)
+                v2SyncOrchestrator.run(this, keepConnectedAfter)
             } catch (e: Exception) {
                 Log.e(TAG, "V2: sync orchestrator threw", e)
                 false
@@ -282,11 +282,13 @@ class AirBeamMiniV2Configurator(
 
     /**
      * Re-establish the GATT connection that [disconnectGattForSync] dropped, send
-     * `DiscardSession (0x11)`, await `Ready (0x22)`, then voluntarily disconnect again.
+     * `DiscardSession (0x11)`, await `Ready (0x22)`, then voluntarily disconnect again unless
+     * [keepConnectedAfter] is set (used by the new-session flow which needs to write
+     * `NewSessionConfig` on the same GATT link right after).
      * Reused on the same [BleManager] instance so [initialize] re-runs and characteristic
      * references are repopulated cleanly.
      */
-    suspend fun reconnectAndSendDiscard(): Boolean {
+    suspend fun reconnectAndSendDiscard(keepConnectedAfter: Boolean = false): Boolean {
         val device = lastBluetoothDevice ?: run {
             Log.w(TAG, "V2: reconnectAndSendDiscard skipped — no cached BluetoothDevice")
             return false
@@ -308,8 +310,12 @@ class AirBeamMiniV2Configurator(
         val ok = withTimeoutOrNull(20_000L) { connected.await() } ?: false
         if (!ok) return false
         val discarded = sendDiscardSessionAndAwait()
-        Log.d(TAG, "V2: post-sync Discard ok=$discarded — voluntary disconnect")
-        runCatching { disconnectGattForSync() }
+        if (keepConnectedAfter) {
+            Log.d(TAG, "V2: post-sync Discard ok=$discarded — keeping BLE connected for caller")
+        } else {
+            Log.d(TAG, "V2: post-sync Discard ok=$discarded — voluntary disconnect")
+            runCatching { disconnectGattForSync() }
+        }
         return discarded
     }
 

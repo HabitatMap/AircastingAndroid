@@ -74,18 +74,29 @@ class V2SyncOrchestrator @Inject constructor(
      * Returns true if the sync ran end-to-end without errors that should leave the FW state
      * dirty. False on AP-join failure, HTTP failure, or BLE timeouts; the caller can decide
      * whether to retry or surface a dialog.
+     *
+     * @param keepConnectedAfter Skip the post-Discard voluntary BLE disconnect so the caller
+     * can write another command (e.g. `NewSessionConfig`) on the same GATT link right after.
+     * Defaults to false for the dashboard SD-sync entry point which expects the device to be
+     * fully disconnected when the orchestrator returns.
      */
-    suspend fun run(configurator: AirBeamMiniV2Configurator): Boolean = coroutineScope {
+    suspend fun run(
+        configurator: AirBeamMiniV2Configurator,
+        keepConnectedAfter: Boolean = false,
+    ): Boolean = coroutineScope {
         v2StateRepository.resetReadyToSyncPassword()
         v2StateRepository.setSyncInProgress(true)
         try {
-            runInner(configurator)
+            runInner(configurator, keepConnectedAfter)
         } finally {
             v2StateRepository.setSyncInProgress(false)
         }
     }
 
-    private suspend fun runInner(configurator: AirBeamMiniV2Configurator): Boolean = coroutineScope {
+    private suspend fun runInner(
+        configurator: AirBeamMiniV2Configurator,
+        keepConnectedAfter: Boolean,
+    ): Boolean = coroutineScope {
 
         // Step 1: kick off StartSync. Fire-and-forget — firmware never sends a final Ready
         // (0x22) after this command on the manual-sync branch, so awaiting it would just
@@ -150,8 +161,8 @@ class V2SyncOrchestrator @Inject constructor(
         // saved file for a retry. An empty-but-complete sync still triggers Discard so the
         // saved-session marker doesn't linger.
         if (httpComplete && processed) {
-            val discarded = configurator.reconnectAndSendDiscard()
-            Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded")
+            val discarded = configurator.reconnectAndSendDiscard(keepConnectedAfter)
+            Log.d(TAG, "V2SyncOrchestrator: post-sync Discard discarded=$discarded keepConnectedAfter=$keepConnectedAfter")
         } else {
             Log.w(
                 TAG,

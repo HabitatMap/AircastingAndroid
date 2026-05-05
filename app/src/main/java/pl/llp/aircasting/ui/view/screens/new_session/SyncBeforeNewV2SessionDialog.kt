@@ -83,7 +83,8 @@ class SyncBeforeNewV2SessionDialog(
         isCancelable = false
 
         ioScope.launch {
-            val ok = runCatching { v2StateRepository.startSync() }.getOrDefault(false)
+            val ok = runCatching { v2StateRepository.startSync(keepConnectedAfter = true) }
+                .getOrDefault(false)
             withContext(Dispatchers.Main) {
                 if (!isAdded) {
                     if (ok) onSyncSuccess() else onSyncFailure()

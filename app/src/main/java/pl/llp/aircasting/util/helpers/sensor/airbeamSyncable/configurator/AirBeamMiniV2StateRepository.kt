@@ -30,7 +30,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     var savedSessionUuid: String? = null
         private set
 
-    private var syncCallback: (suspend () -> Boolean)? = null
+    private var syncCallback: (suspend (Boolean) -> Boolean)? = null
 
     /**
      * True while [V2SyncOrchestrator.run] is executing. Used by lifecycle owners
@@ -73,7 +73,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         savedSessionUuid = sessionUuid
     }
 
-    fun setSyncCallback(callback: (suspend () -> Boolean)?) {
+    fun setSyncCallback(callback: (suspend (Boolean) -> Boolean)?) {
         syncCallback = callback
     }
 
@@ -101,5 +101,11 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         _readyToSyncPassword.resetReplayCache()
     }
 
-    suspend fun startSync(): Boolean = syncCallback?.invoke() ?: false
+    /**
+     * @param keepConnectedAfter Skip the final voluntary BLE disconnect that the orchestrator
+     * normally performs after the post-sync `DiscardSession`. Required when the caller plans
+     * to write another command (e.g. `NewSessionConfig`) on the same GATT link right after.
+     */
+    suspend fun startSync(keepConnectedAfter: Boolean = false): Boolean =
+        syncCallback?.invoke(keepConnectedAfter) ?: false
 }
