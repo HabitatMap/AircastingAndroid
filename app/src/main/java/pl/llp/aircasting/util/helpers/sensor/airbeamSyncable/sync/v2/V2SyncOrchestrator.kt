@@ -11,13 +11,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withTimeoutOrNull
 import pl.llp.aircasting.util.extensions.isConnected
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
+import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.V2FixedMeasurementsUploader
 import pl.llp.aircasting.data.api.util.TAG
+import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import java.util.Date
 import javax.inject.Inject
 
 /**
@@ -50,9 +53,11 @@ class V2SyncOrchestrator @Inject constructor(
     private val applicationContext: Context,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
     private val sessionsRepository: SessionsRepository,
+    private val measurementsRepository: MeasurementsRepository,
     private val mobileInserter: V2MobileMeasurementsInserter,
     private val fixedUploader: V2FixedMeasurementsUploader,
     private val downloadMeasurementsService: DownloadMeasurementsService,
+    private val sessionsSyncService: SessionsSyncService,
 ) {
     companion object {
         private const val PASSWORD_TIMEOUT_MS = 30_000L
@@ -193,6 +198,18 @@ class V2SyncOrchestrator @Inject constructor(
         return when (session.type) {
             Session.Type.MOBILE -> {
                 mobileInserter.insert(deviceId, session, measurements)
+                // Per V1 SD-sync semantics: once the session's measurements are persisted
+                // locally, the session itself is finished — there's nothing left to record
+                // and the device is being told to Discard right after this. Without this
+                // transition the dashboard keeps the session in the active mobile tab even
+                // though no recording is happening, and the next reconnect would re-attach
+                // to a dead session UUID.
+                markMobileFinished(session.uuid)
+                // Backend upload of the now-finished session. Mirrors the trailing
+                // sessionsSyncService.sync() that V1 SDCardSyncService runs after persisting
+                // mobile measurements.
+                runCatching { sessionsSyncService.sync() }
+                    .onFailure { Log.w(TAG, "V2SyncOrchestrator: backend sync after mobile insert failed: ${it.message}") }
                 true
             }
             Session.Type.FIXED -> uploadFixed(session.uuid, measurements)
@@ -201,6 +218,22 @@ class V2SyncOrchestrator @Inject constructor(
                 false
             }
         }
+    }
+
+    private suspend fun markMobileFinished(uuid: String) {
+        val session = sessionsRepository.loadSessionAndMeasurementsByUUID(uuid) ?: run {
+            Log.w(TAG, "V2SyncOrchestrator: markMobileFinished — session $uuid missing")
+            return
+        }
+        if (!session.isRecording() && !session.isDisconnected()) {
+            Log.d(TAG, "V2SyncOrchestrator: session $uuid already in terminal status=${session.status}, skip")
+            return
+        }
+        val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
+        val endTime = sessionId?.let { measurementsRepository.lastMeasurementTime(it) } ?: Date()
+        session.stopRecording(endTime)
+        sessionsRepository.update(session)
+        Log.d(TAG, "V2SyncOrchestrator: marked mobile session $uuid FINISHED (endTime=$endTime)")
     }
 
     private suspend fun uploadFixed(uuid: String, measurements: List<V2SyncMeasurement>): Boolean {
