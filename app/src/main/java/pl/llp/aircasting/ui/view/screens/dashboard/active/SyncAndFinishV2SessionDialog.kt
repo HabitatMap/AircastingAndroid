@@ -6,12 +6,17 @@ import android.view.View
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoCoroutineScope
+import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import javax.inject.Inject
 
@@ -29,6 +34,11 @@ class SyncAndFinishV2SessionDialog(
     @Inject
     lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
+    @field:[Inject IoCoroutineScope]
+    lateinit var ioScope: CoroutineScope
+
+    private var dialogView: View? = null
+
     override fun setupView(inflater: LayoutInflater): View {
         val view = super.setupView(inflater)
         (rootActivity.application as AircastingApplication).userDependentComponent?.inject(this)
@@ -39,6 +49,7 @@ class SyncAndFinishV2SessionDialog(
             dismiss()
         }
 
+        dialogView = view
         return view
     }
 
@@ -55,10 +66,36 @@ class SyncAndFinishV2SessionDialog(
     override fun finishButtonText() = getString(R.string.sync_and_finish_v2)
 
     override fun finishSessionConfirmed() {
-        lifecycleScope.launch {
+        dialogView?.run {
+            finish_recording_button.isEnabled = false
+            cancel_button.isEnabled = false
+        }
+        isCancelable = false
+
+        val session = mSession
+        // Run the sync on a UserSessionScope so dialog dismissal / activity navigation can't
+        // cancel it mid-flight. The orchestrator must finish three things in order or the
+        // session ends up in a half-state: (1) HTTP /sync download + measurement insert,
+        // (2) BLE reconnect + DiscardSession to clear AirBeam storage, (3) FINISHED transition
+        // and backend upload. V2MobileMeasurementsInserter skips finished sessions, so the
+        // FINISHED transition has to come AFTER the orchestrator returns.
+        ioScope.launch {
             v2StateRepository.startSync()
-            onFinishMobileSessionConfirmed(mSession)
-            if (isAdded) dismiss()
+            // StopRecordingEvent → SessionManager → RecordingHandler.stopRecording marks the
+            // session FINISHED and runs sessionsSyncService.sync() to upload it to the
+            // backend. AirBeam storage Discard already happened inside the orchestrator
+            // (V2SyncOrchestrator.reconnectAndSendDiscard).
+            withContext(Dispatchers.Main) {
+                if (isAdded) {
+                    onFinishMobileSessionConfirmed(session)
+                    dismiss()
+                } else {
+                    // Activity/dialog already gone — fall back to direct event post + count
+                    // bookkeeping so the session still finalizes locally and uploads.
+                    EventBus.getDefault().post(StopRecordingEvent(session.uuid))
+                    settings.decreaseActiveMobileSessionsCount()
+                }
+            }
         }
     }
 }
