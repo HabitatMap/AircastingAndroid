@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.util.Log
 import android.util.Log.VERBOSE
 import no.nordicsemi.android.ble.observer.ConnectionObserver
+import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_SUCCESS
+import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_TERMINATE_LOCAL_HOST
 import no.nordicsemi.android.ble.observer.ConnectionObserver.REASON_TERMINATE_PEER_USER
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
@@ -168,7 +170,19 @@ class AirBeamMiniFallbackConnector(
             return
         }
 
-        onDisconnected(deviceItem, isDisconnectedUnexpectedly = reason != REASON_TERMINATE_PEER_USER)
+        // Voluntary disconnects from our side (REASON_TERMINATE_LOCAL_HOST / REASON_SUCCESS)
+        // must NOT propagate as `isDisconnectedUnexpectedly=true` — that fires
+        // `SensorDisconnectedUnexpectedlyEvent`, which AirBeamService routes into
+        // `AirBeamReconnector.tryToReconnectPeriodically`. The reconnect cascade
+        // succeeds and `AirBeamReconnector.onConnectedSuccessful` then writes
+        // `Session.Status.RECORDING` back into the DB, overwriting the FINISHED
+        // transition `RecordingHandler.stopRecording` just made for the V2 "Sync &
+        // Finish" flow. Only true peer-side / link-loss / timeout disconnects should
+        // trigger reconnect.
+        val expected = reason == REASON_TERMINATE_PEER_USER ||
+                reason == REASON_TERMINATE_LOCAL_HOST ||
+                reason == REASON_SUCCESS
+        onDisconnected(deviceItem, isDisconnectedUnexpectedly = !expected)
 
         activeConfigurator.reset()
         mErrorHandler.handle(SensorDisconnectedError("AirBeamMiniFallback onDeviceDisconnected device id ${deviceItem.id} reason $reason"))
