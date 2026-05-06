@@ -2,6 +2,8 @@ package pl.llp.aircasting.ui.view.screens.new_session
 
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -110,6 +112,15 @@ class SyncBeforeNewV2SessionDialog(
 
         view.finish_recording_button.text = getString(R.string.dialog_sync_before_new_v2_success_button)
         view.finish_recording_button.isEnabled = true
+
+        // Cancel button below carries the layout's bottom margin; with it gone, the
+        // Continue button sits flush against the dialog's rounded edge. Mirror that
+        // margin onto the visible button so the spacing matches the rest of the dialog.
+        val marginPx = resources.getDimensionPixelSize(R.dimen.keyline_6)
+        view.finish_recording_button?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = marginPx
+        }
+
         view.finish_recording_button.setOnClickListener {
             onSyncSuccess()
             dismiss()
