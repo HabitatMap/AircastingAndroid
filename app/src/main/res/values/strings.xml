@@ -279,7 +279,8 @@
     <string name="dialog_sync_before_new_v2_failure_button">Continue</string>
 
     <string name="dialog_v2_wifi_picker_education_header">Connect to AirBeam Wi-Fi</string>
-    <string name="dialog_v2_wifi_picker_education_description">A Wi-Fi network picker will open in a moment. Tap the network named &lt;b&gt;AirBeamMini Sync&lt;/b&gt; when it appears in the list. The app will close the picker by itself once it connects — please wait.</string>
+    <string name="dialog_v2_wifi_picker_education_description">A Wi-Fi network picker will open in a moment. Tap the network named &lt;b&gt;%1$s&lt;/b&gt; when it appears in the list. The app will close the picker by itself once it connects — please wait.</string>
+    <string name="dialog_v2_wifi_picker_education_description_cached">If this is your first sync, a Wi-Fi network picker will open — allow the connection to &lt;b&gt;%1$s&lt;/b&gt;. If you\'ve synced before, the sync will proceed automatically.</string>
     <string name="dialog_v2_wifi_picker_education_button">Continue</string>
 
     <!-- Chart -->
