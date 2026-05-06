@@ -7,7 +7,6 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.data.api.util.TAG
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
-import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.Companion.UNKNOWN_DEVICE_NAME
 import pl.llp.aircasting.data.api.services.FixedSessionConfig
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
@@ -121,9 +120,17 @@ abstract class AirBeamConnector(
     }
 
     fun onDisconnected(device: DeviceItem, isDisconnectedUnexpectedly: Boolean = true) {
-        val deviceItem = if (device.name == UNKNOWN_DEVICE_NAME)
-            deviceAddressByDeviceItem[device.address] ?: device
-        else device
+        // Always prefer the DeviceItem captured at connection time (keyed by MAC). The
+        // BluetoothDevice surfaced to onDeviceDisconnected may report a different `name`
+        // than the user picked from scan results — V2 / NimBLE returns the GAP "Device
+        // Name" ("nimble" by default) instead of the advertised name, and DeviceItem.id
+        // is derived from that name. A freshly-built DeviceItem here yields id="nimble",
+        // which fails to match `session.deviceId` (stored at session-create time from the
+        // picker) and silently breaks (1) auto-reconnect (`session.deviceId ==
+        // event.sessionDeviceId` is false in AirBeamService.onMessageEvent) and (2) the
+        // disconnected-card UI (RecordingHandler.disconnectSession scopes by deviceId, so
+        // session.status stays RECORDING and `session.isDisconnected()` returns false).
+        val deviceItem = deviceAddressByDeviceItem[device.address] ?: device
 
         if (isDisconnectedUnexpectedly) {
             Log.d(TAG, "Posting SensorDisconnectedUnexpectedlyEvent")
