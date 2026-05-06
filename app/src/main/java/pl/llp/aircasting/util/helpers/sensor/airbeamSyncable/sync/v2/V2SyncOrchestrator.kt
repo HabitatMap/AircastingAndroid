@@ -100,6 +100,15 @@ class V2SyncOrchestrator @Inject constructor(
         onBeforePicker: (suspend () -> Unit)?,
     ): Boolean = coroutineScope {
 
+        // Step 0: educational dialog FIRST, before we ask the firmware to open SoftAP.
+        // Firmware closes the SoftAP a few seconds after opening it if no client joins;
+        // showing the dialog *after* StartSync burned that window on Android 10 where the
+        // system Wi-Fi picker takes a few seconds to render and a few more for the user to
+        // tap. With the dialog up-front, the SoftAP-open → picker-shown gap shrinks to the
+        // BLE round-trip only.
+        runCatching { onBeforePicker?.invoke() }
+            .onFailure { Log.w(TAG, "V2SyncOrchestrator: onBeforePicker hook failed: ${it.message}") }
+
         // Step 1: kick off StartSync. Fire-and-forget — firmware never sends a final Ready
         // (0x22) after this command on the manual-sync branch, so awaiting it would just
         // burn time. We capture savedSessionUuid + deviceId from the *current* live BLE
@@ -127,11 +136,6 @@ class V2SyncOrchestrator @Inject constructor(
         startSyncJob.cancel()
         runCatching { configurator.disconnectGattForSync() }
             .onFailure { Log.w(TAG, "V2SyncOrchestrator: BLE disconnect failed: ${it.message}") }
-
-        // Educational dialog: surface UX hint to the user about the upcoming Wi-Fi picker
-        // (which AP to tap, that the picker auto-closes). Suspends until the user confirms.
-        runCatching { onBeforePicker?.invoke() }
-            .onFailure { Log.w(TAG, "V2SyncOrchestrator: onBeforePicker hook failed: ${it.message}") }
 
         // Steps 4+5: join AP, GET /sync, parse measurements.
         val apConnector = V2WifiApConnector(applicationContext)
