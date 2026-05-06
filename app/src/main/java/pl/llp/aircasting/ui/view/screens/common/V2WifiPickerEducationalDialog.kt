@@ -3,6 +3,8 @@ package pl.llp.aircasting.ui.view.screens.common
 import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import pl.llp.aircasting.R
@@ -33,6 +35,14 @@ class V2WifiPickerEducationalDialog(
         }
 
         view.cancel_button.visibility = View.GONE
+
+        // Cancel button below carries the layout's bottom margin; with it gone, the
+        // Continue button sits flush against the dialog's rounded edge. Mirror that
+        // margin onto the visible button so the spacing matches the rest of the dialog.
+        val marginPx = resources.getDimensionPixelSize(R.dimen.keyline_6)
+        view.finish_recording_button.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = marginPx
+        }
 
         isCancelable = false
         return view
