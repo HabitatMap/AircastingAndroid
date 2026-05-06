@@ -70,9 +70,25 @@ class V2WifiApConnector(
             return@coroutineScope null
         }
 
+        // Pin the whole process to the SoftAP for the duration of the HTTP transfer.
+        // V2SyncFileDownloader already binds its own OkHttpClient via socketFactory, but on
+        // Android 16 / Pixel that's not enough: with only a passive receive-wait on the
+        // /sync socket, Android observes ~10s of zero app-level traffic and tears down the
+        // ephemeral no-INTERNET network (`onLost` ~12s after `onAvailable`, then
+        // "Software caused connection abort" from the kernel). Process-binding marks the
+        // network as actively in use by the foreground process and keeps it alive while
+        // we wait on ESP. Restored to null in finally so the rest of the app reverts to
+        // the system default. ConnectivityReceiver is gated on `syncInProgress`, so the
+        // background sync that previously fought ESP's 4-socket pool is suppressed for
+        // this window.
+        val previousBinding = connectivityManager.boundNetworkForProcess
+        connectivityManager.bindProcessToNetwork(network)
+        Log.d(TAG, "V2WifiAp: process bound to SoftAP network $network")
         try {
             block(network)
         } finally {
+            runCatching { connectivityManager.bindProcessToNetwork(previousBinding) }
+                .onFailure { Log.w(TAG, "V2WifiAp: restoring previous process binding failed: ${it.message}") }
             disconnect()
         }
     }
@@ -113,14 +129,11 @@ class V2WifiApConnector(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
-                // Do NOT bindProcessToNetwork. With binding, *all* OkHttp traffic in the
-                // process (DownloadMeasurementsService background polls, etc.) routes
-                // through the SoftAP — DNS for the backend domain reaches ESP's null DNS
-                // server and TCP SYNs eat slots from ESP's `max_open_sockets: 4` pool,
-                // starving the in-flight /sync handler. V2SyncFileDownloader pins its own
-                // OkHttpClient to this Network via socketFactory + per-network DNS, so
-                // /sync routes correctly without the process-wide bind, and other app
-                // traffic stays on the default network where it can't fight ESP.
+                // Caller (`withApConnection`) handles process binding for the HTTP window
+                // so Android 16 doesn't tear down the ephemeral no-INTERNET network for
+                // "no observed traffic" while we wait on ESP. ConnectivityReceiver is
+                // gated on V2 syncInProgress to keep background sync off the SoftAP
+                // during that window.
                 if (!deferred.isCompleted) deferred.complete(network)
             }
 
