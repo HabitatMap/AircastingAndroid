@@ -7,13 +7,16 @@ import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.common.BaseDialog
+import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 /**
  * Shown when the user starts a new mobile session and the V2 AirBeam reports a saved
@@ -83,8 +86,12 @@ class SyncBeforeNewV2SessionDialog(
         isCancelable = false
 
         ioScope.launch {
-            val ok = runCatching { v2StateRepository.startSync(keepConnectedAfter = true) }
-                .getOrDefault(false)
+            val ok = runCatching {
+                v2StateRepository.startSync(
+                    keepConnectedAfter = true,
+                    onBeforePicker = ::awaitWifiPickerEducation,
+                )
+            }.getOrDefault(false)
             withContext(Dispatchers.Main) {
                 if (!isAdded) {
                     if (ok) onSyncSuccess() else onSyncFailure()
@@ -109,6 +116,20 @@ class SyncBeforeNewV2SessionDialog(
         }
 
         view.cancel_button.visibility = View.GONE
+    }
+
+    private suspend fun awaitWifiPickerEducation() {
+        withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine<Unit> { cont ->
+                if (!isAdded) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                    return@suspendCancellableCoroutine
+                }
+                V2WifiPickerEducationalDialog(parentFragmentManager) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                }.show()
+            }
+        }
     }
 
     private fun renderFailure(view: View) {

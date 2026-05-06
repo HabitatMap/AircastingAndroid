@@ -221,9 +221,9 @@ class AirBeamMiniV2Configurator(
 
         // Manual sync flow used by `SyncBeforeNewV2SessionDialog` and the SD-sync entry point.
         // Catch here so an orchestrator failure can never crash the calling Activity scope.
-        v2StateRepository.setSyncCallback { keepConnectedAfter ->
+        v2StateRepository.setSyncCallback { keepConnectedAfter, onBeforePicker ->
             try {
-                v2SyncOrchestrator.run(this, keepConnectedAfter)
+                v2SyncOrchestrator.run(this, keepConnectedAfter, onBeforePicker)
             } catch (e: Exception) {
                 Log.e(TAG, "V2: sync orchestrator threw", e)
                 false

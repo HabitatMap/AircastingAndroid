@@ -83,11 +83,12 @@ class V2SyncOrchestrator @Inject constructor(
     suspend fun run(
         configurator: AirBeamMiniV2Configurator,
         keepConnectedAfter: Boolean = false,
+        onBeforePicker: (suspend () -> Unit)? = null,
     ): Boolean = coroutineScope {
         v2StateRepository.resetReadyToSyncPassword()
         v2StateRepository.setSyncInProgress(true)
         try {
-            runInner(configurator, keepConnectedAfter)
+            runInner(configurator, keepConnectedAfter, onBeforePicker)
         } finally {
             v2StateRepository.setSyncInProgress(false)
         }
@@ -96,6 +97,7 @@ class V2SyncOrchestrator @Inject constructor(
     private suspend fun runInner(
         configurator: AirBeamMiniV2Configurator,
         keepConnectedAfter: Boolean,
+        onBeforePicker: (suspend () -> Unit)?,
     ): Boolean = coroutineScope {
 
         // Step 1: kick off StartSync. Fire-and-forget — firmware never sends a final Ready
@@ -125,6 +127,11 @@ class V2SyncOrchestrator @Inject constructor(
         startSyncJob.cancel()
         runCatching { configurator.disconnectGattForSync() }
             .onFailure { Log.w(TAG, "V2SyncOrchestrator: BLE disconnect failed: ${it.message}") }
+
+        // Educational dialog: surface UX hint to the user about the upcoming Wi-Fi picker
+        // (which AP to tap, that the picker auto-closes). Suspends until the user confirms.
+        runCatching { onBeforePicker?.invoke() }
+            .onFailure { Log.w(TAG, "V2SyncOrchestrator: onBeforePicker hook failed: ${it.message}") }
 
         // Steps 4+5: join AP, GET /sync, parse measurements.
         val apConnector = V2WifiApConnector(applicationContext)

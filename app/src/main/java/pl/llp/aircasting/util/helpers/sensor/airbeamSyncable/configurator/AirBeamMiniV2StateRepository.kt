@@ -30,7 +30,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     var savedSessionUuid: String? = null
         private set
 
-    private var syncCallback: (suspend (Boolean) -> Boolean)? = null
+    private var syncCallback: (suspend (Boolean, (suspend () -> Unit)?) -> Boolean)? = null
 
     /**
      * True while [V2SyncOrchestrator.run] is executing. Used by lifecycle owners
@@ -73,7 +73,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         savedSessionUuid = sessionUuid
     }
 
-    fun setSyncCallback(callback: (suspend (Boolean) -> Boolean)?) {
+    fun setSyncCallback(callback: (suspend (Boolean, (suspend () -> Unit)?) -> Boolean)?) {
         syncCallback = callback
     }
 
@@ -105,7 +105,12 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
      * @param keepConnectedAfter Skip the final voluntary BLE disconnect that the orchestrator
      * normally performs after the post-sync `DiscardSession`. Required when the caller plans
      * to write another command (e.g. `NewSessionConfig`) on the same GATT link right after.
+     * @param onBeforePicker Optional suspend hook invoked just before the system Wi-Fi picker
+     * is launched. Lets the calling UI surface an educational dialog and resume only after
+     * the user confirms.
      */
-    suspend fun startSync(keepConnectedAfter: Boolean = false): Boolean =
-        syncCallback?.invoke(keepConnectedAfter) ?: false
+    suspend fun startSync(
+        keepConnectedAfter: Boolean = false,
+        onBeforePicker: (suspend () -> Unit)? = null,
+    ): Boolean = syncCallback?.invoke(keepConnectedAfter, onBeforePicker) ?: false
 }

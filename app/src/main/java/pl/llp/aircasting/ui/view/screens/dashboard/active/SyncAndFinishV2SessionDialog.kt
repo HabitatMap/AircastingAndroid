@@ -10,15 +10,18 @@ import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.modules.IoCoroutineScope
+import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
 import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 /**
  * Shown when the user finishes a mobile session and the V2 AirBeam has measurements
@@ -80,7 +83,7 @@ class SyncAndFinishV2SessionDialog(
         // and backend upload. V2MobileMeasurementsInserter skips finished sessions, so the
         // FINISHED transition has to come AFTER the orchestrator returns.
         ioScope.launch {
-            v2StateRepository.startSync()
+            v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
             // StopRecordingEvent → SessionManager → RecordingHandler.stopRecording marks the
             // session FINISHED and runs sessionsSyncService.sync() to upload it to the
             // backend. AirBeam storage Discard already happened inside the orchestrator
@@ -95,6 +98,20 @@ class SyncAndFinishV2SessionDialog(
                     EventBus.getDefault().post(StopRecordingEvent(session.uuid))
                     settings.decreaseActiveMobileSessionsCount()
                 }
+            }
+        }
+    }
+
+    private suspend fun awaitWifiPickerEducation() {
+        withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine<Unit> { cont ->
+                if (!isAdded) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                    return@suspendCancellableCoroutine
+                }
+                V2WifiPickerEducationalDialog(parentFragmentManager) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                }.show()
             }
         }
     }

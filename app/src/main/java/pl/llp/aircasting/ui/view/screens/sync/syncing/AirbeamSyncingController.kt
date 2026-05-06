@@ -5,7 +5,10 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.ui.view.common.BaseController
+import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
 import pl.llp.aircasting.util.events.DisconnectExternalSensorsEvent
+import pl.llp.aircasting.util.events.V2WifiPickerEducationConfirmedEvent
+import pl.llp.aircasting.util.events.V2WifiPickerEducationRequestedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardLinesReadEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.exceptions.ErrorHandler
@@ -45,5 +48,12 @@ class AirbeamSyncingController(
     fun onMessageEvent(event: SDCardSyncFinished) {
         mErrorHandler.handle(SDCardSyncError("finishSync, calling listener"))
         mViewMvc?.finishSync()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: V2WifiPickerEducationRequestedEvent) {
+        V2WifiPickerEducationalDialog(mFragmentManager) {
+            EventBus.getDefault().post(V2WifiPickerEducationConfirmedEvent())
+        }.show()
     }
 }

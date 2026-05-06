@@ -6,12 +6,18 @@ import android.os.Parcelable
 import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.events.V2WifiPickerEducationConfirmedEvent
+import pl.llp.aircasting.util.events.V2WifiPickerEducationRequestedEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
+import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector.AirBeamMiniFallbackConnector
@@ -59,6 +65,14 @@ class AirBeamSyncService : AirBeamService() {
     lateinit var ioScope: CoroutineScope
 
     private lateinit var sdCardSyncService: SDCardSyncService
+
+    /**
+     * Set while the V2 orchestrator is suspended on the educational dialog. The
+     * `AirbeamSyncingController` posts [V2WifiPickerEducationConfirmedEvent] when the user
+     * presses Continue; `onMessageEvent` below completes this deferred so the orchestrator
+     * resumes and the system Wi-Fi picker is launched.
+     */
+    private var pendingPickerEducation: CompletableDeferred<Unit>? = null
 
     companion object {
         const val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -130,10 +144,12 @@ class AirBeamSyncService : AirBeamService() {
         // over V2; otherwise fall through to the existing SDCardSyncService pipeline.
         val v2Connected = (airBeamConnector as? AirBeamMiniFallbackConnector)?.isV2Connected() == true
         if (v2Connected) {
+            EventBus.getDefault().safeRegister(this)
             ioScope.launch {
                 Log.d("AirBeamSyncService", "V2 connection — running manual sync orchestrator")
-                val ok = v2StateRepository.startSync()
+                val ok = v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
                 Log.d("AirBeamSyncService", "V2 manual sync orchestrator finished ok=$ok")
+                runCatching { EventBus.getDefault().unregister(this@AirBeamSyncService) }
                 airBeamConnector.disconnect()
                 EventBus.getDefault().post(SDCardSyncFinished())
                 stopSelf()
@@ -157,5 +173,21 @@ class AirBeamSyncService : AirBeamService() {
             return
         }
         super.onDisconnect(deviceId)
+    }
+
+    private suspend fun awaitWifiPickerEducation() {
+        val deferred = CompletableDeferred<Unit>()
+        pendingPickerEducation = deferred
+        EventBus.getDefault().post(V2WifiPickerEducationRequestedEvent())
+        try {
+            deferred.await()
+        } finally {
+            pendingPickerEducation = null
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: V2WifiPickerEducationConfirmedEvent) {
+        pendingPickerEducation?.complete(Unit)
     }
 }

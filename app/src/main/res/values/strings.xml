@@ -278,6 +278,10 @@
     <string name="dialog_sync_before_new_v2_failure_description">We couldn\'t sync the measurements from your AirBeam. The data is still on the device — please try again from the dashboard.</string>
     <string name="dialog_sync_before_new_v2_failure_button">Continue</string>
 
+    <string name="dialog_v2_wifi_picker_education_header">Connect to AirBeam Wi-Fi</string>
+    <string name="dialog_v2_wifi_picker_education_description">A Wi-Fi network picker will open in a moment. Tap the network named &lt;b&gt;AirBeamMini Sync&lt;/b&gt; when it appears in the list. The app will close the picker by itself once it connects — please wait.</string>
+    <string name="dialog_v2_wifi_picker_education_button">Continue</string>
+
     <!-- Chart -->
     <string name="fixed_session_units_label">1 hr avg</string>
     <string name="mobile_session_units_label">1 min avg</string>
