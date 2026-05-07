@@ -118,8 +118,8 @@ class V2SyncOrchestrator @Inject constructor(
         // Step 2: wait for ReadyToSync(file_size, password) on the Status characteristic.
         // file_size flow is emitted alongside the password by parseStatus, so it has the
         // value cached (replay=1) by the time we read it below. -1 if FW pre-`ed751b180`
-        // or payload was malformed — downloader gracefully degrades to no progress + no
-        // soft-success when expectedSize is null/<=0.
+        // or payload was malformed — downloader gracefully degrades to no progress when
+        // expectedSize is null/<=0.
         val password = withTimeoutOrNull(PASSWORD_TIMEOUT_MS) {
             v2StateRepository.readyToSyncPassword.first()
         }

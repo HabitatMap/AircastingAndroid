@@ -583,8 +583,8 @@ class AirBeamMiniV2Configurator(
         // ReadyToSync (0x03) has a different payload shape than the rest of the Status
         // characteristic: [0x03, file_size_u64_LE (8B), utf8 password bytes...].
         // FW commit `ed751b180` added the file_size prefix so the app can size the WiFi
-        // download (progress UI + soft-success-on-trailing-abort). No battery byte —
-        // short-circuit before generic battery parsing.
+        // download (progress UI). No battery byte — short-circuit before generic battery
+        // parsing.
         if (state == STATE_READY_TO_SYNC) {
             if (bytes.size < 9) {
                 Log.w(TAG, "V2 Status: ReadyToSync payload too short (${bytes.size}B), expected ≥9")

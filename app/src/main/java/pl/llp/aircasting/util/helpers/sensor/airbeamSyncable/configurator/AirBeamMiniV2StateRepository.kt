@@ -69,9 +69,8 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     /**
      * Sync file size (bytes) included in the firmware's `Status::ReadyToSync (0x03)`
      * payload as `u64_LE` directly after the opcode byte (FW commit `ed751b180`). The
-     * orchestrator hands this to [V2SyncFileDownloader] so it can (1) drive a 0-100%
-     * progress UI and (2) treat a trailing TCP abort as soft-success when all bytes
-     * were already received — works around FW's deauth-before-flush teardown race.
+     * orchestrator hands this to [V2SyncFileDownloader] so it can drive a 0-100%
+     * progress UI off the per-block byte counter.
      */
     private val _readyToSyncFileSize = MutableSharedFlow<Long>(
         replay = 1,

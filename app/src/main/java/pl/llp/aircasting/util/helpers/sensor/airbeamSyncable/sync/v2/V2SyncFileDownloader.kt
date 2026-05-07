@@ -66,13 +66,9 @@ class V2SyncFileDownloader(
 
     /**
      * Result of a /sync GET. [httpComplete] = true iff the response stream was read to
-     * a clean EOF without IOException, OR the body stream aborted with `bytesConsumed`
-     * already matching the expected file size from the BLE `ReadyToSync` payload. The
-     * latter covers the FW deauth-before-flush race (FW kicks the SoftAP station ~20ms
-     * after the URI handler returns; phone gets all bytes but the trailing socket close
-     * is RST instead of FIN). Callers that need to clear FW storage on success should
-     * gate on this rather than [measurements] count, since an empty file is also a
-     * successful sync that should clear the saved-session marker.
+     * a clean EOF without IOException. Callers that need to clear FW storage on success
+     * should gate on this rather than [measurements] count, since an empty file is also
+     * a successful sync that should clear the saved-session marker.
      */
     data class Result(val measurements: List<V2SyncMeasurement>, val httpComplete: Boolean)
 
@@ -107,11 +103,11 @@ class V2SyncFileDownloader(
      * Parse a concatenation of `[0xAB,0xBA, count, count*8B, xor]` blocks. Tolerates partial
      * blocks at EOF (returns whatever was successfully parsed) and records with a bad checksum
      * (logged + skipped). [Result.httpComplete] is false when the stream throws IOException
-     * mid-read, true on natural EOF — or true on IOException when [expectedSize] was supplied
-     * and `bytesConsumed >= expectedSize`, covering the FW deauth-before-flush soft-failure.
+     * mid-read, true on natural EOF.
      *
-     * @param expectedSize total body size from BLE `ReadyToSync.file_size`. Drives both the
-     * progress callback and the soft-success-on-abort gate.
+     * @param expectedSize total body size from BLE `ReadyToSync.file_size`. Drives the
+     * progress callback only — FW handles graceful TCP shutdown (SO_LINGER + 500ms grace
+     * before `wifi.stop()`), so the phone always sees a clean EOF on a successful sync.
      * @param onProgress optional 0..100 progress callback invoked after each parsed block
      * (and once at 100 on completion). Only fires when [expectedSize] is non-null and > 0.
      */
@@ -136,11 +132,9 @@ class V2SyncFileDownloader(
             }
         }
 
-        // Outer try/catch: if the SoftAP drops mid-transfer (FW deauth-before-flush race
-        // post-`sync_get`, or BLE+Wi-Fi coex), socket reads throw IOException. We keep
-        // whatever full blocks we already parsed and — when the BLE-side file_size says
-        // we already received the whole body — flip httpComplete back to true so the
-        // orchestrator runs Discard instead of leaving data on the device.
+        // If the SoftAP drops mid-transfer, socket reads throw IOException. Keep whatever
+        // full blocks were already parsed but mark the sync incomplete so the orchestrator
+        // skips Discard and the user can retry.
         try {
             while (true) {
                 val first = readByteOrNull(data) ?: break
@@ -195,13 +189,11 @@ class V2SyncFileDownloader(
                 reportProgress()
             }
         } catch (e: IOException) {
-            val size = expectedSize ?: -1L
-            val gotAllBytes = size > 0 && counting.bytesRead >= size
-            httpComplete = gotAllBytes
+            httpComplete = false
             Log.w(
                 TAG,
                 "V2SyncDownloader: stream aborted (${e.message}) — keeping ${out.size} measurements parsed, " +
-                        "bytes=${counting.bytesRead}/$size, treatingAsComplete=$httpComplete",
+                        "bytes=${counting.bytesRead}/${expectedSize ?: -1L}",
             )
         }
         if (httpComplete) onProgress?.invoke(100)
