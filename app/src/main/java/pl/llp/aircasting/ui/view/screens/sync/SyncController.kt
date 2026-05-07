@@ -44,6 +44,7 @@ import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.permissions.PermissionsManager
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.services.AirBeamSyncService
 
 @AssistedFactory
@@ -68,6 +69,7 @@ class SyncController @AssistedInject constructor(
     private val mSessionsSyncService: SessionsSyncService,
     @SyncActiveFlow
     private val syncActiveFlow: MutableSharedFlow<Boolean>,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) : RefreshedSessionsViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     RestartAirBeamViewMvc.Listener,
@@ -225,6 +227,17 @@ class SyncController @AssistedInject constructor(
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
+        // V2 manual sync owns the BLE link from `AirBeamSyncService.onConnectionSuccessful`
+        // onward (orchestrator does a voluntary GATT disconnect to free the radio for the
+        // SoftAP HTTP transfer). Any AirBeamConnectionFailedEvent during this window is from
+        // a stale `AirBeamReconnectSessionService` whose 30s connect timer fires after we
+        // told it to stop via `syncActiveFlow` — its connector is still alive and posts the
+        // event. Reacting here would yank the user back to "Connect to your AirBeam" and
+        // surface a bogus Bluetooth-failed dialog while the WiFi sync silently completes.
+        if (v2StateRepository.syncInProgress) {
+            Log.d(this@SyncController.TAG, "Ignoring AirBeamConnectionFailedEvent during V2 manual sync")
+            return
+        }
         onBackPressed()
         val dialog = AircastingAlertDialog(
             mFragmentManager,
