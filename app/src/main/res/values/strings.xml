@@ -264,6 +264,7 @@
     <string name="dialog_sync_and_finish_v2_header">Sync &amp; finish recording</string>
     <string name="dialog_sync_and_finish_v2_description">This AirBeam has measurements that haven\'t been transferred to the app yet. Sync &amp; Finish will save them before stopping. Finish Without Sync will stop recording immediately.</string>
     <string name="sync_and_finish_v2">Sync &amp; Finish</string>
+    <string name="dialog_sync_and_finish_v2_syncing">Syncing… %1$d%%</string>
     <string name="finish_without_sync">Finish Without Sync</string>
 
     <string name="dialog_sync_before_new_v2_header">Unsynced measurements found</string>
@@ -271,6 +272,7 @@
     <string name="sync_and_start_new_v2">Sync &amp; Start New Session</string>
     <string name="start_new_session_skip_sync">Start New Session</string>
     <string name="dialog_sync_before_new_v2_syncing">Syncing…</string>
+    <string name="dialog_sync_before_new_v2_syncing_with_percent">Syncing… %1$d%%</string>
     <string name="dialog_sync_before_new_v2_success_header">Sync complete</string>
     <string name="dialog_sync_before_new_v2_success_description">The measurements from your AirBeam were synchronized to the app. You can now start a new session.</string>
     <string name="dialog_sync_before_new_v2_success_button">Start New Session</string>

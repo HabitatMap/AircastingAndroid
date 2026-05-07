@@ -5,9 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -49,6 +51,7 @@ class SyncBeforeNewV2SessionDialog(
     lateinit var ioScope: CoroutineScope
 
     private var rootView: View? = null
+    private var progressJob: Job? = null
 
     override fun setupView(inflater: LayoutInflater): View {
         val rootActivity = requireActivity()
@@ -82,10 +85,11 @@ class SyncBeforeNewV2SessionDialog(
 
         rootView?.run {
             finish_recording_button.isEnabled = false
-            finish_recording_button.text = getString(R.string.dialog_sync_before_new_v2_syncing)
+            finish_recording_button.text = syncingButtonText(0)
             cancel_button.isEnabled = false
         }
         isCancelable = false
+        observeSyncProgress()
 
         ioScope.launch {
             val ok = runCatching {
@@ -95,6 +99,7 @@ class SyncBeforeNewV2SessionDialog(
                 )
             }.getOrDefault(false)
             withContext(Dispatchers.Main) {
+                progressJob?.cancel()
                 if (!isAdded) {
                     if (ok) onSyncSuccess() else onSyncFailure()
                     return@withContext
@@ -127,6 +132,28 @@ class SyncBeforeNewV2SessionDialog(
         }
 
         view.cancel_button.visibility = View.GONE
+    }
+
+    /**
+     * Mirror the orchestrator's WiFi-download progress on the action button. lifecycleScope
+     * scopes the collector to the dialog so it cancels on dismissal; the underlying sync
+     * runs in [ioScope] (UserSessionScope) and is unaffected.
+     */
+    private fun observeSyncProgress() {
+        progressJob?.cancel()
+        progressJob = lifecycleScope.launch {
+            v2StateRepository.syncProgress.collect { percent ->
+                rootView?.finish_recording_button?.text = syncingButtonText(percent)
+            }
+        }
+    }
+
+    private fun syncingButtonText(percent: Int): String =
+        getString(R.string.dialog_sync_before_new_v2_syncing_with_percent, percent)
+
+    override fun onDestroyView() {
+        progressJob?.cancel()
+        super.onDestroyView()
     }
 
     private suspend fun awaitWifiPickerEducation() {

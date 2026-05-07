@@ -66,18 +66,26 @@ class V2SyncFileDownloader(
 
     /**
      * Result of a /sync GET. [httpComplete] = true iff the response stream was read to
-     * a clean EOF without IOException. Callers that need to clear FW storage on success
-     * should gate on this rather than [measurements] count, since an empty file is also
-     * a successful sync that should clear the saved-session marker.
+     * a clean EOF without IOException, OR the body stream aborted with `bytesConsumed`
+     * already matching the expected file size from the BLE `ReadyToSync` payload. The
+     * latter covers the FW deauth-before-flush race (FW kicks the SoftAP station ~20ms
+     * after the URI handler returns; phone gets all bytes but the trailing socket close
+     * is RST instead of FIN). Callers that need to clear FW storage on success should
+     * gate on this rather than [measurements] count, since an empty file is also a
+     * successful sync that should clear the saved-session marker.
      */
     data class Result(val measurements: List<V2SyncMeasurement>, val httpComplete: Boolean)
 
-    suspend fun download(boundNetwork: android.net.Network?): Result {
+    suspend fun download(
+        boundNetwork: android.net.Network?,
+        expectedSize: Long? = null,
+        onProgress: ((Int) -> Unit)? = null,
+    ): Result {
         val httpClient = client(boundNetwork)
         val url = "http://$syncHostIp/sync"
         val request = Request.Builder().url(url).get().build()
 
-        Log.d(TAG, "V2SyncDownloader: GET $url")
+        Log.d(TAG, "V2SyncDownloader: GET $url (expectedSize=${expectedSize ?: "unknown"})")
         val response = try {
             httpClient.newCall(request).execute()
         } catch (e: IOException) {
@@ -91,7 +99,7 @@ class V2SyncFileDownloader(
         }
 
         return response.body?.byteStream()?.use { stream ->
-            parseStream(stream)
+            parseStream(stream, expectedSize, onProgress)
         } ?: Result(emptyList(), false)
     }
 
@@ -99,16 +107,40 @@ class V2SyncFileDownloader(
      * Parse a concatenation of `[0xAB,0xBA, count, count*8B, xor]` blocks. Tolerates partial
      * blocks at EOF (returns whatever was successfully parsed) and records with a bad checksum
      * (logged + skipped). [Result.httpComplete] is false when the stream throws IOException
-     * mid-read, true on natural EOF.
+     * mid-read, true on natural EOF — or true on IOException when [expectedSize] was supplied
+     * and `bytesConsumed >= expectedSize`, covering the FW deauth-before-flush soft-failure.
+     *
+     * @param expectedSize total body size from BLE `ReadyToSync.file_size`. Drives both the
+     * progress callback and the soft-success-on-abort gate.
+     * @param onProgress optional 0..100 progress callback invoked after each parsed block
+     * (and once at 100 on completion). Only fires when [expectedSize] is non-null and > 0.
      */
-    internal fun parseStream(input: InputStream): Result {
+    internal fun parseStream(
+        input: InputStream,
+        expectedSize: Long? = null,
+        onProgress: ((Int) -> Unit)? = null,
+    ): Result {
         val out = mutableListOf<V2SyncMeasurement>()
-        val data = DataInputStream(input)
+        val counting = CountingInputStream(input)
+        val data = DataInputStream(counting)
         var httpComplete = true
+        var lastReportedPercent = -1
 
-        // Outer try/catch: if the SoftAP drops mid-transfer (BLE coex on Android 12 +
-        // ESP32), socket reads throw IOException. We still want to keep whatever full
-        // blocks we already parsed so the user doesn't lose synced measurements.
+        fun reportProgress() {
+            val size = expectedSize ?: return
+            if (size <= 0) return
+            val pct = ((counting.bytesRead.coerceAtMost(size) * 100L) / size).toInt()
+            if (pct != lastReportedPercent) {
+                lastReportedPercent = pct
+                onProgress?.invoke(pct)
+            }
+        }
+
+        // Outer try/catch: if the SoftAP drops mid-transfer (FW deauth-before-flush race
+        // post-`sync_get`, or BLE+Wi-Fi coex), socket reads throw IOException. We keep
+        // whatever full blocks we already parsed and — when the BLE-side file_size says
+        // we already received the whole body — flip httpComplete back to true so the
+        // orchestrator runs Discard instead of leaving data on the device.
         try {
             while (true) {
                 val first = readByteOrNull(data) ?: break
@@ -149,6 +181,7 @@ class V2SyncFileDownloader(
                 val checksum = checksumByte.toInt() and 0xFF
                 if (expected != checksum) {
                     Log.w(TAG, "V2SyncDownloader: checksum mismatch (expected=${"%02x".format(expected)}, got=${"%02x".format(checksum)}) — skipping block")
+                    reportProgress()
                     continue
                 }
 
@@ -159,13 +192,40 @@ class V2SyncFileDownloader(
                     val pm25 = readU16Le(recordsBytes, offset + 6)
                     out.add(V2SyncMeasurement(Date(ts * 1000L), pm1, pm25))
                 }
+                reportProgress()
             }
         } catch (e: IOException) {
-            Log.w(TAG, "V2SyncDownloader: stream aborted (${e.message}) — keeping ${out.size} measurements parsed so far")
-            httpComplete = false
+            val size = expectedSize ?: -1L
+            val gotAllBytes = size > 0 && counting.bytesRead >= size
+            httpComplete = gotAllBytes
+            Log.w(
+                TAG,
+                "V2SyncDownloader: stream aborted (${e.message}) — keeping ${out.size} measurements parsed, " +
+                        "bytes=${counting.bytesRead}/$size, treatingAsComplete=$httpComplete",
+            )
         }
-        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements, httpComplete=$httpComplete")
+        if (httpComplete) onProgress?.invoke(100)
+        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements, bytes=${counting.bytesRead}, httpComplete=$httpComplete")
         return Result(out, httpComplete)
+    }
+
+    private class CountingInputStream(private val src: InputStream) : InputStream() {
+        var bytesRead: Long = 0
+            private set
+
+        override fun read(): Int {
+            val b = src.read()
+            if (b != -1) bytesRead++
+            return b
+        }
+
+        override fun read(b: ByteArray, off: Int, len: Int): Int {
+            val n = src.read(b, off, len)
+            if (n > 0) bytesRead += n
+            return n
+        }
+
+        override fun close() = src.close()
     }
 
     private fun readByteOrNull(input: DataInputStream): Byte? {

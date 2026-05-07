@@ -48,4 +48,13 @@ class AirbeamSyncingViewMvcImpl(
             header?.text = getString(R.string.airbeam_syncing_finalizing)
         }
     }
+
+    override fun updateV2Progress(percent: Int) {
+        val title = context.getString(R.string.airbeam_syncing_header)
+        header?.text = if (percent >= 100) {
+            getString(R.string.airbeam_syncing_finalizing)
+        } else {
+            "$title… $percent%"
+        }
+    }
 }

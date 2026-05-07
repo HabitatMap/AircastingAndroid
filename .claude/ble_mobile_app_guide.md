@@ -90,7 +90,7 @@ On connection (after ~300ms delay), the device sends a state notification. The a
 - `0x00` **Idle**: Payload = `[0x00, battery_level_u8]`. No ongoing session.
 - `0x01` **HasSavedSession**: Payload = `[0x01, battery_level_u8, session_uuid_16B_LE, has_measurements_u8_bool]`. Active session stored on device (device was turned off and on).
 - `0x02` **Running**: Payload = `[0x02, battery_level_u8, session_uuid_16B_LE]`. Session actively running.
-- `0x03` **ReadyToSync**: Payload = `[0x03, utf8_password_bytes...]`. Emitted while `StartSync (0x12)` is in progress and the firmware has opened the SoftAP "AirBeam Mini Sync". Password is variable-length UTF-8, no terminator. **Important:** this status has no battery byte at offset 1 — parsers must short-circuit before generic battery decoding.
+- `0x03` **ReadyToSync**: Payload = `[0x03, file_size_u64_LE (8B), utf8_password_bytes...]` (FW commit `ed751b180`). Emitted while `StartSync (0x12)` is in progress and the firmware has opened the SoftAP "AirBeam Mini Sync". `file_size` is the byte length of the upcoming `/sync` HTTP body — the app uses it to drive a 0..100% progress UI and as a soft-success gate when the trailing socket close races FW's deauth. Password is variable-length UTF-8, no terminator. **Important:** this status has no battery byte at offset 1 — parsers must short-circuit before generic battery decoding.
 
 ### Battery Level
 
@@ -170,13 +170,25 @@ do not require `StartSync`.
 Sequence:
 1. App writes `0x12` to Command. Device replies `Ack (0x20)` on Response.
 2. Firmware opens SoftAP `"AirBeam Mini Sync"` (random WPA2 password) and an HTTP server.
-3. Device notifies Status with `ReadyToSync (0x03) + utf8_password_bytes` (§3).
+3. Device notifies Status with `ReadyToSync (0x03) + file_size_u64_LE + utf8_password_bytes` (§3).
 4. App joins the SoftAP using the password and `GET http://192.168.4.1/sync`.
 5. Body is `application/octet-stream` containing the raw measurement file:
    concatenated blocks of `[0xAB, 0xBA, count_u8, count × 8B records, xor_u8]`.
-   Each 8-byte record is `ts_u32_LE + pm1_u16_LE + pm25_u16_LE`.
+   Each 8-byte record is `ts_u32_LE + pm1_u16_LE + pm25_u16_LE`. Total body length
+   matches the BLE-side `file_size` so the app can size a progress UI and detect
+   "all bytes received" even when the response stream aborts (FW deauth race).
 6. When the HTTP transfer completes, firmware emits `Ready (0x22)` on Response and
    automatically clears stored measurements via `storage.clear_measurements()`.
+
+**FW deauth-after-sync race (open issue):** firmware's `wifi_manager::cancel_manual_sync`
+calls `wifi.stop()` ~20 ms after the URI handler returns, before lwIP can drain TX
+and complete TCP FIN/ACK. Phone-side OkHttp sees `IOException("Software caused
+connection abort")` either at `execute()` (bytes never reached the air) or after
+all body bytes were already consumed (trailing close was RST instead of FIN). App
+treats the second case as soft-success when `bytesConsumed >= file_size` (see
+`V2SyncFileDownloader.parseStream`). Permanent fix requires FW-side teardown
+delay (≥1 s grace before `wifi.stop()`) — tracked separately. Until that lands,
+the BLE-side `file_size` is load-bearing for sync reliability.
 
 - Failure: `Nack (0x04)` (`SyncStorageFailed`/`ClearStorageFailed`).
 

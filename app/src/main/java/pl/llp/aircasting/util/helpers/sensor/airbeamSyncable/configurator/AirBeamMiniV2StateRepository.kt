@@ -2,8 +2,11 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator
 
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import pl.llp.aircasting.di.UserSessionScope
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -63,6 +66,31 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     )
     val readyToSyncPassword: SharedFlow<String> = _readyToSyncPassword.asSharedFlow()
 
+    /**
+     * Sync file size (bytes) included in the firmware's `Status::ReadyToSync (0x03)`
+     * payload as `u64_LE` directly after the opcode byte (FW commit `ed751b180`). The
+     * orchestrator hands this to [V2SyncFileDownloader] so it can (1) drive a 0-100%
+     * progress UI and (2) treat a trailing TCP abort as soft-success when all bytes
+     * were already received — works around FW's deauth-before-flush teardown race.
+     */
+    private val _readyToSyncFileSize = MutableSharedFlow<Long>(
+        replay = 1,
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST,
+    )
+    val readyToSyncFileSize: SharedFlow<Long> = _readyToSyncFileSize.asSharedFlow()
+
+    /**
+     * Manual-sync HTTP body progress in 0..100. Reset to 0 at the start of each
+     * orchestrator run; reaches 100 when the body stream is fully consumed (or treated
+     * as soft-complete via [readyToSyncFileSize]). Consumed by every UI surface that
+     * drives manual sync — the SD-sync wizard syncing screen, the Sync-and-Finish
+     * dialog, and the Sync-before-new-session dialog — so all entry points show the
+     * same percentage from a single source of truth.
+     */
+    private val _syncProgress = MutableStateFlow(0)
+    val syncProgress: StateFlow<Int> = _syncProgress.asStateFlow()
+
     fun update(
         state: AirBeamMiniV2Configurator.DeviceState,
         hasMeasurements: Boolean,
@@ -85,9 +113,19 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         _readyToSyncPassword.tryEmit(password)
     }
 
+    fun emitReadyToSyncFileSize(size: Long) {
+        _readyToSyncFileSize.tryEmit(size)
+    }
+
+    fun setSyncProgress(percent: Int) {
+        _syncProgress.value = percent.coerceIn(0, 100)
+    }
+
     @Suppress("OPT_IN_USAGE")
     fun resetReadyToSyncPassword() {
         _readyToSyncPassword.resetReplayCache()
+        _readyToSyncFileSize.resetReplayCache()
+        _syncProgress.value = 0
     }
 
     @Suppress("OPT_IN_USAGE")
@@ -99,6 +137,8 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         syncCallback = null
         _syncInProgress.set(false)
         _readyToSyncPassword.resetReplayCache()
+        _readyToSyncFileSize.resetReplayCache()
+        _syncProgress.value = 0
     }
 
     /**

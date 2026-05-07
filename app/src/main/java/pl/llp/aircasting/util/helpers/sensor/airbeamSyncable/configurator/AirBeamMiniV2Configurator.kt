@@ -580,13 +580,22 @@ class AirBeamMiniV2Configurator(
 
         val state = bytes[0].toInt() and 0xFF
 
-        // ReadyToSync (0x03) has a different payload shape: [0x03, ...utf8 password bytes...].
-        // No battery byte — short-circuit before generic battery parsing.
+        // ReadyToSync (0x03) has a different payload shape than the rest of the Status
+        // characteristic: [0x03, file_size_u64_LE (8B), utf8 password bytes...].
+        // FW commit `ed751b180` added the file_size prefix so the app can size the WiFi
+        // download (progress UI + soft-success-on-trailing-abort). No battery byte —
+        // short-circuit before generic battery parsing.
         if (state == STATE_READY_TO_SYNC) {
-            val password = if (bytes.size > 1) String(bytes, 1, bytes.size - 1, Charsets.UTF_8) else ""
+            if (bytes.size < 9) {
+                Log.w(TAG, "V2 Status: ReadyToSync payload too short (${bytes.size}B), expected ≥9")
+                return
+            }
+            val fileSize = ByteBuffer.wrap(bytes, 1, 8).order(ByteOrder.LITTLE_ENDIAN).long
+            val password = if (bytes.size > 9) String(bytes, 9, bytes.size - 9, Charsets.UTF_8) else ""
             currentState = DeviceState.READY_TO_SYNC
-            Log.d(TAG, "V2 Status: ReadyToSync, passwordLen=${password.length}")
+            Log.d(TAG, "V2 Status: ReadyToSync, fileSize=$fileSize, passwordLen=${password.length}")
             v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
+            v2StateRepository.emitReadyToSyncFileSize(fileSize)
             v2StateRepository.emitReadyToSyncPassword(password)
             return
         }

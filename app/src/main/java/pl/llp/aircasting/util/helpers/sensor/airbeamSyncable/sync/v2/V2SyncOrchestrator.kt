@@ -115,7 +115,11 @@ class V2SyncOrchestrator @Inject constructor(
         // state below before tearing down the link.
         val startSyncJob: Job = async { configurator.sendStartSyncManualAndAwaitDone() }
 
-        // Step 2: wait for ReadyToSync(password) on the Status characteristic.
+        // Step 2: wait for ReadyToSync(file_size, password) on the Status characteristic.
+        // file_size flow is emitted alongside the password by parseStatus, so it has the
+        // value cached (replay=1) by the time we read it below. -1 if FW pre-`ed751b180`
+        // or payload was malformed — downloader gracefully degrades to no progress + no
+        // soft-success when expectedSize is null/<=0.
         val password = withTimeoutOrNull(PASSWORD_TIMEOUT_MS) {
             v2StateRepository.readyToSyncPassword.first()
         }
@@ -124,7 +128,8 @@ class V2SyncOrchestrator @Inject constructor(
             startSyncJob.cancel()
             return@coroutineScope false
         }
-        Log.d(TAG, "V2SyncOrchestrator: got SoftAP password (len=${password.length})")
+        val fileSize = v2StateRepository.readyToSyncFileSize.replayCache.firstOrNull() ?: -1L
+        Log.d(TAG, "V2SyncOrchestrator: got SoftAP password (len=${password.length}), fileSize=$fileSize")
 
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId
@@ -137,10 +142,17 @@ class V2SyncOrchestrator @Inject constructor(
         runCatching { configurator.disconnectGattForSync() }
             .onFailure { Log.w(TAG, "V2SyncOrchestrator: BLE disconnect failed: ${it.message}") }
 
-        // Steps 4+5: join AP, GET /sync, parse measurements.
+        // Steps 4+5: join AP, GET /sync, parse measurements. Progress callback flows
+        // from the downloader's per-block byte counter into the shared sync-progress
+        // StateFlow so all UI surfaces (SD-sync wizard, Sync-and-Finish dialog,
+        // Sync-before-new-session dialog) reflect the same %.
         val apConnector = V2WifiApConnector(applicationContext)
         val downloadResult = apConnector.withApConnection(password) { network ->
-            V2SyncFileDownloader().download(network)
+            V2SyncFileDownloader().download(
+                boundNetwork = network,
+                expectedSize = fileSize.takeIf { it > 0 },
+                onProgress = { percent -> v2StateRepository.setSyncProgress(percent) },
+            )
         }
 
         if (downloadResult == null) {

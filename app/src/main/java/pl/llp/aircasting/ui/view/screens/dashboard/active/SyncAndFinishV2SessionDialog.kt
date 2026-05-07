@@ -6,9 +6,11 @@ import android.view.View
 import androidx.core.text.bold
 import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -41,6 +43,7 @@ class SyncAndFinishV2SessionDialog(
     lateinit var ioScope: CoroutineScope
 
     private var dialogView: View? = null
+    private var progressJob: Job? = null
 
     override fun setupView(inflater: LayoutInflater): View {
         val view = super.setupView(inflater)
@@ -71,9 +74,11 @@ class SyncAndFinishV2SessionDialog(
     override fun finishSessionConfirmed() {
         dialogView?.run {
             finish_recording_button.isEnabled = false
+            finish_recording_button.text = syncingButtonText(0)
             cancel_button.isEnabled = false
         }
         isCancelable = false
+        observeSyncProgress()
 
         val session = mSession
         // Run the sync on a UserSessionScope so dialog dismissal / activity navigation can't
@@ -100,6 +105,29 @@ class SyncAndFinishV2SessionDialog(
                 }
             }
         }
+    }
+
+    /**
+     * Mirror the orchestrator's WiFi-download progress on the action button so the user
+     * gets the same 0..100% feedback as the SD-sync wizard. Uses `lifecycleScope` so
+     * the collector is cancelled when the dialog goes away — but the underlying sync
+     * keeps running in [ioScope] (UserSessionScope) so dismissal doesn't cancel it.
+     */
+    private fun observeSyncProgress() {
+        progressJob?.cancel()
+        progressJob = lifecycleScope.launch {
+            v2StateRepository.syncProgress.collect { percent ->
+                dialogView?.finish_recording_button?.text = syncingButtonText(percent)
+            }
+        }
+    }
+
+    private fun syncingButtonText(percent: Int): String =
+        getString(R.string.dialog_sync_and_finish_v2_syncing, percent)
+
+    override fun onDestroyView() {
+        progressJob?.cancel()
+        super.onDestroyView()
     }
 
     private suspend fun awaitWifiPickerEducation() {
