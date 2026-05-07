@@ -122,6 +122,9 @@ object ThresholdAlert {
         BaseException(null, "Threshold Alert saving error: ${cause?.message}")
 }
 
+class V2ManualSyncError :
+    BaseException(null, "Sync failed. Please try again.")
+
 class AirBeamMiniV2NackError(errorCode: Int) : BaseException(
     null,
     when (errorCode) {

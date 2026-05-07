@@ -16,9 +16,11 @@ import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.V2WifiPickerEducationConfirmedEvent
 import pl.llp.aircasting.util.events.V2WifiPickerEducationRequestedEvent
+import pl.llp.aircasting.util.events.sdcard.SDCardSyncErrorEvent
 import pl.llp.aircasting.util.events.sdcard.SDCardSyncFinished
 import pl.llp.aircasting.util.extensions.safeRegister
 import pl.llp.aircasting.util.exceptions.AirbeamServiceError
+import pl.llp.aircasting.util.exceptions.V2ManualSyncError
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.connector.AirBeamMiniFallbackConnector
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.SDCardSessionFileHandlerFixedFactory
@@ -147,11 +149,20 @@ class AirBeamSyncService : AirBeamService() {
             EventBus.getDefault().safeRegister(this)
             ioScope.launch {
                 Log.d("AirBeamSyncService", "V2 connection — running manual sync orchestrator")
-                val ok = v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
+                val ok = runCatching {
+                    v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
+                }.getOrElse { e ->
+                    Log.e("AirBeamSyncService", "V2 manual sync orchestrator threw", e)
+                    false
+                }
                 Log.d("AirBeamSyncService", "V2 manual sync orchestrator finished ok=$ok")
                 runCatching { EventBus.getDefault().unregister(this@AirBeamSyncService) }
                 airBeamConnector.disconnect()
-                EventBus.getDefault().post(SDCardSyncFinished())
+                if (ok) {
+                    EventBus.getDefault().post(SDCardSyncFinished())
+                } else {
+                    EventBus.getDefault().post(SDCardSyncErrorEvent(V2ManualSyncError()))
+                }
                 stopSelf()
             }
             return
