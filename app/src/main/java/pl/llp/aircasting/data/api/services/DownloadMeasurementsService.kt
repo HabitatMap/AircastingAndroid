@@ -163,7 +163,6 @@ class DownloadMeasurementsService @Inject constructor(
         val measurements = MeasurementsFactory.get(
             streamResponse.measurements,
             averagingFrequency,
-            session.isExternal
         )
         measurementsRepository.insertAll(streamId, session.id, measurements)
 

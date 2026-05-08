@@ -108,7 +108,6 @@ class DownloadMeasurementsServiceTest {
                     MeasurementsFactory.get(
                         sessionStreamWithMeasurementsResponse.measurements,
                         averagingWindow.value,
-                        session.isExternal
                     )
                 )
             )
@@ -140,7 +139,6 @@ class DownloadMeasurementsServiceTest {
                     MeasurementsFactory.get(
                         sessionStreamWithMeasurementsResponse.measurements,
                         averagingWindow.value,
-                        session.isExternal
                     )
                 )
             )
@@ -273,7 +271,6 @@ class DownloadMeasurementsServiceTest {
                     MeasurementsFactory.get(
                         sessionStreamWithMeasurementsResponse.measurements,
                         averagingWindow.value,
-                        session.isExternal
                     )
                 )
             )
