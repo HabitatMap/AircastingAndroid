@@ -591,9 +591,16 @@ class AirBeamMiniV2Configurator(
                 return
             }
             val fileSize = ByteBuffer.wrap(bytes, 1, 8).order(ByteOrder.LITTLE_ENDIAN).long
-            val password = if (bytes.size > 9) String(bytes, 9, bytes.size - 9, Charsets.UTF_8) else ""
+            val passwordBytes = if (bytes.size > 9) bytes.copyOfRange(9, bytes.size) else ByteArray(0)
+            val password = String(passwordBytes, Charsets.UTF_8)
             currentState = DeviceState.READY_TO_SYNC
-            Log.d(TAG, "V2 Status: ReadyToSync, fileSize=$fileSize, passwordLen=${password.length}")
+            val rawHex = bytes.joinToString("") { "%02x".format(it) }
+            val pwHex = passwordBytes.joinToString("") { "%02x".format(it) }
+            Log.d(
+                TAG,
+                "V2 Status: ReadyToSync — fileSize=$fileSize passwordLen=${password.length} " +
+                        "password='$password' passwordHex=$pwHex rawStatusHex=$rawHex",
+            )
             v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
             v2StateRepository.emitReadyToSyncFileSize(fileSize)
             v2StateRepository.emitReadyToSyncPassword(password)

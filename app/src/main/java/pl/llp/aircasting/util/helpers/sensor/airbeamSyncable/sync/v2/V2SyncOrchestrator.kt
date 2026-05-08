@@ -136,7 +136,8 @@ class V2SyncOrchestrator @Inject constructor(
             return@coroutineScope false
         }
         val fileSize = v2StateRepository.readyToSyncFileSize.replayCache.firstOrNull() ?: -1L
-        Log.d(TAG, "V2SyncOrchestrator: got SoftAP password (len=${password.length}), fileSize=$fileSize")
+        val pwHex = password.toByteArray(Charsets.UTF_8).joinToString("") { "%02x".format(it) }
+        Log.d(TAG, "V2SyncOrchestrator: got SoftAP password='$password' (len=${password.length} hex=$pwHex), fileSize=$fileSize")
 
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId

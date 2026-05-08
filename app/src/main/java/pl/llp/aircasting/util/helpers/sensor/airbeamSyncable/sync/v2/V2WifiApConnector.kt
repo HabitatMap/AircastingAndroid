@@ -96,7 +96,8 @@ class V2WifiApConnector(
 
     @SuppressLint("MissingPermission")
     private suspend fun connectModern(password: String, scope: kotlinx.coroutines.CoroutineScope): Network? {
-        Log.d(TAG, "V2WifiAp: requesting SoftAP network ssid='$ssid' (passwordLen=${password.length})")
+        val pwHex = password.toByteArray(Charsets.UTF_8).joinToString("") { "%02x".format(it) }
+        Log.d(TAG, "V2WifiAp: requesting SoftAP network ssid='$ssid' password='$password' passwordLen=${password.length} passwordHex=$pwHex")
         Log.d(TAG, "V2WifiAp: wifi enabled=${wifiManager.isWifiEnabled}, scan-always=${wifiManager.isScanAlwaysAvailable}")
 
         // Initial scan-cache snapshot before any explicit scan we issue.
@@ -119,6 +120,7 @@ class V2WifiApConnector(
             .setSsid(ssid)
             .setWpa2Passphrase(password)
             .build()
+        Log.d(TAG, "V2WifiAp: WifiNetworkSpecifier built — ssid='$ssid' password='$password'")
 
         val request = NetworkRequest.Builder()
             .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
