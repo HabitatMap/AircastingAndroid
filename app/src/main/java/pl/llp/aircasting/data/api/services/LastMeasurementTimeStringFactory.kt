@@ -1,14 +1,12 @@
 package pl.llp.aircasting.data.api.services
 
 import pl.llp.aircasting.util.DateConverter
-import java.util.*
+import java.util.Date
+import java.util.TimeZone
 
 object LastMeasurementTimeStringFactory {
-    fun get(
-        lastMeasurementSyncTime: Date,
-        isExternal: Boolean
-    ): String {
-        return if (!isExternal) DateConverter.toDateString(lastMeasurementSyncTime)
-        else DateConverter.toDateString(lastMeasurementSyncTime, TimeZone.getTimeZone("UTC"))
-    }
+    private val UTC = TimeZone.getTimeZone("UTC")
+
+    fun get(lastMeasurementSyncTime: Date): String =
+        DateConverter.toDateString(lastMeasurementSyncTime, UTC)
 }

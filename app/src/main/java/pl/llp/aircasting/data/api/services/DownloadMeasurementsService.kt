@@ -74,7 +74,7 @@ class DownloadMeasurementsService @Inject constructor(
     ) = withContext(dispatcher) {
         sessionWithMeasurements.apply {
             val lastMeasurementSyncTimeString =
-                lastMeasurementTimeString(session.id, session.endTime, session.isExternal)
+                lastMeasurementTimeString(session.id, session.endTime)
             runCatching {
                 apiService.downloadFixedMeasurements(
                     session.uuid,
@@ -91,13 +91,12 @@ class DownloadMeasurementsService @Inject constructor(
     private suspend fun lastMeasurementTimeString(
         sessionId: Long,
         endTime: Date?,
-        isExternal: Boolean
     ): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
             LastMeasurementSyncCalculator.calculate(endTime, lastMeasurementTime)
 
-        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, isExternal)
+        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime)
     }
 
     private suspend fun updateSessionData(
