@@ -210,8 +210,16 @@ Mobile sessions do **not** include `session_token` — the field is absent from 
 Total: 134 bytes. Strings are null-byte padded to their container lengths. **Byte 19 is the mode byte (0x00=FIXED, 0x01=MOBILE)** — the firmware reads this to distinguish session types, so the order matters. The `session_token` (16 bytes) comes AFTER the indices, not immediately after the UUID.
 
 **Interval per session type:**
-- Mobile: `interval_seconds = 1` (1 measurement per second)
-- Fixed: `interval_seconds = 60` (1 measurement per minute)
+- Mobile: `interval_seconds = 1` (1 measurement per second) — default. User-configurable via the "Interval (seconds)" input on the New Session Details screen; integer ≥ 1.
+- Fixed: `interval_seconds = 60` (1 measurement per minute) — default. User-configurable via the same input field on the Fixed New Session Details screen; integer ≥ 1.
+
+The plumbing carries `intervalSeconds: Int?` from `SessionDetailsViewMvc.Listener.onSessionDetailsContinueClicked` →
+`NewSessionController` → `StartRecordingEvent` → `RecordingHandlerImpl.startRecording` →
+`ConfigureSession` event → `AirBeamConnector.configureSession` → `AirBeamBleConfigurator.configure` →
+`AirBeamMiniV2Configurator.sendNewSessionConfig` → `buildMobileSessionPayload` / `buildFixedSessionPayload`.
+Defaults `DEFAULT_MOBILE_INTERVAL_SECONDS = 1` / `DEFAULT_FIXED_INTERVAL_SECONDS = 60` live on
+`AirBeamMiniV2Configurator`'s companion object and apply only when the param is null
+(legacy/non-V2 paths).
 
 ### UUID Byte Encoding (Little-Endian)
 

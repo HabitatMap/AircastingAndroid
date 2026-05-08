@@ -16,7 +16,8 @@ interface SessionDetailsViewMvc: ObservableViewMvc<SessionDetailsViewMvc.Listene
             indoor: Boolean = false,
             streamingMethod: Session.StreamingMethod? = null,
             wifiName: String? = null,
-            wifiPassword: String? = null
+            wifiPassword: String? = null,
+            intervalSeconds: Int? = null,
         )
         fun validationFailed(errorMessage: String)
     }

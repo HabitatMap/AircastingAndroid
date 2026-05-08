@@ -11,7 +11,7 @@ interface AirBeamBleConfigurator {
     fun connectDevice(device: BluetoothDevice): ConnectRequest
     fun closeConnection()
     fun sendAuth(uuid: String)
-    fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig? = null)
+    fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig? = null, intervalSeconds: Int? = null)
     fun reconnectMobileSession()
     fun triggerSDCardDownload()
     suspend fun clearSDCard()

@@ -110,6 +110,7 @@ class NewSessionController @AssistedInject constructor(
     private var wifiSSID: String? = null
     private var wifiPassword: String? = null
     private var deviceFirmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1
+    private var intervalSeconds: Int? = null
     private var fixedConfigureObserverJob: Job? = null
 
     fun onCreate() {
@@ -326,7 +327,8 @@ class NewSessionController @AssistedInject constructor(
         indoor: Boolean,
         streamingMethod: Session.StreamingMethod?,
         wifiSSID: String?,
-        wifiPassword: String?
+        wifiPassword: String?,
+        intervalSeconds: Int?,
     ) {
 
         val currentLocation =
@@ -348,6 +350,7 @@ class NewSessionController @AssistedInject constructor(
         this.wifiSSID = wifiSSID
         this.wifiPassword = wifiPassword
         this.deviceFirmwareVersion = deviceItem.firmwareVersion
+        this.intervalSeconds = intervalSeconds
         if (areMapsDisabled() && mContextActivity.areLocationServicesOn() && sessionType == Session.Type.MOBILE) {
             wizardNavigator.goToTurnOffLocationServices(session, this)
         } else if (sessionType == Session.Type.MOBILE || indoor) {
@@ -430,7 +433,7 @@ class NewSessionController @AssistedInject constructor(
         val isFixedV2 = session.isFixed() && deviceFirmwareVersion == DeviceItem.FirmwareVersion.V2
         if (isFixedV2) observeFixedConfigureOutcome()
 
-        val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion)
+        val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion, intervalSeconds)
         EventBus.getDefault().post(event)
 
         if (!isFixedV2) {

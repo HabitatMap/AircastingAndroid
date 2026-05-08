@@ -50,6 +50,7 @@ abstract class AirBeamConnector(
         wifiSSID: String?,
         wifiPassword: String?,
         fixedSessionConfig: FixedSessionConfig? = null,
+        intervalSeconds: Int? = null,
     )
 
     fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
@@ -147,7 +148,7 @@ abstract class AirBeamConnector(
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: ConfigureSession) {
-        configureSession(event.session, event.wifiSSID, event.wifiPassword, event.fixedSessionConfig)
+        configureSession(event.session, event.wifiSSID, event.wifiPassword, event.fixedSessionConfig, event.intervalSeconds)
     }
 
     @Subscribe(threadMode = ThreadMode.ASYNC)

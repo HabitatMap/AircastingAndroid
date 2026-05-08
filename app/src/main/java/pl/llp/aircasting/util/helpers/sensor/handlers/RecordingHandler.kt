@@ -20,7 +20,13 @@ import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
 
 interface RecordingHandler {
-    fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?, firmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1)
+    fun startRecording(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?,
+        firmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1,
+        intervalSeconds: Int? = null,
+    )
     fun stopRecording(uuid: String)
     fun handle(event: NewMeasurementEvent)
     fun startStandaloneMode(uuid: String)
@@ -42,7 +48,13 @@ class RecordingHandlerImpl(
     private val observers: MutableMap<String, Job>,
 ) : RecordingHandler {
 
-    override fun startRecording(session: Session, wifiSSID: String?, wifiPassword: String?, firmwareVersion: DeviceItem.FirmwareVersion) {
+    override fun startRecording(
+        session: Session,
+        wifiSSID: String?,
+        wifiPassword: String?,
+        firmwareVersion: DeviceItem.FirmwareVersion,
+        intervalSeconds: Int?,
+    ) {
         coroutineScope.launch {
             session.setAppropriateStatusForStartOfRecording()
             val databaseSessionId = sessionsRepository.insert(session)
@@ -53,10 +65,14 @@ class RecordingHandlerImpl(
                     sessionsRepository.updateFollowedAt(session)
                     settings.increaseFollowedSessionsCount()
                     val fixedSessionConfig = upload(session, firmwareVersion == DeviceItem.FirmwareVersion.V2)
-                    EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword, fixedSessionConfig))
+                    EventBus.getDefault().post(
+                        ConfigureSession(session, wifiSSID, wifiPassword, fixedSessionConfig, intervalSeconds)
+                    )
                 }
                 Session.Type.MOBILE -> {
-                    EventBus.getDefault().post(ConfigureSession(session, wifiSSID, wifiPassword))
+                    EventBus.getDefault().post(
+                        ConfigureSession(session, wifiSSID, wifiPassword, intervalSeconds = intervalSeconds)
+                    )
                     startAveragingServices(databaseSessionId)
                     if (firmwareVersion != DeviceItem.FirmwareVersion.V2) {
                         startObservingNewMeasurements(session)

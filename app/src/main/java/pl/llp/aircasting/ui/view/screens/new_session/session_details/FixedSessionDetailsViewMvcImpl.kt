@@ -217,11 +217,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         val sessionTags = getSessionTags()
         val wifiName = selectedNetworkItem?.network?.name ?: ""
         val wifiPassword = selectedNetworkPassword ?: ""
+        val intervalSeconds = getTextInputEditTextValue(R.id.session_interval_input).toIntOrNull()
 
-        val errorMessage = validate(sessionName, wifiName, wifiPassword)
+        val errorMessage = validate(sessionName, wifiName, wifiPassword, intervalSeconds)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(sessionName, sessionTags, wifiName, wifiPassword)
+            notifyAboutSuccess(sessionName, sessionTags, wifiName, wifiPassword, intervalSeconds!!)
         } else {
             notifyAboutValidationError(errorMessage)
         }
@@ -237,7 +238,8 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         sessionName: String,
         sessionTags: ArrayList<String>,
         wifiName: String,
-        wifiPassword: String
+        wifiPassword: String,
+        intervalSeconds: Int,
     ) {
         for (listener in listeners) {
             listener.onSessionDetailsContinueClicked(
@@ -249,7 +251,8 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
                 indoor,
                 streamingMethod,
                 wifiName,
-                wifiPassword
+                wifiPassword,
+                intervalSeconds,
             )
         }
     }
@@ -259,7 +262,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         return ArrayList(string.split(TAGS_SEPARATOR))
     }
 
-    private fun validate(sessionName: String, wifiName: String, wifiPassword: String): String? {
+    private fun validate(sessionName: String, wifiName: String, wifiPassword: String, intervalSeconds: Int?): String? {
         if (sessionName.isEmpty()) {
             sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
@@ -267,6 +270,10 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
 
         if (streamingMethod == Session.StreamingMethod.WIFI && (wifiName.isEmpty() || wifiPassword.isEmpty())) {
             return getString(R.string.session_wifi_credentials_required)
+        }
+
+        if (intervalSeconds == null || intervalSeconds <= 0) {
+            return getString(R.string.session_interval_required)
         }
 
         return null

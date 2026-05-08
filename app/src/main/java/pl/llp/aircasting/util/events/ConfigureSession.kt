@@ -8,4 +8,5 @@ class ConfigureSession(
     val wifiSSID: String?,
     val wifiPassword: String?,
     val fixedSessionConfig: FixedSessionConfig? = null,
+    val intervalSeconds: Int? = null,
 )

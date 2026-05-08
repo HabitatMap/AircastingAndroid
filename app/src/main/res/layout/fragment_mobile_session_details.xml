@@ -81,6 +81,35 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/session_interval"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false"
+            style="@style/Widget.Aircasting.TextInputLayout"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginEnd="@dimen/keyline_8"
+            app:layout_constraintTop_toBottomOf="@id/session_info"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/session_interval_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="60dp"
+                android:hint="@string/session_details_interval_hint"
+                android:inputType="number"
+                android:digits="0123456789"
+                android:maxLength="5"
+                android:text="@string/session_details_mobile_interval_default"
+                android:textAppearance="@style/TextAppearance.Aircasting.TextInput.Text"
+                android:textColor="@color/aircasting_grey_700"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <Button
             android:id="@+id/continue_button"
             android:layout_width="0dp"
@@ -88,7 +117,7 @@
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
             android:text="@string/session_details_continue_button"
-            app:layout_constraintTop_toBottomOf="@+id/session_info"
+            app:layout_constraintTop_toBottomOf="@+id/session_interval"
             app:layout_constraintBottom_toBottomOf="@id/guidelineBottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

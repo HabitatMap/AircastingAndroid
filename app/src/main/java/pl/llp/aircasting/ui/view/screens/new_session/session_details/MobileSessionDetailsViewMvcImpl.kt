@@ -37,11 +37,12 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
+        val intervalSeconds = getTextInputEditTextValue(R.id.session_interval_input).toIntOrNull()
 
-        val errorMessage = validate(sessionName)
+        val errorMessage = validate(sessionName, intervalSeconds)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(sessionName, sessionTags)
+            notifyAboutSuccess(sessionName, sessionTags, intervalSeconds!!)
         } else {
             notifyAboutValidationError(errorMessage)
         }
@@ -53,9 +54,16 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         }
     }
 
-    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>) {
+    private fun notifyAboutSuccess(sessionName: String, sessionTags: ArrayList<String>, intervalSeconds: Int) {
         for (listener in listeners) {
-            listener.onSessionDetailsContinueClicked(sessionUUID, deviceItem, Session.Type.MOBILE, sessionName, sessionTags)
+            listener.onSessionDetailsContinueClicked(
+                sessionUUID,
+                deviceItem,
+                Session.Type.MOBILE,
+                sessionName,
+                sessionTags,
+                intervalSeconds = intervalSeconds,
+            )
         }
     }
 
@@ -64,10 +72,13 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         return ArrayList(string.split(TAGS_SEPARATOR))
     }
 
-    private fun validate(sessionName: String): String? {
+    private fun validate(sessionName: String, intervalSeconds: Int?): String? {
         if (sessionName.isEmpty()) {
             sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
+        }
+        if (intervalSeconds == null || intervalSeconds <= 0) {
+            return getString(R.string.session_interval_required)
         }
 
         return null

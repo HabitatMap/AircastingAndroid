@@ -8,4 +8,5 @@ class StartRecordingEvent(
     val wifiSSID: String?,
     val wifiPassword: String?,
     val firmwareVersion: DeviceItem.FirmwareVersion = DeviceItem.FirmwareVersion.V1,
+    val intervalSeconds: Int? = null,
 )

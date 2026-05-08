@@ -98,8 +98,8 @@ class AirBeamMiniFallbackConnector(
         activeConfigurator.closeConnection()
     }
 
-    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
-        activeConfigurator.configure(session, wifiSSID, wifiPassword, fixedSessionConfig)
+    override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?, intervalSeconds: Int?) {
+        activeConfigurator.configure(session, wifiSSID, wifiPassword, fixedSessionConfig, intervalSeconds)
     }
 
     override fun sendAuth(sessionUUID: String) {

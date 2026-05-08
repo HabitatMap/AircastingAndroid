@@ -69,6 +69,9 @@ class AirBeamMiniV2Configurator(
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
 
+        const val DEFAULT_MOBILE_INTERVAL_SECONDS = 1
+        const val DEFAULT_FIXED_INTERVAL_SECONDS = 60
+
         private const val SYNC_RECORD_SIZE = 8
 
         private const val STATE_IDLE: Int = 0x00
@@ -355,7 +358,7 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: sendAuth called (no-op, V2 has no auth)")
     }
 
-    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?) {
+    override fun configure(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?, intervalSeconds: Int?) {
         if (deviceId == null) deviceId = session.deviceId
         isCurrentSessionFixed = session.isFixed()
         sessionReadyHandled = false
@@ -378,7 +381,7 @@ class AirBeamMiniV2Configurator(
             coroutineScope.launch {
                 val discarded = discardSavedSessionAndAwait()
                 if (discarded) {
-                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
+                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig, intervalSeconds)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed, aborting NewSessionConfig")
                     emitFixedFailureIfApplicable(FixedSessionConfigureOutcome.Reason.WRITE_FAILED)
@@ -389,13 +392,13 @@ class AirBeamMiniV2Configurator(
             coroutineScope.launch {
                 val discarded = discardSavedSessionAndAwait()
                 if (discarded) {
-                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
+                    sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig, intervalSeconds)
                 } else {
                     Log.e(TAG, "V2: DiscardSession failed for mobile session, aborting")
                 }
             }
         } else {
-            sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig)
+            sendNewSessionConfig(session, wifiSSID, wifiPassword, fixedSessionConfig, intervalSeconds)
         }
     }
 
@@ -434,14 +437,17 @@ class AirBeamMiniV2Configurator(
         wifiSSID: String?,
         wifiPassword: String?,
         fixedSessionConfig: FixedSessionConfig?,
+        intervalSeconds: Int?,
     ) {
         val cmd = commandCharacteristic ?: return
         val payload = if (fixedSessionConfig != null && wifiSSID != null && wifiPassword != null) {
             val pm1Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM1"] ?: 0
             val pm25Index = fixedSessionConfig.sensorTypeIds["AirBeamMini-PM2.5"] ?: 1
-            buildFixedSessionPayload(session.uuid, fixedSessionConfig.sessionToken, pm1Index, pm25Index, wifiSSID, wifiPassword)
+            val interval = intervalSeconds ?: DEFAULT_FIXED_INTERVAL_SECONDS
+            buildFixedSessionPayload(session.uuid, fixedSessionConfig.sessionToken, pm1Index, pm25Index, wifiSSID, wifiPassword, interval)
         } else {
-            buildMobileSessionPayload(session.uuid)
+            val interval = intervalSeconds ?: DEFAULT_MOBILE_INTERVAL_SECONDS
+            buildMobileSessionPayload(session.uuid, interval)
         }
 
         commandState = CommandState.WAITING_ACK
@@ -739,12 +745,12 @@ class AirBeamMiniV2Configurator(
 
     // -- Session config payload --
 
-    private fun buildMobileSessionPayload(sessionUuid: String): ByteArray {
+    private fun buildMobileSessionPayload(sessionUuid: String, intervalSeconds: Int): ByteArray {
         // Mobile: 0x13 + 16B_UUID + 2B_interval(u16) + 0x01 = 20 bytes
         val buffer = ByteBuffer.allocate(20).order(ByteOrder.LITTLE_ENDIAN)
         buffer.put(OPCODE_NEW_SESSION)
         buffer.put(uuidToLeBytes(sessionUuid))
-        buffer.putShort(1) // interval_seconds = 1
+        buffer.putShort(intervalSeconds.toShort())
         buffer.put(0x01)   // mobile mode
         return buffer.array()
     }
@@ -766,13 +772,14 @@ class AirBeamMiniV2Configurator(
         pm25Index: Int,
         wifiSSID: String,
         wifiPassword: String,
+        intervalSeconds: Int,
     ): ByteArray {
         val ssidBytes = wifiSSID.toByteArray(Charsets.UTF_8).copyOf(32)
         val passBytes = wifiPassword.toByteArray(Charsets.UTF_8).copyOf(64)
         val buffer = ByteBuffer.allocate(134).order(ByteOrder.LITTLE_ENDIAN)
         buffer.put(OPCODE_NEW_SESSION)
         buffer.put(uuidToLeBytes(sessionUuid))
-        buffer.putShort(60)             // interval_seconds = 60 (fixed session: 1 measurement/minute)
+        buffer.putShort(intervalSeconds.toShort())
         buffer.put(0x00)                // fixed mode (byte 19 — firmware reads this as session_type)
         buffer.put(pm1Index.toByte())
         buffer.put(pm25Index.toByte())
