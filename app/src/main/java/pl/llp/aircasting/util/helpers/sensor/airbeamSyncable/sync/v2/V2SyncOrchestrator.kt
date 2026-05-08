@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
@@ -85,6 +86,12 @@ class V2SyncOrchestrator @Inject constructor(
         keepConnectedAfter: Boolean = false,
         onBeforePicker: (suspend () -> Unit)? = null,
     ): Boolean = coroutineScope {
+        Log.d(
+            TAG,
+            "V2SyncOrchestrator: run start — device=${Build.MANUFACTURER} ${Build.MODEL}, " +
+                    "androidSdk=${Build.VERSION.SDK_INT} (release=${Build.VERSION.RELEASE}), " +
+                    "keepConnectedAfter=$keepConnectedAfter",
+        )
         v2StateRepository.resetReadyToSyncPassword()
         v2StateRepository.setSyncInProgress(true)
         try {

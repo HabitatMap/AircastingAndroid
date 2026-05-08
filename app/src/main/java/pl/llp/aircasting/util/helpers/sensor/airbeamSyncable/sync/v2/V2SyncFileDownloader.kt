@@ -81,15 +81,21 @@ class V2SyncFileDownloader(
         val url = "http://$syncHostIp/sync"
         val request = Request.Builder().url(url).get().build()
 
-        Log.d(TAG, "V2SyncDownloader: GET $url (expectedSize=${expectedSize ?: "unknown"})")
+        Log.d(TAG, "V2SyncDownloader: GET $url (expectedSize=${expectedSize ?: "unknown"}, boundNetwork=$boundNetwork)")
+        val tStart = System.currentTimeMillis()
         val response = try {
             httpClient.newCall(request).execute()
         } catch (e: IOException) {
-            Log.e(TAG, "V2SyncDownloader: HTTP execute failed: ${e.message}")
+            Log.e(TAG, "V2SyncDownloader: HTTP execute failed after ${System.currentTimeMillis() - tStart}ms: ${e.javaClass.simpleName}: ${e.message}")
             return Result(emptyList(), false)
         }
+        Log.d(
+            TAG,
+            "V2SyncDownloader: HTTP ${response.code} ${response.message} in ${System.currentTimeMillis() - tStart}ms — " +
+                    "protocol=${response.protocol} contentLength=${response.body?.contentLength() ?: -1L} " +
+                    "contentType=${response.body?.contentType()} headers=${response.headers}",
+        )
         if (!response.isSuccessful) {
-            Log.e(TAG, "V2SyncDownloader: HTTP ${response.code}")
             response.close()
             return Result(emptyList(), false)
         }
@@ -121,6 +127,9 @@ class V2SyncFileDownloader(
         val data = DataInputStream(counting)
         var httpComplete = true
         var lastReportedPercent = -1
+        var blocksParsed = 0
+        var checksumFailures = 0
+        val parseStart = System.currentTimeMillis()
 
         fun reportProgress() {
             val size = expectedSize ?: return
@@ -138,8 +147,11 @@ class V2SyncFileDownloader(
         try {
             while (true) {
                 val first = readByteOrNull(data) ?: break
+                if (counting.bytesRead == 1L) {
+                    Log.d(TAG, "V2SyncDownloader: first byte received after ${System.currentTimeMillis() - parseStart}ms = ${"%02x".format(first)}")
+                }
                 if (first != MAGIC_AB) {
-                    Log.w(TAG, "V2SyncDownloader: stream desync — expected 0xAB, got ${"%02x".format(first)}; aborting")
+                    Log.w(TAG, "V2SyncDownloader: stream desync — expected 0xAB, got ${"%02x".format(first)} at byte=${counting.bytesRead}; aborting")
                     break
                 }
                 val second = readByteOrNull(data)
@@ -174,7 +186,8 @@ class V2SyncFileDownloader(
                 for (b in recordsBytes) expected = expected xor (b.toInt() and 0xFF)
                 val checksum = checksumByte.toInt() and 0xFF
                 if (expected != checksum) {
-                    Log.w(TAG, "V2SyncDownloader: checksum mismatch (expected=${"%02x".format(expected)}, got=${"%02x".format(checksum)}) — skipping block")
+                    checksumFailures++
+                    Log.w(TAG, "V2SyncDownloader: checksum mismatch (expected=${"%02x".format(expected)}, got=${"%02x".format(checksum)}) at block=$blocksParsed bytes=${counting.bytesRead} — skipping block")
                     reportProgress()
                     continue
                 }
@@ -186,18 +199,22 @@ class V2SyncFileDownloader(
                     val pm25 = readU16Le(recordsBytes, offset + 6)
                     out.add(V2SyncMeasurement(Date(ts * 1000L), pm1, pm25))
                 }
+                blocksParsed++
+                if (blocksParsed <= 3 || blocksParsed % 50 == 0) {
+                    Log.d(TAG, "V2SyncDownloader: parsed block #$blocksParsed (count=$count, bytes=${counting.bytesRead}/${expectedSize ?: -1L}, elapsedMs=${System.currentTimeMillis() - parseStart})")
+                }
                 reportProgress()
             }
         } catch (e: IOException) {
             httpComplete = false
             Log.w(
                 TAG,
-                "V2SyncDownloader: stream aborted (${e.message}) — keeping ${out.size} measurements parsed, " +
-                        "bytes=${counting.bytesRead}/${expectedSize ?: -1L}",
+                "V2SyncDownloader: stream aborted (${e.javaClass.simpleName}: ${e.message}) — keeping ${out.size} measurements parsed, " +
+                        "blocks=$blocksParsed checksumFailures=$checksumFailures bytes=${counting.bytesRead}/${expectedSize ?: -1L} elapsedMs=${System.currentTimeMillis() - parseStart}",
             )
         }
         if (httpComplete) onProgress?.invoke(100)
-        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements, bytes=${counting.bytesRead}, httpComplete=$httpComplete")
+        Log.d(TAG, "V2SyncDownloader: parsed ${out.size} measurements, blocks=$blocksParsed checksumFailures=$checksumFailures bytes=${counting.bytesRead}, httpComplete=$httpComplete, elapsedMs=${System.currentTimeMillis() - parseStart}")
         return Result(out, httpComplete)
     }
 

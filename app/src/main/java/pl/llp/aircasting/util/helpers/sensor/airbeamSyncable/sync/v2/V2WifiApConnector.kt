@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
@@ -129,6 +130,10 @@ class V2WifiApConnector(
         val callback = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
                 Log.d(TAG, "V2WifiAp: SoftAP network available: $network")
+                runCatching {
+                    val lp = connectivityManager.getLinkProperties(network)
+                    Log.d(TAG, "V2WifiAp: linkProperties on available — ${formatLinkProperties(lp)}")
+                }.onFailure { Log.w(TAG, "V2WifiAp: linkProperties read failed: ${it.message}") }
                 // Caller (`withApConnection`) handles process binding for the HTTP window
                 // so Android 16 doesn't tear down the ephemeral no-INTERNET network for
                 // "no observed traffic" while we wait on ESP. ConnectivityReceiver is
@@ -148,6 +153,14 @@ class V2WifiApConnector(
 
             override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
                 Log.d(TAG, "V2WifiAp: capabilities changed on $network: $caps")
+            }
+
+            override fun onLinkPropertiesChanged(network: Network, lp: LinkProperties) {
+                Log.d(TAG, "V2WifiAp: linkProperties changed on $network — ${formatLinkProperties(lp)}")
+            }
+
+            override fun onBlockedStatusChanged(network: Network, blocked: Boolean) {
+                Log.d(TAG, "V2WifiAp: blockedStatus changed on $network — blocked=$blocked")
             }
         }
         modernCallback = callback
@@ -184,6 +197,16 @@ class V2WifiApConnector(
                 )
             }
         }
+    }
+
+    private fun formatLinkProperties(lp: LinkProperties?): String {
+        if (lp == null) return "null"
+        val addresses = lp.linkAddresses.joinToString(",") { it.address.hostAddress ?: "?" }
+        val routes = lp.routes.joinToString(",") {
+            "${it.destination}->${it.gateway?.hostAddress ?: "?"}"
+        }
+        val dns = lp.dnsServers.joinToString(",") { it.hostAddress ?: "?" }
+        return "iface=${lp.interfaceName} addrs=[$addresses] routes=[$routes] dns=[$dns]"
     }
 
     private fun disconnect() {
