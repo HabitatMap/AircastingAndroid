@@ -12,6 +12,7 @@ import android.net.wifi.WifiManager
 import android.net.wifi.WifiNetworkSpecifier
 import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -94,6 +95,7 @@ class V2WifiApConnector(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingPermission")
     private suspend fun connectModern(password: String, scope: kotlinx.coroutines.CoroutineScope): Network? {
         val pwHex = password.toByteArray(Charsets.UTF_8).joinToString("") { "%02x".format(it) }
