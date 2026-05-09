@@ -27,6 +27,8 @@ import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Measurement
 import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.events.NewMeasurementEvent
+import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
@@ -38,6 +40,7 @@ import java.util.UUID
 class AirBeamMiniV2Configurator(
     applicationContext: Context,
     private val errorHandler: ErrorHandler,
+    private val settings: Settings,
     private val coroutineScope: CoroutineScope,
     private val batteryLevelFlow: MutableSharedFlow<Int>,
     private val sessionsRepository: SessionsRepository,
@@ -837,9 +840,10 @@ class AirBeamMiniV2Configurator(
         }
 
         val time = Date(timestamp * 1000)
+        val location = Session.Location.get(LocationHelper.lastLocation(), settings.areMapsDisabled())
         coroutineScope.launch {
             try {
-                saveLiveMeasurementToDb(devId, listOf(Measurement(pm1.toDouble(), time)), listOf(Measurement(pm25.toDouble(), time)))
+                saveLiveMeasurementToDb(devId, listOf(Measurement(pm1.toDouble(), time, location.latitude, location.longitude)), listOf(Measurement(pm25.toDouble(), time, location.latitude, location.longitude)))
             } catch (e: Exception) {
                 Log.e(TAG, "V2: saveLiveMeasurementToDb EXCEPTION", e)
             }
@@ -956,14 +960,16 @@ class AirBeamMiniV2Configurator(
         val pm1Measurements = mutableListOf<Measurement>()
         val pm25Measurements = mutableListOf<Measurement>()
 
+        val location = Session.Location.get(LocationHelper.lastLocation(), settings.areMapsDisabled())
+
         for (i in 0 until count) {
             val timestamp = buffer.getInt().toLong() and 0xFFFFFFFFL
             val pm1 = buffer.getShort().toInt() and 0xFFFF
             val pm25 = buffer.getShort().toInt() and 0xFFFF
             val time = Date(timestamp * 1000)
 
-            pm1Measurements.add(Measurement(pm1.toDouble(), time))
-            pm25Measurements.add(Measurement(pm25.toDouble(), time))
+            pm1Measurements.add(Measurement(pm1.toDouble(), time, location.latitude, location.longitude))
+            pm25Measurements.add(Measurement(pm25.toDouble(), time, location.latitude, location.longitude))
         }
 
         Log.d(TAG, "V2: Sync chunk parsed: $count records, first ts=${pm1Measurements.firstOrNull()?.time}")

@@ -65,6 +65,18 @@
             app:tint="@color/background_main"
             tools:visibility="visible" />
 
+        <!-- Sync Button (hidden by default) -->
+        <Button
+            android:id="@+id/disconnected_view_airbeam_syncable_sync_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/disconnected_view_airbeamSyncable_sync_button"
+            android:layout_marginTop="@dimen/keyline_1"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
         <Button
             android:id="@+id/disconnected_view_bluetooth_device_finish_button"
             android:layout_width="match_parent"
@@ -73,7 +85,7 @@
             android:fontFamily="@font/muli_bold"
             android:textSize="@dimen/button_text_size"
             android:text="@string/disconnected_view_bluetooth_device_finish_button"
-            app:layout_constraintTop_toBottomOf="@id/disconnected_view_bluetooth_device_reconnect_button"
+            app:layout_constraintTop_toBottomOf="@id/disconnected_view_airbeam_syncable_sync_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

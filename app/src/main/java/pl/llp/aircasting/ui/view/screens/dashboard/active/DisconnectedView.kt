@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_b
 import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_finish_button
 import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_header
 import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_bluetooth_device_reconnect_button
+import kotlinx.android.synthetic.main.disconnected_view.view.disconnected_view_airbeam_syncable_sync_button
 import kotlinx.android.synthetic.main.disconnected_view.view.reconnecting_loader
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
@@ -54,6 +55,7 @@ class DisconnectedView(
     private val mHeader: TextView?
     private val mDescription: TextView?
     private val mPrimaryButton: Button?
+    private val mSyncButton: Button?
     private val mSecondaryButton: Button?
     private val mReconnectingLoader: ImageView?
 
@@ -76,6 +78,7 @@ class DisconnectedView(
         mHeader = rootView?.disconnected_view_bluetooth_device_header
         mDescription = rootView?.disconnected_view_bluetooth_device_description
         mPrimaryButton = rootView?.disconnected_view_bluetooth_device_reconnect_button
+        mSyncButton = rootView?.disconnected_view_airbeam_syncable_sync_button
         mSecondaryButton = rootView?.disconnected_view_bluetooth_device_finish_button
         mReconnectingLoader = rootView?.reconnecting_loader
 
@@ -113,6 +116,7 @@ class DisconnectedView(
     }
 
     private fun bindBluetoothDevice(session: Session) {
+        mSyncButton?.visibility = View.GONE
         mHeader?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_header)
         mDescription?.text =
             mContext.getString(R.string.disconnected_view_bluetooth_device_description)
@@ -143,13 +147,29 @@ class DisconnectedView(
     }
 
     private fun bindSyncableAirBeam(session: Session) {
+        mSyncButton?.visibility = View.VISIBLE
         mHeader?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_header)
         mDescription?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_description)
-        mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_sync_button)
+        mPrimaryButton?.text = mContext.getString(R.string.disconnected_view_bluetooth_device_reconnect_button)
+        mSyncButton?.text = mContext.getString(R.string.disconnected_view_airbeamSyncable_sync_button)
         mSecondaryButton?.text =
             mContext.getString(R.string.disconnected_view_airbeamSyncable_finish_button)
 
         mPrimaryButton?.setOnClickListener {
+            showReconnectingLoader()
+            airBeamReconnector.reconnect(
+                session,
+                deviceItem = null,
+                errorCallback = {
+                    mErrorHandler.showError(R.string.errors_airbeam_connection_failed)
+                },
+                finallyCallback = {
+                    lifecycleScope?.launch { hideReconnectingLoader() }
+                },
+            )
+        }
+
+        mSyncButton?.setOnClickListener {
             FinishAndSyncSessionConfirmationDialog(
                 mSupportFragmentManager,
                 session
@@ -162,8 +182,6 @@ class DisconnectedView(
                 FinishSessionConfirmationDialog(mSupportFragmentManager, session).show()
             }
         }
-
-        moveLoaderToTopLeft()
     }
 
     private fun moveLoaderToTopLeft() {

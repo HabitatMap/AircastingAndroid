@@ -57,6 +57,7 @@ open class SyncableAirBeamConfiguratorFactory(
     open fun createV2(): AirBeamMiniV2Configurator = AirBeamMiniV2Configurator(
         applicationContext,
         mErrorHandler,
+        mSettings,
         coroutineScope,
         batteryLevelFlow,
         sessionsRepository,
