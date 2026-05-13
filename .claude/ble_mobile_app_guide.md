@@ -129,6 +129,7 @@ All replies to app commands arrive as notification bytes on the Response charact
   - `0x03`: StorageHasMeasurements
   - `0x04`: ClearStorageFailed / SyncStorageFailed
   - `0x05`: **InvalidWifiCredentials** — sent when `NewSessionConfig` WiFi connect fails because the credentials themselves are wrong (distinct from `0x02`). App should prompt user to re-enter SSID/password.
+  - `0x06`: **SyncFailed** — emitted by the BLE manual sync flow (`StartBleSync 0x16`) when an indication on the Sync characteristic fails to ACK. Firmware stops the loop; app surfaces a sync-failure dialog and leaves records on the device for a retry.
 - `0x22` **Ready**: Procedure complete (e.g., WiFi connected, sync finished, storage cleared). For a running fixed session, firmware also emits `Ready` after **every successful measurement POST** while BLE is connected — i.e. it doubles as a per-measurement heartbeat. The app must treat repeated `Ready` as idempotent: the first one completes the configure flow / kicks off setup work; subsequent ones are heartbeat-only and must not re-trigger setup.
 - `0x23` **SensorInfo**: Response to `GetSensors`. Bytes after `0x23` = ASCII string `"PM1,μg/m3;PM2.5,μg/m3"`.
 - `0x24` **SyncInfo**: Response to `StartSync`. Bytes after `0x24` = `32B_WiFi_SSID_string` + `64B_WiFi_Password_string` (null-padded).
@@ -159,13 +160,16 @@ All numerical values encoded as **Little Endian**.
 
 **Android wiring:** `AirBeamConnector.onMessageEvent(StopRecordingEvent)` calls `discardSession()` then `disconnect()`. `AirBeamMiniV2Configurator.discardSession()` overrides the interface default and writes `0x11` synchronously (blocking up to 2s on the BLE write callback) so the command lands before `close()` tears down GATT. Required for both mobile and fixed V2 sessions — without it the device stays in `Running` (mobile) or auto-resumes via WiFi on reconnect (fixed, see §6b).
 
-### C. `StartSync` (OpCode `0x12`)
+### C. `StartWiFiSync` (OpCode `0x12`) — LEGACY (WiFi-SoftAP path, currently dormant)
 
 **Payload:** Single byte `0x12`.
-**Context:** Initiate the **manual file-sync** flow on the `maunal-sync` firmware branch.
+**Context:** Legacy WiFi-SoftAP manual sync. Renamed from `StartSync` to `StartWiFiSync` in
+firmware once the BLE path (§C-BLE below, OpCode `0x16`) shipped. The Android app no longer
+sends `0x12` — `V2SyncOrchestrator` + `V2WifiApConnector` + `V2SyncFileDownloader` remain in
+the codebase but are not invoked. Documentation kept for reference / future revival.
 Stops the session if running. **This is distinct from the auto-streaming on the Sync
 characteristic that fires during reconnect of an active mobile session (§9)** — those
-do not require `StartSync`.
+do not require `StartWiFiSync`.
 
 Sequence:
 1. App writes `0x12` to Command. Device replies `Ack (0x20)` on Response.
@@ -200,6 +204,42 @@ location).
 
 **Note:** `SyncInfo (0x24)` is NOT emitted by the manual-sync flow on this branch — the
 SoftAP password is delivered via the new `Status::ReadyToSync (0x03)` notification.
+
+### C-BLE. `StartBleSync` (OpCode `0x16`) — current manual-sync path
+
+**Payload:** Single byte `0x16`.
+**Context:** BLE-only manual sync. Replaces the WiFi-SoftAP flow on the Android client.
+Firmware commits: `e1a03b9415a8a4e70ee24acb824c1361f526d53c` and `c4dd9e62d5df599601d4edf57e5b8f5386440564`.
+
+Sequence:
+1. App writes `0x16` to Command. Device replies `Ack (0x20)` on Response.
+2. Device notifies Status `ReadyToSync (0x03)` with `file_size_u64_LE` + empty password.
+   (Password byte field is present but zero-length on the BLE path — only `file_size` is
+   meaningful, and the app uses it to drive the same 0..100% progress UI shared with the
+   legacy WiFi path.)
+3. Firmware sleeps ~100 ms to let the app finalize subscription state.
+4. Firmware streams stored records on the **Sync characteristic** (indicate). Indication
+   payload matches the reconnect-time auto-sync format: `[count_u8, 2B padding,
+   count × 8B records]` where each record is `ts_u32_LE + pm1_u16_LE + pm25_u16_LE`.
+   Up to 30 records per indication (`Vec::with_capacity(30)` on firmware side).
+5. When all records have been sent, firmware sends `Ready (0x22)` on Response, then
+   auto-clears storage **and** the saved session-config in its main loop's Stop handler.
+   **No `DiscardSession` is needed from the app afterwards.**
+6. Failure: `Nack (0x06 SyncFailed)` if an indication does not ACK, or
+   `Nack (0x04 ClearStorageFailed)` if the post-sync storage wipe fails. Firmware retains
+   records on Nack so the app can retry.
+
+**Android wiring:**
+- New opcode `OPCODE_START_BLE_SYNC = 0x16` on `AirBeamMiniV2Configurator`.
+- New error code `NACK_SYNC_FAILED = 0x06`.
+- `AirBeamMiniV2Configurator.parseSyncChunk` routes indications to a registered
+  `manualSyncChunkHandler` while a manual BLE sync is in flight — bypasses the default
+  reconnect-time DB save path so the orchestrator can route mobile vs fixed records.
+- `V2BleSyncOrchestrator` is the new orchestrator wired into `v2StateRepository.startSync`
+  and `triggerSDCardDownload()`. No BLE disconnect/reconnect, no SoftAP, no
+  `DiscardSession` — the firmware handles cleanup itself.
+- `keepConnectedAfter` and `onBeforePicker` params on the orchestrator are no-ops, kept
+  only for signature compatibility with the dormant `V2SyncOrchestrator`.
 
 ### D. `NewSessionConfig` (OpCode `0x13`)
 

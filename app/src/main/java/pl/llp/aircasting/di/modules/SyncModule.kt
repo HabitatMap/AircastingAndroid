@@ -17,6 +17,7 @@ import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.Reques
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.SyncableAirBeamConfiguratorFactory
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.reader.SyncableAirBeamReader
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.fileService.SDCardFileServiceProvider
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 
@@ -40,6 +41,7 @@ object SyncModule {
         activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
         v2StateRepository: AirBeamMiniV2StateRepository,
         v2SyncOrchestrator: V2SyncOrchestrator,
+        v2BleSyncOrchestrator: V2BleSyncOrchestrator,
     ): SyncableAirBeamConfiguratorFactory = SyncableAirBeamConfiguratorFactory(
         applicationContext,
         mErrorHandler,
@@ -56,5 +58,6 @@ object SyncModule {
         activeSessionMeasurementsRepository,
         v2StateRepository,
         v2SyncOrchestrator,
+        v2BleSyncOrchestrator,
     )
 }

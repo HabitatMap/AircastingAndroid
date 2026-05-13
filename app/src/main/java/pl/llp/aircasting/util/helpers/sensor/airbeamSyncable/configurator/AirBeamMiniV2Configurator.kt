@@ -29,6 +29,8 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.helpers.location.LocationHelper
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncMeasurement
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 import org.greenrobot.eventbus.EventBus
 import kotlin.math.abs
@@ -49,6 +51,7 @@ class AirBeamMiniV2Configurator(
     private val activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
     private val v2SyncOrchestrator: V2SyncOrchestrator,
+    private val v2BleSyncOrchestrator: V2BleSyncOrchestrator,
 ) : BleManager(applicationContext), AirBeamBleConfigurator {
 
     companion object {
@@ -68,9 +71,15 @@ class AirBeamMiniV2Configurator(
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_DISCARD_SESSION: Byte = 0x11
+        // Legacy WiFi manual sync — firmware renamed this to `StartWiFiSync` once the BLE
+        // sync path (0x16) shipped. Kept for the dormant WiFi orchestrator code path.
         private const val OPCODE_START_SYNC: Byte = 0x12
         private const val OPCODE_NEW_SESSION: Byte = 0x13
         private const val OPCODE_SET_TIME: Byte = 0x15
+        // BLE-only manual sync: firmware streams stored records on the Sync characteristic
+        // (same indication format as reconnect-time auto-sync), then sends Ready (0x22) on
+        // the Response characteristic, then auto-clears storage + session config.
+        private const val OPCODE_START_BLE_SYNC: Byte = 0x16
 
         const val DEFAULT_MOBILE_INTERVAL_SECONDS = 1
         const val DEFAULT_FIXED_INTERVAL_SECONDS = 60
@@ -90,6 +99,7 @@ class AirBeamMiniV2Configurator(
         private const val NACK_STORAGE_HAS_MEASUREMENTS: Int = 0x03
         private const val NACK_INVALID_CONFIG: Int = 0x02
         private const val NACK_INVALID_WIFI_CREDENTIALS: Int = 0x05
+        private const val NACK_SYNC_FAILED: Int = 0x06
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
     }
@@ -133,6 +143,18 @@ class AirBeamMiniV2Configurator(
         private set
     var hasSavedMeasurements: Boolean = false
         private set
+
+    /**
+     * When set, sync-characteristic indications are routed here instead of being saved
+     * directly to the active mobile session in the DB. Used by [V2BleSyncOrchestrator] to
+     * collect stored records during a manual BLE sync (StartBleSync 0x16) so the orchestrator
+     * can route them to the correct destination (mobile DB insert / fixed-session POST).
+     */
+    private var manualSyncChunkHandler: ((List<V2SyncMeasurement>) -> Unit)? = null
+
+    fun setManualSyncChunkHandler(handler: ((List<V2SyncMeasurement>) -> Unit)?) {
+        manualSyncChunkHandler = handler
+    }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
         val service = gatt.getService(SERVICE_UUID) ?: return false
@@ -227,9 +249,11 @@ class AirBeamMiniV2Configurator(
 
         // Manual sync flow used by `SyncBeforeNewV2SessionDialog` and the SD-sync entry point.
         // Catch here so an orchestrator failure can never crash the calling Activity scope.
+        // Now BLE-based (StartBleSync 0x16); the legacy WiFi orchestrator [V2SyncOrchestrator]
+        // is kept in the codebase but no longer invoked.
         v2StateRepository.setSyncCallback { keepConnectedAfter, onBeforePicker ->
             try {
-                v2SyncOrchestrator.run(this, keepConnectedAfter, onBeforePicker)
+                v2BleSyncOrchestrator.run(this, keepConnectedAfter, onBeforePicker)
             } catch (e: Exception) {
                 Log.e(TAG, "V2: sync orchestrator threw", e)
                 false
@@ -514,12 +538,12 @@ class AirBeamMiniV2Configurator(
     }
 
     override fun triggerSDCardDownload() {
-        // V2 has no SD card — the SD-sync entry point reuses the manual file-sync flow.
+        // V2 has no SD card — the SD-sync entry point reuses the manual BLE-sync flow.
         // Run on the BLE coroutine scope so the suspending orchestrator can await BLE responses.
-        Log.d(TAG, "V2: triggerSDCardDownload routing to V2 manual sync orchestrator")
+        Log.d(TAG, "V2: triggerSDCardDownload routing to V2 BLE manual sync orchestrator")
         coroutineScope.launch {
             try {
-                val ok = v2SyncOrchestrator.run(this@AirBeamMiniV2Configurator)
+                val ok = v2BleSyncOrchestrator.run(this@AirBeamMiniV2Configurator)
                 Log.d(TAG, "V2: triggerSDCardDownload orchestrator finished ok=$ok")
             } catch (e: Exception) {
                 Log.e(TAG, "V2: triggerSDCardDownload orchestrator threw", e)
@@ -928,6 +952,30 @@ class AirBeamMiniV2Configurator(
     suspend fun sendStartSyncManualAndAwaitDone(): Boolean = sendStartSyncAndAwait()
 
     /**
+     * Send `StartBleSync (0x16)` and await the firmware-driven BLE sync flow:
+     * Ack (0x20) → ReadyToSync (Status 0x03, file_size only; password ignored on BLE path) →
+     * batched indications on Sync characteristic → Ready (0x22) on Response.
+     * Returns true on Ready, false on Nack (0x06 SyncFailed / others) or write failure.
+     */
+    suspend fun sendStartBleSyncAndAwaitDone(): Boolean {
+        val cmd = commandCharacteristic ?: return false
+        commandState = CommandState.WAITING_ACK
+        val deferred = CompletableDeferred<Boolean>()
+        sessionReadyDeferred = deferred
+
+        writeCharacteristic(cmd, byteArrayOf(OPCODE_START_BLE_SYNC), WRITE_TYPE_DEFAULT)
+            .fail { _, status ->
+                Log.e(TAG, "V2: StartBleSync write failed, status=$status")
+                commandState = CommandState.IDLE
+                deferred.complete(false)
+            }
+            .enqueue()
+
+        Log.d(TAG, "V2: StartBleSync sent")
+        return deferred.await()
+    }
+
+    /**
      * After-the-fact wrapper exposed for the V2 sync orchestrator: write 0x11 (DiscardSession)
      * and block on the resulting Ack→Ready cycle. Returns true on Ready.
      */
@@ -950,6 +998,22 @@ class AirBeamMiniV2Configurator(
         val expectedSize = 3 + count * SYNC_RECORD_SIZE
         if (bytes.size < expectedSize) {
             Log.w(TAG, "V2: Sync chunk too short for $count records: ${bytes.size} < $expectedSize bytes")
+            return
+        }
+
+        // Manual BLE sync (StartBleSync 0x16): collect records for the orchestrator and
+        // skip the direct-to-DB save path used by reconnect-time auto-sync.
+        val manualHandler = manualSyncChunkHandler
+        if (manualHandler != null) {
+            val records = ArrayList<V2SyncMeasurement>(count)
+            for (i in 0 until count) {
+                val ts = buffer.getInt().toLong() and 0xFFFFFFFFL
+                val pm1 = buffer.getShort().toInt() and 0xFFFF
+                val pm25 = buffer.getShort().toInt() and 0xFFFF
+                records.add(V2SyncMeasurement(Date(ts * 1000), pm1, pm25))
+            }
+            Log.d(TAG, "V2: Sync chunk routed to manual handler ($count records)")
+            manualHandler(records)
             return
         }
 
