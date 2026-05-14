@@ -1,11 +1,12 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.util.Log
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
+import java.util.concurrent.atomic.AtomicLong
 import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.api.services.SessionsSyncService
 import pl.llp.aircasting.data.api.services.V2FixedMeasurementsUploader
@@ -74,37 +75,44 @@ class V2BleSyncOrchestrator @Inject constructor(
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId
         val collected = ArrayList<V2SyncMeasurement>()
-        var receivedBytes = 0L
-        var expectedSize = -1L
+        // AtomicLong so the BLE callback thread sees writes from the file-size collector
+        // coroutine without word-tearing on Long reads.
+        val receivedBytes = AtomicLong(0L)
+        val expectedSize = AtomicLong(-1L)
 
         configurator.setManualSyncChunkHandler { chunk ->
             collected.addAll(chunk)
             // Approximate firmware on-disk block size so progress tracks file_size:
             // each stored block = 4 header bytes (`AB BA count_u8 + ?`) + 8 × count + xor.
-            receivedBytes += 5L + 8L * chunk.size
-            val size = expectedSize
+            val received = receivedBytes.addAndGet(5L + 8L * chunk.size)
+            val size = expectedSize.get()
             if (size > 0) {
-                val pct = ((receivedBytes * 100L) / size).toInt().coerceIn(0, 99)
+                val pct = ((received * 100L) / size).toInt().coerceIn(0, 99)
                 v2StateRepository.setSyncProgress(pct)
             }
         }
 
-        try {
-            // Read file_size from ReadyToSync (Status 0x03). Race-safe: we register the
-            // collector first so any sync indications that land before ReadyToSync still
-            // count toward progress (the percentage just stays at 0 until expectedSize
-            // resolves, which is fine).
-            val fileSizeJob = async {
-                withTimeoutOrNull(READY_TO_SYNC_TIMEOUT_MS) {
-                    v2StateRepository.readyToSyncFileSize.first()
-                }
+        // Subscribe to file_size in parallel: firmware sends ReadyToSync (Status 0x03)
+        // ~100ms before the first Sync indication, so this resolves long before
+        // sendStartBleSyncAndAwaitDone() returns (it awaits the post-stream Ready 0x22).
+        // Without this, expectedSize stayed -1 for the entire stream and progress
+        // never moved off 0%.
+        val fileSizeJob = launch {
+            val size = withTimeoutOrNull(READY_TO_SYNC_TIMEOUT_MS) {
+                v2StateRepository.readyToSyncFileSize.first()
+            } ?: v2StateRepository.readyToSyncFileSize.replayCache.firstOrNull() ?: -1L
+            expectedSize.set(size)
+            if (size > 0) {
+                val pct = ((receivedBytes.get() * 100L) / size).toInt().coerceIn(0, 99)
+                v2StateRepository.setSyncProgress(pct)
             }
+            Log.d(TAG, "V2BleSyncOrchestrator: ReadyToSync file_size=$size")
+        }
 
+        try {
             val done = configurator.sendStartBleSyncAndAwaitDone()
-            expectedSize = fileSizeJob.await()
-                ?: v2StateRepository.readyToSyncFileSize.replayCache.firstOrNull()
-                ?: -1L
-            Log.d(TAG, "V2BleSyncOrchestrator: command done=$done, expectedSize=$expectedSize, received=${collected.size}")
+            fileSizeJob.join()
+            Log.d(TAG, "V2BleSyncOrchestrator: command done=$done, expectedSize=${expectedSize.get()}, received=${collected.size}")
 
             if (!done) {
                 Log.e(TAG, "V2BleSyncOrchestrator: BLE sync did not complete (Nack or timeout)")

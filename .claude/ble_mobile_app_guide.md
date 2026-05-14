@@ -241,6 +241,19 @@ Sequence:
 - `keepConnectedAfter` and `onBeforePicker` params on the orchestrator are no-ops, kept
   only for signature compatibility with the dormant `V2SyncOrchestrator`.
 
+**Progress UI:** firmware emits the ReadyToSync (Status 0x03) notification ~100 ms
+*before* the first Sync indication and uses the on-disk LittleFS file size
+(`std::fs::metadata(FILE_PATH).len()`, `.unwrap_or(1)` on metadata failure) as
+`file_size`. Each on-disk storage block is framed as
+`[0xAB, 0xBA, count_u8, count × 8B records, xor_u8]` = `5 + 8 × count` bytes, so the
+orchestrator increments `receivedBytes += 5 + 8 × chunk.size` per indication and
+computes `pct = receivedBytes * 100 / file_size` (clamped 0..99 mid-stream, set to
+100 after Ready 0x22). **Critical**: the file-size collector must run in a parallel
+`launch` so `expectedSize` is updated as soon as ReadyToSync lands — `awaiting` it
+after `sendStartBleSyncAndAwaitDone()` is too late (that call only resolves on the
+post-stream `Ready 0x22`, by which time every chunk has already arrived with
+`expectedSize == -1` and progress stays at 0%).
+
 ### D. `NewSessionConfig` (OpCode `0x13`)
 
 **Payload (Mobile):** `0x13` + `16B_UUID` + `2B_interval_seconds(u16)` + `0x01`
