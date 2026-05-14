@@ -9,6 +9,7 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
+import java.util.TimeZone
 import javax.inject.Inject
 
 @UserSessionScope
@@ -16,6 +17,7 @@ class SessionDownloadService @Inject constructor(
     @Authenticated private val apiService: ApiService,
     private val noteResponseParser: NoteResponseParser,
 ) {
+    private val utc = TimeZone.getTimeZone("UTC")
 
     suspend fun download(
         uuid: String,
@@ -23,7 +25,7 @@ class SessionDownloadService @Inject constructor(
 
     private fun sessionFromResponse(sessionResponse: SessionResponse): Session {
         val startTime =
-            DateConverter.fromString(sessionResponse.start_time) ?: throw UnexpectedAPIError()
+            DateConverter.fromString(sessionResponse.start_time, utc) ?: throw UnexpectedAPIError()
 
         val streams = sessionResponse.streams.values.map { stream ->
             MeasurementStream(stream)
@@ -38,7 +40,7 @@ class SessionDownloadService @Inject constructor(
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
-            DateConverter.fromString(sessionResponse.end_time),
+            DateConverter.fromString(sessionResponse.end_time, utc),
             sessionResponse.version,
             sessionResponse.deleted,
             null,

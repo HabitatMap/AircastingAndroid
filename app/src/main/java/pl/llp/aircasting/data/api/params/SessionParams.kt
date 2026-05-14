@@ -5,6 +5,8 @@ import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.util.DateConverter
 import java.util.*
 
+private val UTC = TimeZone.getTimeZone("UTC")
+
 class SessionParams(session: Session) {
     companion object {
         const val MOBILE_SESSION_TYPE = "MobileSession"
@@ -37,8 +39,8 @@ class SessionParams(session: Session) {
         }
         this.contribute = session.contribute
         this.title = session.name
-        this.start_time = DateConverter.toDateString(session.startTime)
-        this.end_time = DateConverter.toDateString(session.endTime ?: Date())
+        this.start_time = DateConverter.toDateString(session.startTime, UTC)
+        this.end_time = DateConverter.toDateString(session.endTime ?: Date(), UTC)
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor

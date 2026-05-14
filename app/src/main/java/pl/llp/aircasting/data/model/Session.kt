@@ -15,7 +15,10 @@ import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.helpers.sensor.microphone.MicrophoneDeviceItem
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.UUID
+
+private val UTC = TimeZone.getTimeZone("UTC")
 
 const val TAGS_SEPARATOR = " "
 /**
@@ -103,8 +106,8 @@ open class Session(
         mName = sessionInRegion.title,
         mType = Type.FIXED,
         username = sessionInRegion.username,
-        endTime = DateConverter.fromString(sessionInRegion.endTimeLocal),
-        mStartTime = DateConverter.fromString(sessionInRegion.startTimeLocal) ?: Date(),
+        endTime = DateConverter.fromString(sessionInRegion.endTimeLocal, UTC),
+        mStartTime = DateConverter.fromString(sessionInRegion.startTimeLocal, UTC) ?: Date(),
         mIndoor = sessionInRegion.isIndoor,
         deviceId = null,
         deviceType = null,
