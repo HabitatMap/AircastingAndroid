@@ -217,12 +217,12 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         val sessionTags = getSessionTags()
         val wifiName = selectedNetworkItem?.network?.name ?: ""
         val wifiPassword = selectedNetworkPassword ?: ""
-        val intervalSeconds = getTextInputEditTextValue(R.id.session_interval_input).toIntOrNull()
+        val intervalSeconds = FIXED_SESSION_DEFAULT_INTERVAL_SECONDS
 
-        val errorMessage = validate(sessionName, wifiName, wifiPassword, intervalSeconds)
+        val errorMessage = validate(sessionName, wifiName, wifiPassword)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(sessionName, sessionTags, wifiName, wifiPassword, intervalSeconds!!)
+            notifyAboutSuccess(sessionName, sessionTags, wifiName, wifiPassword, intervalSeconds)
         } else {
             notifyAboutValidationError(errorMessage)
         }
@@ -262,7 +262,7 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
         return ArrayList(string.split(TAGS_SEPARATOR))
     }
 
-    private fun validate(sessionName: String, wifiName: String, wifiPassword: String, intervalSeconds: Int?): String? {
+    private fun validate(sessionName: String, wifiName: String, wifiPassword: String): String? {
         if (sessionName.isEmpty()) {
             sessionNameInputLayout?.error = " "
             return getString(R.string.session_name_required)
@@ -272,11 +272,11 @@ class FixedSessionDetailsViewMvcImpl: BaseObservableViewMvc<SessionDetailsViewMv
             return getString(R.string.session_wifi_credentials_required)
         }
 
-        if (intervalSeconds == null || intervalSeconds <= 0) {
-            return getString(R.string.session_interval_required)
-        }
-
         return null
+    }
+
+    companion object {
+        private const val FIXED_SESSION_DEFAULT_INTERVAL_SECONDS = 60
     }
 
     override fun onNetworkPasswordProvided(password: String) {
