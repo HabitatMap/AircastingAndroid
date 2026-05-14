@@ -55,6 +55,52 @@ class V2BleSyncOrchestrator @Inject constructor(
         // Tail delay after Ready (0x22) so any in-flight Sync characteristic indications
         // still queued on the Android BLE dispatcher land before we unhook the collector.
         private const val POST_READY_DRAIN_MS = 250L
+
+        /**
+         * On-disk LittleFS bytes-per-second throughput for the BLE manual-sync stream,
+         * used to estimate sync duration from `file_size` before the user starts a sync.
+         *
+         * Placeholder — derive from real-device logs (search logcat for
+         * `V2BleSyncRate:` after a manual sync; line includes `bytesPerSec=...`).
+         * Prefer a conservative (lower) value so the UI over-estimates rather than
+         * under-estimates.
+         */
+        private const val ESTIMATED_BYTES_PER_SECOND = 1500L
+
+        /**
+         * Estimate manual-sync duration in seconds from the `file_size` the firmware
+         * reports in `Status::ReadyToSync (0x03)`. UI may call this after a Status
+         * read to show an ETA on the sync confirmation screen.
+         *
+         * Returns 0 for non-positive sizes (empty storage / metadata failure).
+         */
+        fun estimateSyncSeconds(fileSizeBytes: Long): Long {
+            if (fileSizeBytes <= 0L) return 0L
+            return (fileSizeBytes + ESTIMATED_BYTES_PER_SECOND - 1) / ESTIMATED_BYTES_PER_SECOND
+        }
+
+        private fun logSyncRate(
+            startMs: Long,
+            endMs: Long,
+            fileSize: Long,
+            recordCount: Int,
+            receivedBytes: Long,
+        ) {
+            if (startMs <= 0L) {
+                Log.d(TAG, "V2BleSyncRate: skipped — ReadyToSync timestamp missing (file_size never arrived?)")
+                return
+            }
+            val elapsedMs = (endMs - startMs).coerceAtLeast(1L)
+            val bytesPerSec = if (fileSize > 0) fileSize * 1000L / elapsedMs else -1L
+            val recordsPerSec = recordCount.toLong() * 1000L / elapsedMs
+            val streamBytesPerSec = receivedBytes * 1000L / elapsedMs
+            Log.d(
+                TAG,
+                "V2BleSyncRate: elapsedMs=$elapsedMs fileSize=$fileSize records=$recordCount " +
+                        "bytesPerSec=$bytesPerSec recordsPerSec=$recordsPerSec " +
+                        "streamBytesPerSec=$streamBytesPerSec",
+            )
+        }
     }
 
     /**
@@ -97,10 +143,16 @@ class V2BleSyncOrchestrator @Inject constructor(
         // sendStartBleSyncAndAwaitDone() returns (it awaits the post-stream Ready 0x22).
         // Without this, expectedSize stayed -1 for the entire stream and progress
         // never moved off 0%.
+        // Captured when ReadyToSync (Status 0x03) lands — i.e. the moment FW is about to
+        // start streaming (it sleeps 100ms after Status then starts indications). Pairs
+        // with the post-Ready end timestamp below to derive an end-to-end transfer rate.
+        val streamStartMs = AtomicLong(-1L)
+
         val fileSizeJob = launch {
             val size = withTimeoutOrNull(READY_TO_SYNC_TIMEOUT_MS) {
                 v2StateRepository.readyToSyncFileSize.first()
             } ?: v2StateRepository.readyToSyncFileSize.replayCache.firstOrNull() ?: -1L
+            streamStartMs.set(System.currentTimeMillis())
             expectedSize.set(size)
             if (size > 0) {
                 val pct = ((receivedBytes.get() * 100L) / size).toInt().coerceIn(0, 99)
@@ -111,6 +163,7 @@ class V2BleSyncOrchestrator @Inject constructor(
 
         try {
             val done = configurator.sendStartBleSyncAndAwaitDone()
+            val streamEndMs = System.currentTimeMillis()
             fileSizeJob.join()
             Log.d(TAG, "V2BleSyncOrchestrator: command done=$done, expectedSize=${expectedSize.get()}, received=${collected.size}")
 
@@ -118,6 +171,8 @@ class V2BleSyncOrchestrator @Inject constructor(
                 Log.e(TAG, "V2BleSyncOrchestrator: BLE sync did not complete (Nack or timeout)")
                 return@coroutineScope false
             }
+
+            logSyncRate(streamStartMs.get(), streamEndMs, expectedSize.get(), collected.size, receivedBytes.get())
 
             // Tail-drain so any pending Sync indications on the BLE dispatcher land.
             delay(POST_READY_DRAIN_MS)
