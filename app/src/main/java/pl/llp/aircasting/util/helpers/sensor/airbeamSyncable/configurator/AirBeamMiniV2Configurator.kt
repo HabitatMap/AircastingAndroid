@@ -143,6 +143,11 @@ class AirBeamMiniV2Configurator(
         private set
     var hasSavedMeasurements: Boolean = false
         private set
+    // Byte length of the unsynced measurements stored on the device, parsed from the
+    // HasSavedSession Status payload suffix (FW commit `3990cf22`). 0 when the device
+    // reports no measurements, runs older firmware, or fails to read storage metadata.
+    var savedSessionFileSize: Long = 0L
+        private set
 
     /**
      * When set, sync-characteristic indications are routed here instead of being saved
@@ -634,7 +639,7 @@ class AirBeamMiniV2Configurator(
                 "V2 Status: ReadyToSync — fileSize=$fileSize passwordLen=${password.length} " +
                         "password='$password' passwordHex=$pwHex rawStatusHex=$rawHex",
             )
-            v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
+            v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) }, savedSessionFileSize)
             v2StateRepository.emitReadyToSyncFileSize(fileSize)
             v2StateRepository.emitReadyToSyncPassword(password)
             return
@@ -656,6 +661,7 @@ class AirBeamMiniV2Configurator(
                 currentState = DeviceState.IDLE
                 savedSessionUuid = null
                 hasSavedMeasurements = false
+                savedSessionFileSize = 0L
                 Log.d(TAG, "V2 Status: Idle, battery=$battery%, charging=$isCharging")
             }
 
@@ -665,7 +671,15 @@ class AirBeamMiniV2Configurator(
                     savedSessionUuid = bytes.copyOfRange(2, 18)
                     hasSavedMeasurements = bytes[18].toInt() != 0
                 }
-                Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, charging=$isCharging, hasMeasurements=$hasSavedMeasurements")
+                // FW commit `3990cf22` appends an 8B `file_size_u64_LE` after the
+                // has_measurements byte (payload grows from 19 → 27 bytes). Older
+                // firmware omits it — fall back to 0 so the ETA UI is skipped.
+                savedSessionFileSize = if (bytes.size >= 27) {
+                    ByteBuffer.wrap(bytes, 19, 8).order(ByteOrder.LITTLE_ENDIAN).long
+                } else {
+                    0L
+                }
+                Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, charging=$isCharging, hasMeasurements=$hasSavedMeasurements, fileSize=$savedSessionFileSize")
             }
 
             STATE_RUNNING -> {
@@ -688,7 +702,7 @@ class AirBeamMiniV2Configurator(
             }
         }
 
-        v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) })
+        v2StateRepository.update(currentState, hasSavedMeasurements, savedSessionUuid?.let { leBytesToUuid(it) }, savedSessionFileSize)
 
         if (pendingMobileReconnect) handlePendingReconnect()
     }

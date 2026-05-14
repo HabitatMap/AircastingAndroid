@@ -88,7 +88,7 @@ The device acts as a peripheral BLE GATT Server.
 On connection (after ~300ms delay), the device sends a state notification. The app uses this to understand the device context.
 
 - `0x00` **Idle**: Payload = `[0x00, battery_level_u8]`. No ongoing session.
-- `0x01` **HasSavedSession**: Payload = `[0x01, battery_level_u8, session_uuid_16B_LE, has_measurements_u8_bool]`. Active session stored on device (device was turned off and on).
+- `0x01` **HasSavedSession**: Payload = `[0x01, battery_level_u8, session_uuid_16B_LE, has_measurements_u8_bool, file_size_u64_LE (8B)]` (27 bytes; FW commit `3990cf22`). `file_size` is the byte length of the unsynced measurements file on the device, fed to `V2BleSyncOrchestrator.estimateSyncSeconds()` so the "sync before new session" dialog can show an ETA before the user starts. Falls back to 0 on metadata failure or when `has_measurements` is false. Older firmware emits the original 19-byte payload — the Android parser short-reads `file_size` as 0 in that case and the ETA hint is omitted.
 - `0x02` **Running**: Payload = `[0x02, battery_level_u8, session_uuid_16B_LE]`. Session actively running.
 - `0x03` **ReadyToSync**: Payload = `[0x03, file_size_u64_LE (8B), utf8_password_bytes...]` (FW commit `ed751b180`). Emitted while `StartSync (0x12)` is in progress and the firmware has opened the SoftAP "AirBeam Mini Sync". `file_size` is the byte length of the upcoming `/sync` HTTP body — the app uses it to drive a 0..100% progress UI shared across all manual-sync entry points. Password is variable-length UTF-8, no terminator. **Important:** this status has no battery byte at offset 1 — parsers must short-circuit before generic battery decoding.
 

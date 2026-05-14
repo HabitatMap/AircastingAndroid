@@ -32,6 +32,11 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         private set
     var savedSessionUuid: String? = null
         private set
+    // Bytes-on-disk reported by the firmware's HasSavedSession status (FW commit
+    // `3990cf22`). Fed into [V2BleSyncOrchestrator.estimateSyncSeconds] so the
+    // "sync before new session" dialog can render an ETA before the user starts.
+    var savedSessionFileSize: Long = 0L
+        private set
 
     private var syncCallback: (suspend (Boolean, (suspend () -> Unit)?) -> Boolean)? = null
 
@@ -94,10 +99,12 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         state: AirBeamMiniV2Configurator.DeviceState,
         hasMeasurements: Boolean,
         sessionUuid: String?,
+        savedFileSize: Long = 0L,
     ) {
         deviceState = state
         hasSavedMeasurements = hasMeasurements
         savedSessionUuid = sessionUuid
+        savedSessionFileSize = savedFileSize
     }
 
     fun setSyncCallback(callback: (suspend (Boolean, (suspend () -> Unit)?) -> Boolean)?) {

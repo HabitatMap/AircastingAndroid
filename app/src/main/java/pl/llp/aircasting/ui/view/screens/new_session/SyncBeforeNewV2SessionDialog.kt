@@ -19,6 +19,7 @@ import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.ui.view.common.BaseDialog
 import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
@@ -65,7 +66,7 @@ class SyncBeforeNewV2SessionDialog(
 
     private fun renderInitial(view: View) {
         view.header.text = getString(R.string.dialog_sync_before_new_v2_header)
-        view.informations_text_view.text = getString(R.string.dialog_sync_before_new_v2_description)
+        view.informations_text_view.text = buildInitialDescription()
 
         view.finish_recording_button.text = getString(R.string.sync_and_start_new_v2)
         view.finish_recording_button.isEnabled = true
@@ -150,6 +151,33 @@ class SyncBeforeNewV2SessionDialog(
 
     private fun syncingButtonText(percent: Int): String =
         getString(R.string.dialog_sync_before_new_v2_syncing_with_percent, percent)
+
+    /**
+     * Prepend an ETA hint to the description when the firmware reported a non-zero
+     * `file_size` on the HasSavedSession status payload (FW commit `3990cf22`). Falls
+     * back to the size-less description when the device runs older firmware or stored
+     * zero bytes (file_size 0 → estimate 0s → no ETA).
+     */
+    private fun buildInitialDescription(): String {
+        val seconds = V2BleSyncOrchestrator.estimateSyncSeconds(v2StateRepository.savedSessionFileSize)
+        if (seconds <= 0L) return getString(R.string.dialog_sync_before_new_v2_description)
+        return getString(R.string.dialog_sync_before_new_v2_description_with_eta, formatEta(seconds))
+    }
+
+    private fun formatEta(seconds: Long): String = when {
+        seconds < 60L -> getString(R.string.sync_eta_seconds, seconds.toInt())
+        seconds < 3600L -> {
+            val minutes = (seconds / 60L).toInt()
+            val remaining = (seconds % 60L).toInt()
+            if (remaining == 0) getString(R.string.sync_eta_minutes, minutes)
+            else getString(R.string.sync_eta_minutes_seconds, minutes, remaining)
+        }
+        else -> getString(
+            R.string.sync_eta_hours_minutes,
+            (seconds / 3600L).toInt(),
+            ((seconds % 3600L) / 60L).toInt(),
+        )
+    }
 
     override fun onDestroyView() {
         progressJob?.cancel()
