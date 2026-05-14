@@ -3,6 +3,7 @@ package pl.llp.aircasting.ui.view.screens.new_session
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
@@ -158,10 +159,11 @@ class SyncBeforeNewV2SessionDialog(
      * back to the size-less description when the device runs older firmware or stored
      * zero bytes (file_size 0 → estimate 0s → no ETA).
      */
-    private fun buildInitialDescription(): String {
+    private fun buildInitialDescription(): CharSequence {
         val seconds = V2BleSyncOrchestrator.estimateSyncSeconds(v2StateRepository.savedSessionFileSize)
         if (seconds <= 0L) return getString(R.string.dialog_sync_before_new_v2_description)
-        return getString(R.string.dialog_sync_before_new_v2_description_with_eta, formatEta(seconds))
+        val html = getString(R.string.dialog_sync_before_new_v2_description_with_eta, formatEta(seconds))
+        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
     }
 
     private fun formatEta(seconds: Long): String = when {
