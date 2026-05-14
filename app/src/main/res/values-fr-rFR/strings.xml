@@ -439,5 +439,11 @@
     <string name="notification_permission_dialog_title">Activez les notifications pour Aircasting.</string>
     <string name="notification_permission_dialog_desc">Les notifications afficheront le niveau de batterie de votre AirBeam et vous alerteront lorsque l\'AirBeam aura besoin d\'être chargé.</string>
 
+    <string name="dialog_sync_before_new_v2_description_with_eta">Cet AirBeam contient des mesures non enregistrées d\'une session précédente. La synchronisation prendra &lt;b&gt;environ %1$s&lt;/b&gt;. Synchronisez-les avec l\'application avant de démarrer une nouvelle session, ou démarrez immédiatement et supprimez-les.</string>
+    <string name="sync_eta_seconds">%1$d s</string>
+    <string name="sync_eta_minutes">%1$d min</string>
+    <string name="sync_eta_minutes_seconds">%1$d min %2$d s</string>
+    <string name="sync_eta_hours_minutes">%1$d h %2$d min</string>
+
 
 </resources>
