@@ -60,12 +60,12 @@ class V2BleSyncOrchestrator @Inject constructor(
          * On-disk LittleFS bytes-per-second throughput for the BLE manual-sync stream,
          * used to estimate sync duration from `file_size` before the user starts a sync.
          *
-         * Placeholder — derive from real-device logs (search logcat for
-         * `V2BleSyncRate:` after a manual sync; line includes `bytesPerSec=...`).
-         * Prefer a conservative (lower) value so the UI over-estimates rather than
-         * under-estimates.
+         * Calibrated from real-device run: file_size=25368B / elapsed=11735ms →
+         * 2161 B/s observed. Dropped ~20% for headroom against weak-RSSI / older
+         * Android BLE stacks so the ETA over-estimates rather than under-estimates.
+         * Tune further with more samples from `V2BleSyncRate:` logcat entries.
          */
-        private const val ESTIMATED_BYTES_PER_SECOND = 1500L
+        private const val ESTIMATED_BYTES_PER_SECOND = 1700L
 
         /**
          * Estimate manual-sync duration in seconds from the `file_size` the firmware
