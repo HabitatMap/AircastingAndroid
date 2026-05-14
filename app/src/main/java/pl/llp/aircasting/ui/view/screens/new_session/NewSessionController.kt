@@ -448,6 +448,7 @@ class NewSessionController @AssistedInject constructor(
         fixedConfigureObserverJob = coroutineScope.launch {
             when (val outcome = v2StateRepository.configureOutcome.first()) {
                 is FixedSessionConfigureOutcome.Success -> {
+                    android.util.Log.d("[FG-DEBUG]", "NewSessionController V2 fixed Success — posting DisconnectExternalSensorsEvent")
                     // Fixed V2 sessions POST measurements over WiFi autonomously, so BLE is no
                     // longer needed once the device confirms the first measurement was sent.
                     EventBus.getDefault().post(DisconnectExternalSensorsEvent())

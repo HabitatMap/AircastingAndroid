@@ -51,6 +51,7 @@ class BatteryLevelService : Service() {
 
     override fun onDestroy() {
         Log.d("BatteryService", "Service destroyed")
+        Log.d("[FG-DEBUG]", "BatteryLevelService.onDestroy()")
         unregisterFromEventBus()
         job.cancel()
         super.onDestroy()
@@ -58,6 +59,7 @@ class BatteryLevelService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("BatteryService", "Service Started")
+        Log.d("[FG-DEBUG]", "BatteryLevelService.onStartCommand() startId=$startId")
         (application as AircastingApplication).userDependentComponent?.inject(this)
         notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannels()

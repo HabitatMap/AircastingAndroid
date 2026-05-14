@@ -42,6 +42,7 @@ abstract class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d("[FG-DEBUG]", "SensorService.onStartCommand() on ${this.javaClass.simpleName} (startId=$startId, flags=$flags, intent=$intent)")
         createNotificationChannel()
 
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -91,12 +92,14 @@ abstract class SensorService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        Log.d("[FG-DEBUG]", "SensorService.onTaskRemoved() on ${this.javaClass.simpleName}")
         super.onTaskRemoved(rootIntent)
 
         stopSelf()
     }
 
     override fun onDestroy() {
+        Log.d("[FG-DEBUG]", "SensorService.onDestroy() on ${this.javaClass.simpleName}")
         super.onDestroy()
         setAppRestarted()
         unregisterFromEventBus()
@@ -120,6 +123,7 @@ abstract class SensorService : Service() {
 
     @Subscribe
     fun onMessageEvent(event: StopRecordingEvent) {
+        Log.d("[FG-DEBUG]", "SensorService received StopRecordingEvent on ${this.javaClass.simpleName} — stopSelf()")
         stoppedRecording.set(true)
         stopSelf()
     }

@@ -80,6 +80,7 @@ abstract class AirBeamService : SensorService(),
 
     override fun onDisconnect(deviceId: String) {
         Log.d(TAG, "Disconnecting and stopping service")
+        Log.d("[FG-DEBUG]", "AirBeamService.onDisconnect() — calling stopSelf() on ${this.javaClass.simpleName}")
         updateConnectionStatus(false)
         stopSelf()
     }

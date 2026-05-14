@@ -89,6 +89,7 @@ abstract class AirBeamConnector(
     }
 
     fun disconnect() {
+        Log.d("[FG-DEBUG]", "AirBeamConnector.disconnect() entered (cancelStarted=${cancelStarted.get()})")
         unregisterFromEventBus()
 
         mTimerTask?.cancel()
@@ -96,8 +97,11 @@ abstract class AirBeamConnector(
         if (!cancelStarted.get()) {
             cancelStarted.set(true)
             connectionStarted.set(false)
+            Log.d("[FG-DEBUG]", "AirBeamConnector.disconnect() calling stop()")
             stop()
             cancelStarted.set(false)
+        } else {
+            Log.d("[FG-DEBUG]", "AirBeamConnector.disconnect() SKIPPED stop() — cancelStarted already true")
         }
     }
 
@@ -138,6 +142,7 @@ abstract class AirBeamConnector(
             EventBus.getDefault()
                 .post(SensorDisconnectedUnexpectedlyEvent(deviceItem.id, deviceItem, mSessionUUID))
         }
+        Log.d("[FG-DEBUG]", "AirBeamConnector.onDisconnected() invoking listener.onDisconnect (listener=${mListener?.javaClass?.simpleName}, unexpected=$isDisconnectedUnexpectedly)")
         mListener?.onDisconnect(deviceItem.id)
     }
 
@@ -153,6 +158,7 @@ abstract class AirBeamConnector(
 
     @Subscribe(threadMode = ThreadMode.ASYNC)
     fun onMessageEvent(event: DisconnectExternalSensorsEvent) {
+        Log.d("[FG-DEBUG]", "AirBeamConnector received DisconnectExternalSensorsEvent")
         disconnect()
     }
 
