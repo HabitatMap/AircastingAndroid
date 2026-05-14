@@ -448,10 +448,19 @@ class NewSessionController @AssistedInject constructor(
         fixedConfigureObserverJob = coroutineScope.launch {
             when (val outcome = v2StateRepository.configureOutcome.first()) {
                 is FixedSessionConfigureOutcome.Success -> {
-                    android.util.Log.d("[FG-DEBUG]", "NewSessionController V2 fixed Success — posting DisconnectExternalSensorsEvent")
+                    android.util.Log.d("[FG-DEBUG]", "NewSessionController V2 fixed Success — posting DisconnectExternalSensorsEvent + stopService")
                     // Fixed V2 sessions POST measurements over WiFi autonomously, so BLE is no
                     // longer needed once the device confirms the first measurement was sent.
                     EventBus.getDefault().post(DisconnectExternalSensorsEvent())
+                    // Nordic BleManager.close() does not always fire onDeviceDisconnected, so
+                    // the listener -> stopSelf chain never reaches AirBeamService. Stop the
+                    // foreground services directly so the notification is dismissed.
+                    mContextActivity.applicationContext.stopService(
+                        Intent(mContextActivity.applicationContext, AirBeamRecordSessionService::class.java)
+                    )
+                    mContextActivity.applicationContext.stopService(
+                        Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
+                    )
                     mContextActivity.setResult(RESULT_OK)
                     mContextActivity.finish()
                 }
