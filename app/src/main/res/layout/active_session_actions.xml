@@ -48,6 +48,7 @@
                 android:id="@+id/disconnect_session_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:icon="@drawable/ic_disconnect_icon"
                 android:text="@string/disconnect_session"
                 style="@style/Widget.Aircasting.IconButton"
