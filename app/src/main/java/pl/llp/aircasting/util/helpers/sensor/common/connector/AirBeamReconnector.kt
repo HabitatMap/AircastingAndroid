@@ -69,6 +69,7 @@ class AirBeamReconnector(
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
+                    finalizeReconnectionWithError()
                     return
                 }
             }
