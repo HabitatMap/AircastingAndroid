@@ -32,8 +32,12 @@ class SyncableAirBeamConnector(
 
         airBeam3Configurator.setObserver(this)
 
-        val bluetoothDevice = deviceItem.bluetoothDevice ?: return
+        val bluetoothDevice = deviceItem.bluetoothDevice ?: run {
+            Log.w("[RECONNECT]", "SyncableAirBeamConnector.start: deviceItem.bluetoothDevice is null for device=${deviceItem.id}")
+            return
+        }
 
+        Log.d("[RECONNECT]", "SyncableAirBeamConnector.start: connectDevice device=${deviceItem.id} address=${bluetoothDevice.address} autoConnect=true retry=3x100ms")
         airBeam3Configurator.connectDevice(bluetoothDevice)
             .timeout(0)
             .retry(3, 100)
@@ -49,11 +53,13 @@ class SyncableAirBeamConnector(
     }
 
     private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
+        Log.w("[RECONNECT]", "SyncableAirBeamConnector.onFailedCallback device=${device.address} reason=$reason")
         val deviceItem = DeviceItem(device)
         onDisconnected(deviceItem)
     }
 
     override fun stop() {
+        Log.d("[RECONNECT]", "SyncableAirBeamConnector.stop -> airBeam3Configurator.closeConnection()")
         airBeam3Configurator.closeConnection()
     }
 
@@ -95,6 +101,7 @@ class SyncableAirBeamConnector(
     }
 
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
+        Log.w("[RECONNECT]", "SyncableAirBeamConnector.onDeviceFailedToConnect device=${device.address} reason=$reason")
         mErrorHandler.handle(SensorDisconnectedError("called from Airbeam3Connector onDeviceFailedToConnect"))
         val deviceItem = DeviceItem(device)
         onConnectionFailed(deviceItem)
@@ -110,6 +117,7 @@ class SyncableAirBeamConnector(
 
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         airBeam3Configurator.log(VERBOSE, "Disconnected reason: $reason")
+        Log.w("[RECONNECT]", "SyncableAirBeamConnector.onDeviceDisconnected device=${device.address} reason=$reason (unexpected=${reason != REASON_TERMINATE_PEER_USER})")
 
         val deviceItem = DeviceItem(device)
         onDisconnected(deviceItem, isDisconnectedUnexpectedly = reason != REASON_TERMINATE_PEER_USER)

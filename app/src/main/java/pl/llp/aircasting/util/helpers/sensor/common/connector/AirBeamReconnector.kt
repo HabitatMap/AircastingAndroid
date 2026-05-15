@@ -38,6 +38,10 @@ class AirBeamReconnector(
     @SyncActiveFlow
     private val syncStatusFlow: SharedFlow<Boolean>,
 ) {
+    companion object {
+        private const val RC_TAG = "[RECONNECT]"
+    }
+
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
@@ -62,11 +66,13 @@ class AirBeamReconnector(
         errorCallback: (() -> Unit)? = null,
         finallyCallback: (() -> Unit)? = null,
     ) {
+        Log.d(RC_TAG, "reconnect() called session=${session.uuid} device=${deviceItem?.id} tries=$mReconnectionTriesNumber")
         eventbus.safeRegister(this)
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
+                    Log.w(RC_TAG, "MAX retries exceeded (tries=$tries > $RECONNECTION_TRIES_MAX), finalizing with error")
                     finalizeReconnectionWithError()
                     return
                 }
@@ -97,22 +103,24 @@ class AirBeamReconnector(
     }
 
     fun tryToReconnectPeriodically(session: Session, deviceItem: DeviceItem?) {
+        Log.d(RC_TAG, "tryToReconnectPeriodically() session=${session.uuid} device=${deviceItem?.id} currentTries=$mReconnectionTriesNumber")
         if (sessionUuidByStandaloneMode[session.uuid] == true) {
-            Log.e(TAG, "Will not reconnect: Session is in standalone mode")
+            Log.e(RC_TAG, "Will not reconnect: Session is in standalone mode (session=${session.uuid})")
             return
         }
         if (mReconnectionTriesNumber != null) {
-            Log.e(TAG, "Will not reconnect: Reconnection is already in progress")
+            Log.e(RC_TAG, "Will not reconnect: Reconnection already in progress (tries=$mReconnectionTriesNumber)")
             return
         }
 
         mReconnectionTriesNumber = 1
+        Log.d(RC_TAG, "Starting reconnect cycle (attempt=1) for session=${session.uuid}")
         reconnect(session, deviceItem)
     }
 
     private fun reconnect(deviceItem: DeviceItem? = null) {
         try {
-            Log.d(TAG, "Starting AirBeamReconnectSessionService")
+            Log.d(RC_TAG, "Starting AirBeamReconnectSessionService (attempt=$mReconnectionTriesNumber device=${deviceItem?.id} session=${mSession?.uuid})")
             AirBeamReconnectSessionService.startService(
                 mContext,
                 deviceItem,
@@ -121,16 +129,18 @@ class AirBeamReconnector(
             eventbus.postSticky(ReconnectionEvent(mSession?.uuid, true))
         } catch (e: Exception) {
             Log.e(
-                bluetoothReconnection, "Attempt to start reconnection service failed\n" +
+                bluetoothReconnection, "$RC_TAG Attempt to start reconnection service failed (attempt=$mReconnectionTriesNumber)\n" +
                         e.stackTraceToString()
             )
         }
     }
 
     private fun onDiscoveryFailed() {
+        Log.w(RC_TAG, "onDiscoveryFailed() tries=$mReconnectionTriesNumber")
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
             val session = mSession ?: return
+            Log.d(RC_TAG, "Scheduling retry after discovery failure: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
             coroutineScope.launch {
                 delay(RECONNECTION_TRIES_INTERVAL)
                 reconnect(session, null, mErrorCallback, mFinallyCallback)
@@ -161,12 +171,17 @@ class AirBeamReconnector(
         mConnectionStatusJob = coroutineScope.launch {
             connectionStatusFlow.filterNotNull().collect {
                 val sessionUuid = mSession?.uuid ?: return@collect
+                Log.v(RC_TAG, "connectionStatus emission: isConnected=${it.isConnected} sessionUUID=${it.sessionUUID} (mySession=$sessionUuid)")
                 val correctSesssionConnected = it.isConnected && it.sessionUUID == sessionUuid
-                if (correctSesssionConnected) onConnectedSuccessful()
+                if (correctSesssionConnected) {
+                    Log.d(RC_TAG, "Connection succeeded for current session=$sessionUuid")
+                    onConnectedSuccessful()
+                }
                 // Only finalize for a *different* session that is genuinely connected
                 // (non-null UUID and not ours). A stale isConnected=true emission with
                 // a null/empty UUID would otherwise prematurely kill the retry loop.
                 else if (it.isConnected && !it.sessionUUID.isNullOrEmpty() && it.sessionUUID != sessionUuid) {
+                    Log.w(RC_TAG, "Foreign session connected (${it.sessionUUID}), finalizing")
                     finalizeReconnection()
                 }
             }
@@ -181,21 +196,28 @@ class AirBeamReconnector(
         mSyncStatusJob?.cancel()
         mSyncStatusJob = coroutineScope.launch {
             syncStatusFlow.collect { isSyncActive ->
-                if (isSyncActive) finalizeReconnection()
+                Log.v(RC_TAG, "syncStatus emission: isSyncActive=$isSyncActive")
+                if (isSyncActive) {
+                    Log.d(RC_TAG, "Sync became active, finalizing reconnect loop")
+                    finalizeReconnection()
+                }
             }
         }
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
+        Log.w(RC_TAG, "AirBeamConnectionFailedEvent device=${event.deviceItem.id} currentTries=$mReconnectionTriesNumber")
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
                 if (tries > RECONNECTION_TRIES_MAX) {
+                    Log.w(RC_TAG, "MAX retries exceeded on failure event (tries=$tries), finalizing with error")
                     finalizeReconnectionWithError()
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
                     val deviceItem = event.deviceItem
+                    Log.d(RC_TAG, "Scheduling retry: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
                     coroutineScope.launch {
                         delay(RECONNECTION_TRIES_INTERVAL)
                         reconnect(deviceItem)
@@ -203,6 +225,7 @@ class AirBeamReconnector(
                 }
             }
         } else {
+            Log.w(RC_TAG, "Got connection-failed event but mReconnectionTriesNumber is null — finalizing with error")
             finalizeReconnectionWithError()
         }
     }
@@ -210,7 +233,7 @@ class AirBeamReconnector(
     private fun finalizeReconnectionWithError() {
         Log.e(
             bluetoothReconnection,
-            "Finalized with error. Reconnection tries: $mReconnectionTriesNumber"
+            "$RC_TAG Finalized with error. Reconnection tries: $mReconnectionTriesNumber"
         )
         mErrorCallback?.invoke()
         finalizeReconnection()
@@ -222,7 +245,7 @@ class AirBeamReconnector(
     }
 
     private fun finalizeReconnection() {
-        Log.d(TAG, "Finalizing reconnection")
+        Log.d(RC_TAG, "Finalizing reconnection (tries=$mReconnectionTriesNumber session=${mSession?.uuid})")
         mAirBeamDiscoveryService.reset()
         mReconnectionTriesNumber = null
         mConnectionStatusJob?.cancel()

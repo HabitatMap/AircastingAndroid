@@ -53,15 +53,15 @@ abstract class AirBeamService : SensorService(),
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
         if (::mAirBeamConnector.isInitialized) {
-            Log.d(TAG, "Disconnecting previous AirBeamConnector before creating a new one")
+            Log.d("[RECONNECT]", "AirBeamService.connect(): disconnecting previous AirBeamConnector (${mAirBeamConnector.javaClass.simpleName}) before creating new one for device=${deviceItem.id}")
             try {
                 mAirBeamConnector.disconnect()
             } catch (e: Exception) {
-                Log.w(TAG, "Previous AirBeamConnector.disconnect() threw: ${e.message}")
+                Log.w("[RECONNECT]", "Previous AirBeamConnector.disconnect() threw: ${e.message}")
             }
         }
 
-        Log.d(TAG, "Creating AirBeamConnector")
+        Log.d("[RECONNECT]", "AirBeamService.connect(): creating AirBeamConnector for device=${deviceItem.id} session=$sessionUUID")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
         mAirBeamConnector.registerListener(this)
@@ -83,6 +83,7 @@ abstract class AirBeamService : SensorService(),
     }
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
+        Log.d("[RECONNECT]", "AirBeamService.onConnectionSuccessful device=${deviceItem.id} session=$sessionUUID")
         updateConnectionStatus(true, deviceItem, sessionUUID)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, onConnectionSuccessful"))
     }
@@ -95,6 +96,7 @@ abstract class AirBeamService : SensorService(),
     }
 
     override fun onConnectionFailed(deviceItem: DeviceItem) {
+        Log.w("[RECONNECT]", "AirBeamService.onConnectionFailed device=${deviceItem.id} — posting AirBeamConnectionFailedEvent")
         updateConnectionStatus(false)
         val event = AirBeamConnectionFailedEvent(deviceItem)
         EventBus.getDefault().post(event)
@@ -113,6 +115,7 @@ abstract class AirBeamService : SensorService(),
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SensorDisconnectedUnexpectedlyEvent) {
+        Log.w("[RECONNECT]", "AirBeamService got SensorDisconnectedUnexpectedlyEvent device=${event.sessionDeviceId} session=${event.sessionUUID} currentTries=${airbeamReconnector.mReconnectionTriesNumber}")
         updateConnectionStatus(false)
         errorHandler.handle(SensorDisconnectedError("called from AirBeamService, number of reconnect tries ${airbeamReconnector.mReconnectionTriesNumber}"))
 

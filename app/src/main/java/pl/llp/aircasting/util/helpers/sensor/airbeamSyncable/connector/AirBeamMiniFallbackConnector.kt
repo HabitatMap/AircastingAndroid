@@ -40,7 +40,7 @@ class AirBeamMiniFallbackConnector(
         currentDeviceItem = deviceItem
         isV2Attempt = true
         activeConfigurator = v2Configurator
-        Log.d(TAG, "AirBeamMiniFallback: Attempting V2 connection first")
+        Log.d("[RECONNECT]", "AirBeamMiniFallback.start: attempting V2 first (device=${deviceItem.id} address=${deviceItem.address})")
         connectWith(v2Configurator, deviceItem)
     }
 
@@ -49,8 +49,12 @@ class AirBeamMiniFallbackConnector(
         val bluetoothDevice = deviceItem.bluetoothDevice
             ?: deviceItem.address.takeIf { it.isNotEmpty() }
                 ?.let { BluetoothAdapter.getDefaultAdapter()?.getRemoteDevice(it) }
-            ?: return
+            ?: run {
+                Log.w("[RECONNECT]", "AirBeamMiniFallback.connectWith: no BluetoothDevice (device=${deviceItem.id} address=${deviceItem.address})")
+                return
+            }
 
+        Log.d("[RECONNECT]", "AirBeamMiniFallback.connectWith: ${if (isV2Attempt) "V2" else "V1"} device=${deviceItem.id} address=${bluetoothDevice.address} autoConnect=true")
         configurator.connectDevice(bluetoothDevice)
             .timeout(0)
             .useAutoConnect(true)
@@ -77,13 +81,14 @@ class AirBeamMiniFallbackConnector(
 
     private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
         if (isV2Attempt) {
-            Log.d(TAG, "AirBeamMiniFallback: V2 failed (reason=$reason), falling back to V1")
+            Log.w("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V2 failed (reason=$reason), falling back to V1 device=${device.address}")
             isV2Attempt = false
             v2Configurator.closeConnection()
             activeConfigurator = v1Configurator
             val deviceItem = currentDeviceItem ?: DeviceItem(device)
             connectWith(v1Configurator, deviceItem)
         } else {
+            Log.w("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V1 also failed (reason=$reason) device=${device.address}")
             val deviceItem = DeviceItem(device)
             onDisconnected(deviceItem)
         }
@@ -95,6 +100,7 @@ class AirBeamMiniFallbackConnector(
     }
 
     override fun stop() {
+        Log.d("[RECONNECT]", "AirBeamMiniFallback.stop -> ${if (isV2Attempt) "v2" else "v1"}Configurator.closeConnection()")
         activeConfigurator.closeConnection()
     }
 
@@ -135,8 +141,8 @@ class AirBeamMiniFallbackConnector(
     }
 
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
+        Log.w("[RECONNECT]", "AirBeamMiniFallback.onDeviceFailedToConnect device=${device.address} reason=$reason isV2Attempt=$isV2Attempt")
         if (isV2Attempt) {
-            Log.d(TAG, "AirBeamMiniFallback: V2 device failed to connect, trying V1")
             onFailedCallback(device, reason)
         } else {
             mErrorHandler.handle(SensorDisconnectedError("AirBeamMiniFallback: Both V2 and V1 failed"))
@@ -154,6 +160,7 @@ class AirBeamMiniFallbackConnector(
 
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         activeConfigurator.log(VERBOSE, "Disconnected reason: $reason")
+        Log.w("[RECONNECT]", "AirBeamMiniFallback.onDeviceDisconnected device=${device.address} reason=$reason isV2=$isV2Attempt syncInProgress=${v2StateRepository.syncInProgress}")
 
         val deviceItem = DeviceItem(device)
 
@@ -163,7 +170,7 @@ class AirBeamMiniFallbackConnector(
         // `AirBeamSyncService.onConnectionSuccessful` calls `airBeamConnector.disconnect()`
         // and the configurator is reset by the next connect.
         if (isV2Attempt && v2StateRepository.syncInProgress) {
-            Log.d(TAG, "AirBeamMiniFallback: BLE disconnected during V2 sync (reason=$reason) — deferring teardown until orchestrator finishes")
+            Log.d("[RECONNECT]", "AirBeamMiniFallback: BLE disconnected during V2 sync (reason=$reason) — deferring teardown until orchestrator finishes")
             mErrorHandler.handle(SensorDisconnectedError("AirBeamMiniFallback onDeviceDisconnected during V2 sync, deferring (reason=$reason)"))
             return
         }

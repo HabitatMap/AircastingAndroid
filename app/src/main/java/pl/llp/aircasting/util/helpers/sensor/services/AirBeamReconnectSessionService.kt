@@ -45,6 +45,8 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
         mIntent = intent
         mDeviceItem = mIntent?.getParcelableExtra(DEVICE_ITEM_KEY) as? DeviceItem?
+        val sessionUuid = mIntent?.getStringExtra(SESSION_UUID_KEY)
+        Log.d("[RECONNECT]", "AirBeamReconnectSessionService.onStartCommand device=${mDeviceItem?.id} session=$sessionUuid startId=$startId")
         observeSyncStatus()
         return super.onStartCommand(mIntent, flags, startId)
     }
@@ -52,18 +54,18 @@ class AirBeamReconnectSessionService: AirBeamRecordSessionService() {
 
     override fun onConnectionSuccessful(deviceItem: DeviceItem, sessionUUID: String?) {
         super.onConnectionSuccessful(deviceItem, sessionUUID)
-        Log.v(TAG, "Reconnecting mobile session")
+        Log.d("[RECONNECT]", "AirBeamReconnectSessionService.onConnectionSuccessful device=${deviceItem.id} session=$sessionUUID — reconnecting mobile session")
         mAirBeamConnector.reconnectMobileSession()
     }
 
     @Subscribe
     fun onMessageEvent(event: AirBeamDiscoveryFailedEvent) {
-        Log.d(TAG, "Stopping service after AirBeamDiscoveryFailedEvent")
+        Log.d("[RECONNECT]", "AirBeamReconnectSessionService stopping after AirBeamDiscoveryFailedEvent")
         stopSelf()
     }
 
     override fun onDisconnect(deviceId: String) {
-        Log.d(TAG, "Sensor disconnected: $deviceId")
+        Log.d("[RECONNECT]", "AirBeamReconnectSessionService.onDisconnect deviceId=$deviceId")
     }
 
     private fun observeSyncStatus() = mainCoroutineScope.launch {

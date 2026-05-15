@@ -64,11 +64,13 @@ abstract class AirBeamConnector(
         bluetoothManager?.cancelDiscovery()
 
         if (!connectionStarted.get()) {
-            Log.d(TAG, "Connection started")
+            Log.d("[RECONNECT]", "${javaClass.simpleName}.connect: starting (device=${deviceItem.id} session=$sessionUUID timeout=${CONNECTION_TIMEOUT}ms)")
             failAfterTimeout(deviceItem)
             connectionStarted.set(true)
             registerToEventBus()
             start(deviceItem)
+        } else {
+            Log.w("[RECONNECT]", "${javaClass.simpleName}.connect: SKIPPED — connectionStarted=true already (device=${deviceItem.id})")
         }
     }
 
@@ -81,6 +83,7 @@ abstract class AirBeamConnector(
     private fun failAfterTimeout(deviceItem: DeviceItem) {
         mTimerTask = timerTask {
             if (!connectionEstablished.get()) {
+                Log.w("[RECONNECT]", "${javaClass.simpleName}.failAfterTimeout fired (device=${deviceItem.id} after ${CONNECTION_TIMEOUT}ms)")
                 connectionTimedOut.set(true)
                 mListener?.onConnectionFailed(deviceItem)
             }
@@ -110,6 +113,7 @@ abstract class AirBeamConnector(
     }
 
     fun onConnectionSuccessful(deviceItem: DeviceItem) {
+        Log.d("[RECONNECT]", "${javaClass.simpleName}.onConnectionSuccessful device=${deviceItem.id} session=$mSessionUUID")
         mDeviceItem = deviceItem
         deviceAddressByDeviceItem[deviceItem.address] = deviceItem
         connectionEstablished.set(true)
@@ -118,6 +122,7 @@ abstract class AirBeamConnector(
     }
 
     fun onConnectionFailed(deviceItem: DeviceItem) {
+        Log.w("[RECONNECT]", "${javaClass.simpleName}.onConnectionFailed device=${deviceItem.id} timedOut=${connectionTimedOut.get()}")
         mTimerTask?.cancel()
         if (!connectionTimedOut.get()) {
             mListener?.onConnectionFailed(deviceItem)
