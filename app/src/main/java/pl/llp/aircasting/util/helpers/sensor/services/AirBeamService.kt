@@ -52,6 +52,15 @@ abstract class AirBeamService : SensorService(),
     lateinit var connectionStatusFlow: MutableStateFlow<AirbeamConnectionStatus?>
 
     protected fun connect(deviceItem: DeviceItem, sessionUUID: String? = null) {
+        if (::mAirBeamConnector.isInitialized) {
+            Log.d(TAG, "Disconnecting previous AirBeamConnector before creating a new one")
+            try {
+                mAirBeamConnector.disconnect()
+            } catch (e: Exception) {
+                Log.w(TAG, "Previous AirBeamConnector.disconnect() threw: ${e.message}")
+            }
+        }
+
         Log.d(TAG, "Creating AirBeamConnector")
         mAirBeamConnector = airbeamConnectorFactory.get(deviceItem)
 
