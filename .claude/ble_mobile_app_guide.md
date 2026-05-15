@@ -341,6 +341,14 @@ Each record is 8 bytes:
 
 **This replaces the old SD card CSV file download entirely.** The old `SDCardReader`, `SDCardSyncService`, `SDCardCSVFileChecker`, and related classes are **not used** for V2.
 
+### SD-Sync Wizard "Unplug Your AirBeam" Screen
+
+V2 has no SD card → no unplug step needed. The wizard's `UnplugAirBeamFragment` is therefore:
+- **Skipped entirely on V2** — `SyncController.onAirbeamSyncedContinueClicked` checks `isV2Sync` and goes straight to the post-sync continuation (TurnOffLocationServices or finish).
+- **Moved to AFTER the "successfully synced" screen on V1** — previously shown before device selection; now shown after the user taps Continue on the synced screen, then proceeds to the post-sync continuation.
+
+The V2 flag is plumbed from `AirBeamSyncService` → `SDCardSyncFinished(isV2 = true)` event → `AirbeamSyncingViewMvc.Listener.syncFinished(isV2)` → `SyncController.syncFinished(isV2)`. The V1 post site in `SDCardSyncService` keeps the default `isV2 = false`.
+
 ### Mapping to `NewMeasurementEvent`
 
 The V2 binary format does NOT include sensor metadata (package name, thresholds, etc.) like the old ASCII format. The app must construct `NewMeasurementEvent` using:

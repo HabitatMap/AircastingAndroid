@@ -78,7 +78,7 @@ class AirbeamSyncingController(
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: SDCardSyncFinished) {
         mErrorHandler.handle(SDCardSyncError("finishSync, calling listener"))
-        mViewMvc?.finishSync()
+        mViewMvc?.finishSync(event.isV2)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

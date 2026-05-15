@@ -159,7 +159,7 @@ class AirBeamSyncService : AirBeamService() {
                 runCatching { EventBus.getDefault().unregister(this@AirBeamSyncService) }
                 airBeamConnector.disconnect()
                 if (ok) {
-                    EventBus.getDefault().post(SDCardSyncFinished())
+                    EventBus.getDefault().post(SDCardSyncFinished(isV2 = true))
                 } else {
                     EventBus.getDefault().post(SDCardSyncErrorEvent(V2ManualSyncError()))
                 }

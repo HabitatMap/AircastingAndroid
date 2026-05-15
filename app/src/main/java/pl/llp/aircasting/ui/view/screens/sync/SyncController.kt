@@ -85,6 +85,7 @@ class SyncController @AssistedInject constructor(
     private val wakeLock: PowerManager.WakeLock =
         (mRootActivity.getSystemService(Context.POWER_SERVICE) as PowerManager)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AircastingApplication::SDSyncWakeLock")
+    private var isV2Sync = false
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -206,9 +207,9 @@ class SyncController @AssistedInject constructor(
     }
 
     override fun onTurnOnAirBeamReadyClicked() {
-        mWizardNavigator.goToUnplugAirBeam(onContinueClicked = {
-            mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
-        })
+        // Unplug-AirBeam screen is shown after a successful sync (V1 only) so it's not displayed
+        // for V2 firmware, which has no SD card to unplug from.
+        mWizardNavigator.goToSelectDevice(mBluetoothManager, this)
     }
 
     override fun onConnectClicked(deviceItem: DeviceItem) {
@@ -265,6 +266,14 @@ class SyncController @AssistedInject constructor(
     }
 
     override fun onAirbeamSyncedContinueClicked() {
+        if (isV2Sync) {
+            continueAfterSynced()
+        } else {
+            mWizardNavigator.goToUnplugAirBeam(onContinueClicked = { continueAfterSynced() })
+        }
+    }
+
+    private fun continueAfterSynced() {
         if (mSettings.areMapsDisabled()) {
             mWizardNavigator.goToTurnOffLocationServices(this)
         } else {
@@ -327,7 +336,8 @@ class SyncController @AssistedInject constructor(
         }
     }
 
-    override fun syncFinished() {
+    override fun syncFinished(isV2: Boolean) {
+        isV2Sync = isV2
         mRootActivity.window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         wakeLock.release()
         Log.d("WakeLock", "Released wakelock: ${!wakeLock.isHeld}")

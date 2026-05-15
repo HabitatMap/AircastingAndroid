@@ -29,9 +29,9 @@ class AirbeamSyncingViewMvcImpl(
         startLoader()
     }
 
-    fun finishSync() {
+    fun finishSync(isV2: Boolean) {
         for (listener in listeners) {
-            listener.syncFinished()
+            listener.syncFinished(isV2)
         }
     }
 
