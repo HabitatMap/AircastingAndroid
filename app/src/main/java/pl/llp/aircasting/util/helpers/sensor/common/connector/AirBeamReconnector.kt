@@ -63,8 +63,6 @@ class AirBeamReconnector(
         finallyCallback: (() -> Unit)? = null,
     ) {
         eventbus.safeRegister(this)
-        observeConnectionStatus()
-        observeSyncStatus()
 
         if (mReconnectionTriesNumber != null) {
             mReconnectionTriesNumber?.let { tries ->
@@ -81,6 +79,11 @@ class AirBeamReconnector(
         mSession = session
         mErrorCallback = errorCallback
         mFinallyCallback = finallyCallback
+
+        // Observers must be launched AFTER mSession is set so the initial
+        // StateFlow replay can be correctly attributed to the current session.
+        observeConnectionStatus()
+        observeSyncStatus()
 
         if (deviceItem?.type == DeviceItem.Type.AIRBEAM3 || deviceItem?.type == DeviceItem.Type.AIRBEAMMINI) {
             reconnect(deviceItem)
@@ -157,9 +160,15 @@ class AirBeamReconnector(
         mConnectionStatusJob?.cancel()
         mConnectionStatusJob = coroutineScope.launch {
             connectionStatusFlow.filterNotNull().collect {
-                val correctSesssionConnected = it.isConnected && it.sessionUUID == mSession?.uuid
+                val sessionUuid = mSession?.uuid ?: return@collect
+                val correctSesssionConnected = it.isConnected && it.sessionUUID == sessionUuid
                 if (correctSesssionConnected) onConnectedSuccessful()
-                else if (it.isConnected) finalizeReconnection()
+                // Only finalize for a *different* session that is genuinely connected
+                // (non-null UUID and not ours). A stale isConnected=true emission with
+                // a null/empty UUID would otherwise prematurely kill the retry loop.
+                else if (it.isConnected && !it.sessionUUID.isNullOrEmpty() && it.sessionUUID != sessionUuid) {
+                    finalizeReconnection()
+                }
             }
         }
     }
