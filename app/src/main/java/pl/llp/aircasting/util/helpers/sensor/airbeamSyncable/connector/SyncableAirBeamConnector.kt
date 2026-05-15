@@ -53,9 +53,13 @@ class SyncableAirBeamConnector(
     }
 
     private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
-        Log.w("[RECONNECT]", "SyncableAirBeamConnector.onFailedCallback device=${device.address} reason=$reason")
+        Log.w("[RECONNECT]", "SyncableAirBeamConnector.onFailedCallback device=${device.address} reason=$reason — posting connection-failed for retry loop")
+        // Connection *failure* (Nordic .fail on connectDevice). Route through
+        // onConnectionFailed so AirBeamReconnector's retry loop schedules the
+        // next attempt. onDisconnected would post SensorDisconnectedUnexpectedlyEvent
+        // which is rejected by tryToReconnectPeriodically when a cycle is in flight.
         val deviceItem = DeviceItem(device)
-        onDisconnected(deviceItem)
+        onConnectionFailed(deviceItem)
     }
 
     override fun stop() {

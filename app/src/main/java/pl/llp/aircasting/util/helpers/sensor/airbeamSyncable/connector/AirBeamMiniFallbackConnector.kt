@@ -88,9 +88,17 @@ class AirBeamMiniFallbackConnector(
             val deviceItem = currentDeviceItem ?: DeviceItem(device)
             connectWith(v1Configurator, deviceItem)
         } else {
-            Log.w("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V1 also failed (reason=$reason) device=${device.address}")
-            val deviceItem = DeviceItem(device)
-            onDisconnected(deviceItem)
+            Log.w("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V1 also failed (reason=$reason) device=${device.address} — posting connection-failed for retry loop")
+            // This is a connection *failure* (Nordic .fail on connectDevice), not a
+            // post-connect link loss. Route through onConnectionFailed so
+            // AirBeamReconnector's retry loop fires AirBeamConnectionFailedEvent
+            // and schedules the next attempt; onDisconnected would instead post
+            // SensorDisconnectedUnexpectedlyEvent which AirBeamService's handler
+            // would forward to tryToReconnectPeriodically — which rejects with
+            // "Reconnection already in progress" since mReconnectionTriesNumber
+            // is already set, silently stalling the loop.
+            val deviceItem = currentDeviceItem ?: DeviceItem(device)
+            onConnectionFailed(deviceItem)
         }
     }
 
