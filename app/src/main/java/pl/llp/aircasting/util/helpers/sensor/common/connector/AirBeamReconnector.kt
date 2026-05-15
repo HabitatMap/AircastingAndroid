@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -125,10 +126,11 @@ class AirBeamReconnector(
     private fun onDiscoveryFailed() {
         if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
             mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
-            Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-
             val session = mSession ?: return
-            reconnect(session, null, mErrorCallback, mFinallyCallback)
+            coroutineScope.launch {
+                delay(RECONNECTION_TRIES_INTERVAL)
+                reconnect(session, null, mErrorCallback, mFinallyCallback)
+            }
         } else {
             finalizeReconnectionWithError()
         }
@@ -183,8 +185,11 @@ class AirBeamReconnector(
                     return
                 } else {
                     mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
-                    Thread.sleep(RECONNECTION_TRIES_INTERVAL)
-                    reconnect(event.deviceItem)
+                    val deviceItem = event.deviceItem
+                    coroutineScope.launch {
+                        delay(RECONNECTION_TRIES_INTERVAL)
+                        reconnect(deviceItem)
+                    }
                 }
             }
         } else {
