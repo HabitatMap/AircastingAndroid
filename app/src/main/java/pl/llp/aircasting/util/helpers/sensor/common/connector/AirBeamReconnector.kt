@@ -3,6 +3,7 @@ package pl.llp.aircasting.util.helpers.sensor.common.connector
 import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -39,6 +40,9 @@ class AirBeamReconnector(
     private var mSession: Session? = null
     private var mErrorCallback: (() -> Unit)? = null
     private var mFinallyCallback: (() -> Unit)? = null
+
+    private var mConnectionStatusJob: Job? = null
+    private var mSyncStatusJob: Job? = null
 
     var mReconnectionTriesNumber: Int? = null
     private val RECONNECTION_TRIES_MAX = 50
@@ -146,11 +150,14 @@ class AirBeamReconnector(
             }
         }
     }
-    private fun observeConnectionStatus() = coroutineScope.launch {
-        connectionStatusFlow.filterNotNull().collect {
-            val correctSesssionConnected = it.isConnected && it.sessionUUID == mSession?.uuid
-            if (correctSesssionConnected) onConnectedSuccessful()
-            else if (it.isConnected) finalizeReconnection()
+    private fun observeConnectionStatus() {
+        mConnectionStatusJob?.cancel()
+        mConnectionStatusJob = coroutineScope.launch {
+            connectionStatusFlow.filterNotNull().collect {
+                val correctSesssionConnected = it.isConnected && it.sessionUUID == mSession?.uuid
+                if (correctSesssionConnected) onConnectedSuccessful()
+                else if (it.isConnected) finalizeReconnection()
+            }
         }
     }
     private fun onConnectedSuccessful() {
@@ -158,9 +165,12 @@ class AirBeamReconnector(
         finalizeReconnection()
     }
 
-    private fun observeSyncStatus() = coroutineScope.launch {
-        syncStatusFlow.collect { isSyncActive ->
-            if (isSyncActive) finalizeReconnection()
+    private fun observeSyncStatus() {
+        mSyncStatusJob?.cancel()
+        mSyncStatusJob = coroutineScope.launch {
+            syncStatusFlow.collect { isSyncActive ->
+                if (isSyncActive) finalizeReconnection()
+            }
         }
     }
 
@@ -200,6 +210,10 @@ class AirBeamReconnector(
         Log.d(TAG, "Finalizing reconnection")
         mAirBeamDiscoveryService.reset()
         mReconnectionTriesNumber = null
+        mConnectionStatusJob?.cancel()
+        mConnectionStatusJob = null
+        mSyncStatusJob?.cancel()
+        mSyncStatusJob = null
         mFinallyCallback?.invoke()
         eventbus.postSticky(ReconnectionEvent(mSession?.uuid, false))
         unregisterFromEventBus()
