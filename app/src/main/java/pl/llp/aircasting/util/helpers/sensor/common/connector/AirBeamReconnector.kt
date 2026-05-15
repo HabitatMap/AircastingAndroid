@@ -49,8 +49,11 @@ class AirBeamReconnector(
     private var mConnectionStatusJob: Job? = null
     private var mSyncStatusJob: Job? = null
 
+    // Counter is kept for logging/diagnostics only — there is no hard cap on
+    // reconnection attempts. The loop continues until either the device
+    // reconnects, the user stops recording, sync starts, or another session
+    // takes over (see observeConnectionStatus / observeSyncStatus / StopRecordingEvent).
     var mReconnectionTriesNumber: Int? = null
-    private val RECONNECTION_TRIES_MAX = 50
     private val RECONNECTION_TRIES_INTERVAL = 2000L // 2s between reconnection tries
 
     fun disconnect(session: Session) {
@@ -69,15 +72,7 @@ class AirBeamReconnector(
         Log.d(RC_TAG, "reconnect() called session=${session.uuid} device=${deviceItem?.id} tries=$mReconnectionTriesNumber")
         eventbus.safeRegister(this)
 
-        if (mReconnectionTriesNumber != null) {
-            mReconnectionTriesNumber?.let { tries ->
-                if (tries > RECONNECTION_TRIES_MAX) {
-                    Log.w(RC_TAG, "MAX retries exceeded (tries=$tries > $RECONNECTION_TRIES_MAX), finalizing with error")
-                    finalizeReconnectionWithError()
-                    return
-                }
-            }
-        } else {
+        if (mReconnectionTriesNumber == null) {
             // disconnecting first to make sure the connector thread is stopped correctly etc
             sendDisconnectedEvent(session)
         }
@@ -137,16 +132,16 @@ class AirBeamReconnector(
 
     private fun onDiscoveryFailed() {
         Log.w(RC_TAG, "onDiscoveryFailed() tries=$mReconnectionTriesNumber")
-        if (mReconnectionTriesNumber != null && mReconnectionTriesNumber!! < RECONNECTION_TRIES_MAX) {
-            mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
-            val session = mSession ?: return
-            Log.d(RC_TAG, "Scheduling retry after discovery failure: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
-            coroutineScope.launch {
-                delay(RECONNECTION_TRIES_INTERVAL)
-                reconnect(session, null, mErrorCallback, mFinallyCallback)
-            }
-        } else {
+        if (mReconnectionTriesNumber == null) {
             finalizeReconnectionWithError()
+            return
+        }
+        mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
+        val session = mSession ?: return
+        Log.d(RC_TAG, "Scheduling retry after discovery failure: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
+        coroutineScope.launch {
+            delay(RECONNECTION_TRIES_INTERVAL)
+            reconnect(session, null, mErrorCallback, mFinallyCallback)
         }
     }
 
@@ -208,25 +203,17 @@ class AirBeamReconnector(
     @Subscribe
     fun onMessageEvent(event: AirBeamConnectionFailedEvent) {
         Log.w(RC_TAG, "AirBeamConnectionFailedEvent device=${event.deviceItem.id} currentTries=$mReconnectionTriesNumber")
-        if (mReconnectionTriesNumber != null) {
-            mReconnectionTriesNumber?.let { tries ->
-                if (tries > RECONNECTION_TRIES_MAX) {
-                    Log.w(RC_TAG, "MAX retries exceeded on failure event (tries=$tries), finalizing with error")
-                    finalizeReconnectionWithError()
-                    return
-                } else {
-                    mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
-                    val deviceItem = event.deviceItem
-                    Log.d(RC_TAG, "Scheduling retry: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
-                    coroutineScope.launch {
-                        delay(RECONNECTION_TRIES_INTERVAL)
-                        reconnect(deviceItem)
-                    }
-                }
-            }
-        } else {
+        if (mReconnectionTriesNumber == null) {
             Log.w(RC_TAG, "Got connection-failed event but mReconnectionTriesNumber is null — finalizing with error")
             finalizeReconnectionWithError()
+            return
+        }
+        mReconnectionTriesNumber = mReconnectionTriesNumber?.plus(1)
+        val deviceItem = event.deviceItem
+        Log.d(RC_TAG, "Scheduling retry: attempt=$mReconnectionTriesNumber in ${RECONNECTION_TRIES_INTERVAL}ms")
+        coroutineScope.launch {
+            delay(RECONNECTION_TRIES_INTERVAL)
+            reconnect(deviceItem)
         }
     }
 
