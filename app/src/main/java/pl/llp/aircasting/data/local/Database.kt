@@ -28,7 +28,7 @@ import pl.llp.aircasting.util.converters.TagsConverter
         SensorThresholdDBObject::class,
         NoteDBObject::class,
         ActiveSessionMeasurementDBObject::class],
-    version = 35,
+    version = 36,
     exportSchema = true
 )
 @TypeConverters(

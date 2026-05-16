@@ -16,7 +16,7 @@ interface MeasurementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(measurement: MeasurementDBObject): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(measurements: List<MeasurementDBObject>): List<Long>
 
     @Query("SELECT * FROM measurements WHERE session_id=:sessionId ORDER BY time DESC LIMIT 1")
