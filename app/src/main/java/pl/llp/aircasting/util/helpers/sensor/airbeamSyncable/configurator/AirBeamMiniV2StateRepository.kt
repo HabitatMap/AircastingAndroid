@@ -32,6 +32,15 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         private set
     var savedSessionUuid: String? = null
         private set
+
+    private val _hasSavedMeasurementsFlow = MutableStateFlow(false)
+    /**
+     * Mirrors [hasSavedMeasurements] as a StateFlow so UI surfaces can react when the
+     * firmware re-notifies `STATE_RUNNING` with the has-measurements byte cleared —
+     * i.e. the BLE Active Sync stream on `0006` has finished flushing stored
+     * measurements. Used by [SyncAndFinishV2SessionDialog] to auto-finalize.
+     */
+    val hasSavedMeasurementsFlow: StateFlow<Boolean> = _hasSavedMeasurementsFlow.asStateFlow()
     // Bytes-on-disk reported by the firmware's HasSavedSession status (FW commit
     // `3990cf22`). Fed into [V2BleSyncOrchestrator.estimateSyncSeconds] so the
     // "sync before new session" dialog can render an ETA before the user starts.
@@ -103,6 +112,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     ) {
         deviceState = state
         hasSavedMeasurements = hasMeasurements
+        _hasSavedMeasurementsFlow.value = hasMeasurements
         savedSessionUuid = sessionUuid
         savedSessionFileSize = savedFileSize
     }

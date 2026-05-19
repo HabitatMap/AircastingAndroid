@@ -8,28 +8,26 @@ import androidx.core.text.color
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
-import pl.llp.aircasting.di.modules.IoCoroutineScope
-import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
-import pl.llp.aircasting.util.events.StopRecordingEvent
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import javax.inject.Inject
-import kotlin.coroutines.resume
 
 /**
- * Shown when the user finishes a mobile session and the V2 AirBeam has measurements
- * that haven't been streamed to the phone yet (device reported hasSavedMeasurements=true
- * while in Running state). Offers "Sync & Finish" (sends StartSync, waits, then stops)
- * or "Finish Without Sync" (stops immediately, discarding unsynced data).
+ * Shown when the user finishes a mobile session and the V2 AirBeam still has
+ * unsynced measurements in internal storage (firmware Status reported
+ * `hasSavedMeasurements=true`). The BLE Active Sync stream on characteristic `0006`
+ * is already draining those measurements in the background — this dialog just
+ * informs the user, blocks dismissal, and offers a single "cancel & discard"
+ * escape hatch that wipes the device's storage and finishes immediately.
+ *
+ * Auto-finalize: observes [AirBeamMiniV2StateRepository.hasSavedMeasurementsFlow]
+ * and posts the stop event the moment firmware re-notifies the flag cleared.
  */
 class SyncAndFinishV2SessionDialog(
     mFragmentManager: FragmentManager,
@@ -39,108 +37,64 @@ class SyncAndFinishV2SessionDialog(
     @Inject
     lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
-    @field:[Inject IoCoroutineScope]
-    lateinit var ioScope: CoroutineScope
-
-    private var dialogView: View? = null
-    private var progressJob: Job? = null
+    private var drainObserverJob: Job? = null
 
     override fun setupView(inflater: LayoutInflater): View {
         val view = super.setupView(inflater)
         (rootActivity.application as AircastingApplication).userDependentComponent?.inject(this)
 
-        view.cancel_button.text = getString(R.string.finish_without_sync)
+        view.finish_recording_button.visibility = View.GONE
+
+        view.cancel_button.text = getString(R.string.cancel_sync_and_discard)
         view.cancel_button.setOnClickListener {
+            stopObservingDrain()
             onFinishMobileSessionConfirmed(mSession)
             dismiss()
         }
 
-        dialogView = view
+        // Prevent dismissal via back / outside tap — only the explicit button or the
+        // auto-finalize path may close this dialog.
+        isCancelable = false
+
+        observeDrain()
         return view
     }
 
     override fun buildHeader(): SpannableStringBuilder =
         SpannableStringBuilder()
-            .append(getString(R.string.dialog_sync_and_finish_v2_header))
+            .append(getString(R.string.dialog_finish_with_active_sync_header))
             .append(" ")
             .color(blueColor()) { bold { append(mSession.name) } }
-            .append("?")
 
     override fun buildDescription(): SpannableStringBuilder =
-        SpannableStringBuilder().append(getString(R.string.dialog_sync_and_finish_v2_description))
+        SpannableStringBuilder().append(getString(R.string.dialog_finish_with_active_sync_description))
 
-    override fun finishButtonText() = getString(R.string.sync_and_finish_v2)
-
-    override fun finishSessionConfirmed() {
-        dialogView?.run {
-            finish_recording_button.isEnabled = false
-            finish_recording_button.text = syncingButtonText(0)
-            cancel_button.isEnabled = false
-        }
-        isCancelable = false
-        observeSyncProgress()
-
-        val session = mSession
-        // Run the sync on a UserSessionScope so dialog dismissal / activity navigation can't
-        // cancel it mid-flight. The orchestrator must finish three things in order or the
-        // session ends up in a half-state: (1) HTTP /sync download + measurement insert,
-        // (2) BLE reconnect + DiscardSession to clear AirBeam storage, (3) FINISHED transition
-        // and backend upload. V2MobileMeasurementsInserter skips finished sessions, so the
-        // FINISHED transition has to come AFTER the orchestrator returns.
-        ioScope.launch {
-            v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
-            // StopRecordingEvent → SessionManager → RecordingHandler.stopRecording marks the
-            // session FINISHED and runs sessionsSyncService.sync() to upload it to the
-            // backend. AirBeam storage Discard already happened inside the orchestrator
-            // (V2SyncOrchestrator.reconnectAndSendDiscard).
-            withContext(Dispatchers.Main) {
-                if (isAdded) {
-                    onFinishMobileSessionConfirmed(session)
-                    dismiss()
-                } else {
-                    // Activity/dialog already gone — fall back to direct event post + count
-                    // bookkeeping so the session still finalizes locally and uploads.
-                    EventBus.getDefault().post(StopRecordingEvent(session.uuid))
-                    settings.decreaseActiveMobileSessionsCount()
+    private fun observeDrain() {
+        drainObserverJob?.cancel()
+        // drop(1) skips the StateFlow's current value (true at dialog open). We only
+        // want to finalize when firmware FLIPS the flag false during this dialog's
+        // lifetime — not on the initial replay.
+        drainObserverJob = lifecycleScope.launch {
+            v2StateRepository.hasSavedMeasurementsFlow
+                .drop(1)
+                .filter { !it }
+                .collect {
+                    if (isAdded) {
+                        stopObservingDrain()
+                        onFinishMobileSessionConfirmed(mSession)
+                        dismiss()
+                    }
                 }
-            }
         }
     }
 
-    /**
-     * Mirror the orchestrator's WiFi-download progress on the action button so the user
-     * gets the same 0..100% feedback as the SD-sync wizard. Uses `lifecycleScope` so
-     * the collector is cancelled when the dialog goes away — but the underlying sync
-     * keeps running in [ioScope] (UserSessionScope) so dismissal doesn't cancel it.
-     */
-    private fun observeSyncProgress() {
-        progressJob?.cancel()
-        progressJob = lifecycleScope.launch {
-            v2StateRepository.syncProgress.collect { percent ->
-                dialogView?.finish_recording_button?.text = syncingButtonText(percent)
-            }
-        }
+    private fun stopObservingDrain() {
+        drainObserverJob?.cancel()
+        drainObserverJob = null
     }
-
-    private fun syncingButtonText(percent: Int): String =
-        getString(R.string.dialog_sync_and_finish_v2_syncing, percent)
 
     override fun onDestroyView() {
-        progressJob?.cancel()
+        stopObservingDrain()
         super.onDestroyView()
-    }
-
-    private suspend fun awaitWifiPickerEducation() {
-        withContext(Dispatchers.Main) {
-            suspendCancellableCoroutine<Unit> { cont ->
-                if (!isAdded) {
-                    if (!cont.isCompleted) cont.resume(Unit)
-                    return@suspendCancellableCoroutine
-                }
-                V2WifiPickerEducationalDialog(parentFragmentManager) {
-                    if (!cont.isCompleted) cont.resume(Unit)
-                }.show()
-            }
-        }
     }
 }

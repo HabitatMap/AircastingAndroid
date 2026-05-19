@@ -517,3 +517,17 @@ V2 saves live measurements **directly** to the DB via `saveMeasurementsToSession
 `NewMeasurementEvent.deviceId` originally split `sensorPackageName` on `:` and took the last segment, which broke V2 (`"AirBeamMini:AA:BB:CC:DD:EE:FF"` → only `"FF"`). It now uses `substringAfterLast(':')` so the full MAC is extracted (V1/microphone unchanged: `"AirBeamMini:246f28c47698"` → `"246f28c47698"`, `"Builtin"` → `"Builtin"`).
 
 After each direct DB save, V2 also posts a `NewMeasurementEvent` for PM1 and PM2.5 so UI subscribers (`SessionDetailsViewController` graph, `MobileActiveController` loader) refresh on the go. To avoid the standard observer double-saving the same measurement, `RecordingHandlerImpl.startRecording` skips `startObservingNewMeasurements` for V2 mobile sessions — V2 owns its own DB writes; the EventBus is used only for UI notification.
+
+### Finishing a Mobile Session While Stored Measurements Are Still Draining
+
+The dashboard "Finish recording" button (`MobileActiveSessionActionsBottomSheet`) and the `DisconnectedView` secondary button both check `AirBeamMiniV2StateRepository.hasSavedMeasurements` before stopping. When the flag is **true** at tap-time, `SyncAndFinishV2SessionDialog` is shown instead of the plain finish-confirmation dialog.
+
+The dialog does **not** trigger any explicit sync command — the BLE Active Sync stream on `0006` is already flushing stored measurements automatically (Scenario A above). It only:
+
+1. Renders an informational header + description ("Syncing measurements from the AirBeam…").
+2. Hides the primary "Finish" button and replaces the secondary action with a single **"Cancel & Discard"** button.
+3. Disables back/outside dismissal (`isCancelable = false`) so the user must pick an explicit path.
+4. Observes `AirBeamMiniV2StateRepository.hasSavedMeasurementsFlow` (a `StateFlow<Boolean>` mirror of `hasSavedMeasurements`, updated from `parseStatus()`) with `drop(1)` to skip the initial replay and finalize only on a fresh `true → false` transition. When firmware re-notifies the flag cleared (drain complete), the dialog auto-posts `StopRecordingEvent` and dismisses.
+5. On "Cancel & Discard", posts `StopRecordingEvent` immediately. `AirBeamConnector.onMessageEvent(StopRecordingEvent)` then runs `discardSession()` (writes `0x11 DiscardSession`) followed by `disconnect()`, so any remaining on-device measurements are wiped regardless of how the dialog closed.
+
+Both paths converge on `onFinishMobileSessionConfirmed(session)`, so `SessionManager` marks the session FINISHED and uploads it to the backend exactly as in the no-stored-data path. There is no Wi-Fi/SoftAP fallback on this flow — V2 finish-with-drain is BLE-only.
