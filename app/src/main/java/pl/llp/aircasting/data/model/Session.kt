@@ -416,10 +416,10 @@ open class Session(
     fun sensorPackageNamesString(): String {
         val phoneMicSensorPackageName = "Phone Mic"
         val packageNames = mStreams.mapNotNull { s ->
-            val name = s.sensorPackageName.split(":", "-").firstOrNull()
-            when (name) {
-                MicrophoneDeviceItem.DEFAULT_ID -> phoneMicSensorPackageName
-                else -> name
+            when {
+                s.sensorPackageName == MicrophoneDeviceItem.DEFAULT_ID -> phoneMicSensorPackageName
+                else -> s.sensorName.split(":", "-").firstOrNull()
+                    ?: s.sensorPackageName.split(":", "-").firstOrNull()
             }
         }
 
