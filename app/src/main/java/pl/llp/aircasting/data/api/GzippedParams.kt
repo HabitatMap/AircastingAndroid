@@ -10,20 +10,21 @@ import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 import java.util.zip.GZIPOutputStream
 
 class GzippedParams {
     companion object {
+        // BE stores timestamps via skip_time_zone_conversion_for_attributes — the wall-clock
+        // numerals are persisted as-is, and the trailing "Z" is a literal suffix, not a real
+        // UTC tag. Format Dates in the phone's local TZ so uploaded numerals match what BE
+        // expects (and what the V2 binary ingester writes via to_local_as_utc).
         private const val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
         private val gson = GsonBuilder()
             .registerTypeAdapter(
                 Date::class.java,
                 JsonSerializer<Date> { src, _, _ ->
-                    val formatter = SimpleDateFormat(DATE_FORMAT, Locale.US).apply {
-                        timeZone = TimeZone.getTimeZone("UTC")
-                    }
+                    val formatter = SimpleDateFormat(DATE_FORMAT, Locale.US)
                     JsonPrimitive(formatter.format(src))
                 }
             )

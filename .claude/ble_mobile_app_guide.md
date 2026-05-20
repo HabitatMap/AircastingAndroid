@@ -467,6 +467,36 @@ The app should schedule a repeating timer/coroutine for this. The command does n
 
 ---
 
+## 8a. Backend Timestamp Convention (Round-Trip)
+
+The AirCasting BE persists session/measurement timestamps using a "local wall-clock numerals treated as UTC" convention, not real UTC. Failing to match it on either parse or upload produces an offset on the dashboard card and graph; the symptom is most visible on **mapped fixed sessions** because BE looks up the session's time zone from latitude/longitude — locationless sessions default the TZ to UTC and therefore show no offset.
+
+Mechanism on BE (`HabitatMap/AirCasting`):
+
+- `Session#start_time_local` / `end_time_local` use `skip_time_zone_conversion_for_attributes`. `TimeToLocalInUTC.convert` strips the offset on assignment, so the column stores the local wall-clock numerals as-is.
+- `Measurement#time` on the V3 binary ingester path is written via `Utils.to_local_as_utc(epoch, session.time_zone)` — same convention.
+- `FixedPolling::Serializer` / `Session#as_json` serialize via `iso8601(3)`, appending a literal `"Z"` suffix. The `Z` is misleading: the numerals are the session's local wall clock, not real UTC.
+
+Required app handling (every BE-facing timestamp):
+
+- **Parse** with `TimeZone.getDefault()` (phone-local) so `Date.time` becomes the real instant for that wall clock.
+- **Format** for upload with `TimeZone.getDefault()` so the string carries the wall-clock numerals BE expects.
+
+Affected files (all must use phone-local TZ, never UTC):
+
+- `SessionDownloadService` — `start_time` / `end_time` parsing.
+- `DownloadMeasurementsService.updateSessionEndTime` — response `end_time` parsing.
+- `MeasurementsFactory` — measurement `time` parsing (V3 fixed-polling response).
+- `SessionParams` — `start_time` / `end_time` upload formatting.
+- `LastMeasurementTimeStringFactory` — `since` cursor compared against `end_time_local`.
+- `GzippedParams` — `Date` type adapter for gzipped JSON payloads (V1 measurement uploads, sync_with_versioning, fixed-session params). Pinning this adapter to UTC silently re-broke the round-trip — leave it at the JVM default.
+
+V2 binary measurement uploads (`V2FixedMeasurementsUploader`, `POST /api/v3/fixed_sessions/{uuid}/measurements`) send `u32` epoch seconds directly; BE applies `to_local_as_utc` itself, so no app-side TZ handling is needed there — but the resulting `end_time_local` it writes still uses the wall-clock convention, which is why the download/parse side must match.
+
+`SimpleDateFormat` instances for these patterns use `Locale.US`. That is correct and unrelated to user-facing i18n: the locale only affects how pattern symbols (digits, AM/PM) are rendered, and BE expects ASCII digits. Changing this to `Locale.getDefault()` would break parsing on devices with non-Latin numeral locales.
+
+---
+
 ## 9. Mobile Session Reconnection (Phase 3)
 
 When the app reconnects to the device during an active mobile session, two scenarios apply:

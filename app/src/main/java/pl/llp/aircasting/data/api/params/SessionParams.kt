@@ -5,8 +5,6 @@ import pl.llp.aircasting.data.model.TAGS_SEPARATOR
 import pl.llp.aircasting.util.DateConverter
 import java.util.*
 
-private val UTC = TimeZone.getTimeZone("UTC")
-
 class SessionParams(session: Session) {
     companion object {
         const val MOBILE_SESSION_TYPE = "MobileSession"
@@ -39,8 +37,11 @@ class SessionParams(session: Session) {
         }
         this.contribute = session.contribute
         this.title = session.name
-        this.start_time = DateConverter.toDateString(session.startTime, UTC)
-        this.end_time = DateConverter.toDateString(session.endTime ?: Date(), UTC)
+        // BE persists start_time_local / end_time_local as the wall-clock numerals
+        // (TimeToLocalInUTC strips the offset on assignment). Format in phone-local TZ so
+        // the upload string carries those numerals.
+        this.start_time = DateConverter.toDateString(session.startTime)
+        this.end_time = DateConverter.toDateString(session.endTime ?: Date())
         this.tag_list = session.tags.joinToString(TAGS_SEPARATOR)
         this.version = session.version
         this.is_indoor = session.indoor

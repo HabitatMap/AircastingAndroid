@@ -21,7 +21,6 @@ import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import java.util.Date
-import java.util.TimeZone
 import javax.inject.Inject
 
 @UserSessionScope
@@ -183,8 +182,11 @@ class DownloadMeasurementsService @Inject constructor(
         endTimeString: String?
     ) {
         endTimeString?.let {
+            // BE returns end_time as wall-clock numerals + literal "Z" suffix (see
+            // SessionDownloadService note). Parse in phone-local TZ so Date.time is the
+            // real instant matching that wall clock.
             dbSession.copy(
-                endTime = DateConverter.fromString(endTimeString, TimeZone.getTimeZone("UTC"))
+                endTime = DateConverter.fromString(endTimeString)
             ).let {
                 sessionsRepository.update(it)
             }
