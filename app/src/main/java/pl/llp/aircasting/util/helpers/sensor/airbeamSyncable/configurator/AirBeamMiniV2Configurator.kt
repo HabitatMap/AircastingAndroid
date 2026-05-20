@@ -68,6 +68,9 @@ class AirBeamMiniV2Configurator(
             UUID.fromString("a0e1f000-0005-4b3c-8e9a-1f2d3c4b5a60")
         private val SYNC_UUID: UUID =
             UUID.fromString("a0e1f000-0006-4b3c-8e9a-1f2d3c4b5a60")
+        // Standard BLE GATT Firmware Revision String (0x2A26) exposed under the V2 service.
+        private val FW_VERSION_UUID: UUID =
+            UUID.fromString("00002a26-0000-1000-8000-00805f9b34fb")
 
         private const val OPCODE_CONTINUE_SESSION: Byte = 0x10
         private const val OPCODE_DISCARD_SESSION: Byte = 0x11
@@ -117,6 +120,7 @@ class AirBeamMiniV2Configurator(
     private var responseCharacteristic: BluetoothGattCharacteristic? = null
     private var measurementCharacteristic: BluetoothGattCharacteristic? = null
     private var syncCharacteristic: BluetoothGattCharacteristic? = null
+    private var fwVersionCharacteristic: BluetoothGattCharacteristic? = null
 
     private var setTimeJob: Job? = null
     private var commandState: CommandState = CommandState.IDLE
@@ -169,6 +173,8 @@ class AirBeamMiniV2Configurator(
         responseCharacteristic = service.getCharacteristic(RESPONSE_UUID)
         measurementCharacteristic = service.getCharacteristic(MEASUREMENT_UUID)
         syncCharacteristic = service.getCharacteristic(SYNC_UUID)
+        // Optional — older firmware builds may not expose it; never fail discovery on this.
+        fwVersionCharacteristic = service.getCharacteristic(FW_VERSION_UUID)
 
         val hasNotify = { c: BluetoothGattCharacteristic? ->
             c != null && (c.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0
@@ -238,6 +244,21 @@ class AirBeamMiniV2Configurator(
         // Read Status characteristic explicitly — firmware sends the notification at ~300ms after
         // connection, but Android service discovery often takes longer, so the notification is
         // missed. The firmware stores the value via set_value(), so a READ always returns it.
+        // Read FW Revision String (GATT 0x2A26) — UTF-8 value from firmware's CARGO_PKG_VERSION.
+        if (fwVersionCharacteristic != null) {
+            queue.add(
+                readCharacteristic(fwVersionCharacteristic)
+                    .with { _, data ->
+                        val bytes = data.value ?: return@with
+                        val version = String(bytes, Charsets.UTF_8)
+                        Log.d(TAG, "V2: FW_VERSION=$version")
+                    }
+                    .fail { _, status -> Log.w(TAG, "V2: FW_VERSION read failed, status=$status") }
+            )
+        } else {
+            Log.d(TAG, "V2: FW_VERSION characteristic not present on device")
+        }
+
         queue.add(
             readCharacteristic(statusCharacteristic)
                 .with { _, data ->
@@ -273,6 +294,7 @@ class AirBeamMiniV2Configurator(
         responseCharacteristic = null
         measurementCharacteristic = null
         syncCharacteristic = null
+        fwVersionCharacteristic = null
     }
 
     override fun log(priority: Int, message: String) {
@@ -577,6 +599,7 @@ class AirBeamMiniV2Configurator(
         responseCharacteristic = null
         measurementCharacteristic = null
         syncCharacteristic = null
+        fwVersionCharacteristic = null
         v2StateRepository.reset()
     }
 
