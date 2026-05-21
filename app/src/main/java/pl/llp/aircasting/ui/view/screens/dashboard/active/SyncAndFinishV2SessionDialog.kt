@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -21,13 +22,16 @@ import javax.inject.Inject
 /**
  * Shown when the user finishes a mobile session and the V2 AirBeam still has
  * unsynced measurements in internal storage (firmware Status reported
- * `hasSavedMeasurements=true`). The BLE Active Sync stream on characteristic `0006`
- * is already draining those measurements in the background — this dialog just
- * informs the user, blocks dismissal, and offers a single "cancel & discard"
- * escape hatch that wipes the device's storage and finishes immediately.
+ * `hasSavedMeasurements=true`) OR is currently mid-drain on the Active Sync
+ * (`0006`) characteristic. The BLE Active Sync stream is already flushing those
+ * measurements in the background — this dialog just informs the user, blocks
+ * dismissal, and offers a single "cancel & discard" escape hatch that wipes the
+ * device's storage and finishes immediately.
  *
- * Auto-finalize: observes [AirBeamMiniV2StateRepository.hasSavedMeasurementsFlow]
- * and posts the stop event the moment firmware re-notifies the flag cleared.
+ * Auto-finalize: observes the OR of
+ * [AirBeamMiniV2StateRepository.hasSavedMeasurementsFlow] and
+ * [AirBeamMiniV2StateRepository.activeSyncDrainingFlow] and posts the stop
+ * event once both flip false (drain complete).
  */
 class SyncAndFinishV2SessionDialog(
     mFragmentManager: FragmentManager,
@@ -71,11 +75,14 @@ class SyncAndFinishV2SessionDialog(
 
     private fun observeDrain() {
         drainObserverJob?.cancel()
-        // drop(1) skips the StateFlow's current value (true at dialog open). We only
-        // want to finalize when firmware FLIPS the flag false during this dialog's
+        // drop(1) skips the combined StateFlow's current value (true at dialog open).
+        // We only want to finalize when both signals FLIP false during this dialog's
         // lifetime — not on the initial replay.
         drainObserverJob = lifecycleScope.launch {
-            v2StateRepository.hasSavedMeasurementsFlow
+            combine(
+                v2StateRepository.hasSavedMeasurementsFlow,
+                v2StateRepository.activeSyncDrainingFlow,
+            ) { hasSaved, draining -> hasSaved || draining }
                 .drop(1)
                 .filter { !it }
                 .collect {

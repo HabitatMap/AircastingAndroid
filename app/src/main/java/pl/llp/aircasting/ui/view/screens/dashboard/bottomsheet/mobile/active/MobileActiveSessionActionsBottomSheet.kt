@@ -46,7 +46,7 @@ open class MobileActiveSessionActionsBottomSheet(
         val stopButton = contentView?.stop_session_button
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
-            if (v2StateRepository.hasSavedMeasurements) {
+            if (v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining) {
                 SyncAndFinishV2SessionDialog(parentFragmentManager, session).show()
             } else {
                 FinishSessionConfirmationDialog(parentFragmentManager, session).show()

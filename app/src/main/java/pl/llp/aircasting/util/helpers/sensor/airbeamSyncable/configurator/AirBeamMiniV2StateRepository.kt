@@ -41,6 +41,24 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
      * measurements. Used by [SyncAndFinishV2SessionDialog] to auto-finalize.
      */
     val hasSavedMeasurementsFlow: StateFlow<Boolean> = _hasSavedMeasurementsFlow.asStateFlow()
+
+    private val _activeSyncDrainingFlow = MutableStateFlow(false)
+    /**
+     * True while the BLE Active Sync stream on `0006` is actively delivering stored
+     * measurements. Firmware does not include a `has_measurements` byte in the
+     * `STATE_RUNNING` Status payload, so [hasSavedMeasurements] cannot be used to
+     * detect mid-drain during an active mobile session. This flag is driven by the
+     * arrival of sync indications: set true on each chunk, cleared by an idle
+     * timeout in [AirBeamMiniV2Configurator] (no chunk for a few seconds = drain
+     * complete). [SyncAndFinishV2SessionDialog] observes it to keep itself open
+     * while the device is still pushing stored measurements.
+     */
+    val activeSyncDrainingFlow: StateFlow<Boolean> = _activeSyncDrainingFlow.asStateFlow()
+    val isActiveSyncDraining: Boolean get() = _activeSyncDrainingFlow.value
+
+    fun setActiveSyncDraining(value: Boolean) {
+        _activeSyncDrainingFlow.value = value
+    }
     // Bytes-on-disk reported by the firmware's HasSavedSession status (FW commit
     // `3990cf22`). Fed into [V2BleSyncOrchestrator.estimateSyncSeconds] so the
     // "sync before new session" dialog can render an ETA before the user starts.
@@ -152,6 +170,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         deviceState = AirBeamMiniV2Configurator.DeviceState.UNKNOWN
         syncCallback = null
         _syncInProgress.set(false)
+        _activeSyncDrainingFlow.value = false
         _readyToSyncPassword.resetReplayCache()
         _readyToSyncFileSize.resetReplayCache()
         _syncProgress.value = 0

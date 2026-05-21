@@ -176,7 +176,7 @@ class DisconnectedView(
             ).show()
         }
         mSecondaryButton?.setOnClickListener {
-            if (v2StateRepository.hasSavedMeasurements) {
+            if (v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining) {
                 SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show()
             } else {
                 FinishSessionConfirmationDialog(mSupportFragmentManager, session).show()

@@ -105,6 +105,13 @@ class AirBeamMiniV2Configurator(
         private const val NACK_SYNC_FAILED: Int = 0x06
 
         private const val SET_TIME_INTERVAL_MS = 3_600_000L
+
+        // After this many milliseconds without a new Sync (`0006`) indication, the
+        // Active Sync stream is treated as drained. Firmware does not signal end-of-
+        // drain explicitly — chunks just stop arriving once stored measurements are
+        // flushed. Tune higher if real-world inter-chunk gaps exceed this on the
+        // device.
+        private const val SYNC_DRAIN_IDLE_TIMEOUT_MS = 3_000L
     }
 
     enum class DeviceState {
@@ -123,6 +130,7 @@ class AirBeamMiniV2Configurator(
     private var fwVersionCharacteristic: BluetoothGattCharacteristic? = null
 
     private var setTimeJob: Job? = null
+    private var syncDrainIdleJob: Job? = null
     private var commandState: CommandState = CommandState.IDLE
     private var sessionReadyDeferred: CompletableDeferred<Boolean>? = null
     private var lastNackCode: Int = -1
@@ -583,9 +591,31 @@ class AirBeamMiniV2Configurator(
         Log.d(TAG, "V2: clearSDCard called (no-op)")
     }
 
+    /**
+     * Mark the Active Sync stream as currently draining stored measurements. Each
+     * incoming Sync (`0006`) indication bumps the idle timer; if no further chunk
+     * arrives within [SYNC_DRAIN_IDLE_TIMEOUT_MS], the flag is cleared.
+     *
+     * This compensates for the firmware sending an 18-byte `STATE_RUNNING` Status
+     * payload (no `has_measurements` byte), which leaves
+     * [AirBeamMiniV2StateRepository.hasSavedMeasurements] stuck at `false` during
+     * active recording even when the device is mid-drain.
+     */
+    private fun markActiveSyncDraining() {
+        v2StateRepository.setActiveSyncDraining(true)
+        syncDrainIdleJob?.cancel()
+        syncDrainIdleJob = coroutineScope.launch {
+            delay(SYNC_DRAIN_IDLE_TIMEOUT_MS)
+            v2StateRepository.setActiveSyncDraining(false)
+            Log.d(TAG, "V2: Active sync drain idle — marking complete")
+        }
+    }
+
     override fun reset() {
         Log.d(TAG, "V2: Resetting")
         setTimeJob?.cancel()
+        syncDrainIdleJob?.cancel()
+        syncDrainIdleJob = null
         commandState = CommandState.IDLE
         sessionReadyDeferred?.cancel()
         sessionReadyDeferred = null
@@ -1022,6 +1052,8 @@ class AirBeamMiniV2Configurator(
 
     private fun parseSyncChunk(bytes: ByteArray) {
         Log.d(TAG, "V2: Sync callback fired, ${bytes.size} bytes, deviceId=$deviceId, raw=${bytes.joinToString(" ") { "%02x".format(it) }}")
+
+        markActiveSyncDraining()
 
         if (bytes.size < 3) {
             Log.w(TAG, "V2: Sync chunk too short: ${bytes.size} bytes")
