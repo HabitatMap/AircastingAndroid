@@ -602,7 +602,6 @@ class AirBeamMiniV2Configurator(
      * active recording even when the device is mid-drain.
      */
     private fun markActiveSyncDraining() {
-        v2StateRepository.markActiveSyncStartedIfNeeded()
         v2StateRepository.setActiveSyncDraining(true)
         syncDrainIdleJob?.cancel()
         syncDrainIdleJob = coroutineScope.launch {
@@ -733,10 +732,6 @@ class AirBeamMiniV2Configurator(
                 } else {
                     0L
                 }
-                // Fresh drain candidate — clear any prior drain start timestamp so the
-                // finish-with-drain dialog's countdown is anchored to this session's
-                // first Sync (`0006`) chunk, not a previous reconnect's.
-                v2StateRepository.resetActiveSyncStart()
                 Log.d(TAG, "V2 Status: HasSavedSession, battery=$battery%, charging=$isCharging, hasMeasurements=$hasSavedMeasurements, fileSize=$savedSessionFileSize")
             }
 

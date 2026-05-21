@@ -267,7 +267,6 @@
     <!-- V2 sync dialogs -->
     <string name="dialog_finish_with_active_sync_header">Finishing recording for</string>
     <string name="dialog_finish_with_active_sync_description">Syncing measurements from the AirBeam…\nThe session will finish automatically once syncing completes.\nYou can cancel and discard the remaining measurements on the device.</string>
-    <string name="dialog_finish_with_active_sync_description_with_eta">Syncing measurements from the AirBeam…\nAbout &lt;b&gt;%1$s&lt;/b&gt; remaining.\nThe session will finish automatically once syncing completes.\nYou can cancel and discard the remaining measurements on the device.</string>
     <string name="cancel_sync_and_discard">Cancel &amp; Discard</string>
 
     <string name="dialog_sync_before_new_v2_header">Unsynced measurements found</string>
