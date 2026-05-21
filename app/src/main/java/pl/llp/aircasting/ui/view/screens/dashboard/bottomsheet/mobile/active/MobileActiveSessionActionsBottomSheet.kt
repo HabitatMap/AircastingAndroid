@@ -46,11 +46,15 @@ open class MobileActiveSessionActionsBottomSheet(
         val stopButton = contentView?.stop_session_button
         val session = mSessionPresenter?.session ?: return
         stopButton?.setOnClickListener {
+            // Capture FragmentManager from the host Activity, not the bottom sheet itself.
+            // dismiss() detaches this fragment so parentFragmentManager throws if the lambda
+            // resolves after the user taps Finish in the confirmation dialog.
+            val fm = requireActivity().supportFragmentManager
             val needsV2Sync = v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining
             val onConfirmed: (() -> Unit)? = if (needsV2Sync) {
-                { SyncAndFinishV2SessionDialog(parentFragmentManager, session).show() }
+                { SyncAndFinishV2SessionDialog(fm, session).show() }
             } else null
-            FinishSessionConfirmationDialog(parentFragmentManager, session, onConfirmed).show()
+            FinishSessionConfirmationDialog(fm, session, onConfirmed).show()
             dismiss()
         }
     }
