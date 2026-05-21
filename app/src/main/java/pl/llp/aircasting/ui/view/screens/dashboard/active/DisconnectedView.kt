@@ -176,11 +176,11 @@ class DisconnectedView(
             ).show()
         }
         mSecondaryButton?.setOnClickListener {
-            if (v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining) {
-                SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show()
-            } else {
-                FinishSessionConfirmationDialog(mSupportFragmentManager, session).show()
-            }
+            val needsV2Sync = v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining
+            val onConfirmed: (() -> Unit)? = if (needsV2Sync) {
+                { SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show() }
+            } else null
+            FinishSessionConfirmationDialog(mSupportFragmentManager, session, onConfirmed).show()
         }
     }
 

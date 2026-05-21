@@ -1,37 +1,38 @@
 package pl.llp.aircasting.ui.view.screens.dashboard.active
 
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.text.bold
-import androidx.core.text.color
+import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.finish_session_confirmation_dialog.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import pl.llp.aircasting.AircastingApplication
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.di.modules.IoCoroutineScope
+import pl.llp.aircasting.ui.view.screens.common.V2WifiPickerEducationalDialog
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator
 import javax.inject.Inject
+import kotlin.coroutines.resume
 
 /**
- * Shown when the user finishes a mobile session and the V2 AirBeam still has
- * unsynced measurements in internal storage (firmware Status reported
- * `hasSavedMeasurements=true`) OR is currently mid-drain on the Active Sync
- * (`0006`) characteristic. The BLE Active Sync stream is already flushing those
- * measurements in the background — this dialog just informs the user, blocks
- * dismissal, and offers a single "cancel & discard" escape hatch that wipes the
- * device's storage and finishes immediately.
+ * Shown after [FinishSessionConfirmationDialog] when the user finishes a mobile session
+ * and the V2 AirBeam still has unsynced measurements in internal storage. Drives the
+ * same BLE manual-sync flow as [pl.llp.aircasting.ui.view.screens.new_session.SyncBeforeNewV2SessionDialog]
+ * so the device's stored buffer is drained over BLE (firmware stops the running session
+ * in its `StartBleSync` handler — no new mobile measurements are streamed after this).
  *
- * Auto-finalize: observes the OR of
- * [AirBeamMiniV2StateRepository.hasSavedMeasurementsFlow] and
- * [AirBeamMiniV2StateRepository.activeSyncDrainingFlow] and posts the stop
- * event once both flip false (drain complete).
+ * The user can opt out via the "Finish Without Syncing" button, which falls through to
+ * the standard discard path (`StopRecordingEvent` → `AirBeamConnector.discardSession()`).
  */
 class SyncAndFinishV2SessionDialog(
     mFragmentManager: FragmentManager,
@@ -41,67 +42,162 @@ class SyncAndFinishV2SessionDialog(
     @Inject
     lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
-    private var drainObserverJob: Job? = null
+    @field:[Inject IoCoroutineScope]
+    lateinit var ioScope: CoroutineScope
+
+    private var rootView: View? = null
+    private var progressJob: Job? = null
 
     override fun setupView(inflater: LayoutInflater): View {
         val view = super.setupView(inflater)
         (rootActivity.application as AircastingApplication).userDependentComponent?.inject(this)
-
-        view.finish_recording_button.visibility = View.GONE
-
-        view.cancel_button.text = getString(R.string.cancel_sync_and_discard)
-        view.cancel_button.setOnClickListener {
-            stopObservingDrain()
-            onFinishMobileSessionConfirmed(mSession)
-            dismiss()
-        }
-
-        // Prevent dismissal via back / outside tap — only the explicit button or the
-        // auto-finalize path may close this dialog.
-        isCancelable = false
-
-        observeDrain()
+        rootView = view
+        renderInitial(view)
         return view
     }
 
-    override fun buildHeader(): SpannableStringBuilder =
-        SpannableStringBuilder()
-            .append(getString(R.string.dialog_finish_with_active_sync_header))
-            .append(" ")
-            .color(blueColor()) { bold { append(mSession.name) } }
+    private fun renderInitial(view: View) {
+        view.header.text = getString(R.string.dialog_sync_and_finish_v2_header)
+        view.informations_text_view.text = buildInitialDescription()
 
-    override fun buildDescription(): SpannableStringBuilder =
-        SpannableStringBuilder().append(getString(R.string.dialog_finish_with_active_sync_description))
+        view.finish_recording_button.text = getString(R.string.sync_and_finish_v2)
+        view.finish_recording_button.isEnabled = true
+        view.finish_recording_button.setOnClickListener { startSync() }
 
-    private fun observeDrain() {
-        drainObserverJob?.cancel()
-        // drop(1) skips the combined StateFlow's current value (true at dialog open).
-        // We only want to finalize when both signals FLIP false during this dialog's
-        // lifetime — not on the initial replay.
-        drainObserverJob = lifecycleScope.launch {
-            combine(
-                v2StateRepository.hasSavedMeasurementsFlow,
-                v2StateRepository.activeSyncDrainingFlow,
-            ) { hasSaved, draining -> hasSaved || draining }
-                .drop(1)
-                .filter { !it }
-                .collect {
-                    if (isAdded) {
-                        stopObservingDrain()
-                        onFinishMobileSessionConfirmed(mSession)
-                        dismiss()
-                    }
-                }
+        view.cancel_button.visibility = View.VISIBLE
+        view.cancel_button.text = getString(R.string.finish_v2_skip_sync)
+        view.cancel_button.isEnabled = true
+        view.cancel_button.setOnClickListener {
+            finishWithoutSync()
         }
     }
 
-    private fun stopObservingDrain() {
-        drainObserverJob?.cancel()
-        drainObserverJob = null
+    private fun startSync() {
+        rootView?.run {
+            finish_recording_button.isEnabled = false
+            finish_recording_button.text = syncingButtonText(0)
+            cancel_button.isEnabled = false
+        }
+        isCancelable = false
+        observeSyncProgress()
+
+        ioScope.launch {
+            val ok = runCatching {
+                v2StateRepository.startSync(
+                    keepConnectedAfter = true,
+                    onBeforePicker = ::awaitWifiPickerEducation,
+                )
+            }.getOrDefault(false)
+            withContext(Dispatchers.Main) {
+                progressJob?.cancel()
+                if (!isAdded) {
+                    finishSession()
+                    return@withContext
+                }
+                rootView?.let { view ->
+                    if (ok) renderSuccess(view) else renderFailure(view)
+                }
+            }
+        }
+    }
+
+    private fun renderSuccess(view: View) {
+        view.header.text = getString(R.string.dialog_sync_and_finish_v2_success_header)
+        view.informations_text_view.text = getString(R.string.dialog_sync_and_finish_v2_success_description)
+
+        view.finish_recording_button.text = getString(R.string.dialog_sync_and_finish_v2_success_button)
+        view.finish_recording_button.isEnabled = true
+
+        val marginPx = resources.getDimensionPixelSize(R.dimen.keyline_6)
+        view.finish_recording_button?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = marginPx
+        }
+
+        view.finish_recording_button.setOnClickListener { finishSession() }
+        view.cancel_button.visibility = View.GONE
+    }
+
+    private fun renderFailure(view: View) {
+        view.header.text = getString(R.string.dialog_sync_and_finish_v2_failure_header)
+        view.informations_text_view.text = getString(R.string.dialog_sync_and_finish_v2_failure_description)
+
+        view.finish_recording_button.text = getString(R.string.dialog_sync_and_finish_v2_failure_button)
+        view.finish_recording_button.isEnabled = true
+
+        val marginPx = resources.getDimensionPixelSize(R.dimen.keyline_6)
+        view.finish_recording_button?.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = marginPx
+        }
+
+        view.finish_recording_button.setOnClickListener { finishSession() }
+        view.cancel_button.visibility = View.GONE
+    }
+
+    private fun finishWithoutSync() {
+        progressJob?.cancel()
+        finishSession()
+    }
+
+    private fun finishSession() {
+        onFinishMobileSessionConfirmed(mSession)
+        dismiss()
+    }
+
+    /**
+     * Mirror the orchestrator's progress on the action button. Scoped to the dialog so it
+     * cancels on dismissal; the underlying sync runs in [ioScope] (UserSessionScope) and is
+     * unaffected.
+     */
+    private fun observeSyncProgress() {
+        progressJob?.cancel()
+        progressJob = lifecycleScope.launch {
+            v2StateRepository.syncProgress.collect { percent ->
+                rootView?.finish_recording_button?.text = syncingButtonText(percent)
+            }
+        }
+    }
+
+    private fun syncingButtonText(percent: Int): String =
+        getString(R.string.dialog_sync_before_new_v2_syncing_with_percent, percent)
+
+    private fun buildInitialDescription(): CharSequence {
+        val seconds = V2BleSyncOrchestrator.estimateSyncSeconds(v2StateRepository.savedSessionFileSize)
+        if (seconds <= 0L) return getString(R.string.dialog_sync_and_finish_v2_description)
+        val html = getString(R.string.dialog_sync_and_finish_v2_description_with_eta, formatEta(seconds))
+        return HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+    }
+
+    private fun formatEta(seconds: Long): String = when {
+        seconds < 60L -> getString(R.string.sync_eta_seconds, seconds.toInt())
+        seconds < 3600L -> {
+            val minutes = (seconds / 60L).toInt()
+            val remaining = (seconds % 60L).toInt()
+            if (remaining == 0) getString(R.string.sync_eta_minutes, minutes)
+            else getString(R.string.sync_eta_minutes_seconds, minutes, remaining)
+        }
+        else -> getString(
+            R.string.sync_eta_hours_minutes,
+            (seconds / 3600L).toInt(),
+            ((seconds % 3600L) / 60L).toInt(),
+        )
+    }
+
+    private suspend fun awaitWifiPickerEducation() {
+        withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine<Unit> { cont ->
+                if (!isAdded) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                    return@suspendCancellableCoroutine
+                }
+                V2WifiPickerEducationalDialog(parentFragmentManager) {
+                    if (!cont.isCompleted) cont.resume(Unit)
+                }.show()
+            }
+        }
     }
 
     override fun onDestroyView() {
-        stopObservingDrain()
+        progressJob?.cancel()
         super.onDestroyView()
     }
 }

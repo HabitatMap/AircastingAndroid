@@ -19,7 +19,8 @@ import javax.inject.Inject
 
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
-    protected val mSession: Session
+    protected val mSession: Session,
+    private val onConfirmed: (() -> Unit)? = null,
 ) : BaseDialog(mFragmentManager),
     FinishMobileSessionListener {
     private lateinit var mView: View
@@ -67,8 +68,14 @@ open class FinishSessionConfirmationDialog(
     }
 
     protected open fun finishSessionConfirmed() {
-        onFinishMobileSessionConfirmed(mSession)
-        dismiss()
+        val callback = onConfirmed
+        if (callback != null) {
+            dismiss()
+            callback()
+        } else {
+            onFinishMobileSessionConfirmed(mSession)
+            dismiss()
+        }
     }
 
     protected fun blueColor(): Int {
