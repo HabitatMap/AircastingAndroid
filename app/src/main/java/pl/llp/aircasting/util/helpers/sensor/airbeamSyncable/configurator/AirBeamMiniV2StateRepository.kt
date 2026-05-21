@@ -59,6 +59,28 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
     fun setActiveSyncDraining(value: Boolean) {
         _activeSyncDrainingFlow.value = value
     }
+
+    private val _activeSyncStartMsFlow = MutableStateFlow(0L)
+    /**
+     * Wall-clock millis of the first Sync (`0006`) indication of the current drain
+     * (reset on every `STATE_HAS_SAVED_SESSION` notification — i.e. the start of a
+     * fresh drain candidate). 0 means no drain has begun yet. Combined with
+     * [savedSessionFileSize] this lets the finish-with-drain dialog compute a
+     * countdown ETA without inventing a new throughput model — it reuses
+     * [pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator.estimateSyncSeconds].
+     */
+    val activeSyncStartMsFlow: StateFlow<Long> = _activeSyncStartMsFlow.asStateFlow()
+    val activeSyncStartMs: Long get() = _activeSyncStartMsFlow.value
+
+    fun markActiveSyncStartedIfNeeded() {
+        if (_activeSyncStartMsFlow.value == 0L) {
+            _activeSyncStartMsFlow.value = System.currentTimeMillis()
+        }
+    }
+
+    fun resetActiveSyncStart() {
+        _activeSyncStartMsFlow.value = 0L
+    }
     // Bytes-on-disk reported by the firmware's HasSavedSession status (FW commit
     // `3990cf22`). Fed into [V2BleSyncOrchestrator.estimateSyncSeconds] so the
     // "sync before new session" dialog can render an ETA before the user starts.
@@ -171,6 +193,7 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         syncCallback = null
         _syncInProgress.set(false)
         _activeSyncDrainingFlow.value = false
+        _activeSyncStartMsFlow.value = 0L
         _readyToSyncPassword.resetReplayCache()
         _readyToSyncFileSize.resetReplayCache()
         _syncProgress.value = 0
