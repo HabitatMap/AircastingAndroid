@@ -50,11 +50,17 @@ open class MobileActiveSessionActionsBottomSheet(
             // dismiss() detaches this fragment so parentFragmentManager throws if the lambda
             // resolves after the user taps Finish in the confirmation dialog.
             val fm = requireActivity().supportFragmentManager
-            val needsV2Sync = v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining
-            val onConfirmed: (() -> Unit)? = if (needsV2Sync) {
-                { SyncAndFinishV2SessionDialog(fm, session).show() }
-            } else null
-            FinishSessionConfirmationDialog(fm, session, onConfirmed).show()
+            // Evaluate the V2 drain state at *confirm* time, not at stop-tap time — passive
+            // Active-Sync chunks routinely begin streaming up to a second after BLE reconnect,
+            // so an early snapshot misses the drain and skips the manual sync dialog.
+            FinishSessionConfirmationDialog(fm, session, onConfirmed = {
+                if (v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining) {
+                    SyncAndFinishV2SessionDialog(fm, session).show()
+                    true
+                } else {
+                    false
+                }
+            }).show()
             dismiss()
         }
     }

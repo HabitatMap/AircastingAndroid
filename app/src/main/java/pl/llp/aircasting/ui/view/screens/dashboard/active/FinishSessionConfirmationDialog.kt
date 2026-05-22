@@ -20,7 +20,14 @@ import javax.inject.Inject
 open class FinishSessionConfirmationDialog(
     mFragmentManager: FragmentManager,
     protected val mSession: Session,
-    private val onConfirmed: (() -> Unit)? = null,
+    /**
+     * Invoked when the user confirms "Finish recording". Returning `true` signals the lambda
+     * handled the finish flow (e.g. by chaining into another dialog) and the dialog will only
+     * dismiss. Returning `false` falls through to the default `onFinishMobileSessionConfirmed`
+     * cleanup. The lambda runs at confirm time, not at dialog construction — callers may
+     * therefore read live state to decide whether to chain.
+     */
+    private val onConfirmed: (() -> Boolean)? = null,
 ) : BaseDialog(mFragmentManager),
     FinishMobileSessionListener {
     private lateinit var mView: View
@@ -69,9 +76,9 @@ open class FinishSessionConfirmationDialog(
 
     protected open fun finishSessionConfirmed() {
         val callback = onConfirmed
-        if (callback != null) {
+        val handled = callback?.invoke() ?: false
+        if (handled) {
             dismiss()
-            callback()
         } else {
             onFinishMobileSessionConfirmed(mSession)
             dismiss()

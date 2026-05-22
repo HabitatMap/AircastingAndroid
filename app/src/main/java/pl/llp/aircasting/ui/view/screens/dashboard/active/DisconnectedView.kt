@@ -176,11 +176,16 @@ class DisconnectedView(
             ).show()
         }
         mSecondaryButton?.setOnClickListener {
-            val needsV2Sync = v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining
-            val onConfirmed: (() -> Unit)? = if (needsV2Sync) {
-                { SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show() }
-            } else null
-            FinishSessionConfirmationDialog(mSupportFragmentManager, session, onConfirmed).show()
+            // Evaluate V2 drain state at confirm time so a late-arriving Active Sync chunk
+            // still routes through SyncAndFinishV2SessionDialog instead of a silent finish.
+            FinishSessionConfirmationDialog(mSupportFragmentManager, session, onConfirmed = {
+                if (v2StateRepository.hasSavedMeasurements || v2StateRepository.isActiveSyncDraining) {
+                    SyncAndFinishV2SessionDialog(mSupportFragmentManager, session).show()
+                    true
+                } else {
+                    false
+                }
+            }).show()
         }
     }
 
