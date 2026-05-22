@@ -9,6 +9,7 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.DateConverter
 import pl.llp.aircasting.util.NoteResponseParser
 import pl.llp.aircasting.util.exceptions.UnexpectedAPIError
+import java.util.TimeZone
 import javax.inject.Inject
 
 @UserSessionScope
@@ -24,10 +25,14 @@ class SessionDownloadService @Inject constructor(
     private fun sessionFromResponse(sessionResponse: SessionResponse): Session {
         // BE stores start_time_local / end_time_local as wall-clock numerals treated as
         // UTC (TimeToLocalInUTC + skip_time_zone_conversion_for_attributes) and tags them
-        // with a misleading "Z" suffix. Parse in phone-local TZ so Date.time is the real
-        // instant for that wall clock.
-        val startTime =
-            DateConverter.fromString(sessionResponse.start_time) ?: throw UnexpectedAPIError()
+        // with a misleading "Z" suffix. The wall clock is the session's `time_zone` on
+        // BE: mapped sessions get a lat/lng-derived TZ (≈ phone-default), indoor /
+        // locationless sessions default to UTC. Parse with the matching TZ so Date.time
+        // is the real instant for that wall clock.
+        val beTimeZone =
+            if (sessionResponse.is_indoor) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+        val startTime = DateConverter.fromString(sessionResponse.start_time, beTimeZone)
+            ?: throw UnexpectedAPIError()
 
         val streams = sessionResponse.streams.values.map { stream ->
             MeasurementStream(stream)
@@ -42,7 +47,7 @@ class SessionDownloadService @Inject constructor(
             ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
             Session.Status.FINISHED,
             startTime,
-            DateConverter.fromString(sessionResponse.end_time),
+            DateConverter.fromString(sessionResponse.end_time, beTimeZone),
             sessionResponse.version,
             sessionResponse.deleted,
             null,

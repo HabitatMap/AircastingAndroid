@@ -469,7 +469,7 @@ The app should schedule a repeating timer/coroutine for this. The command does n
 
 ## 8a. Backend Timestamp Convention (Round-Trip)
 
-The AirCasting BE persists session/measurement timestamps using a "local wall-clock numerals treated as UTC" convention, not real UTC. Failing to match it on either parse or upload produces an offset on the dashboard card and graph; the symptom is most visible on **mapped fixed sessions** because BE looks up the session's time zone from latitude/longitude — locationless sessions default the TZ to UTC and therefore show no offset.
+The AirCasting BE persists session/measurement timestamps using a "local wall-clock numerals treated as UTC" convention, not real UTC. Failing to match it on either parse or upload produces an offset on the dashboard card and graph.
 
 Mechanism on BE (`HabitatMap/AirCasting`):
 
@@ -477,21 +477,23 @@ Mechanism on BE (`HabitatMap/AirCasting`):
 - `Measurement#time` on the V3 binary ingester path is written via `Utils.to_local_as_utc(epoch, session.time_zone)` — same convention.
 - `FixedPolling::Serializer` / `Session#as_json` serialize via `iso8601(3)`, appending a literal `"Z"` suffix. The `Z` is misleading: the numerals are the session's local wall clock, not real UTC.
 
-Required app handling (every BE-facing timestamp):
+The wall clock is the session's `time_zone` column on BE. For **mapped (outdoor) fixed sessions** BE looks up the TZ from `latitude` / `longitude` — usually ≈ the phone-default TZ in normal use, so phone-default parsing/formatting works end-to-end. For **indoor / locationless fixed sessions** BE has no coordinates, so `session.time_zone` defaults to `UTC`, and the wall-clock numerals BE writes (notably for `Measurement#time` and `Session#end_time` updated from measurement ingest) are UTC. The app must parse/format those timestamps as UTC, not phone-default, or the graph and end-time drift by the phone-TZ offset.
 
-- **Parse** with `TimeZone.getDefault()` (phone-local) so `Date.time` becomes the real instant for that wall clock.
-- **Format** for upload with `TimeZone.getDefault()` so the string carries the wall-clock numerals BE expects.
+Required app handling (every BE-facing fixed-session timestamp): use phone-default TZ when `is_indoor == false`, UTC when `is_indoor == true`. `DownloadMeasurementsService.beTimeZone(isIndoor)` is the canonical helper.
 
-Affected files (all must use phone-local TZ, never UTC):
+Affected files:
 
-- `SessionDownloadService` — `start_time` / `end_time` parsing.
-- `DownloadMeasurementsService.updateSessionEndTime` — response `end_time` parsing.
-- `MeasurementsFactory` — measurement `time` parsing (V3 fixed-polling response).
-- `SessionParams` — `start_time` / `end_time` upload formatting.
-- `LastMeasurementTimeStringFactory` — `since` cursor compared against `end_time_local`.
+- `SessionDownloadService` — `start_time` / `end_time` parsing keyed on `sessionResponse.is_indoor`.
+- `DownloadMeasurementsService.updateSessionEndTime` — response `end_time` parsing keyed on `dbSession.is_indoor`.
+- `DownloadMeasurementsService.saveStreamData` — passes the indoor-aware TZ into `MeasurementsFactory.get`.
+- `MeasurementsFactory.get` — accepts a `TimeZone` param (default phone-local) for measurement `time` parsing (V3 fixed-polling response).
+- `LastMeasurementTimeStringFactory.get` — accepts a `TimeZone` param so the `since` cursor matches BE's stored numerals.
+- `SessionParams` — `start_time` / `end_time` upload formatting uses phone-default TZ (the V1 path; BE strips the offset on assignment regardless of session TZ, so this stays unchanged).
 - `GzippedParams` — `Date` type adapter for gzipped JSON payloads (V1 measurement uploads, sync_with_versioning, fixed-session params). Pinning this adapter to UTC silently re-broke the round-trip — leave it at the JVM default.
 
-V2 binary measurement uploads (`V2FixedMeasurementsUploader`, `POST /api/v3/fixed_sessions/{uuid}/measurements`) send `u32` epoch seconds directly; BE applies `to_local_as_utc` itself, so no app-side TZ handling is needed there — but the resulting `end_time_local` it writes still uses the wall-clock convention, which is why the download/parse side must match.
+V2 binary measurement uploads (`V2FixedMeasurementsUploader`, `POST /api/v3/fixed_sessions/{uuid}/measurements`) send `u32` epoch seconds directly; BE applies `to_local_as_utc` itself, so no app-side TZ handling is needed there — but the resulting `Measurement#time` and `end_time_local` BE writes use the session-TZ wall-clock convention (UTC for indoor, geo TZ for mapped), which is why the download/parse side must match.
+
+Mobile sessions are not affected: they never hit the V3 fixed-polling endpoint and are not flagged `is_indoor`.
 
 `SimpleDateFormat` instances for these patterns use `Locale.US`. That is correct and unrelated to user-facing i18n: the locale only affects how pattern symbols (digits, AM/PM) are rendered, and BE expects ASCII digits. Changing this to `Locale.getDefault()` would break parsing on devices with non-Latin numeral locales.
 

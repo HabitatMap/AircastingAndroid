@@ -21,6 +21,7 @@ import pl.llp.aircasting.util.exceptions.DownloadMeasurementsError
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.MeasurementsAveragingHelper
 import java.util.Date
+import java.util.TimeZone
 import javax.inject.Inject
 
 @UserSessionScope
@@ -73,7 +74,7 @@ class DownloadMeasurementsService @Inject constructor(
     ) = withContext(dispatcher) {
         sessionWithMeasurements.apply {
             val lastMeasurementSyncTimeString =
-                lastMeasurementTimeString(session.id, session.endTime)
+                lastMeasurementTimeString(session.id, session.endTime, session.is_indoor)
             runCatching {
                 apiService.downloadFixedMeasurements(
                     session.uuid,
@@ -90,12 +91,13 @@ class DownloadMeasurementsService @Inject constructor(
     private suspend fun lastMeasurementTimeString(
         sessionId: Long,
         endTime: Date?,
+        isIndoor: Boolean,
     ): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
             LastMeasurementSyncCalculator.calculate(endTime, lastMeasurementTime)
 
-        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime)
+        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, beTimeZone(isIndoor))
     }
 
     private suspend fun updateSessionData(
@@ -161,6 +163,7 @@ class DownloadMeasurementsService @Inject constructor(
         val measurements = MeasurementsFactory.get(
             streamResponse.measurements,
             averagingFrequency,
+            beTimeZone(session.is_indoor),
         )
         measurementsRepository.insertAll(streamId, session.id, measurements)
 
@@ -182,14 +185,22 @@ class DownloadMeasurementsService @Inject constructor(
         endTimeString: String?
     ) {
         endTimeString?.let {
-            // BE returns end_time as wall-clock numerals + literal "Z" suffix (see
-            // SessionDownloadService note). Parse in phone-local TZ so Date.time is the
-            // real instant matching that wall clock.
+            // BE returns end_time as wall-clock numerals + literal "Z" suffix. The wall
+            // clock is the session's TZ on BE: phone-default for mapped sessions, UTC for
+            // indoor / locationless ones (see SessionDownloadService note). Parse with
+            // the matching TZ so Date.time is the real instant.
             dbSession.copy(
-                endTime = DateConverter.fromString(endTimeString)
+                endTime = DateConverter.fromString(endTimeString, beTimeZone(dbSession.is_indoor))
             ).let {
                 sessionsRepository.update(it)
             }
         }
     }
+
+    // BE persists session/measurement timestamps as wall-clock numerals tagged with a
+    // literal "Z". The wall clock is the session's `time_zone` on BE: mapped sessions
+    // get a lat/lng-derived TZ (≈ phone-default), indoor / locationless sessions default
+    // to UTC. Use this helper for every BE-facing parse/format on fixed sessions.
+    private fun beTimeZone(isIndoor: Boolean): TimeZone =
+        if (isIndoor) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
 }
