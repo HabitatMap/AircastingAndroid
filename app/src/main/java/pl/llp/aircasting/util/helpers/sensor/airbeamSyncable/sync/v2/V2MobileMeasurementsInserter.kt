@@ -89,14 +89,15 @@ class V2MobileMeasurementsInserter @Inject constructor(
         candidates: List<Measurement>,
     ) {
         val streamId = measurementStreamsRepository.getIdOrInsert(sessionId, stream)
-        val lastTime = measurementsRepository.lastMeasurementTime(sessionId, streamId)
-        val toInsert = if (lastTime == null) candidates else candidates.filter { it.time > lastTime }
-        if (toInsert.isEmpty()) {
-            Log.d(TAG, "V2MobileInserter: ${stream.sensorName} — nothing newer than $lastTime")
-            return
-        }
-        Log.d(TAG, "V2MobileInserter: inserting ${toInsert.size} of ${candidates.size} for ${stream.sensorName}")
-        measurementsRepository.insertAll(streamId, sessionId, toInsert)
+        if (candidates.isEmpty()) return
+        // Synced records can span the entire session (firmware writes every measurement to
+        // flash regardless of BLE state), so they overlap arbitrarily with rows the live
+        // path already inserted. Hand the full batch to the DAO and let the unique index
+        // on (session_id, stream_id, time) + `@Insert(OnConflictStrategy.IGNORE)` drop
+        // duplicates. Filtering by `time > lastTime` here would silently skip BLE-gap
+        // fill-ins that arrive out-of-order on the Sync-and-Finish path.
+        Log.d(TAG, "V2MobileInserter: inserting ${candidates.size} candidates for ${stream.sensorName} (DB dedupes via unique index)")
+        measurementsRepository.insertAll(streamId, sessionId, candidates)
     }
 
     private suspend fun lastKnownLocation(sessionId: Long): Session.Location {
