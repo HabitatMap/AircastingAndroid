@@ -578,8 +578,10 @@ If `onDeviceDisconnected` runs the standard teardown (`onDisconnected()` → pos
 
 Required guards in `AirBeamMiniFallbackConnector`:
 
-1. `onDeviceDisconnected`: if `isV2Attempt && !connectionEstablished.get()` (V2 attempt in flight, no `onConnectionSuccessful` yet), route through `onFailedCallback(device, reason)` and `return`. Do NOT call `onDisconnected()` or `disconnect()` — keep the service alive and the EventBus subscription intact.
-2. `onDeviceFailedToConnect`: route through `onFailedCallback` too, so both Nordic exit paths share dedup logic.
-3. `onFailedCallback`: idempotent. `v2FailureHandled` / `v1FailureHandled` flags (reset in `start()`) prevent the trailing `.fail` (or the duplicate `onDeviceFailedToConnect`) from re-entering after the first callback has already transitioned the state machine.
+1. `onDeviceDisconnected`: if `isV2Attempt && !connectionEstablished.get()` (V2 attempt in flight, no `onConnectionSuccessful` yet), route through `onFailedCallback(device, reason, fromV2Leg = true)` and `return`. Do NOT call `onDisconnected()` or `disconnect()` — keep the service alive and the EventBus subscription intact.
+2. `onDeviceFailedToConnect`: route through `onFailedCallback` too, mapping `fromV2Leg = isV2Attempt`.
+3. `connectWith`: capture leg at closure-creation time (`val isV2Leg = isV2Attempt`) and pass it into the `.fail` lambda as `fromV2Leg`. Nordic's V2 ConnectRequest fires `.fail` ~15ms after the observer's `onDeviceDisconnected`, by which point `isV2Attempt` has already flipped to false; reading the shared field at call time would misroute the late V2 `.fail` into the V1-failure branch and post `AirBeamConnectionFailedEvent` mid-V1-connect, triggering `NewSessionController.onBackPressed()` → `ConnectingAirBeamController.onBackPressed` → `DisconnectExternalSensorsEvent` → V1 torn down.
+4. `onFailedCallback`: idempotent per leg. `v2FailureHandled` / `v1FailureHandled` flags (reset in `start()`) short-circuit duplicate callbacks for that leg.
+5. V2 transition cleanup: `v2Configurator.closeConnection()` + `v2Configurator.reset()` before `connectWith(v1Configurator, …)` so V2's BleManager state (characteristics, jobs, `AirBeamMiniV2StateRepository`) is wiped — previously `reset()` only ran on the now-bypassed `onDisconnected` teardown path.
 
 Together these mean: V2 service-not-supported → silent transition to V1 → V1 success → ConfigureSession reaches V1 → V1 mobile session starts as it did before V2 was added.
