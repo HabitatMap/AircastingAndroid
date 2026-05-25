@@ -191,7 +191,7 @@ class AirBeamMiniFallbackConnector(
 
     override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
         activeConfigurator.log(VERBOSE, "Disconnected reason: $reason")
-        Log.w("[RECONNECT]", "AirBeamMiniFallback.onDeviceDisconnected device=${device.address} reason=$reason isV2=$isV2Attempt syncInProgress=${v2StateRepository.syncInProgress}")
+        Log.w("[RECONNECT]", "AirBeamMiniFallback.onDeviceDisconnected device=${device.address} reason=$reason isV2=$isV2Attempt syncInProgress=${v2StateRepository.syncInProgress} established=${connectionEstablished.get()}")
 
         val deviceItem = DeviceItem(device)
 
@@ -203,6 +203,22 @@ class AirBeamMiniFallbackConnector(
         if (isV2Attempt && v2StateRepository.syncInProgress) {
             Log.d("[RECONNECT]", "AirBeamMiniFallback: BLE disconnected during V2 sync (reason=$reason) — deferring teardown until orchestrator finishes")
             mErrorHandler.handle(SensorDisconnectedError("AirBeamMiniFallback onDeviceDisconnected during V2 sync, deferring (reason=$reason)"))
+            return
+        }
+
+        // V2 service-not-supported (and any other pre-success V2 disconnect) on a V1
+        // firmware device: Nordic surfaces this via onDeviceDisconnected — NOT
+        // onDeviceFailedToConnect. If we fall through to the standard teardown here,
+        // `onDisconnected()` posts SensorDisconnectedUnexpectedlyEvent → AirBeamService
+        // stopSelf()'s AirBeamRecordSessionService, and `disconnect()` unregisters
+        // AirBeamConnector from EventBus. The subsequent .fail callback then transitions
+        // to V1 and V1 connects successfully — but the service is dead, so ConfigureSession
+        // has no subscriber when the user taps Start Recording. Route this through the
+        // idempotent fallback path instead. The dedup flag prevents re-entry when .fail
+        // also fires.
+        if (isV2Attempt && !connectionEstablished.get()) {
+            Log.d("[RECONNECT]", "AirBeamMiniFallback: V2 disconnected before success (reason=$reason) — routing to V1 fallback without teardown")
+            onFailedCallback(device, reason)
             return
         }
 
