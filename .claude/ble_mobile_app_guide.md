@@ -570,6 +570,16 @@ Flow:
 
 All paths converge on `onFinishMobileSessionConfirmed(session)`, so `SessionManager` cleans up services, navigates to the dormant tab, and the backend sync runs from `RecordingHandler.stopRecording`. V2 manual sync is BLE-only — no Wi-Fi/SoftAP fallback on this flow.
 
-### V2 → V1 Fallback: Nordic Double-Fire Hazard
+### V2 → V1 Fallback: Nordic Disconnect-Path + Double-Fire Hazard
 
-Nordic `BleManager` invokes BOTH `ConnectRequest.fail { ... }` and `ConnectionObserver.onDeviceFailedToConnect(...)` for a single failure event (the canonical trigger is `isRequiredServiceSupported()` returning false — exactly what happens when `AirBeamMiniV2Configurator` probes a V1 firmware device). `AirBeamMiniFallbackConnector.onFailedCallback` must be idempotent across these duplicate calls: the first invocation flips `isV2Attempt = false` and starts the V1 connect, and the second invocation (which sees `isV2Attempt = false`) must NOT enter the "V1 also failed" branch. Track this with per-attempt `v2FailureHandled` / `v1FailureHandled` flags reset in `start()`, and route `onDeviceFailedToConnect` through `onFailedCallback` so both Nordic callbacks share the dedup logic. Without this, the duplicate posts `AirBeamConnectionFailedEvent` while the V1 fallback connect is still in flight — `NewSessionController` reacts with `onBackPressed()` + error dialog and the user is bounced out of the wizard even though V1 ultimately connects, presenting as "AirBeam connects but the session never starts."
+On an AirBeam Mini with V1 firmware, `AirBeamMiniV2Configurator.isRequiredServiceSupported()` returns false after V2 GATT connect + service discovery. Nordic 2.x surfaces this through **`ConnectionObserver.onDeviceDisconnected(reason=4 = REASON_NOT_SUPPORTED)`** — NOT through `onDeviceFailedToConnect`. The `ConnectRequest.fail { ... }` callback fires later (with `reason=-2`) once the request is finalized.
+
+If `onDeviceDisconnected` runs the standard teardown (`onDisconnected()` → posts `SensorDisconnectedUnexpectedlyEvent`, `mListener?.onDisconnect()` → `AirBeamService.onDisconnect()` → `stopSelf()`, then `disconnect()` → `unregisterFromEventBus`), the foreground `AirBeamRecordSessionService` is killed and `AirBeamConnector` loses its EventBus subscription **before** the trailing `.fail` callback runs. The fallback then starts a V1 connect that succeeds — UI even shows "AirBeam Connected" because `connectionStatusFlow` is still emitting — but `ConfigureSession` events posted on Start Recording have no subscriber, so the V1 device never receives the location/time/mobile-mode commands and the session never starts streaming.
+
+Required guards in `AirBeamMiniFallbackConnector`:
+
+1. `onDeviceDisconnected`: if `isV2Attempt && !connectionEstablished.get()` (V2 attempt in flight, no `onConnectionSuccessful` yet), route through `onFailedCallback(device, reason)` and `return`. Do NOT call `onDisconnected()` or `disconnect()` — keep the service alive and the EventBus subscription intact.
+2. `onDeviceFailedToConnect`: route through `onFailedCallback` too, so both Nordic exit paths share dedup logic.
+3. `onFailedCallback`: idempotent. `v2FailureHandled` / `v1FailureHandled` flags (reset in `start()`) prevent the trailing `.fail` (or the duplicate `onDeviceFailedToConnect`) from re-entering after the first callback has already transitioned the state machine.
+
+Together these mean: V2 service-not-supported → silent transition to V1 → V1 success → ConfigureSession reaches V1 → V1 mobile session starts as it did before V2 was added.
