@@ -66,14 +66,20 @@ class AirBeamMiniFallbackConnector(
                 return
             }
 
-        Log.d("[RECONNECT]", "AirBeamMiniFallback.connectWith: ${if (isV2Attempt) "V2" else "V1"} device=${deviceItem.id} address=${bluetoothDevice.address} autoConnect=true")
+        // Capture leg at closure-creation time. Nordic's `.fail` callback for the V2
+        // ConnectRequest can fire AFTER `onDeviceDisconnected` has already routed the
+        // failure through `onFailedCallback` and flipped `isV2Attempt` to false. Reading
+        // `isV2Attempt` at callback time would misclassify the late V2 `.fail` as a V1
+        // failure and post `AirBeamConnectionFailedEvent`.
+        val isV2Leg = isV2Attempt
+        Log.d("[RECONNECT]", "AirBeamMiniFallback.connectWith: ${if (isV2Leg) "V2" else "V1"} device=${deviceItem.id} address=${bluetoothDevice.address} autoConnect=true")
         configurator.connectDevice(bluetoothDevice)
             .timeout(0)
             .useAutoConnect(true)
-            .fail { device, status -> onFailedCallback(device, status) }
+            .fail { device, status -> onFailedCallback(device, status, fromV2Leg = isV2Leg) }
             .done { _ ->
-                Log.d(TAG, "AirBeamMiniFallback: Connected with ${if (isV2Attempt) "V2" else "V1"}")
-                val effectiveDeviceItem = if (isV2Attempt) {
+                Log.d(TAG, "AirBeamMiniFallback: Connected with ${if (isV2Leg) "V2" else "V1"}")
+                val effectiveDeviceItem = if (isV2Leg) {
                     v2Configurator.deviceId = deviceItem.id
                     DeviceItem(
                         deviceItem.bluetoothDevice,
@@ -91,22 +97,23 @@ class AirBeamMiniFallbackConnector(
             .enqueue()
     }
 
-    private fun onFailedCallback(device: BluetoothDevice, reason: Int) {
-        if (isV2Attempt) {
+    private fun onFailedCallback(device: BluetoothDevice, reason: Int, fromV2Leg: Boolean) {
+        if (fromV2Leg) {
             if (v2FailureHandled) {
-                Log.d("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V2 failure already handled (reason=$reason) — ignoring duplicate")
+                Log.d("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V2 leg failure already handled (reason=$reason) — ignoring duplicate")
                 return
             }
             v2FailureHandled = true
             Log.w("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V2 failed (reason=$reason), falling back to V1 device=${device.address}")
             isV2Attempt = false
             v2Configurator.closeConnection()
+            v2Configurator.reset()
             activeConfigurator = v1Configurator
             val deviceItem = currentDeviceItem ?: DeviceItem(device)
             connectWith(v1Configurator, deviceItem)
         } else {
             if (v1FailureHandled) {
-                Log.d("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V1 failure already handled (reason=$reason) — ignoring duplicate")
+                Log.d("[RECONNECT]", "AirBeamMiniFallback.onFailedCallback: V1 leg failure already handled (reason=$reason) — ignoring duplicate")
                 return
             }
             v1FailureHandled = true
@@ -172,13 +179,10 @@ class AirBeamMiniFallbackConnector(
 
     override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
         Log.w("[RECONNECT]", "AirBeamMiniFallback.onDeviceFailedToConnect device=${device.address} reason=$reason isV2Attempt=$isV2Attempt")
-        // Route through onFailedCallback so the v2/v1 failure dedup flags catch the
-        // duplicate Nordic callback (observer + ConnectRequest.fail both fire for the
-        // same event). Previously the else branch posted onConnectionFailed directly,
-        // wrongly bouncing the user out of the new-session wizard whenever V2 failed
-        // service-discovery on a V1 device — the V1 fallback was in flight but this
-        // path raced ahead and reported "both V2 and V1 failed".
-        onFailedCallback(device, reason)
+        // Observer callbacks aren't request-scoped, so we don't have a captured leg.
+        // Map by current isV2Attempt — onFailedCallback's dedup flag ensures duplicate
+        // V2 callbacks after the transition are ignored.
+        onFailedCallback(device, reason, fromV2Leg = isV2Attempt)
     }
 
     override fun onDeviceReady(device: BluetoothDevice) {
@@ -218,7 +222,7 @@ class AirBeamMiniFallbackConnector(
         // also fires.
         if (isV2Attempt && !connectionEstablished.get()) {
             Log.d("[RECONNECT]", "AirBeamMiniFallback: V2 disconnected before success (reason=$reason) — routing to V1 fallback without teardown")
-            onFailedCallback(device, reason)
+            onFailedCallback(device, reason, fromV2Leg = true)
             return
         }
 
