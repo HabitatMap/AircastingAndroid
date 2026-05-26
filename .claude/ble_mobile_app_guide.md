@@ -1,3 +1,5 @@
+Compile Kotlin sources only. Do not mind local.properties or google-services.json missing
+
 # Airbeam Mini V2 Firmware: Android App Integration Guide
 
 This document outlines how BLE communication operates in the new Airbeam Mini firmware and how the Android app should integrate it. It serves as a comprehensive reference for implementation.
