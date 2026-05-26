@@ -55,6 +55,15 @@ data class SessionDBObject(
      */
     @ColumnInfo(name = "fixed_pm1_index") val fixedPm1Index: Int? = null,
     @ColumnInfo(name = "fixed_pm25_index") val fixedPm25Index: Int? = null,
+    /**
+     * Native sample interval in seconds for V2 mobile sessions (and V2 fixed
+     * sessions, for symmetry). Null for V1/legacy sessions and externally
+     * downloaded sessions, where the value is unknown or irrelevant.
+     *
+     * Consumed by [AveragingService] to skip the 1-second-assuming averaging
+     * pipeline when the native rate is sparser than 1 sample/sec.
+     */
+    @ColumnInfo(name = "measurement_interval") val measurementInterval: Int? = null,
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
 ) {
 
@@ -78,7 +87,8 @@ data class SessionDBObject(
                 session.locationless,
                 session.urlLocation,
                 session.indoor,
-                isExternal = session.isExternal
+                isExternal = session.isExternal,
+                measurementInterval = session.measurementInterval,
             )
 
     val isFixed get() = type == Session.Type.FIXED

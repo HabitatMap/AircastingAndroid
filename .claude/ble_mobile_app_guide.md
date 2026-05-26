@@ -276,6 +276,32 @@ Defaults `DEFAULT_MOBILE_INTERVAL_SECONDS = 1` / `DEFAULT_FIXED_INTERVAL_SECONDS
 `AirBeamMiniV2Configurator`'s companion object and apply only when the param is null
 (legacy/non-V2 paths).
 
+**Sparse-interval averaging gotcha (`AveragingService`).** Averaging assumes the native
+sample rate is finer-grained than the averaging window. When that is violated (a
+5-second-native session in the 5s FIRST window, or any session with native ≥ window),
+each window holds ≤ 1 sample → `perform`'s `size <= 1` branch leaves `averaging_frequency`
+at the native value → `deleteLeftoverMeasurements` re-queries
+`getMeasurementsToAverage(streamId, window)` and wipes every remaining row. The card
+stays (session row + streams) but `measurements` is empty: graph/map/share/upload all
+fail silently.
+
+Fix: persist the native interval per session on a nullable `sessions.measurement_interval`
+column (DB v37, `MIGRATION_36_37` adds `INTEGER`). `RecordingHandlerImpl.startRecording`
+writes `session.measurementInterval = intervalSeconds` for V2 sessions before insert;
+V1/legacy/external rows stay `null` (interpreted as 1s native rate). The gate then
+operates per averaging window rather than as an absolute interval threshold:
+
+- `AveragingService.stopAndPerformFinalAveraging` computes the chosen window first,
+  then skips `perform` + sweep when `nativeInterval >= currentWindow.value`. So a 1s
+  session runs at both FIRST(5s) and SECOND(60s); a 5s session skips FIRST(5s) but still
+  runs SECOND(60s); a 10-min session skips both.
+- `AveragingService.startPeriodicAveraging` applies the same per-tick gate so a live 5s
+  session does not write a misleading `averagingFrequency=5` to its session row before
+  it crosses 9 hours.
+- `RecordingHandlerImpl.startRecording` schedules periodic averaging unless
+  `nativeInterval >= AveragingWindow.SECOND.value` (=60s); for native ≥ 60s no window
+  can ever produce real averaging, so scheduling is skipped entirely.
+
 ### UUID Byte Encoding (Little-Endian)
 
 All UUIDs in V2 binary payloads use **mixed-endian (LE)** encoding, matching the firmware's `Uuid::from_slice_le()`:

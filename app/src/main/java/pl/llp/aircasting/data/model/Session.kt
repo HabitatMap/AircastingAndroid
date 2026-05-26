@@ -49,7 +49,8 @@ open class Session(
     var averagingFrequency: Int = 1,
     var order: Int? = null,
     var isExternal: Boolean = false,
-    var username: String? = null
+    var username: String? = null,
+    var measurementInterval: Int? = null,
 ) {
     constructor(sessionDBObject: SessionDBObject) : this(
         sessionDBObject.uuid,
@@ -69,7 +70,8 @@ open class Session(
         sessionDBObject.is_indoor,
         averagingFrequency = sessionDBObject.averagingFrequency,
         order = sessionDBObject.session_order,
-        isExternal = sessionDBObject.isExternal
+        isExternal = sessionDBObject.isExternal,
+        measurementInterval = sessionDBObject.measurementInterval,
     ) {
         if (sessionDBObject.latitude != null && sessionDBObject.longitude != null) {
             this.location = Location(sessionDBObject.latitude, sessionDBObject.longitude)

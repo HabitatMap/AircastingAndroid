@@ -18,6 +18,7 @@ import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.services.AveragingService
+import pl.llp.aircasting.util.helpers.services.AveragingWindow
 
 interface RecordingHandler {
     fun startRecording(
@@ -57,6 +58,9 @@ class RecordingHandlerImpl(
     ) {
         coroutineScope.launch {
             session.setAppropriateStatusForStartOfRecording()
+            if (firmwareVersion == DeviceItem.FirmwareVersion.V2) {
+                session.measurementInterval = intervalSeconds
+            }
             val databaseSessionId = sessionsRepository.insert(session)
 
             when (session.type) {
@@ -73,7 +77,17 @@ class RecordingHandlerImpl(
                     EventBus.getDefault().post(
                         ConfigureSession(session, wifiSSID, wifiPassword, intervalSeconds = intervalSeconds)
                     )
-                    startAveragingServices(databaseSessionId)
+                    // Skip periodic scheduling only when the native rate is at or above
+                    // the largest averaging window (60s = `AveragingWindow.SECOND.value`)
+                    // — in that case no window can ever produce real averaging.
+                    // For finer native rates (e.g. 5s) the schedule still runs:
+                    // `startPeriodicAveraging` skips ticks where `native >= currentWindow`
+                    // (no-op the 5s FIRST window for a 5s-native session) and produces
+                    // real 60-second averages once the session crosses 9 hours.
+                    val nativeInterval = session.measurementInterval ?: 1
+                    if (nativeInterval < AveragingWindow.SECOND.value) {
+                        startAveragingServices(databaseSessionId)
+                    }
                     if (firmwareVersion != DeviceItem.FirmwareVersion.V2) {
                         startObservingNewMeasurements(session)
                     }

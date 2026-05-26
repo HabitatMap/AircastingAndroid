@@ -23,6 +23,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import pl.llp.aircasting.R
+import pl.llp.aircasting.data.api.services.DownloadMeasurementsService
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.AirbeamConnectionStatus
 import pl.llp.aircasting.data.model.Session
@@ -94,6 +95,7 @@ class NewSessionController @AssistedInject constructor(
     @AirbeamConnectionStatusFlow
     private val connectionStatus: StateFlow<AirbeamConnectionStatus?>,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
+    private val downloadMeasurementsService: DownloadMeasurementsService,
 ) : SelectDeviceTypeViewMvc.Listener,
     SelectDeviceViewMvc.Listener,
     TurnOnAirBeamViewMvc.Listener,
@@ -431,7 +433,7 @@ class NewSessionController @AssistedInject constructor(
         if (session.type == Session.Type.MOBILE) settings.increaseActiveMobileSessionsCount()
 
         val isFixedV2 = session.isFixed() && deviceFirmwareVersion == DeviceItem.FirmwareVersion.V2
-        if (isFixedV2) observeFixedConfigureOutcome()
+        if (isFixedV2) observeFixedConfigureOutcome(session)
 
         val event = StartRecordingEvent(session, wifiSSID, wifiPassword, deviceFirmwareVersion, intervalSeconds)
         EventBus.getDefault().post(event)
@@ -442,7 +444,7 @@ class NewSessionController @AssistedInject constructor(
         }
     }
 
-    private fun observeFixedConfigureOutcome() {
+    private fun observeFixedConfigureOutcome(session: Session) {
         wizardNavigator.setConfirmationLoading(true)
         fixedConfigureObserverJob?.cancel()
         fixedConfigureObserverJob = coroutineScope.launch {
@@ -461,6 +463,11 @@ class NewSessionController @AssistedInject constructor(
                     mContextActivity.applicationContext.stopService(
                         Intent(mContextActivity.applicationContext, BatteryLevelService::class.java)
                     )
+                    // Ready (0x22) means firmware already POSTed the first measurement to the
+                    // backend. Pull it into the local active_session_measurements table now so
+                    // the Following-tab card binds with a value instead of the 3-minute
+                    // placeholder when the user lands on it.
+                    runCatching { downloadMeasurementsService.downloadMeasurements(session.uuid) }
                     mContextActivity.setResult(RESULT_OK)
                     mContextActivity.finish()
                 }

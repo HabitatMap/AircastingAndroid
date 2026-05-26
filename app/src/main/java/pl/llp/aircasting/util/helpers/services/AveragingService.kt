@@ -77,6 +77,20 @@ class AveragingService(
             )
         }
         Log.d(TAG, "Calculated current window: $currentWindow")
+
+        // Averaging assumes the native sample rate is finer-grained than the averaging
+        // window. When that is not true (e.g. a 5s-native session at the 5s FIRST window,
+        // or a 10-min-native session at either window), each window holds ≤ 1 sample,
+        // `perform`'s `size <= 1` branch leaves `averaging_frequency` at the native value,
+        // and `deleteLeftoverMeasurements` then wipes every remaining row. Skip when
+        // the native interval is not strictly smaller than the chosen window.
+        // Null = legacy/V1 (assume 1s native rate) or externally downloaded session.
+        val nativeInterval = session.measurementInterval ?: 1
+        if (nativeInterval >= currentWindow.value) {
+            Log.d(TAG, "Skipping final averaging — native interval ${nativeInterval}s >= window ${currentWindow.value}s (uuid=$uuid)")
+            return
+        }
+
         perform(session, currentWindow)
         deleteLeftoverMeasurements(session, currentWindow)
     }
@@ -131,6 +145,18 @@ class AveragingService(
                     lastMeasurementTime.time
                 )
                 Log.d(TAG, "Calculated current window: $currentWindow")
+
+                // Skip when native rate is not strictly smaller than the window —
+                // perform() would no-op but updateAveragingFrequency would still
+                // write a misleading value to the session row. Matches the gate in
+                // stopAndPerformFinalAveraging.
+                val nativeInterval = session.measurementInterval ?: 1
+                if (nativeInterval >= currentWindow.value) {
+                    Log.d(TAG, "Skipping periodic averaging tick — native ${nativeInterval}s >= window ${currentWindow.value}s (uuid=$uuid)")
+                    delay(window.seconds)
+                    continue
+                }
+
                 if (currentWindow.value > session.averagingFrequency)
                     mSessionsRepository.updateAveragingFrequency(session.id, currentWindow.value)
 
