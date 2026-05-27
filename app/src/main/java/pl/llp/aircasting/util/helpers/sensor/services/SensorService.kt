@@ -34,7 +34,7 @@ abstract class SensorService : Service() {
     @Inject
     lateinit var settings: Settings
 
-    private val CHANNEL_ID = "Aircasting ForegroundService"
+    private val CHANNEL_ID = "Aircasting ForegroundService Silent"
     private val stoppedRecording = AtomicBoolean(false)
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -63,6 +63,8 @@ abstract class SensorService : Service() {
             .setContentText(notificationMessage())
             .setSmallIcon(R.drawable.aircasting)
             .setContentIntent(pendingIntent)
+            .setOnlyAlertOnce(true)
+            .setSilent(true)
             .build()
 
         Log.d("SERVICE", "SETTING TYPE")
@@ -114,8 +116,11 @@ abstract class SensorService : Service() {
         if (isSDKGreaterOrEqualToO()) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID, "Foreground Service Channel",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                setSound(null, null)
+                enableVibration(false)
+            }
             val manager = getSystemService(NotificationManager::class.java)
             manager?.createNotificationChannel(serviceChannel)
         }
