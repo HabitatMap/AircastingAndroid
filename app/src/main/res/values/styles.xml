@@ -594,6 +594,15 @@
         <item name="shapeAppearance">@style/Widget.Aircasting.TextInputShapeAppearance</item>
     </style>
 
+    <style name="Widget.Aircasting.TextInputLayout.ExposedDropdownMenu" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxBackgroundColor">@color/aircasting_grey_50</item>
+        <item name="boxStrokeColor">@color/aircasting_grey_100</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="android:strokeColor">@color/aircasting_grey_100</item>
+        <item name="hintTextAppearance">@style/TextAppearance.Aircasting.TextInput.Hint</item>
+        <item name="shapeAppearance">@style/Widget.Aircasting.TextInputShapeAppearance</item>
+    </style>
+
     <style name="Widget.Aircasting.TextInputEditText" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="android:textAppearance">@style/TextAppearance.Aircasting.TextInput.Text</item>
         <item name="android:textColor">@color/aircasting_grey_700</item>

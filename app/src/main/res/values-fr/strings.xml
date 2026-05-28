@@ -166,6 +166,12 @@
     <string name="mobile_session_details_header">Détails de la nouvelle session</string>
     <string name="session_details_session_name_hint">Nom de la séance</string>
     <string name="session_details_session_tags_hint">Mots clés</string>
+    <string name="session_details_interval_hint">Intervalle</string>
+    <string name="session_interval_10min">10 min</string>
+    <string name="session_interval_5min">5 min</string>
+    <string name="session_interval_1min">1 min</string>
+    <string name="session_interval_5s">5 s</string>
+    <string name="session_interval_1s">1 s</string>
     <string name="session_details_continue_button">Continuez</string>
     <string name="fixed_session_details_indoor_toggle_header">Où allez-vous placer votre AirBeam ?</string>
     <string name="fixed_session_details_indoor">Intérieur</string>

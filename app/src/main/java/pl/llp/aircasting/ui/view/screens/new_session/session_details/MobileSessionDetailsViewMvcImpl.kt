@@ -3,6 +3,8 @@ package pl.llp.aircasting.ui.view.screens.new_session.session_details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.AutoCompleteTextView
+import android.widget.ArrayAdapter
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
@@ -32,17 +34,37 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         continueButton?.setOnClickListener {
             onSessionDetailsContinueClicked()
         }
+
+        val intervals = listOf(
+            context.getString(R.string.session_interval_10min),
+            context.getString(R.string.session_interval_5min),
+            context.getString(R.string.session_interval_1min),
+            context.getString(R.string.session_interval_5s),
+            context.getString(R.string.session_interval_1s)
+        )
+        val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_dropdown_item, intervals)
+        val sessionIntervalInput = rootView?.findViewById<AutoCompleteTextView>(R.id.session_interval_input)
+        sessionIntervalInput?.setAdapter(adapter)
+        sessionIntervalInput?.setText(context.getString(R.string.session_interval_1s), false)
     }
 
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
-        val intervalSeconds = getTextInputEditTextValue(R.id.session_interval_input).toIntOrNull()
+        val selectedIntervalText = rootView?.findViewById<AutoCompleteTextView>(R.id.session_interval_input)?.text?.toString()
+        val intervalSeconds = when (selectedIntervalText) {
+            context.getString(R.string.session_interval_10min) -> 600
+            context.getString(R.string.session_interval_5min) -> 300
+            context.getString(R.string.session_interval_1min) -> 60
+            context.getString(R.string.session_interval_5s) -> 5
+            context.getString(R.string.session_interval_1s) -> 1
+            else -> 1
+        }
 
         val errorMessage = validate(sessionName, intervalSeconds)
 
         if (errorMessage == null) {
-            notifyAboutSuccess(sessionName, sessionTags, intervalSeconds!!)
+            notifyAboutSuccess(sessionName, sessionTags, intervalSeconds)
         } else {
             notifyAboutValidationError(errorMessage)
         }
