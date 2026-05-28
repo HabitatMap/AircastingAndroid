@@ -46,7 +46,7 @@ class SessionPresenter() {
             SessionsTab.MOBILE_ACTIVE -> {
                 this.chartData = ChartData(session)
                 this.shouldHideMap = session.locationless
-                this.loading = true
+                this.loading = !session.hasMeasurements()
                 this.expanded = true
             }
             SessionsTab.MOBILE_DORMANT -> this.shouldHideMap = session.locationless
@@ -113,7 +113,7 @@ class SessionPresenter() {
 
     fun allStreamsHaveLoaded(): Boolean {
         if (session?.isAirBeam() == true && session?.isExternal == false)
-            return session?.streams?.size == 5
+            return session?.streams?.size == session?.defaultNumberOfStreams()
 
         return true
     }

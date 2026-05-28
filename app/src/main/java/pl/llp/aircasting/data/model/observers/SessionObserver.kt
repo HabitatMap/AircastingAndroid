@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.data.model.SensorName
+import pl.llp.aircasting.util.SelectedStreams
 import pl.llp.aircasting.ui.view.screens.dashboard.SessionPresenter
 import pl.llp.aircasting.ui.viewmodel.SessionsViewModel
 
@@ -45,8 +47,15 @@ abstract class SessionObserver<Type>(
                 selectedSensorName = mSessionPresenter.selectedStream!!.sensorName
             }
 
-            val measurementStream =
+            var measurementStream =
                 session.streams.firstOrNull { it.sensorName == selectedSensorName }
+            if (measurementStream == null) {
+                val sortedByDetailedType = session.streamsSortedByDetailedType()
+                val savedStreamDetailedType = SelectedStreams.get(session.uuid)
+                measurementStream = sortedByDetailedType.find { it.detailedType == savedStreamDetailedType }
+                    ?: sortedByDetailedType.find { it.detailedType == SensorName.PM2_5.detailedType }
+                    ?: session.streams.firstOrNull()
+            }
             mSessionPresenter.select(measurementStream)
 
             val sensorThresholds = mSessionsViewModel.findOrCreateSensorThresholds(session).first()
