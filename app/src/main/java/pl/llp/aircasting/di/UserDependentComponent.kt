@@ -15,6 +15,7 @@ import pl.llp.aircasting.di.modules.SyncModule
 import pl.llp.aircasting.di.modules.ViewModelModule
 import pl.llp.aircasting.ui.view.common.BaseActivity
 import pl.llp.aircasting.ui.view.fragments.AirbeamSyncedFragment
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncConfirmationFragment
 import pl.llp.aircasting.ui.view.fragments.AirbeamSyncingFragment
 import pl.llp.aircasting.ui.view.fragments.ClearingSDCardFragment
 import pl.llp.aircasting.ui.view.fragments.DashboardFragment
@@ -94,6 +95,7 @@ interface UserDependentComponent {
 
     fun inject(activity: SearchFixedSessionActivity)
     fun inject(fragment: AirbeamSyncingFragment)
+    fun inject(fragment: AirbeamSyncConfirmationFragment)
     fun inject(fragment: AirbeamSyncedFragment)
     fun inject(fragment: FollowingFragment)
     fun inject(fragment: MobileActiveFragment)

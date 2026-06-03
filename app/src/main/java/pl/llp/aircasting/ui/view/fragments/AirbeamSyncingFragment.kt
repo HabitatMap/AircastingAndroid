@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.AircastingApplication
+import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.ui.view.common.BaseFragment
 import pl.llp.aircasting.ui.view.common.BaseWizardNavigator
 import pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingController
@@ -24,6 +25,9 @@ class AirbeamSyncingFragment(
     @Inject
     lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
+    @Inject
+    lateinit var sessionsRepository: SessionsRepository
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -33,7 +37,7 @@ class AirbeamSyncingFragment(
             .userDependentComponent?.inject(this)
 
         view = AirbeamSyncingViewMvcImpl(layoutInflater, null)
-        controller = AirbeamSyncingController(view, mFragmentManager, mErrorHandler, v2StateRepository)
+        controller = AirbeamSyncingController(view, mFragmentManager, mErrorHandler, v2StateRepository, sessionsRepository)
 
         controller?.onCreate()
 

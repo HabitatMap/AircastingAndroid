@@ -63,6 +63,9 @@ class AirBeamSyncService : AirBeamService() {
     @Inject
     lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
+    @Inject
+    lateinit var sessionsRepository: pl.llp.aircasting.data.local.repository.SessionsRepository
+
     @field:[Inject IoCoroutineScope]
     lateinit var ioScope: CoroutineScope
 
@@ -75,6 +78,7 @@ class AirBeamSyncService : AirBeamService() {
      * resumes and the system Wi-Fi picker is launched.
      */
     private var pendingPickerEducation: CompletableDeferred<Unit>? = null
+    private var syncConfirmationDeferred: CompletableDeferred<Boolean>? = null
 
     companion object {
         const val DEVICE_ITEM_KEY = "inputExtraDeviceItem"
@@ -149,6 +153,25 @@ class AirBeamSyncService : AirBeamService() {
             EventBus.getDefault().safeRegister(this)
             ioScope.launch {
                 Log.d("AirBeamSyncService", "V2 connection — running manual sync orchestrator")
+
+                val fileSize = v2StateRepository.savedSessionFileSize
+                val uuid = v2StateRepository.savedSessionUuid
+                val session = if (!uuid.isNullOrEmpty()) {
+                    sessionsRepository.getSessionByUUID(uuid)
+                } else {
+                    null
+                }
+                val estimatedSeconds = pl.llp.aircasting.ui.view.screens.sync.syncing.AirbeamSyncingController.calculateEstimatedSyncTimeSeconds(fileSize, session)
+
+                val confirmed = awaitSyncConfirmation(estimatedSeconds)
+                if (!confirmed) {
+                    Log.d("AirBeamSyncService", "Sync cancelled by user")
+                    runCatching { EventBus.getDefault().unregister(this@AirBeamSyncService) }
+                    airBeamConnector.disconnect()
+                    stopSelf()
+                    return@launch
+                }
+
                 val ok = runCatching {
                     v2StateRepository.startSync(onBeforePicker = ::awaitWifiPickerEducation)
                 }.getOrElse { e ->
@@ -195,6 +218,22 @@ class AirBeamSyncService : AirBeamService() {
         } finally {
             pendingPickerEducation = null
         }
+    }
+
+    private suspend fun awaitSyncConfirmation(estimatedSeconds: Long): Boolean {
+        val deferred = CompletableDeferred<Boolean>()
+        syncConfirmationDeferred = deferred
+        EventBus.getDefault().post(pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationRequestedEvent(estimatedSeconds))
+        return try {
+            deferred.await()
+        } finally {
+            syncConfirmationDeferred = null
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationResponseEvent) {
+        syncConfirmationDeferred?.complete(event.confirmed)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
