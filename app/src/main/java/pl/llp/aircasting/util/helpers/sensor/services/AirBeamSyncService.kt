@@ -221,6 +221,9 @@ class AirBeamSyncService : AirBeamService() {
     }
 
     private suspend fun awaitSyncConfirmation(estimatedSeconds: Long): Boolean {
+        if (estimatedSeconds <= 30L) {
+            return true
+        }
         val deferred = CompletableDeferred<Boolean>()
         syncConfirmationDeferred = deferred
         EventBus.getDefault().post(pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationRequestedEvent(estimatedSeconds))
