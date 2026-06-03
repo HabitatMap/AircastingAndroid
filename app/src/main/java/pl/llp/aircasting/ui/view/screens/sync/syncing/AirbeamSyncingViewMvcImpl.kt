@@ -57,4 +57,27 @@ class AirbeamSyncingViewMvcImpl(
             "$title… $percent%"
         }
     }
+
+    override fun displayEstimatedTime(seconds: Long) {
+        val descriptionView = rootView?.findViewById<TextView>(R.id.airbeam_syncing_description)
+        val defaultDescription = context.getString(R.string.airbeam_syncing_description)
+        val etaText = formatEta(seconds)
+        val estimatedTimeTemplate = context.getString(R.string.airbeam_syncing_estimated_time, etaText)
+        descriptionView?.text = "$defaultDescription\n\n$estimatedTimeTemplate"
+    }
+
+    private fun formatEta(seconds: Long): String = when {
+        seconds < 60L -> context.getString(R.string.sync_eta_seconds, seconds.toInt())
+        seconds < 3600L -> {
+            val minutes = (seconds / 60L).toInt()
+            val remaining = (seconds % 60L).toInt()
+            if (remaining == 0) context.getString(R.string.sync_eta_minutes, minutes)
+            else context.getString(R.string.sync_eta_minutes_seconds, minutes, remaining)
+        }
+        else -> context.getString(
+            R.string.sync_eta_hours_minutes,
+            (seconds / 3600L).toInt(),
+            ((seconds % 3600L) / 60L).toInt(),
+        )
+    }
 }

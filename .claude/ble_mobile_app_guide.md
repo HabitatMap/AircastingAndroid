@@ -586,6 +586,8 @@ The dashboard "Finish recording" button (`MobileActiveSessionActionsBottomSheet`
 
 `SyncAndFinishV2SessionDialog` drives the **BLE manual-sync** flow — the same `V2BleSyncOrchestrator` path used by `SyncBeforeNewV2SessionDialog`. The dialog auto-starts the sync on open so `Status::ReadyToSync (0x03)` (FW commit `ed751b180`) lands with `file_size_u64_LE` ~100 ms later, giving the app a reliable ETA even when the device was in `STATE_RUNNING` (where `savedSessionFileSize` is unreachable — `STATE_RUNNING` payload omits the suffix added by FW commit `3990cf22`).
 
+`AirbeamSyncingFragment` (used during the SD card sync wizard) also displays the estimated sync time after the connection screen is cleared (only for V2/new firmware) when the file size information becomes available (either initially from `savedSessionFileSize` or on status update from `readyToSyncFileSize` Flow). It queries the local DB to check if the session stored on the device was a mobile session with `<1m` interval (in which case it assumes `8.4` bytes per measurement, otherwise `12.0` bytes per measurement). Since each BLE indicate call contains up to 30 measurements, the estimated time is calculated as `indicateCalls * 0.12` seconds, where `indicateCalls = ceil(measurements / 30.0)`.
+
 Flow:
 
 1. Open → render "Syncing measurements" header, "Preparing sync…" button (disabled), "Discard & Finish" cancel button. `isCancelable = false`. Immediately call `v2StateRepository.startSync(keepConnectedAfter = true)` in `ioScope`.

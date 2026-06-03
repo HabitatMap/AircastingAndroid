@@ -78,6 +78,7 @@ class SyncController @AssistedInject constructor(
     AirbeamSyncedViewMvc.Listener,
     TurnOffLocationServicesViewMvc.Listener,
     AirbeamSyncingViewMvc.Listener,
+    pl.llp.aircasting.ui.view.screens.sync.confirmation.AirbeamSyncConfirmationViewMvc.Listener,
     ErrorViewMvc.Listener {
 
     private val mWizardNavigator: SyncWizardNavigator =
@@ -346,5 +347,20 @@ class SyncController @AssistedInject constructor(
             syncActiveFlow.emit(false)
             mWizardNavigator.goToAirbeamSynced(this@SyncController)
         }
+    }
+
+    @Subscribe(threadMode = org.greenrobot.eventbus.ThreadMode.MAIN)
+    fun onMessageEvent(event: pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationRequestedEvent) {
+        mWizardNavigator.goToAirbeamSyncConfirmation(this, event.estimatedSeconds)
+    }
+
+    override fun onYesClicked() {
+        EventBus.getDefault().post(pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationResponseEvent(true))
+        mWizardNavigator.goToAirbeamSyncing(this)
+    }
+
+    override fun onNoClicked() {
+        EventBus.getDefault().post(pl.llp.aircasting.util.events.sdcard.V2SyncConfirmationResponseEvent(false))
+        mRootActivity.finish()
     }
 }

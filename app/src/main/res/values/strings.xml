@@ -351,6 +351,11 @@
     <string name="airbeam_sync_unplug_description">Keep it unplugged for the duration of the sync.</string>
     <string name="airbeam_syncing_header">Syncing</string>
     <string name="airbeam_syncing_description">Don’t exit the app or turn your screen off. Keep your AirBeam close to your Android.</string>
+    <string name="airbeam_syncing_estimated_time">Estimated sync time: %1$s</string>
+    <string name="airbeam_sync_confirmation_header">Do you wish to continue?</string>
+    <string name="airbeam_sync_confirmation_description">Estimated sync time: %1$s.\n</string>
+    <string name="airbeam_sync_confirmation_yes">Yes</string>
+    <string name="airbeam_sync_confirmation_no">No</string>
     <string name="airbeam_syncing_finalizing">Finalizing…</string>
     <string name="airbeam_syncing_finished_header">Sync complete</string>
     <string name="airbeam_syncing_finished_description">The data from your AirBeam was synchronized successfully to the app. The storage was cleared.</string>

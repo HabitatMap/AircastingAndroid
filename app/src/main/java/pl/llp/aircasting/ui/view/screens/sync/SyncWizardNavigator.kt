@@ -5,6 +5,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.FragmentManager
 import pl.llp.aircasting.R
 import pl.llp.aircasting.ui.view.fragments.AirbeamSyncedFragment
+import pl.llp.aircasting.ui.view.fragments.AirbeamSyncConfirmationFragment
 import pl.llp.aircasting.ui.view.fragments.AirbeamSyncingFragment
 import pl.llp.aircasting.ui.view.fragments.ErrorFragment
 import pl.llp.aircasting.ui.view.fragments.RefreshedSessionsFragment
@@ -79,6 +80,17 @@ class SyncWizardNavigator(
     fun goToAirbeamSyncing(listener: AirbeamSyncingViewMvc.Listener) {
         incrementStepProgress()
         val fragment = AirbeamSyncingFragment(mFragmentManager, errorHandler)
+        fragment.listener = listener
+        registerBackPressed(fragment)
+        goToFragment(fragment)
+    }
+
+    fun goToAirbeamSyncConfirmation(
+        listener: pl.llp.aircasting.ui.view.screens.sync.confirmation.AirbeamSyncConfirmationViewMvc.Listener,
+        estimatedSeconds: Long
+    ) {
+        incrementStepProgress()
+        val fragment = AirbeamSyncConfirmationFragment(estimatedSeconds)
         fragment.listener = listener
         registerBackPressed(fragment)
         goToFragment(fragment)

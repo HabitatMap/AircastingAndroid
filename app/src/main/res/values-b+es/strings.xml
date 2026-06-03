@@ -293,6 +293,11 @@
     <string name="airbeam_sync_select_device_header">Seleccione el dispositivo que desea sincronizar</string>
     <string name="airbeam_syncing_header">Sincronización</string>
     <string name="airbeam_syncing_description">Mantenga su AirBeam cerca de su Android.</string>
+    <string name="airbeam_syncing_estimated_time">Tiempo de sincronización estimado: %1$s</string>
+    <string name="airbeam_sync_confirmation_header">¿Desea continuar?</string>
+    <string name="airbeam_sync_confirmation_description">Tiempo de sincronización estimado: %1$s.\n</string>
+    <string name="airbeam_sync_confirmation_yes">Sí</string>
+    <string name="airbeam_sync_confirmation_no">No</string>
     <string name="airbeam_syncing_finalizing">Finalizando…</string>
     <string name="airbeam_syncing_finished_header">Sincronización completa</string>
     <string name="airbeam_syncing_finished_description">Los datos de su AirBeam se sincronizaron correctamente con la aplicación. Se borró la tarjeta SD.</string>

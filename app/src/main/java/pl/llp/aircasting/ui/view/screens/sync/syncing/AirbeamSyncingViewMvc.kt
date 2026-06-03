@@ -8,4 +8,5 @@ interface AirbeamSyncingViewMvc {
     }
     fun updateProgress(step: SDCardReader.Step, linesRead: Int)
     fun updateV2Progress(percent: Int)
+    fun displayEstimatedTime(seconds: Long)
 }
