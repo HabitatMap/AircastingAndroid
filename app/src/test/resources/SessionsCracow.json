@@ -1,0 +1,44 @@
+{
+  "sessions": [
+    {
+      "id": 1761923,
+      "uuid": "5a3fca0b-e7bb-4951-ab04-9857cadc9e62",
+      "title": "Cracow",
+      "start_time_local": "2022-04-27T12:25:34.000Z",
+      "end_time_local": "2022-04-27T12:29:48.000Z",
+      "last_hour_average": 8.0,
+      "is_indoor": false,
+      "latitude": 50.058322234,
+      "longitude": 19.926206879,
+      "type": "FixedSession",
+      "username": "HabitatMap",
+      "streams": {
+        "AirBeam3-PM2.5": {
+          "average_value": 8.0,
+          "id": 2216510,
+          "max_latitude": 50.058322234,
+          "max_longitude": 19.926206879,
+          "measurement_short_type": "PM",
+          "measurement_type": "Particulate Matter",
+          "measurements_count": 5,
+          "min_latitude": 50.058322234,
+          "min_longitude": 19.926206879,
+          "sensor_name": "AirBeam3-PM2.5",
+          "sensor_package_name": "AirBeam3-246f28c47698",
+          "session_id": 1761923,
+          "size": 5,
+          "start_latitude": null,
+          "start_longitude": null,
+          "threshold_high": 55,
+          "threshold_low": 12,
+          "threshold_medium": 35,
+          "threshold_very_high": 150,
+          "threshold_very_low": 0,
+          "unit_name": "microgram per cubic meter",
+          "unit_symbol": "µg/m³"
+        }
+      }
+    }
+  ],
+  "fetchableSessionsCount": 1
+}

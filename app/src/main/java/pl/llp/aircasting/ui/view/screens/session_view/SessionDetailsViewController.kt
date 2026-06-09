@@ -165,7 +165,7 @@ abstract class SessionDetailsViewController(
     private fun onMeasurementsLoadResult(measurements: HashMap<String, List<Measurement>>) {
         mSessionPresenter.session?.streams?.forEach { stream ->
             measurements[stream.sensorName]?.let { streamMeasurements ->
-                stream.setMeasurements(streamMeasurements)
+                stream.setMeasurements(streamMeasurements.sortedBy { it.time })
             }
 
         }
