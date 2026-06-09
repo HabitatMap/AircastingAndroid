@@ -33,7 +33,9 @@ class FixedSessionUploaderTest {
         apiService = mock {
             on(it.createFixedSession(any())) doReturn Response.success(
                 UploadSessionResponse(
-                    locationUrl
+                    locationUrl,
+                    null,
+                    null
                 )
             )
         }

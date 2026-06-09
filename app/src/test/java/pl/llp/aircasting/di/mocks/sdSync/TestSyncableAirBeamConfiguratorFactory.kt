@@ -18,6 +18,10 @@ import pl.llp.aircasting.util.helpers.sensor.common.HexMessagesBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
+import org.mockito.kotlin.mock
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2BleSyncOrchestrator
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2.V2SyncOrchestrator
 
 class TestSyncableAirBeamConfiguratorFactory(
     private val applicationContext: Context,
@@ -33,6 +37,9 @@ class TestSyncableAirBeamConfiguratorFactory(
     measurementStreamsRepository: MeasurementStreamsRepository,
     measurementsRepository: MeasurementsRepository,
     activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    v2StateRepository: AirBeamMiniV2StateRepository = mock(),
+    v2SyncOrchestrator: V2SyncOrchestrator = mock(),
+    v2BleSyncOrchestrator: V2BleSyncOrchestrator = mock(),
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -47,6 +54,9 @@ class TestSyncableAirBeamConfiguratorFactory(
     measurementStreamsRepository,
     measurementsRepository,
     activeSessionMeasurementsRepository,
+    v2StateRepository,
+    v2SyncOrchestrator,
+    v2BleSyncOrchestrator,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestABMiniConfigurator(
@@ -89,6 +99,9 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     measurementStreamsRepository: MeasurementStreamsRepository,
     measurementsRepository: MeasurementsRepository,
     activeSessionMeasurementsRepository: ActiveSessionMeasurementsRepository,
+    v2StateRepository: AirBeamMiniV2StateRepository = mock(),
+    v2SyncOrchestrator: V2SyncOrchestrator = mock(),
+    v2BleSyncOrchestrator: V2BleSyncOrchestrator = mock(),
 ) : SyncableAirBeamConfiguratorFactory(
     applicationContext,
     mErrorHandler,
@@ -103,6 +116,9 @@ class TestEmptySyncableAirBeamConfiguratorFactory @Inject constructor(
     measurementStreamsRepository,
     measurementsRepository,
     activeSessionMeasurementsRepository,
+    v2StateRepository,
+    v2SyncOrchestrator,
+    v2BleSyncOrchestrator,
 ) {
     override fun create(type: DeviceItem.Type): SyncableAirBeamConfigurator = when (type) {
         DeviceItem.Type.AIRBEAMMINI -> TestEmptyABMiniConfigurator(

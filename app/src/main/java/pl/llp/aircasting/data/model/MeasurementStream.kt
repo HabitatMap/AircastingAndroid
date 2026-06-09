@@ -84,7 +84,7 @@ open class MeasurementStream(
         sensor.thresholdMedium,
         sensor.thresholdHigh,
         sensor.thresholdVeryHigh,
-        mMeasurements = measurements ?: listOf()
+        mMeasurements = measurements?.sortedBy { it.time } ?: listOf()
     )
 
     constructor(streamDbObject: MeasurementStreamDBObject) : this(
@@ -108,7 +108,7 @@ open class MeasurementStream(
         this.mMeasurements =
             streamWithMeasurementsDBObject.measurements.map { measurementDBObject ->
                 Measurement(measurementDBObject)
-            }
+            }.sortedBy { it.time }
     }
 
     constructor(streamWithLastMeasurementsDBObject: StreamWithLastMeasurementsDBObject) :
@@ -140,7 +140,7 @@ open class MeasurementStream(
         this.mMeasurements =
             sessionStreamWithMeasurementsResponse.measurements.map { measurementResponse ->
                 Measurement(measurementResponse)
-            }
+            }.sortedBy { it.time }
     }
 
     var detailedType: String?
@@ -148,6 +148,7 @@ open class MeasurementStream(
 
     init {
         detailedType = buildDetailedType()
+        mMeasurements = mMeasurements.sortedBy { it.time }
     }
 
     companion object {
@@ -155,7 +156,7 @@ open class MeasurementStream(
     }
 
     fun setMeasurements(measurements: List<Measurement>) {
-        mMeasurements = measurements
+        mMeasurements = measurements.sortedBy { it.time }
     }
 
     fun sensorNameOrder(): Int? {
@@ -217,7 +218,7 @@ open class MeasurementStream(
     }
 
     fun getLast24HoursOfMeasurements(): List<Measurement> {
-        val end = measurements.lastOrNull()?.time ?: Date()
+        val end = measurements.maxOfOrNull { it.time } ?: Date()
         val start = calendar().addHours(end, -24)
         val range = start..end
 
