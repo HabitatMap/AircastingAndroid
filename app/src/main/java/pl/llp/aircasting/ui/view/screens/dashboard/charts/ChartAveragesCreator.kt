@@ -21,16 +21,26 @@ open class ChartAveragesCreator {
     private var oldEntries: MutableList<Entry> = mutableListOf()
     private var usePreviousEntry = false
 
-    fun getMobileEntries(stream: MeasurementStream): MutableList<Entry> {
-        val periodData: MutableList<List<Measurement>?>
+    fun getMobileEntries(
+        stream: MeasurementStream,
+        timeSetterCallback: SessionChartDataCalculator.TimeStampsSetter,
+        intervalSeconds: Int? = null
+    ): MutableList<Entry> {
+        val periodData: List<List<Measurement>>
         val streamFrequency: Double = stream.samplingFrequency(MOBILE_FREQUENCY_DIVISOR)
         var xValue = MAX_X_VALUE
-        val measurementsInPeriod = (MOBILE_INTERVAL_IN_SECONDS / streamFrequency).toInt()
+        val interval = if (intervalSeconds == 300 || intervalSeconds == 600) intervalSeconds else MOBILE_INTERVAL_IN_SECONDS
+        val measurementsInPeriod = if (interval > 60) {
+            1
+        } else {
+            val mip = (interval / streamFrequency).toInt()
+            if (mip == 0) 1 else mip
+        }
         val entries: MutableList<Entry> = mutableListOf()
         val measurements: MutableList<Measurement> =
-            stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR)
+            stream.getMeasurementsForPeriod(MAX_AVERAGES_AMOUNT, MOBILE_FREQUENCY_DIVISOR, interval)
 
-        if (measurementsInPeriod == 0) return mutableListOf()
+        if (measurements.isEmpty()) return mutableListOf()
 
         periodData = Lists.partition(measurements, measurementsInPeriod)
 
@@ -62,6 +72,12 @@ open class ChartAveragesCreator {
                 } catch (e: ConcurrentModificationException) {
                     return oldEntries
                 }
+            }
+
+            val firstEntryDate = periodData.firstOrNull()?.firstOrNull()?.time
+            val lastEntryDate = periodData.lastOrNull()?.lastOrNull()?.time
+            if (firstEntryDate != null && lastEntryDate != null) {
+                timeSetterCallback.setStartEndTimeToDisplay(firstEntryDate, lastEntryDate)
             }
         }
         if (entries.size == 0) return entries

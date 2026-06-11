@@ -193,13 +193,16 @@ open class MeasurementStream(
         return deltaSum / divisor
     }
 
-    fun getMeasurementsForPeriod(amount: Int, divisor: Double): MutableList<Measurement> {
+    fun getMeasurementsForPeriod(amount: Int, divisor: Double, intervalSeconds: Int = 60): MutableList<Measurement> {
+        if (intervalSeconds > 60) {
+            return getLastMeasurements(amount)
+        }
         val frequency = samplingFrequency(divisor)
         return try {
-            val measurementsInPeriod = (60 / frequency).toInt() * amount
+            val measurementsInPeriod = (intervalSeconds / frequency).toInt() * amount
             getLastMeasurements(measurementsInPeriod)
         } catch (e: IndexOutOfBoundsException) {
-            getMeasurementsForPeriod(amount - 1, divisor)
+            getMeasurementsForPeriod(amount - 1, divisor, intervalSeconds)
         }
     }
 

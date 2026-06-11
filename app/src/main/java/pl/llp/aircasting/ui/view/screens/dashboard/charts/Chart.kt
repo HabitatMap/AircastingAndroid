@@ -104,8 +104,8 @@ class Chart(
             val entriesStartTime = mSessionPresenter?.chartData?.entriesStartTime
             val entriesEndTime = mSessionPresenter?.chartData?.entriesEndTime
 
-            mChartStartTimeTextView?.text = entriesStartTime ?: sessionStartTime
-            mChartEndTimeTextView?.text = entriesEndTime ?: toTimeStringForDisplay(Date(), TimeZone.getDefault())
+            mChartStartTimeTextView?.text = if (!entriesStartTime.isNullOrEmpty()) entriesStartTime else sessionStartTime
+            mChartEndTimeTextView?.text = if (!entriesEndTime.isNullOrEmpty()) entriesEndTime else toTimeStringForDisplay(Date(), TimeZone.getDefault())
             mChartUnitTextView?.text = chartUnitText()
         }
     }
@@ -130,10 +130,15 @@ class Chart(
     }
 
     private fun chartUnitLabelId(): Int {
+        val interval = mSessionPresenter?.session?.measurementInterval
         return if (mSessionPresenter?.isFixed()!!) {
             R.string.fixed_session_units_label
         } else {
-            R.string.mobile_session_units_label
+            when (interval) {
+                300 -> R.string.mobile_session_units_label_5min
+                600 -> R.string.mobile_session_units_label_10min
+                else -> R.string.mobile_session_units_label
+            }
         }
     }
 }
