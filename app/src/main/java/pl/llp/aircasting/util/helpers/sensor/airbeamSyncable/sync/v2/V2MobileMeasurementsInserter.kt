@@ -14,6 +14,7 @@ import pl.llp.aircasting.di.UserSessionScope
 import pl.llp.aircasting.util.helpers.location.LocationHelper
 import pl.llp.aircasting.util.helpers.location.toLatLng
 import javax.inject.Inject
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 
 /**
  * V2 counterpart of [pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.sessionProcessor.SDCardMobileSessionsProcessor].
@@ -28,6 +29,7 @@ class V2MobileMeasurementsInserter @Inject constructor(
     private val sessionsRepository: SessionsRepository,
     private val measurementStreamsRepository: MeasurementStreamsRepository,
     private val measurementsRepository: MeasurementsRepository,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) {
     suspend fun insert(
         deviceId: String,
@@ -44,7 +46,7 @@ class V2MobileMeasurementsInserter @Inject constructor(
         }
         if (measurements.isEmpty()) return
 
-        val location = lastKnownLocation(session.id)
+        val fallbackLocation = lastKnownLocation(session.id)
 
         insertStream(
             session.id,
@@ -61,7 +63,10 @@ class V2MobileMeasurementsInserter @Inject constructor(
                 thresholdHigh = 55,
                 thresholdVeryHigh = 150,
             ),
-            measurements.map { Measurement(it.pm1.toDouble(), it.timestamp, location.latitude, location.longitude) },
+            measurements.map {
+                val location = v2StateRepository.getClosestLocation(it.timestamp.time, fallbackLocation)
+                Measurement(it.pm1.toDouble(), it.timestamp, location.latitude, location.longitude)
+            },
         )
 
         insertStream(
@@ -79,7 +84,10 @@ class V2MobileMeasurementsInserter @Inject constructor(
                 thresholdHigh = 55,
                 thresholdVeryHigh = 150,
             ),
-            measurements.map { Measurement(it.pm25.toDouble(), it.timestamp, location.latitude, location.longitude) },
+            measurements.map {
+                val location = v2StateRepository.getClosestLocation(it.timestamp.time, fallbackLocation)
+                Measurement(it.pm25.toDouble(), it.timestamp, location.latitude, location.longitude)
+            },
         )
     }
 

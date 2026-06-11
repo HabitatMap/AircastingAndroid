@@ -10,6 +10,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import pl.llp.aircasting.di.UserSessionScope
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.util.events.LocationChanged
+import pl.llp.aircasting.util.extensions.safeRegister
+import java.util.Collections
+import kotlin.math.abs
 
 sealed class FixedSessionConfigureOutcome {
     object Success : FixedSessionConfigureOutcome()
@@ -32,6 +39,13 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         private set
     var savedSessionUuid: String? = null
         private set
+
+    data class TrackedLocation(val latitude: Double, val longitude: Double, val time: Long)
+
+    private val _trackedLocations = Collections.synchronizedList(mutableListOf<TrackedLocation>())
+    val trackedLocations: List<TrackedLocation> get() = _trackedLocations
+
+    private var isLocationTrackingActive = false
 
     private val _hasSavedMeasurementsFlow = MutableStateFlow(false)
     /**
@@ -189,4 +203,49 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         keepConnectedAfter: Boolean = false,
         onBeforePicker: (suspend () -> Unit)? = null,
     ): Boolean = syncCallback?.invoke(keepConnectedAfter, onBeforePicker) ?: false
+
+    fun startLocationTracking() {
+        android.util.Log.d("V2StateRepository", "startLocationTracking")
+        _trackedLocations.clear()
+        isLocationTrackingActive = true
+        EventBus.getDefault().safeRegister(this)
+    }
+
+    fun stopLocationTrackingAndClear() {
+        android.util.Log.d("V2StateRepository", "stopLocationTrackingAndClear")
+        isLocationTrackingActive = false
+        _trackedLocations.clear()
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+    }
+
+    @Subscribe
+    fun onMessageEvent(event: LocationChanged) {
+        if (!isLocationTrackingActive) return
+        val lat = event.latitude ?: return
+        val lng = event.longitude ?: return
+        _trackedLocations.add(TrackedLocation(lat, lng, event.time))
+        android.util.Log.v("V2StateRepository", "Location tracked: $lat, $lng, time=${event.time}")
+    }
+
+    fun getClosestLocation(measurementTimeMs: Long, fallbackLocation: Session.Location): Session.Location {
+        synchronized(_trackedLocations) {
+            if (_trackedLocations.isEmpty()) {
+                return fallbackLocation
+            }
+            var closest = _trackedLocations[0]
+            var minDiff = abs(closest.time - measurementTimeMs)
+            for (i in 1 until _trackedLocations.size) {
+                val loc = _trackedLocations[i]
+                val diff = abs(loc.time - measurementTimeMs)
+                if (diff < minDiff) {
+                    minDiff = diff
+                    closest = loc
+                }
+            }
+            android.util.Log.d("V2StateRepository", "Closest location found: ${closest.latitude}, ${closest.longitude} diff=${minDiff}ms")
+            return Session.Location(closest.latitude, closest.longitude)
+        }
+    }
 }

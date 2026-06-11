@@ -89,7 +89,13 @@ class LocationHelper(mContext: Context) {
                 mLastLocation = locationResult.lastLocation
 
                 EventBus.getDefault()
-                    .post(LocationChanged(mLastLocation?.latitude, mLastLocation?.longitude))
+                    .post(
+                        LocationChanged(
+                            mLastLocation?.latitude,
+                            mLastLocation?.longitude,
+                            mLastLocation?.time ?: System.currentTimeMillis()
+                        )
+                    )
             }
         }
 

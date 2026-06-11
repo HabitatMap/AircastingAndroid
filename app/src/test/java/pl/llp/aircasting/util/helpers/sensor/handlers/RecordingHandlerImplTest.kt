@@ -30,6 +30,7 @@ import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.NewMeasurementEvent
 import pl.llp.aircasting.util.exceptions.ErrorHandler
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(MockitoJUnitRunner::class)
@@ -60,6 +61,9 @@ class RecordingHandlerImplTest {
 
     @Mock
     lateinit var measurementsRepository: MeasurementsRepositoryImpl
+
+    @Mock
+    lateinit var v2StateRepository: AirBeamMiniV2StateRepository
 
     @Spy
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>> = mutableMapOf()
@@ -99,7 +103,8 @@ class RecordingHandlerImplTest {
             mock(),
             testScope,
             flows,
-            observers
+            observers,
+            v2StateRepository
         )
     }
 
