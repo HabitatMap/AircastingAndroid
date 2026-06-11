@@ -56,17 +56,17 @@ open class SessionChartDataCalculator(private var mSession: Session) {
     protected open fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry>? {
         var entries: MutableList<Entry>? = null
 
-        stream?.let { stream ->
+        stream?.let { streamToCalculate ->
             when (mSession.type) {
                 Session.Type.MOBILE -> {
-                    entries = ChartAveragesCreator().getMobileEntries(stream)
+                    val timeStampsSetter = TimeStampsSetter()
+                    entries = ChartAveragesCreator().getMobileEntries(streamToCalculate, timeStampsSetter, mSession.measurementInterval)
 
                     setCount(entries)
-                    calculateTimes()
                 }
                 Session.Type.FIXED -> {
                     val timeStampsSetter = TimeStampsSetter()
-                    entries = ChartAveragesCreator().getFixedEntries(stream, timeStampsSetter)
+                    entries = ChartAveragesCreator().getFixedEntries(streamToCalculate, timeStampsSetter)
                 }
             }
         }
