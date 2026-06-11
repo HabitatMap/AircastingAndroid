@@ -175,11 +175,12 @@
     <string name="session_details_session_name_hint">Session name</string>
     <string name="session_details_session_tags_hint">Tags</string>
     <string name="session_details_interval_hint">Interval</string>
-    <string name="session_interval_10min">10 min</string>
-    <string name="session_interval_5min">5 min</string>
-    <string name="session_interval_1min">1 min</string>
-    <string name="session_interval_5s">5 s</string>
-    <string name="session_interval_1s">1 s</string>
+    <string name="session_details_sampling_interval">Sampling interval</string>
+    <string name="session_interval_10min">10 minutes</string>
+    <string name="session_interval_5min">5 minutes</string>
+    <string name="session_interval_1min">1 minute</string>
+    <string name="session_interval_5s">5 seconds</string>
+    <string name="session_interval_1s">1 second</string>
     <string name="session_details_mobile_interval_default" translatable="false">1</string>
     <string name="session_details_fixed_interval_default" translatable="false">60</string>
     <string name="session_interval_required">Interval must be a positive integer</string>

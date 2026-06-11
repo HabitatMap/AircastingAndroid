@@ -1,10 +1,12 @@
 package pl.llp.aircasting.ui.view.screens.new_session.session_details
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.AutoCompleteTextView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import com.google.android.material.textfield.TextInputLayout
 import pl.llp.aircasting.R
 import pl.llp.aircasting.data.model.Session
@@ -46,19 +48,35 @@ class MobileSessionDetailsViewMvcImpl : BaseObservableViewMvc<SessionDetailsView
         val sessionIntervalInput = rootView?.findViewById<AutoCompleteTextView>(R.id.session_interval_input)
         sessionIntervalInput?.setAdapter(adapter)
         sessionIntervalInput?.setText(context.getString(R.string.session_interval_1s), false)
+
+        val isAirBeamMiniV2 = deviceItem.type == DeviceItem.Type.AIRBEAMMINI && deviceItem.firmwareVersion == DeviceItem.FirmwareVersion.V2
+        val sessionInterval = rootView?.findViewById<TextInputLayout>(R.id.session_interval)
+        val sessionIntervalLabel = rootView?.findViewById<TextView>(R.id.session_interval_label)
+        if (isAirBeamMiniV2) {
+            sessionInterval?.visibility = View.VISIBLE
+            sessionIntervalLabel?.visibility = View.VISIBLE
+        } else {
+            sessionInterval?.visibility = View.GONE
+            sessionIntervalLabel?.visibility = View.GONE
+        }
     }
 
     private fun onSessionDetailsContinueClicked() {
         val sessionName = getTextInputEditTextValue(R.id.session_name_input)
         val sessionTags = getSessionTags()
         val selectedIntervalText = rootView?.findViewById<AutoCompleteTextView>(R.id.session_interval_input)?.text?.toString()
-        val intervalSeconds = when (selectedIntervalText) {
-            context.getString(R.string.session_interval_10min) -> 600
-            context.getString(R.string.session_interval_5min) -> 300
-            context.getString(R.string.session_interval_1min) -> 60
-            context.getString(R.string.session_interval_5s) -> 5
-            context.getString(R.string.session_interval_1s) -> 1
-            else -> 1
+        val isAirBeamMiniV2 = deviceItem.type == DeviceItem.Type.AIRBEAMMINI && deviceItem.firmwareVersion == DeviceItem.FirmwareVersion.V2
+        val intervalSeconds = if (isAirBeamMiniV2) {
+            when (selectedIntervalText) {
+                context.getString(R.string.session_interval_10min) -> 600
+                context.getString(R.string.session_interval_5min) -> 300
+                context.getString(R.string.session_interval_1min) -> 60
+                context.getString(R.string.session_interval_5s) -> 5
+                context.getString(R.string.session_interval_1s) -> 1
+                else -> 1
+            }
+        } else {
+            1
         }
 
         val errorMessage = validate(sessionName, intervalSeconds)
