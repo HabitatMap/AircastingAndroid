@@ -81,16 +81,31 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/session_interval_label"
+            style="@style/TextAppearance.Aircasting.NewSessionDetails.Headline3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/keyline_8"
+            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginEnd="@dimen/keyline_8"
+            android:text="@string/session_details_sampling_interval"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/session_info" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/session_interval"
             style="@style/Widget.Aircasting.TextInputLayout.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:hintEnabled="false"
-            android:layout_marginTop="@dimen/keyline_6"
+            android:layout_marginTop="@dimen/keyline_2"
             android:layout_marginStart="@dimen/keyline_8"
             android:layout_marginEnd="@dimen/keyline_8"
-            app:layout_constraintTop_toBottomOf="@id/session_info"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/session_interval_label"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
