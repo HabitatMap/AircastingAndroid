@@ -19,6 +19,7 @@ import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.exceptions.ErrorHandler
 import pl.llp.aircasting.util.helpers.bluetooth.BluetoothManager
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.csv.SDCardCSVFileFactory
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.helpers.sensor.common.connector.AirBeamReconnector
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandler
 import pl.llp.aircasting.util.helpers.sensor.handlers.RecordingHandlerImpl
@@ -110,6 +111,7 @@ open class SensorsModule {
         measurementsRepository: MeasurementsRepositoryImpl,
         averagingService: AveragingService,
         @IoCoroutineScope coroutineScope: CoroutineScope,
+        v2StateRepository: AirBeamMiniV2StateRepository,
     ): RecordingHandler = RecordingHandlerImpl(
         settings,
         fixedSessionUploader,
@@ -122,6 +124,7 @@ open class SensorsModule {
         averagingService,
         coroutineScope,
         mutableMapOf(),
-        mutableMapOf()
+        mutableMapOf(),
+        v2StateRepository,
     )
 }

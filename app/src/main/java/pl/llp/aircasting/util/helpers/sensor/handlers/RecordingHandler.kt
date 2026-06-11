@@ -13,6 +13,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepositoryImpl
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import pl.llp.aircasting.util.Settings
 import pl.llp.aircasting.util.events.ConfigureSession
 import pl.llp.aircasting.util.events.NewMeasurementEvent
@@ -47,6 +48,7 @@ class RecordingHandlerImpl(
     private val coroutineScope: CoroutineScope,
     private val flows: MutableMap<String, MutableSharedFlow<NewMeasurementEvent>>,
     private val observers: MutableMap<String, Job>,
+    private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) : RecordingHandler {
 
     override fun startRecording(
@@ -74,6 +76,9 @@ class RecordingHandlerImpl(
                     )
                 }
                 Session.Type.MOBILE -> {
+                    if (session.deviceType == DeviceItem.Type.AIRBEAMMINI && firmwareVersion == DeviceItem.FirmwareVersion.V2) {
+                        v2StateRepository.startLocationTracking()
+                    }
                     EventBus.getDefault().post(
                         ConfigureSession(session, wifiSSID, wifiPassword, intervalSeconds = intervalSeconds)
                     )
@@ -140,6 +145,10 @@ class RecordingHandlerImpl(
                 session.stopRecording(measurementsRepository.lastMeasurementTime(sessionId))
                 sessionsRepository.update(session)
                 sessionsSyncService.sync()
+
+                if (session.deviceType == DeviceItem.Type.AIRBEAMMINI && session.isMobile()) {
+                    v2StateRepository.stopLocationTrackingAndClear()
+                }
             }
         }
     }

@@ -1093,13 +1093,15 @@ class AirBeamMiniV2Configurator(
         val pm1Measurements = mutableListOf<Measurement>()
         val pm25Measurements = mutableListOf<Measurement>()
 
-        val location = Session.Location.get(LocationHelper.lastLocation(), settings.areMapsDisabled())
+        val fallbackLocation = Session.Location.get(LocationHelper.lastLocation(), settings.areMapsDisabled())
 
         for (i in 0 until count) {
             val timestamp = buffer.getInt().toLong() and 0xFFFFFFFFL
             val pm1 = buffer.getShort().toInt() and 0xFFFF
             val pm25 = buffer.getShort().toInt() and 0xFFFF
             val time = Date(timestamp * 1000)
+
+            val location = v2StateRepository.getClosestLocation(time.time, fallbackLocation)
 
             pm1Measurements.add(Measurement(pm1.toDouble(), time, location.latitude, location.longitude))
             pm25Measurements.add(Measurement(pm25.toDouble(), time, location.latitude, location.longitude))
