@@ -10,6 +10,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.util.Settings
+import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 
 @RunWith(MockitoJUnitRunner::class)
 class NewSessionControllerTest {
@@ -26,12 +27,19 @@ class NewSessionControllerTest {
     @Mock
     lateinit var settings: Settings
 
+    @Mock
+    lateinit var v2StateRepository: AirBeamMiniV2StateRepository
+
     @Before
     fun setup() {
         val activityField = controller.javaClass.getDeclaredField("mContextActivity")
         memberAccessor.set(activityField, controller, activity)
         val settingsField = controller.javaClass.getDeclaredField("settings")
         memberAccessor.set(settingsField, controller, settings)
+        val firmwareVersionField = controller.javaClass.getDeclaredField("deviceFirmwareVersion")
+        memberAccessor.set(firmwareVersionField, controller, pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem.FirmwareVersion.V1)
+        val v2StateRepositoryField = controller.javaClass.getDeclaredField("v2StateRepository")
+        memberAccessor.set(v2StateRepositoryField, controller, v2StateRepository)
         whenever(controller.onStartRecordingClicked(anyOrNull())).thenCallRealMethod()
     }
 

@@ -20,6 +20,13 @@ import java.util.Date
 
 @Dao
 interface SessionDao {
+    @Query("SELECT COUNT(*) FROM sessions WHERE deleted = 0 AND type = :type AND device_type = :deviceType AND status != :status")
+    suspend fun getActiveSessionsCount(
+        type: Session.Type = Session.Type.MOBILE,
+        deviceType: DeviceItem.Type = DeviceItem.Type.AIRBEAMMINI,
+        status: Session.Status = Session.Status.FINISHED
+    ): Int
+
     @Query("SELECT * FROM sessions")
     fun getAll(): List<SessionDBObject>
 

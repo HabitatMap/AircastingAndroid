@@ -4,8 +4,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -68,6 +70,7 @@ abstract class SessionDetailsViewController(
     private var editNoteDialog: EditNoteBottomSheet? = null
 
     private var mShouldRefreshStatistics = AtomicBoolean(false)
+    private var mIsReloading = false
 
     fun onCreate() {
         EventBus.getDefault().safeRegister(this)
@@ -156,9 +159,14 @@ abstract class SessionDetailsViewController(
     }
 
     private fun reloadMeasurements() {
-        runBlocking {
+        if (mIsReloading) return
+        mIsReloading = true
+
+        mRootActivity.lifecycleScope.launch {
             val result = loadMeasurements()
             onMeasurementsLoadResult(result)
+            mViewMvc?.bindSession(mSessionPresenter)
+            mIsReloading = false
         }
     }
 
@@ -171,7 +179,7 @@ abstract class SessionDetailsViewController(
         }
     }
 
-    private suspend fun loadMeasurements(): HashMap<String, List<Measurement>> {
+    private suspend fun loadMeasurements(): HashMap<String, List<Measurement>> = withContext(Dispatchers.IO) {
         var measurements: HashMap<String, List<Measurement>> = hashMapOf()
         val sessionUUID = mSessionPresenter.sessionUUID
         var sessionDBObject: SessionDBObject? = null
@@ -193,7 +201,7 @@ abstract class SessionDetailsViewController(
             }
         }
 
-        return measurements
+        measurements
     }
 
     private fun measurementsList(measurements: List<MeasurementDBObject?>): List<Measurement> {

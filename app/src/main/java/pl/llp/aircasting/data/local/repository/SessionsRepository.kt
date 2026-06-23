@@ -21,6 +21,10 @@ import javax.inject.Inject
 class SessionsRepository @Inject constructor(
     private val mDatabase: AppDatabase
 ) {
+    suspend fun getActiveABMV2SessionsCount(): Int {
+        return mDatabase.sessions().getActiveSessionsCount()
+    }
+
     suspend fun insert(session: Session): Long {
         val sessionDBObject =
             SessionDBObject(session)

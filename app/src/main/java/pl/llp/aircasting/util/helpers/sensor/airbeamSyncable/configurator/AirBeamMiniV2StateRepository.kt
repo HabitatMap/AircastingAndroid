@@ -1,5 +1,6 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -7,6 +8,10 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import pl.llp.aircasting.data.local.AppDatabase
+import pl.llp.aircasting.data.local.entity.TrackedLocationDBObject
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.di.UserSessionScope
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -31,7 +36,10 @@ sealed class FixedSessionConfigureOutcome {
 }
 
 @UserSessionScope
-class AirBeamMiniV2StateRepository @Inject constructor() {
+class AirBeamMiniV2StateRepository @Inject constructor(
+    private val mDatabase: AppDatabase,
+    @IoCoroutineScope private val coroutineScope: CoroutineScope
+) {
 
     var deviceState: AirBeamMiniV2Configurator.DeviceState = AirBeamMiniV2Configurator.DeviceState.UNKNOWN
         private set
@@ -204,19 +212,55 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         onBeforePicker: (suspend () -> Unit)? = null,
     ): Boolean = syncCallback?.invoke(keepConnectedAfter, onBeforePicker) ?: false
 
+    init {
+        coroutineScope.launch {
+            val persisted = mDatabase.trackedLocations().getAll()
+            synchronized(_trackedLocations) {
+                _trackedLocations.clear()
+                _trackedLocations.addAll(persisted.map {
+                    TrackedLocation(it.latitude, it.longitude, it.time)
+                })
+            }
+            val activeCount = mDatabase.sessions().getActiveSessionsCount()
+            if (activeCount > 0) {
+                android.util.Log.d("V2StateRepository", "Resuming location tracking on init, active count = $activeCount")
+                isLocationTrackingActive = true
+                EventBus.getDefault().safeRegister(this@AirBeamMiniV2StateRepository)
+            }
+        }
+    }
+
     fun startLocationTracking() {
         android.util.Log.d("V2StateRepository", "startLocationTracking")
-        _trackedLocations.clear()
         isLocationTrackingActive = true
         EventBus.getDefault().safeRegister(this)
+
+        coroutineScope.launch {
+            val activeCount = mDatabase.sessions().getActiveSessionsCount()
+            if (activeCount <= 1) {
+                synchronized(_trackedLocations) {
+                    _trackedLocations.clear()
+                }
+                mDatabase.trackedLocations().deleteAll()
+            }
+        }
     }
 
     fun stopLocationTrackingAndClear() {
         android.util.Log.d("V2StateRepository", "stopLocationTrackingAndClear")
         isLocationTrackingActive = false
-        _trackedLocations.clear()
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)
+        }
+
+        coroutineScope.launch {
+            val activeCount = mDatabase.sessions().getActiveSessionsCount()
+            if (activeCount == 0) {
+                synchronized(_trackedLocations) {
+                    _trackedLocations.clear()
+                }
+                mDatabase.trackedLocations().deleteAll()
+            }
         }
     }
 
@@ -225,8 +269,15 @@ class AirBeamMiniV2StateRepository @Inject constructor() {
         if (!isLocationTrackingActive) return
         val lat = event.latitude ?: return
         val lng = event.longitude ?: return
-        _trackedLocations.add(TrackedLocation(lat, lng, event.time))
+        val tracked = TrackedLocation(lat, lng, event.time)
+        synchronized(_trackedLocations) {
+            _trackedLocations.add(tracked)
+        }
         android.util.Log.v("V2StateRepository", "Location tracked: $lat, $lng, time=${event.time}")
+
+        coroutineScope.launch {
+            mDatabase.trackedLocations().insert(TrackedLocationDBObject(lat, lng, event.time))
+        }
     }
 
     fun getClosestLocation(measurementTimeMs: Long, fallbackLocation: Session.Location): Session.Location {

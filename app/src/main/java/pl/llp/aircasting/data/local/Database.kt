@@ -9,12 +9,14 @@ import pl.llp.aircasting.data.local.dao.MeasurementStreamDao
 import pl.llp.aircasting.data.local.dao.NoteDao
 import pl.llp.aircasting.data.local.dao.SensorThresholdDao
 import pl.llp.aircasting.data.local.dao.SessionDao
+import pl.llp.aircasting.data.local.dao.TrackedLocationDao
 import pl.llp.aircasting.data.local.entity.ActiveSessionMeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementDBObject
 import pl.llp.aircasting.data.local.entity.MeasurementStreamDBObject
 import pl.llp.aircasting.data.local.entity.NoteDBObject
 import pl.llp.aircasting.data.local.entity.SensorThresholdDBObject
 import pl.llp.aircasting.data.local.entity.SessionDBObject
+import pl.llp.aircasting.data.local.entity.TrackedLocationDBObject
 import pl.llp.aircasting.util.converters.DateConverter
 import pl.llp.aircasting.util.converters.DeviceTypeConverter
 import pl.llp.aircasting.util.converters.SessionStatusConverter
@@ -27,8 +29,9 @@ import pl.llp.aircasting.util.converters.TagsConverter
         MeasurementDBObject::class,
         SensorThresholdDBObject::class,
         NoteDBObject::class,
-        ActiveSessionMeasurementDBObject::class],
-    version = 37,
+        ActiveSessionMeasurementDBObject::class,
+        TrackedLocationDBObject::class],
+    version = 38,
     exportSchema = true
 )
 @TypeConverters(
@@ -45,4 +48,5 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun sensorThresholds(): SensorThresholdDao
     abstract fun notes(): NoteDao
     abstract fun activeSessionsMeasurements(): ActiveSessionMeasurementDao
+    abstract fun trackedLocations(): TrackedLocationDao
 }
