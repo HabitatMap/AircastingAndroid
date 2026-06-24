@@ -29,8 +29,12 @@ class SessionDownloadService @Inject constructor(
         // BE: mapped sessions get a lat/lng-derived TZ (≈ phone-default), indoor /
         // locationless sessions default to UTC. Parse with the matching TZ so Date.time
         // is the real instant for that wall clock.
+        // For indoor sessions, we only parse as UTC if it's an AirBeamMini V2 (version >= 3).
+        // Older models (AirBeamMini V1, AirBeam3, AirBeam2) write and upload local time numerals.
+        val isAirBeamMini = sessionResponse.streams.values.any { it.sensorName.contains("AirBeamMini", true) }
+        val isAirBeamMiniV2 = isAirBeamMini && sessionResponse.version >= 3
         val beTimeZone =
-            if (sessionResponse.is_indoor) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+            if (sessionResponse.is_indoor && isAirBeamMiniV2) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
         val startTime = DateConverter.fromString(sessionResponse.start_time, beTimeZone)
             ?: throw UnexpectedAPIError()
 

@@ -61,6 +61,7 @@ class DownloadMeasurementsService @Inject constructor(
                 updateSessionData(
                     response,
                     sessionWithMeasurements,
+                    isAirBeamMiniV2 = false,
                     shouldSaveMeasurements = hasNoMeasurements
                 )
             }.onFailure {
@@ -73,15 +74,17 @@ class DownloadMeasurementsService @Inject constructor(
         sessionWithMeasurements: SessionWithStreamsAndMeasurementsDBObject,
     ) = withContext(dispatcher) {
         sessionWithMeasurements.apply {
+            val isAirBeamMini = streams.any { it.stream.sensorName.contains("AirBeamMini", true) }
+            val isAirBeamMiniV2 = isAirBeamMini && (session.version >= 3 || session.sessionToken != null)
             val lastMeasurementSyncTimeString =
-                lastMeasurementTimeString(session.id, session.endTime, session.is_indoor)
+                lastMeasurementTimeString(session.id, session.endTime, session.is_indoor, isAirBeamMiniV2)
             runCatching {
                 apiService.downloadFixedMeasurements(
                     session.uuid,
                     lastMeasurementSyncTimeString
                 )
             }.onSuccess {
-                updateSessionData(it, sessionWithMeasurements)
+                updateSessionData(it, sessionWithMeasurements, isAirBeamMiniV2)
             }.onFailure {
                 errorHandler.handleAndDisplay(DownloadMeasurementsError(it))
             }
@@ -92,17 +95,19 @@ class DownloadMeasurementsService @Inject constructor(
         sessionId: Long,
         endTime: Date?,
         isIndoor: Boolean,
+        isAirBeamMiniV2: Boolean,
     ): String {
         val lastMeasurementTime = measurementsRepository.lastMeasurementTime(sessionId)
         val lastMeasurementSyncTime =
             LastMeasurementSyncCalculator.calculate(endTime, lastMeasurementTime)
 
-        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, beTimeZone(isIndoor))
+        return LastMeasurementTimeStringFactory.get(lastMeasurementSyncTime, beTimeZone(isIndoor, isAirBeamMiniV2))
     }
 
     private suspend fun updateSessionData(
         response: SessionWithMeasurementsResponse,
         sessionWithStreamsAndMeasurements: SessionWithStreamsAndMeasurementsDBObject,
+        isAirBeamMiniV2: Boolean,
         shouldSaveMeasurements: Boolean = true,
     ) {
         sessionWithStreamsAndMeasurements.apply {
@@ -112,22 +117,24 @@ class DownloadMeasurementsService @Inject constructor(
             if (shouldSaveMeasurements)
                 saveSessionMeasurements(
                     response,
-                    session
+                    session,
+                    isAirBeamMiniV2
                 )
         }
     }
 
     private suspend fun saveSessionMeasurements(
         response: SessionWithMeasurementsResponse,
-        session: SessionDBObject
+        session: SessionDBObject,
+        isAirBeamMiniV2: Boolean,
     ) {
         response.streams.let { streams ->
             val streamResponses = streams.values
             try {
                 streamResponses.forEach { streamResponse ->
-                    saveStreamData(streamResponse, session)
+                    saveStreamData(streamResponse, session, isAirBeamMiniV2)
                 }
-                updateSessionEndTime(session, response.end_time)
+                updateSessionEndTime(session, response.end_time, isAirBeamMiniV2)
             } catch (e: SQLiteConstraintException) {
                 errorHandler.handle(DBInsertException(e))
             }
@@ -148,7 +155,8 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun saveStreamData(
         streamResponse: SessionStreamWithMeasurementsResponse,
-        session: SessionDBObject
+        session: SessionDBObject,
+        isAirBeamMiniV2: Boolean,
     ) {
         val stream = MeasurementStreamDBObject(session.id, streamResponse)
         val streamId = measurementStreamsRepository.getIdOrInsert(
@@ -163,7 +171,7 @@ class DownloadMeasurementsService @Inject constructor(
         val measurements = MeasurementsFactory.get(
             streamResponse.measurements,
             averagingFrequency,
-            beTimeZone(session.is_indoor),
+            beTimeZone(session.is_indoor, isAirBeamMiniV2),
         )
         measurementsRepository.insertAll(streamId, session.id, measurements)
 
@@ -182,7 +190,8 @@ class DownloadMeasurementsService @Inject constructor(
 
     private suspend fun updateSessionEndTime(
         dbSession: SessionDBObject,
-        endTimeString: String?
+        endTimeString: String?,
+        isAirBeamMiniV2: Boolean,
     ) {
         endTimeString?.let {
             // BE returns end_time as wall-clock numerals + literal "Z" suffix. The wall
@@ -190,7 +199,7 @@ class DownloadMeasurementsService @Inject constructor(
             // indoor / locationless ones (see SessionDownloadService note). Parse with
             // the matching TZ so Date.time is the real instant.
             dbSession.copy(
-                endTime = DateConverter.fromString(endTimeString, beTimeZone(dbSession.is_indoor))
+                endTime = DateConverter.fromString(endTimeString, beTimeZone(dbSession.is_indoor, isAirBeamMiniV2))
             ).let {
                 sessionsRepository.update(it)
             }
@@ -201,6 +210,6 @@ class DownloadMeasurementsService @Inject constructor(
     // literal "Z". The wall clock is the session's `time_zone` on BE: mapped sessions
     // get a lat/lng-derived TZ (≈ phone-default), indoor / locationless sessions default
     // to UTC. Use this helper for every BE-facing parse/format on fixed sessions.
-    private fun beTimeZone(isIndoor: Boolean): TimeZone =
-        if (isIndoor) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+    private fun beTimeZone(isIndoor: Boolean, isAirBeamMiniV2: Boolean): TimeZone =
+        if (isIndoor && isAirBeamMiniV2) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
 }
