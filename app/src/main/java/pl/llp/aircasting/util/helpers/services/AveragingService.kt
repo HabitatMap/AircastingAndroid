@@ -61,7 +61,7 @@ class AveragingService(
 
     suspend fun stopAndPerformFinalAveraging(uuid: String?, window: AveragingWindow? = null) {
         Log.d(TAG, "Stopping averaging. Cancelling job: ${sessionUuidByAveragingJob[uuid]}")
-        sessionUuidByAveragingJob[uuid]?.cancel()
+        sessionUuidByAveragingJob[uuid]?.cancelAndJoin()
         sessionUuidByAveragingJob.remove(uuid)
 
         val session = mSessionsRepository.getSessionByUUID(uuid) ?: return
