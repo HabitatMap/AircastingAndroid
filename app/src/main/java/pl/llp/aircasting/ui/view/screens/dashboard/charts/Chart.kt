@@ -99,13 +99,14 @@ class Chart(
         session ?: return
 
         DateConverter.get()?.apply {
-            val sessionStartTime = toTimeStringForDisplay(session.startTime, TimeZone.getDefault())
+            val timeZone = if (session.isExternal) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+            val sessionStartTime = toTimeStringForDisplay(session.startTime, timeZone)
 
             val entriesStartTime = mSessionPresenter?.chartData?.entriesStartTime
             val entriesEndTime = mSessionPresenter?.chartData?.entriesEndTime
 
             mChartStartTimeTextView?.text = if (!entriesStartTime.isNullOrEmpty()) entriesStartTime else sessionStartTime
-            mChartEndTimeTextView?.text = if (!entriesEndTime.isNullOrEmpty()) entriesEndTime else toTimeStringForDisplay(Date(), TimeZone.getDefault())
+            mChartEndTimeTextView?.text = if (!entriesEndTime.isNullOrEmpty()) entriesEndTime else toTimeStringForDisplay(Date(), timeZone)
             mChartUnitTextView?.text = chartUnitText()
         }
     }

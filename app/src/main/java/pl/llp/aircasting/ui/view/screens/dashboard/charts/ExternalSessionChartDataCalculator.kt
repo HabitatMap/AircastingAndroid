@@ -8,7 +8,7 @@ import java.util.*
 
 class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCalculator(session) {
     override fun calculateEntriesAndTimestamps(stream: MeasurementStream?): MutableList<Entry> {
-        val timeStampsSetter = TimeStampsSetter()
+        val timeStampsSetter = UTCTimeStampsSetter()
 
         return when {
             isFullHours(stream) -> OpenAQChartAveragesCreator().getFixedEntries(
@@ -27,4 +27,10 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
         stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNamePM, true) == true ||
                 stream?.sensorName?.contains(StringConstants.responseOpenAQSensorNameOzone, true) == true ||
                 stream?.sensorName?.startsWith("Government") == true
+
+    inner class UTCTimeStampsSetter : TimeStampsSetter() {
+        override fun setStartEndTimeToDisplay(start: Date, end: Date, timeZone: TimeZone) {
+            super.setStartEndTimeToDisplay(start, end, TimeZone.getTimeZone("UTC"))
+        }
+    }
 }
