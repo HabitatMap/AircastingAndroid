@@ -165,8 +165,9 @@ abstract class SessionDetailsViewMvcImpl(
         val session = mSessionPresenter?.session
         session ?: return
 
+        val timeZone = if (session.isExternal) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
         mSessionDateTextView?.text =
-            DurationStringHelper().durationString(session.startTime, session.endTime)
+            DurationStringHelper().durationString(session.startTime, session.endTime, timeZone)
 
         mSessionNameTextView?.text = session.name
         bindSessionMeasurementsDescription()
