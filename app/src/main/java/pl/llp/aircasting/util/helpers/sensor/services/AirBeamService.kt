@@ -76,6 +76,13 @@ abstract class AirBeamService : SensorService(),
 
     override fun onStopService() {
         Log.d(TAG, "Service stopping")
+        if (::mAirBeamConnector.isInitialized) {
+            try {
+                mAirBeamConnector.disconnect()
+            } catch (e: Exception) {
+                Log.w(TAG, "mAirBeamConnector.disconnect() threw: ${e.message}")
+            }
+        }
     }
 
     override fun notificationMessage(): String {

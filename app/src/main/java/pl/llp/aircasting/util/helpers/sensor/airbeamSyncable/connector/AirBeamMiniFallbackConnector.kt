@@ -137,8 +137,9 @@ class AirBeamMiniFallbackConnector(
     }
 
     override fun stop() {
-        Log.d("[RECONNECT]", "AirBeamMiniFallback.stop -> ${if (isV2Attempt) "v2" else "v1"}Configurator.closeConnection()")
-        activeConfigurator.closeConnection()
+        Log.d("[RECONNECT]", "AirBeamMiniFallback.stop -> closing both configurators")
+        v2Configurator.closeConnection()
+        v1Configurator.closeConnection()
     }
 
     override fun configureSession(session: Session, wifiSSID: String?, wifiPassword: String?, fixedSessionConfig: FixedSessionConfig?, intervalSeconds: Int?) {
