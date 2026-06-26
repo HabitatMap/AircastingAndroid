@@ -62,7 +62,7 @@ interface MeasurementDao {
         deleteMeasurements(streamId, measurementsIds)
     }
 
-    @Query("UPDATE measurements SET averaging_frequency=:averagingFrequency, value=:value, time=:time WHERE id=:measurement_id")
+    @Query("UPDATE OR REPLACE measurements SET averaging_frequency=:averagingFrequency, value=:value, time=:time WHERE id=:measurement_id")
     suspend fun averageMeasurement(
         measurement_id: Long,
         value: Double,
