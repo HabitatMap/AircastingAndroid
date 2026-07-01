@@ -34,13 +34,17 @@ class ConfirmationFragment : BaseFragment<ConfirmationViewMvcImpl, ConfirmationC
         super.onStart()
 
         controller?.registerToEventBus()
-        controller?.registerListener(listener)
+        if (::listener.isInitialized) {
+            controller?.registerListener(listener)
+        }
         controller?.onStart(context)
     }
 
     override fun onStop() {
         super.onStop()
-        controller?.unregisterListener(listener)
+        if (::listener.isInitialized) {
+            controller?.unregisterListener(listener)
+        }
     }
 
     fun setStartRecordingLoading(loading: Boolean) {

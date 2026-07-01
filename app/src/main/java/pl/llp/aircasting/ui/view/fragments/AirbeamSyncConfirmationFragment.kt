@@ -33,15 +33,21 @@ class AirbeamSyncConfirmationFragment(
 
     override fun onStart() {
         super.onStart()
-        controller?.registerListener(listener)
+        if (::listener.isInitialized) {
+            controller?.registerListener(listener)
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        controller?.unregisterListener(listener)
+        if (::listener.isInitialized) {
+            controller?.unregisterListener(listener)
+        }
     }
 
     override fun onBackPressed() {
-        listener.onNoClicked()
+        if (::listener.isInitialized) {
+            listener.onNoClicked()
+        }
     }
 }

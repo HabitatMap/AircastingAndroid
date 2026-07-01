@@ -25,11 +25,15 @@ class OnboardingMeasureAndMapFragment: BaseFragment<OnboardingMeasureAndMapViewM
 
     override fun onStart() {
         super.onStart()
-        listener.let { controller?.registerListener(it) }
+        if (::listener.isInitialized) {
+            controller?.registerListener(listener)
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        controller?.unregisterListener(listener)
+        if (::listener.isInitialized) {
+            controller?.unregisterListener(listener)
+        }
     }
 }
