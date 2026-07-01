@@ -41,6 +41,10 @@ class LocationHelper(mContext: Context) {
         fun lastLocation(): Location? {
             return singleton?.lastLocation
         }
+
+        fun updateInterval(intervalMs: Long) {
+            singleton?.updateInterval(intervalMs)
+        }
     }
 
     private var mLastLocation: Location? = null
@@ -111,6 +115,20 @@ class LocationHelper(mContext: Context) {
 
         if (locationCallback != null) {
             fusedLocationClient.removeLocationUpdates(locationCallback!!)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    fun updateInterval(intervalMs: Long) {
+        locationRequest.interval = intervalMs
+        locationRequest.fastestInterval = intervalMs
+        if (started && locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback!!)
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback!!,
+                Looper.getMainLooper()
+            )
         }
     }
 

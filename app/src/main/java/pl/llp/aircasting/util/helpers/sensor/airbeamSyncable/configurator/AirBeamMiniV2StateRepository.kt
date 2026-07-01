@@ -18,8 +18,10 @@ import javax.inject.Inject
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import pl.llp.aircasting.data.model.Session
+import pl.llp.aircasting.ui.view.screens.new_session.select_device.DeviceItem
 import pl.llp.aircasting.util.events.LocationChanged
 import pl.llp.aircasting.util.extensions.safeRegister
+import pl.llp.aircasting.util.helpers.location.LocationHelper
 import java.util.Collections
 import kotlin.math.abs
 
@@ -54,6 +56,7 @@ class AirBeamMiniV2StateRepository @Inject constructor(
     val trackedLocations: List<TrackedLocation> get() = _trackedLocations
 
     private var isLocationTrackingActive = false
+    private var currentIntervalSeconds: Int? = null
 
     private val _hasSavedMeasurementsFlow = MutableStateFlow(false)
     /**
@@ -226,6 +229,7 @@ class AirBeamMiniV2StateRepository @Inject constructor(
                 android.util.Log.d("V2StateRepository", "Resuming location tracking on init, active count = $activeCount")
                 isLocationTrackingActive = true
                 EventBus.getDefault().safeRegister(this@AirBeamMiniV2StateRepository)
+                updateLocationInterval()
             }
         }
     }
@@ -243,6 +247,7 @@ class AirBeamMiniV2StateRepository @Inject constructor(
                 }
                 mDatabase.trackedLocations().deleteAll()
             }
+            updateLocationInterval()
         }
     }
 
@@ -261,6 +266,38 @@ class AirBeamMiniV2StateRepository @Inject constructor(
                 }
                 mDatabase.trackedLocations().deleteAll()
             }
+            updateLocationInterval()
+        }
+    }
+
+    private suspend fun updateLocationInterval() {
+        val nonV2Count = mDatabase.sessions().getActiveNonV2SessionsCount()
+        if (nonV2Count > 0) {
+            android.util.Log.d("V2StateRepository", "updateLocationInterval: non-V2 active sessions exist, keeping default interval (1s)")
+            currentIntervalSeconds = null
+            LocationHelper.updateInterval(1000L)
+            return
+        }
+
+        val activeV2Session = mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(
+            Session.Status.RECORDING,
+            Session.Type.MOBILE,
+            DeviceItem.Type.AIRBEAMMINI
+        ) ?: mDatabase.sessions().loadSessionByStatusTypeAndDeviceType(
+            Session.Status.DISCONNECTED,
+            Session.Type.MOBILE,
+            DeviceItem.Type.AIRBEAMMINI
+        )
+
+        if (activeV2Session != null && activeV2Session.measurementInterval != null) {
+            val intervalMs = activeV2Session.measurementInterval * 1000L
+            android.util.Log.d("V2StateRepository", "updateLocationInterval: setting location request interval to ${activeV2Session.measurementInterval}s")
+            currentIntervalSeconds = activeV2Session.measurementInterval
+            LocationHelper.updateInterval(intervalMs)
+        } else {
+            android.util.Log.d("V2StateRepository", "updateLocationInterval: no active V2 sessions, restoring default interval (1s)")
+            currentIntervalSeconds = null
+            LocationHelper.updateInterval(1000L)
         }
     }
 
@@ -269,6 +306,20 @@ class AirBeamMiniV2StateRepository @Inject constructor(
         if (!isLocationTrackingActive) return
         val lat = event.latitude ?: return
         val lng = event.longitude ?: return
+
+        val intervalSeconds = currentIntervalSeconds ?: 1
+        val lastLocationTime = synchronized(_trackedLocations) {
+            _trackedLocations.lastOrNull()?.time
+        }
+
+        if (lastLocationTime != null) {
+            val minDiffMs = (intervalSeconds * 1000L * 0.9).toLong()
+            if (event.time - lastLocationTime < minDiffMs) {
+                // Throttle: discard location updates that are too frequent for the configured interval
+                return
+            }
+        }
+
         val tracked = TrackedLocation(lat, lng, event.time)
         synchronized(_trackedLocations) {
             _trackedLocations.add(tracked)
