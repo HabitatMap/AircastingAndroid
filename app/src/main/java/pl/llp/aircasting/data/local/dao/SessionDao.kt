@@ -27,6 +27,12 @@ interface SessionDao {
         status: Session.Status = Session.Status.FINISHED
     ): Int
 
+    @Query("SELECT COUNT(*) FROM sessions WHERE deleted = 0 AND status != :finishedStatus AND (device_type != :v2DeviceType OR measurement_interval IS NULL)")
+    suspend fun getActiveNonV2SessionsCount(
+        finishedStatus: Session.Status = Session.Status.FINISHED,
+        v2DeviceType: DeviceItem.Type = DeviceItem.Type.AIRBEAMMINI
+    ): Int
+
     @Query("SELECT * FROM sessions")
     fun getAll(): List<SessionDBObject>
 
