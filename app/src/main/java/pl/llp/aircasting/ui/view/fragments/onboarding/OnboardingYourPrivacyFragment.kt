@@ -25,11 +25,15 @@ class OnboardingYourPrivacyFragment: BaseFragment<OnboardingYourPrivacyViewMvcIm
 
     override fun onStart() {
         super.onStart()
-        controller?.registerListener(listener)
+        if (::listener.isInitialized) {
+            controller?.registerListener(listener)
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        controller?.unregisterListener(listener)
+        if (::listener.isInitialized) {
+            controller?.unregisterListener(listener)
+        }
     }
 }

@@ -33,11 +33,15 @@ class AirBeamConnectedFragment : BaseFragment<AirBeamConnectedViewMvcImpl, AirBe
 
     override fun onStart() {
         super.onStart()
-        listener.let { controller?.registerListener(it) }
+        if (::listener.isInitialized) {
+            controller?.registerListener(listener)
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        listener.let { controller?.unregisterListener(it) }
+        if (::listener.isInitialized) {
+            controller?.unregisterListener(listener)
+        }
     }
 }

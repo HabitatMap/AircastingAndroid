@@ -40,7 +40,7 @@ class SyncActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
 
         (application as AircastingApplication).userDependentComponent?.inject(this)
 

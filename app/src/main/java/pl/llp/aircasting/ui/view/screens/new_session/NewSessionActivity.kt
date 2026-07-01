@@ -65,7 +65,7 @@ class NewSessionActivity : BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
 
         val sessionType = intent.extras?.get(SESSION_TYPE_KEY) as? Session.Type
         if (sessionType == null) {

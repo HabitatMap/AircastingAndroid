@@ -21,7 +21,7 @@ class OnboardingActivity: BaseActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
 
         val view = OnboardingViewMvcImpl(layoutInflater, null)
         controller = OnboardingController(this, view, supportFragmentManager, settings)
