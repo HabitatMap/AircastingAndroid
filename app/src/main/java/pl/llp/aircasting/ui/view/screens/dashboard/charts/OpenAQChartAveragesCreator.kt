@@ -11,7 +11,7 @@ import java.util.*
 *
 * Also, we do not tweak the hours here, as the measurements' hours already represent the passed hour
 *  */
-class OpenAQChartAveragesCreator : ChartAveragesCreator() {
+class OpenAQChartAveragesCreator(timeZone: TimeZone = TimeZone.getTimeZone("UTC")) : ChartAveragesCreator(timeZone) {
     override fun modifyHours(date: Date, hours: Int): Date {
         return date
     }

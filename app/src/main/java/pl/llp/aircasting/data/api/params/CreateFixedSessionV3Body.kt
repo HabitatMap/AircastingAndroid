@@ -7,6 +7,7 @@ data class CreateFixedSessionV3Body(
     val longitude: Double?,
     val contribute: Boolean,
     val is_indoor: Boolean,
+    val time_zone: String,
     val airbeam: AirbeamInfo,
     val streams: List<StreamInfo>,
 ) {

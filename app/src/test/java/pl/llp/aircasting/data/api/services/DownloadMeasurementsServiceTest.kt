@@ -99,9 +99,7 @@ class DownloadMeasurementsServiceTest {
 
             testSubject.downloadMeasurements(session.uuid)
 
-            val isAirBeamMini = sessionWithStreamsAndMeasurementsDBObject.streams.any { it.stream.sensorName.contains("AirBeamMini", true) }
-            val isAirBeamMiniV2 = isAirBeamMini && (session.version >= 3 || session.sessionToken != null)
-            val tz = if (session.is_indoor && isAirBeamMiniV2) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
+            val tz = if (session.isExternal) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
             verify(sessionsRepository).getSessionWithMeasurementsByUUID(session.uuid)
             verify(apiService).downloadFixedMeasurements(eq(session.uuid), any())
             verify(measurementsRepository).insertAll(
@@ -134,9 +132,7 @@ class DownloadMeasurementsServiceTest {
 
             testSubject.downloadMeasurements(session.uuid)
 
-            val isAirBeamMini = sessionWithStreamsAndMeasurementsDBObject.streams.any { it.stream.sensorName.contains("AirBeamMini", true) }
-            val isAirBeamMiniV2 = isAirBeamMini && (session.version >= 3 || session.sessionToken != null)
-            val tz = if (session.is_indoor && isAirBeamMiniV2) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
+            val tz = if (session.isExternal) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
             verify(sessionsRepository).getSessionWithMeasurementsByUUID(session.uuid)
             verify(apiService).downloadFixedMeasurements(eq(session.uuid), any())
             verify(activeSessionMeasurementsRepository).createOrReplaceMultipleRows(
@@ -171,9 +167,7 @@ class DownloadMeasurementsServiceTest {
 
             verify(sessionsRepository).getSessionWithMeasurementsByUUID(session.uuid)
             verify(apiService).downloadFixedMeasurements(eq(session.uuid), any())
-            val isAirBeamMini = sessionWithStreamsAndMeasurementsDBObject.streams.any { it.stream.sensorName.contains("AirBeamMini", true) }
-            val isAirBeamMiniV2 = isAirBeamMini && (session.version >= 3 || session.sessionToken != null)
-            val tz = if (session.is_indoor && isAirBeamMiniV2) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
+            val tz = if (session.isExternal) java.util.TimeZone.getTimeZone("UTC") else java.util.TimeZone.getDefault()
             verify(sessionsRepository).update(
                 eq(session.copy(endTime = DateConverter.fromString(sessionWithMeasurementsResponse.end_time, tz)))
             )

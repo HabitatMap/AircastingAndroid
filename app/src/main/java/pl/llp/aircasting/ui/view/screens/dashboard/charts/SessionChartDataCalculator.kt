@@ -8,6 +8,8 @@ import pl.llp.aircasting.util.DateConverter
 import java.util.*
 
 open class SessionChartDataCalculator(private var mSession: Session) {
+    val mTimeZone: TimeZone get() = if (mSession.isExternal) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+
     var mStartTimeToDisplay: String? = null
     var mEndTimeToDisplay: String? = null
     lateinit var mEntriesPerStream: HashMap<String, List<Entry>>
@@ -60,13 +62,13 @@ open class SessionChartDataCalculator(private var mSession: Session) {
             when (mSession.type) {
                 Session.Type.MOBILE -> {
                     val timeStampsSetter = TimeStampsSetter()
-                    entries = ChartAveragesCreator().getMobileEntries(streamToCalculate, timeStampsSetter, mSession.measurementInterval)
+                    entries = ChartAveragesCreator(mTimeZone).getMobileEntries(streamToCalculate, timeStampsSetter, mSession.measurementInterval)
 
                     setCount(entries)
                 }
                 Session.Type.FIXED -> {
                     val timeStampsSetter = TimeStampsSetter()
-                    entries = ChartAveragesCreator().getFixedEntries(streamToCalculate, timeStampsSetter)
+                    entries = ChartAveragesCreator(mTimeZone).getFixedEntries(streamToCalculate, timeStampsSetter)
                 }
             }
         }
