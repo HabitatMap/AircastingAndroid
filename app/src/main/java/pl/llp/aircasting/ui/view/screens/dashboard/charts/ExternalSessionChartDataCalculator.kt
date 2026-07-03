@@ -16,7 +16,7 @@ class ExternalSessionChartDataCalculator(session: Session) : SessionChartDataCal
                 timeStampsSetter
             )
 
-            else -> ChartAveragesCreator().getFixedEntries(
+            else -> ChartAveragesCreator(mTimeZone).getFixedEntries(
                 stream,
                 timeStampsSetter
             )

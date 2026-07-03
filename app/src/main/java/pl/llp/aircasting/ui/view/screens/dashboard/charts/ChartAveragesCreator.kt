@@ -9,7 +9,7 @@ import pl.llp.aircasting.data.model.MeasurementStream
 import java.util.*
 import kotlin.math.roundToInt
 
-open class ChartAveragesCreator {
+open class ChartAveragesCreator(protected val mTimeZone: TimeZone = TimeZone.getDefault()) {
     companion object {
         const val MAX_AVERAGES_AMOUNT = 9
         private val MOBILE_INTERVAL_IN_SECONDS = 60
@@ -77,7 +77,7 @@ open class ChartAveragesCreator {
             val firstEntryDate = periodData.firstOrNull()?.firstOrNull()?.time
             val lastEntryDate = periodData.lastOrNull()?.lastOrNull()?.time
             if (firstEntryDate != null && lastEntryDate != null) {
-                timeSetterCallback.setStartEndTimeToDisplay(firstEntryDate, lastEntryDate)
+                timeSetterCallback.setStartEndTimeToDisplay(firstEntryDate, lastEntryDate, mTimeZone)
             }
         }
         if (entries.size == 0) return entries
@@ -136,7 +136,8 @@ open class ChartAveragesCreator {
 
             timeSetterCallback.setStartEndTimeToDisplay(
                 modifyHours(firstEntryDate),
-                modifyHours(lastEntryDate)
+                modifyHours(lastEntryDate),
+                mTimeZone
             )
         }
         return entries
@@ -152,7 +153,7 @@ open class ChartAveragesCreator {
     * So measurements from 6:00:00 till 6:59:59 are represented on UI as 7:00 timestamp
     *  */
     protected open fun modifyHours(date: Date, hours: Int = 1): Date {
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance(mTimeZone)
         calendar.time = date
         calendar.add(Calendar.HOUR_OF_DAY, hours)
         return calendar.time
@@ -172,7 +173,7 @@ open class ChartAveragesCreator {
     }
 
     private fun getAllowedStartTimeBoundary(): Date {
-        val calendar = Calendar.getInstance()
+        val calendar = Calendar.getInstance(mTimeZone)
         calendar.time = endTimeBoundary
         calendar.add(Calendar.HOUR_OF_DAY, -9)
         return calendar.time
@@ -184,14 +185,18 @@ open class ChartAveragesCreator {
     *  */
     protected open fun getAllowedEndTimeBoundary(stream: MeasurementStream): Date {
         val lastMeasurementTime = stream.measurements.maxOf { it.time }
-        val lastMeasurementHour = DateUtils.truncate(lastMeasurementTime, Calendar.HOUR_OF_DAY)
-        return Date(lastMeasurementHour.time - 1)
+        val calendar = Calendar.getInstance(mTimeZone)
+        calendar.time = lastMeasurementTime
+        val lastMeasurementHour = DateUtils.truncate(calendar, Calendar.HOUR_OF_DAY)
+        return Date(lastMeasurementHour.time.time - 1)
     }
 
     private fun groupMeasurementsByHours(
         measurements: List<Measurement>,
     ) = measurements.groupBy {
-        DateUtils.truncate(it.time, Calendar.HOUR_OF_DAY)
+        val calendar = Calendar.getInstance(mTimeZone)
+        calendar.time = it.time
+        DateUtils.truncate(calendar, Calendar.HOUR_OF_DAY).time
     }
 
     private fun getAverage(measurements: List<Measurement>?): Int {

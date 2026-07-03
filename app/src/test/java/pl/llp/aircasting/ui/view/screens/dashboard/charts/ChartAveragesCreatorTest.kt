@@ -18,11 +18,7 @@ class ChartAveragesCreatorTest {
 
     @Before
     fun setUp() {
-        try {
-            val url =
-                javaClass.classLoader?.getResource("HabitatHQ-RH-15-hours-of-measurements.csv")
-            measurements = StubData.measurementsFrom(File(url?.path))
-        } catch (e: FileNotFoundException) { println(e.stackTrace) }
+        measurements = StubData.measurementsFrom("HabitatHQ-RH-15-hours-of-measurements.csv")
     }
 
     @Test

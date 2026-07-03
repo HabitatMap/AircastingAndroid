@@ -31,10 +31,7 @@ class SessionDownloadService @Inject constructor(
         // is the real instant for that wall clock.
         // For indoor sessions, we only parse as UTC if it's an AirBeamMini V2 (version >= 3).
         // Older models (AirBeamMini V1, AirBeam3, AirBeam2) write and upload local time numerals.
-        val isAirBeamMini = sessionResponse.streams.values.any { it.sensorName.contains("AirBeamMini", true) }
-        val isAirBeamMiniV2 = isAirBeamMini && sessionResponse.version >= 3
-        val beTimeZone =
-            if (sessionResponse.is_indoor && isAirBeamMiniV2) TimeZone.getTimeZone("UTC") else TimeZone.getDefault()
+        val beTimeZone = TimeZone.getDefault()
         val startTime = DateConverter.fromString(sessionResponse.start_time, beTimeZone)
             ?: throw UnexpectedAPIError()
 
@@ -43,23 +40,23 @@ class SessionDownloadService @Inject constructor(
         }
 
         val session = Session(
-            sessionResponse.uuid,
-            null,
-            null,
-            sessionType(sessionResponse.type),
-            sessionResponse.title ?: "Unnamed session",
-            ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
-            Session.Status.FINISHED,
-            startTime,
-            DateConverter.fromString(sessionResponse.end_time, beTimeZone),
-            sessionResponse.version,
-            sessionResponse.deleted,
-            null,
-            sessionResponse.contribute,
-            false,
-            sessionResponse.is_indoor,
-            streams,
-            sessionResponse.location
+            uuid = sessionResponse.uuid,
+            deviceId = null,
+            deviceType = null,
+            mType = sessionType(sessionResponse.type),
+            mName = sessionResponse.title ?: "Unnamed session",
+            mTags = ArrayList(sessionResponse.tag_list.split(TAGS_SEPARATOR)),
+            mStatus = Session.Status.FINISHED,
+            mStartTime = startTime,
+            endTime = DateConverter.fromString(sessionResponse.end_time, beTimeZone),
+            version = sessionResponse.version,
+            deleted = sessionResponse.deleted,
+            followedAt = null,
+            contribute = sessionResponse.contribute,
+            locationless = false,
+            mIndoor = sessionResponse.is_indoor,
+            mStreams = streams,
+            urlLocation = sessionResponse.location
         )
 
         if (sessionResponse.latitude != null && sessionResponse.longitude != null) {

@@ -116,10 +116,11 @@ class FixedSessionUploaderDefault @Inject constructor(
         return CreateFixedSessionV3Body(
             uuid = session.uuid,
             title = session.name,
-            latitude = session.location?.latitude,
-            longitude = session.location?.longitude,
+            latitude = if (session.indoor) null else session.location?.latitude,
+            longitude = if (session.indoor) null else session.location?.longitude,
             contribute = session.contribute,
             is_indoor = session.indoor,
+            time_zone = java.util.TimeZone.getDefault().id,
             airbeam = CreateFixedSessionV3Body.AirbeamInfo(
                 mac_address = session.deviceId,
                 model = "AirBeamMini",
