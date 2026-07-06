@@ -116,8 +116,8 @@ class FixedSessionUploaderDefault @Inject constructor(
         return CreateFixedSessionV3Body(
             uuid = session.uuid,
             title = session.name,
-            latitude = if (session.indoor) null else session.location?.latitude,
-            longitude = if (session.indoor) null else session.location?.longitude,
+            latitude = session.location?.latitude,
+            longitude = session.location?.longitude,
             contribute = session.contribute,
             is_indoor = session.indoor,
             time_zone = java.util.TimeZone.getDefault().id,
