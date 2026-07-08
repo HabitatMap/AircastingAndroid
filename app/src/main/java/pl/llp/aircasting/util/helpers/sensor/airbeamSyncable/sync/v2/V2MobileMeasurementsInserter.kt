@@ -31,6 +31,17 @@ class V2MobileMeasurementsInserter @Inject constructor(
     private val measurementsRepository: MeasurementsRepository,
     private val v2StateRepository: AirBeamMiniV2StateRepository,
 ) {
+    // Per-sync cache. The fallback location and the two stream IDs are resolved ONCE per
+    // session, not per chunk. Previously lastKnownLocation() ran a `session_id + ORDER BY
+    // time` measurements scan on every chunk — O(session size) per call, i.e. O(n²) over a
+    // long sync — which made the drain progressively slower (tens of minutes for a large
+    // backlog). getIdOrInsert was likewise re-queried per chunk. The manual-sync consumer is
+    // a single serialized coroutine, so a plain cache keyed by session id is safe here.
+    private var cachedSessionId: Long = -1L
+    private var cachedFallback: Session.Location = DEFAULT_LOCATION
+    private var cachedPm1StreamId: Long = -1L
+    private var cachedPm25StreamId: Long = -1L
+
     suspend fun insert(
         deviceId: String,
         session: SessionDBObject,
@@ -46,67 +57,58 @@ class V2MobileMeasurementsInserter @Inject constructor(
         }
         if (measurements.isEmpty()) return
 
-        val fallbackLocation = lastKnownLocation(session.id)
+        if (session.id != cachedSessionId) {
+            cachedSessionId = session.id
+            cachedFallback = lastKnownLocation(session.id)
+            cachedPm1StreamId = measurementStreamsRepository.getIdOrInsert(session.id, pm1Stream(deviceId))
+            cachedPm25StreamId = measurementStreamsRepository.getIdOrInsert(session.id, pm25Stream(deviceId))
+        }
+        val fallback = cachedFallback
 
-        insertStream(
-            session.id,
-            stream = MeasurementStream(
-                sensorPackageName = "AirBeamMini:$deviceId",
-                sensorName = "AirBeamMini-PM1",
-                measurementType = "Particulate Matter",
-                measurementShortType = "PM",
-                unitName = "microgram per cubic meter",
-                unitSymbol = "µg/m³",
-                thresholdVeryLow = 0,
-                thresholdLow = 9,
-                thresholdMedium = 35,
-                thresholdHigh = 55,
-                thresholdVeryHigh = 150,
-            ),
-            measurements.map {
-                val location = v2StateRepository.getClosestLocation(it.timestamp.time, fallbackLocation)
-                Measurement(it.pm1.toDouble(), it.timestamp, location.latitude, location.longitude)
-            },
-        )
+        // Synced records can span the whole session and overlap rows the live path already
+        // inserted; the unique (session_id, stream_id, time) index + @Insert(IGNORE) dedupes.
+        val pm1 = measurements.map {
+            val loc = v2StateRepository.getClosestLocation(it.timestamp.time, fallback)
+            Measurement(it.pm1.toDouble(), it.timestamp, loc.latitude, loc.longitude)
+        }
+        measurementsRepository.insertAll(cachedPm1StreamId, session.id, pm1)
 
-        insertStream(
-            session.id,
-            stream = MeasurementStream(
-                sensorPackageName = "AirBeamMini:$deviceId",
-                sensorName = "AirBeamMini-PM2.5",
-                measurementType = "Particulate Matter",
-                measurementShortType = "PM",
-                unitName = "microgram per cubic meter",
-                unitSymbol = "µg/m³",
-                thresholdVeryLow = 0,
-                thresholdLow = 9,
-                thresholdMedium = 35,
-                thresholdHigh = 55,
-                thresholdVeryHigh = 150,
-            ),
-            measurements.map {
-                val location = v2StateRepository.getClosestLocation(it.timestamp.time, fallbackLocation)
-                Measurement(it.pm25.toDouble(), it.timestamp, location.latitude, location.longitude)
-            },
-        )
+        val pm25 = measurements.map {
+            val loc = v2StateRepository.getClosestLocation(it.timestamp.time, fallback)
+            Measurement(it.pm25.toDouble(), it.timestamp, loc.latitude, loc.longitude)
+        }
+        measurementsRepository.insertAll(cachedPm25StreamId, session.id, pm25)
+
+        Log.d(TAG, "V2MobileInserter: inserted ${measurements.size} records (PM1+PM2.5)")
     }
 
-    private suspend fun insertStream(
-        sessionId: Long,
-        stream: MeasurementStream,
-        candidates: List<Measurement>,
-    ) {
-        val streamId = measurementStreamsRepository.getIdOrInsert(sessionId, stream)
-        if (candidates.isEmpty()) return
-        // Synced records can span the entire session (firmware writes every measurement to
-        // flash regardless of BLE state), so they overlap arbitrarily with rows the live
-        // path already inserted. Hand the full batch to the DAO and let the unique index
-        // on (session_id, stream_id, time) + `@Insert(OnConflictStrategy.IGNORE)` drop
-        // duplicates. Filtering by `time > lastTime` here would silently skip BLE-gap
-        // fill-ins that arrive out-of-order on the Sync-and-Finish path.
-        Log.d(TAG, "V2MobileInserter: inserting ${candidates.size} candidates for ${stream.sensorName} (DB dedupes via unique index)")
-        measurementsRepository.insertAll(streamId, sessionId, candidates)
-    }
+    private fun pm1Stream(deviceId: String) = MeasurementStream(
+        sensorPackageName = "AirBeamMini:$deviceId",
+        sensorName = "AirBeamMini-PM1",
+        measurementType = "Particulate Matter",
+        measurementShortType = "PM",
+        unitName = "microgram per cubic meter",
+        unitSymbol = "µg/m³",
+        thresholdVeryLow = 0,
+        thresholdLow = 9,
+        thresholdMedium = 35,
+        thresholdHigh = 55,
+        thresholdVeryHigh = 150,
+    )
+
+    private fun pm25Stream(deviceId: String) = MeasurementStream(
+        sensorPackageName = "AirBeamMini:$deviceId",
+        sensorName = "AirBeamMini-PM2.5",
+        measurementType = "Particulate Matter",
+        measurementShortType = "PM",
+        unitName = "microgram per cubic meter",
+        unitSymbol = "µg/m³",
+        thresholdVeryLow = 0,
+        thresholdLow = 9,
+        thresholdMedium = 35,
+        thresholdHigh = 55,
+        thresholdVeryHigh = 150,
+    )
 
     private suspend fun lastKnownLocation(sessionId: Long): Session.Location {
         val streamCoords = measurementStreamsRepository.getLastKnownLatLng(sessionId)
