@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.util.Log
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -120,14 +121,52 @@ class V2BleSyncOrchestrator @Inject constructor(
 
         val savedUuid = v2StateRepository.savedSessionUuid
         val deviceId = configurator.deviceId
+
+        // Resolve the target session up-front so MOBILE records can be persisted
+        // chunk-by-chunk as they arrive (mirrors the reconnect-time auto-sync and the
+        // live-measurement path). Buffering the whole backlog in memory and inserting only
+        // after Ready (0x22) was unsafe: the firmware wipes its flash the instant it emits
+        // Ready, so any hang/kill/force-quit before the terminal insert lost everything.
+        val session = savedUuid?.let { sessionsRepository.getSessionByUUID(it) }
+        val streamMobileToDb = session != null &&
+                session.type == Session.Type.MOBILE &&
+                deviceId != null
+
+        // FIXED sessions still buffer — their records are HTTP-uploaded in one batch, not
+        // written to the local measurements table.
         val collected = ArrayList<V2SyncMeasurement>()
+
+        // Serialized per-chunk DB writer for MOBILE: a single consumer keeps stream
+        // creation race-free, preserves arrival order, and spreads the insert work across
+        // the transfer instead of one terminal bulk write. Records committed before an
+        // interruption survive (the firmware retains its copy on Nack; a retry dedupes via
+        // the unique measurements index).
+        val mobileChunks = if (streamMobileToDb) Channel<List<V2SyncMeasurement>>(Channel.UNLIMITED) else null
+        val savedRecords = AtomicLong(0L)
+        val mobileWriterJob = if (mobileChunks != null && session != null && deviceId != null) {
+            val dev = deviceId
+            val sess = session
+            launch {
+                for (chunk in mobileChunks) {
+                    runCatching { mobileInserter.insert(dev, sess, chunk) }
+                        .onSuccess { savedRecords.addAndGet(chunk.size.toLong()) }
+                        .onFailure { Log.e(TAG, "V2BleSyncOrchestrator: per-chunk mobile insert failed: ${it.message}") }
+                }
+            }
+        } else null
+
         // AtomicLong so the BLE callback thread sees writes from the file-size collector
         // coroutine without word-tearing on Long reads.
         val receivedBytes = AtomicLong(0L)
         val expectedSize = AtomicLong(-1L)
 
         configurator.setManualSyncChunkHandler { chunk ->
-            collected.addAll(chunk)
+            if (mobileChunks != null) {
+                // Hand off for immediate, ordered DB persistence.
+                mobileChunks.trySend(chunk)
+            } else {
+                collected.addAll(chunk)
+            }
             // Approximate firmware on-disk block size so progress tracks file_size:
             // each stored block = 4 header bytes (`AB BA count_u8 + ?`) + 8 × count + xor.
             val received = receivedBytes.addAndGet(5L + 8L * chunk.size)
@@ -165,18 +204,35 @@ class V2BleSyncOrchestrator @Inject constructor(
             val done = configurator.sendStartBleSyncAndAwaitDone()
             val streamEndMs = System.currentTimeMillis()
             fileSizeJob.join()
-            Log.d(TAG, "V2BleSyncOrchestrator: command done=$done, expectedSize=${expectedSize.get()}, received=${collected.size}")
+
+            // Flush the mobile writer: stop accepting chunks and wait for every queued one
+            // to commit before reporting completion or marking the session finished.
+            mobileChunks?.close()
+            mobileWriterJob?.join()
+
+            Log.d(TAG, "V2BleSyncOrchestrator: command done=$done, expectedSize=${expectedSize.get()}, buffered=${collected.size}, mobileSaved=${savedRecords.get()}")
 
             if (!done) {
+                // MOBILE chunks streamed before the failure are already persisted; the
+                // firmware retains its copy on Nack so a later retry dedupes on insert.
                 Log.e(TAG, "V2BleSyncOrchestrator: BLE sync did not complete (Nack or timeout)")
                 return@coroutineScope false
             }
 
-            logSyncRate(streamStartMs.get(), streamEndMs, expectedSize.get(), collected.size, receivedBytes.get())
+            val recordCount = collected.size + savedRecords.get().toInt()
+            logSyncRate(streamStartMs.get(), streamEndMs, expectedSize.get(), recordCount, receivedBytes.get())
 
             // Tail-drain so any pending Sync indications on the BLE dispatcher land.
             delay(POST_READY_DRAIN_MS)
             v2StateRepository.setSyncProgress(100)
+
+            if (streamMobileToDb && session != null) {
+                // Records were persisted chunk-by-chunk during the stream; just finalize.
+                markMobileFinished(session.uuid)
+                runCatching { sessionsSyncService.sync() }
+                    .onFailure { Log.w(TAG, "V2BleSyncOrchestrator: backend sync after mobile insert failed: ${it.message}") }
+                return@coroutineScope true
+            }
 
             if (collected.isEmpty()) {
                 Log.d(TAG, "V2BleSyncOrchestrator: zero measurements (storage was empty)")
@@ -191,6 +247,7 @@ class V2BleSyncOrchestrator @Inject constructor(
             processMeasurements(savedUuid, deviceId, collected)
         } finally {
             configurator.setManualSyncChunkHandler(null)
+            mobileChunks?.close()
             v2StateRepository.setSyncInProgress(false)
         }
     }
