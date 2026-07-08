@@ -1,6 +1,7 @@
 package pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.sync.v2
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -16,6 +17,7 @@ import pl.llp.aircasting.data.local.repository.MeasurementsRepository
 import pl.llp.aircasting.data.local.repository.SessionsRepository
 import pl.llp.aircasting.data.model.Session
 import pl.llp.aircasting.di.UserSessionScope
+import pl.llp.aircasting.di.modules.IoCoroutineScope
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2Configurator
 import pl.llp.aircasting.util.helpers.sensor.airbeamSyncable.configurator.AirBeamMiniV2StateRepository
 import java.util.Date
@@ -50,6 +52,7 @@ class V2BleSyncOrchestrator @Inject constructor(
     private val fixedUploader: V2FixedMeasurementsUploader,
     private val downloadMeasurementsService: DownloadMeasurementsService,
     private val sessionsSyncService: SessionsSyncService,
+    @IoCoroutineScope private val syncScope: CoroutineScope,
 ) {
     companion object {
         private const val READY_TO_SYNC_TIMEOUT_MS = 30_000L
@@ -229,8 +232,12 @@ class V2BleSyncOrchestrator @Inject constructor(
             if (streamMobileToDb && session != null) {
                 // Records were persisted chunk-by-chunk during the stream; just finalize.
                 markMobileFinished(session.uuid)
-                runCatching { sessionsSyncService.sync() }
-                    .onFailure { Log.w(TAG, "V2BleSyncOrchestrator: backend sync after mobile insert failed: ${it.message}") }
+                // Backend upload of a large synced session is heavy (loadCompleteSession
+                // pulls every row) and must NOT block the sync dialog — otherwise the UI
+                // sits at "100%" for the entire upload. Fire-and-forget on an IO scope; the
+                // finish flow (StopRecordingEvent -> RecordingHandler.stopRecording) also
+                // triggers a backend sync once the user confirms.
+                launchBackendSync()
                 return@coroutineScope true
             }
 
@@ -267,8 +274,7 @@ class V2BleSyncOrchestrator @Inject constructor(
             Session.Type.MOBILE -> {
                 mobileInserter.insert(deviceId, session, measurements)
                 markMobileFinished(session.uuid)
-                runCatching { sessionsSyncService.sync() }
-                    .onFailure { Log.w(TAG, "V2BleSyncOrchestrator: backend sync after mobile insert failed: ${it.message}") }
+                launchBackendSync()
                 true
             }
             Session.Type.FIXED -> uploadFixed(session.uuid, measurements)
@@ -279,17 +285,33 @@ class V2BleSyncOrchestrator @Inject constructor(
         }
     }
 
+    /**
+     * Fire-and-forget backend sync on an IO scope. Must never block the caller: for a large
+     * synced session the upload's `loadCompleteSession` pulls every measurement row, so
+     * awaiting it here would freeze the sync dialog at "100%" for the whole upload.
+     */
+    private fun launchBackendSync() {
+        syncScope.launch {
+            runCatching { sessionsSyncService.sync() }
+                .onFailure { Log.w(TAG, "V2BleSyncOrchestrator: background backend sync failed: ${it.message}") }
+        }
+    }
+
     private suspend fun markMobileFinished(uuid: String) {
-        val session = sessionsRepository.loadSessionAndMeasurementsByUUID(uuid) ?: run {
+        // Lightweight load (session row only) — do NOT use loadSessionAndMeasurementsByUUID,
+        // which pulls the entire measurements @Relation into memory (hundreds of thousands of
+        // rows for a long synced session) just to flip status. update() writes only the
+        // session row, so the measurements are never needed here.
+        val dbObject = sessionsRepository.getSessionByUUID(uuid) ?: run {
             Log.w(TAG, "V2BleSyncOrchestrator: markMobileFinished — session $uuid missing")
             return
         }
+        val session = Session(dbObject)
         if (!session.isRecording() && !session.isDisconnected()) {
             Log.d(TAG, "V2BleSyncOrchestrator: session $uuid already in terminal status=${session.status}, skip")
             return
         }
-        val sessionId = sessionsRepository.getSessionIdByUUID(uuid)
-        val endTime = sessionId?.let { measurementsRepository.lastMeasurementTime(it) } ?: Date()
+        val endTime = measurementsRepository.lastMeasurementTime(dbObject.id) ?: Date()
         session.stopRecording(endTime)
         sessionsRepository.update(session)
         Log.d(TAG, "V2BleSyncOrchestrator: marked mobile session $uuid FINISHED (endTime=$endTime)")
