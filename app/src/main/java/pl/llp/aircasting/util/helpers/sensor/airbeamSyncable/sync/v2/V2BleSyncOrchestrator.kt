@@ -139,6 +139,25 @@ class V2BleSyncOrchestrator @Inject constructor(
         // written to the local measurements table.
         val collected = ArrayList<V2SyncMeasurement>()
 
+        // AtomicLong so the BLE callback thread sees writes from the file-size collector
+        // coroutine without word-tearing on Long reads.
+        val receivedBytes = AtomicLong(0L)
+        // MOBILE progress is driven off bytes actually PERSISTED (savedBytes), not bytes
+        // received, so the bar reflects real DB persistence. Receiving into the channel is
+        // instant, but the insert is the slow step — measuring at receive-time made the bar
+        // hit ~99% while a large channel backlog was still draining, so it "froze" there for
+        // the whole drain. Same byte formula as receivedBytes for a consistent scale.
+        val savedBytes = AtomicLong(0L)
+        val expectedSize = AtomicLong(-1L)
+
+        fun publishSavedProgress() {
+            val size = expectedSize.get()
+            if (size > 0) {
+                val pct = ((savedBytes.get() * 100L) / size).toInt().coerceIn(0, 99)
+                v2StateRepository.setSyncProgress(pct)
+            }
+        }
+
         // Serialized per-chunk DB writer for MOBILE: a single consumer keeps stream
         // creation race-free, preserves arrival order, and spreads the insert work across
         // the transfer instead of one terminal bulk write. Records committed before an
@@ -152,31 +171,31 @@ class V2BleSyncOrchestrator @Inject constructor(
             launch {
                 for (chunk in mobileChunks) {
                     runCatching { mobileInserter.insert(dev, sess, chunk) }
-                        .onSuccess { savedRecords.addAndGet(chunk.size.toLong()) }
+                        .onSuccess {
+                            savedRecords.addAndGet(chunk.size.toLong())
+                            savedBytes.addAndGet(5L + 8L * chunk.size)
+                            publishSavedProgress()
+                        }
                         .onFailure { Log.e(TAG, "V2BleSyncOrchestrator: per-chunk mobile insert failed: ${it.message}") }
                 }
             }
         } else null
 
-        // AtomicLong so the BLE callback thread sees writes from the file-size collector
-        // coroutine without word-tearing on Long reads.
-        val receivedBytes = AtomicLong(0L)
-        val expectedSize = AtomicLong(-1L)
-
         configurator.setManualSyncChunkHandler { chunk ->
+            // Track received bytes for the end-of-run transfer-rate log regardless of path.
+            val received = receivedBytes.addAndGet(5L + 8L * chunk.size)
             if (mobileChunks != null) {
-                // Hand off for immediate, ordered DB persistence.
+                // Hand off for immediate, ordered DB persistence; progress is published by
+                // the consumer as each chunk lands in the DB (publishSavedProgress).
                 mobileChunks.trySend(chunk)
             } else {
+                // FIXED / buffered fallback: no consumer, so drive progress off received.
                 collected.addAll(chunk)
-            }
-            // Approximate firmware on-disk block size so progress tracks file_size:
-            // each stored block = 4 header bytes (`AB BA count_u8 + ?`) + 8 × count + xor.
-            val received = receivedBytes.addAndGet(5L + 8L * chunk.size)
-            val size = expectedSize.get()
-            if (size > 0) {
-                val pct = ((received * 100L) / size).toInt().coerceIn(0, 99)
-                v2StateRepository.setSyncProgress(pct)
+                val size = expectedSize.get()
+                if (size > 0) {
+                    val pct = ((received * 100L) / size).toInt().coerceIn(0, 99)
+                    v2StateRepository.setSyncProgress(pct)
+                }
             }
         }
 

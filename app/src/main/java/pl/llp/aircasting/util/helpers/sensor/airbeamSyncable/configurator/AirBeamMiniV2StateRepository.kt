@@ -331,22 +331,38 @@ class AirBeamMiniV2StateRepository @Inject constructor(
         }
     }
 
+    /**
+     * Closest tracked location to [measurementTimeMs] by time. [_trackedLocations] is kept in
+     * ascending `time` order (locations arrive chronologically; the DB reload is ordered), so
+     * this binary-searches the insertion point and compares the two neighbours — O(log N)
+     * instead of the old O(N) linear scan. This is called ~2× per synced measurement, so for a
+     * long session (hundreds of thousands of records × a large location list) the linear scan
+     * plus a per-call log throttled the sync-insert consumer badly; the binary search keeps it
+     * fast. No per-call logging for the same reason.
+     */
     fun getClosestLocation(measurementTimeMs: Long, fallbackLocation: Session.Location): Session.Location {
         synchronized(_trackedLocations) {
-            if (_trackedLocations.isEmpty()) {
-                return fallbackLocation
+            val size = _trackedLocations.size
+            if (size == 0) return fallbackLocation
+
+            var lo = 0
+            var hi = size - 1
+            while (lo < hi) {
+                val mid = (lo + hi) ushr 1
+                if (_trackedLocations[mid].time < measurementTimeMs) lo = mid + 1 else hi = mid
             }
-            var closest = _trackedLocations[0]
+            // lo = first entry with time >= target (or the last entry). Compare with its
+            // predecessor to pick the nearer of the two straddling neighbours.
+            var closest = _trackedLocations[lo]
             var minDiff = abs(closest.time - measurementTimeMs)
-            for (i in 1 until _trackedLocations.size) {
-                val loc = _trackedLocations[i]
-                val diff = abs(loc.time - measurementTimeMs)
-                if (diff < minDiff) {
-                    minDiff = diff
-                    closest = loc
+            if (lo > 0) {
+                val prev = _trackedLocations[lo - 1]
+                val prevDiff = abs(prev.time - measurementTimeMs)
+                if (prevDiff < minDiff) {
+                    minDiff = prevDiff
+                    closest = prev
                 }
             }
-            android.util.Log.d("V2StateRepository", "Closest location found: ${closest.latitude}, ${closest.longitude} diff=${minDiff}ms")
             return Session.Location(closest.latitude, closest.longitude)
         }
     }
