@@ -4,14 +4,15 @@ import android.bluetooth.BluetoothDevice
 import android.os.Parcelable
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import java.util.Locale
 
 @Parcelize
 open class DeviceItem(
     @IgnoredOnParcel
     private val mBluetoothDevice: BluetoothDevice? = null,
-    open val name: String = mBluetoothDevice?.name ?: UNKNOWN_DEVICE_NAME,
+    open val name: String = normalizeName(mBluetoothDevice?.name ?: UNKNOWN_DEVICE_NAME),
     open val address: String = mBluetoothDevice?.address ?: "",
-    open val id: String = name.split(":", "-").last(),
+    open val id: String = normalizeName(name).split(":", "-").last(),
     open val type: Type = getType(name),
     open val firmwareVersion: FirmwareVersion = FirmwareVersion.V1,
 ) : Parcelable {
@@ -26,6 +27,21 @@ open class DeviceItem(
         private const val AIRBEAM2_NAME_REGEX = "airbeam2"
         private const val AIRBEAM3_NAME_REGEX = "airbeam3"
         private const val AIRBEAMMINI_NAME_REGEX = "airbeammini"
+
+        internal fun normalizeName(rawName: String): String {
+            if (!rawName.contains(AIRBEAMMINI_NAME_REGEX, ignoreCase = true) || rawName.count { it == ':' } <= 1) {
+                return rawName
+            }
+
+            val prefix = rawName.substringBefore(':')
+            val macWithColons = rawName.substringAfter(':')
+            val cleanMac = macWithColons.replace(":", "")
+            val macNumber = cleanMac.toLongOrNull(16) ?: return rawName
+            val adjustedMac = (macNumber - 2).coerceAtLeast(0L)
+            val formattedMac = String.format(Locale.US, "%0${cleanMac.length}X", adjustedMac)
+
+            return "$prefix:$formattedMac"
+        }
 
         private fun getType(name: String?): Type {
             name ?: return Type.OTHER
